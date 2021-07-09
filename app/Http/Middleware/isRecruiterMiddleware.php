@@ -16,11 +16,13 @@ class isRecruiterMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-       if(Auth::check() && Auth::user()->role=='R'){
-        return $next($request);
-       }else{
-           return redirect()->route('login');
-       }
+        if(Auth::check() && Auth::user()->role=='R'){
+            return $next($request);
+        }else{
+            return redirect()->route('login');
+        }
         
     }
+
+
 }

@@ -29,7 +29,7 @@
         .table-hover tbody tr:hover td,
         .table-hover tbody tr:hover th {
             background-color: #AF7AC5;
-            color:white;
+            color: white;
         }
 
     </style>
@@ -59,7 +59,7 @@
                         <div class="menu-title">Dashboard</div>
                     </a>
                 </li>
-
+                @if(Auth::user()->role=='A')    
                 <li>
                     <a href="javascript:;" class="has-arrow">
                         <div class="parent-icon"><i class="bx bx-category  text-danger"></i>
@@ -80,7 +80,7 @@
                         <li> <a href="/admin/importdata"><i class="bx bx-right-arrow-alt"></i>ImportData</a></li>
                     </ul>
                 </li>
-
+              @endif
 
             </ul>
             <!--end navigation-->
@@ -107,12 +107,12 @@
                                 <a class="nav-link" href="#"> <i class='bx bx-search'></i>
                                 </a>
                             </li>
-                            
-                            <li class="nav-item dropdown-large" >
-                                <a id="sidebarsetting" class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button"
-                                   > <i class='bx bx-shape-polygon'></i>
+
+                            <li class="nav-item dropdown-large">
+                                <a id="sidebarsetting" class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"
+                                    role="button"> <i class='bx bx-shape-polygon'></i>
                                 </a>
-                    
+
                             </li>
                             <li class="nav-item dropdown dropdown-large">
                                 <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button"
@@ -347,14 +347,14 @@
 
         <!--start page wrapper -->
         <div class="page-wrapper">
-            @yield('PageContent')
+          <!--  @yield('PageContent')
         </div>
         <!--end page wrapper -->
         <!--start overlay-->
         <div class="overlay toggle-icon"></div>
         <!--end overlay-->
-        <!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i
-                class='bx bxs-up-arrow-alt'></i></a>
+        <!--Start Back To Top Button-->
+         <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
         <!--End Back To Top Button-->
         <footer class="page-footer">
             <p class="mb-0">Developed and Managed By: VNR Seeds Pvt. Ltd.</p>
@@ -469,7 +469,7 @@
     @yield('scriptsection')
     <script>
         $(document).ready(function() {
-            $(document).on('click','#sidebarsetting',function(){
+            $(document).on('click', '#sidebarsetting', function() {
                 $(".switcher-wrapper").toggleClass("switcher-toggled");
             });
         });

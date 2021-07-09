@@ -3,6 +3,6 @@
 @section('PageContent')
     <div class="page-content">
 
-        <h1>Dashboard Page</h1>
+        <h1>Admin Dashboard Page</h1>
     </div>
 @endsection
