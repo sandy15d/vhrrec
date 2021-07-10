@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class master_company extends Model
 {
-    use HasFactory;
+    protected $table = 'master_company';
+    public $timestamps = false;
     protected $fillable = [
         'CompanyName',
         'CompanyCode',
         'Address',
         'Phone',
         'Status',
-        'CreatedTime',
         'CreatedBy',
     ];
 }

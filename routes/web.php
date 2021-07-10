@@ -35,7 +35,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::get('settings', [AdminController::class, 'settings'])->name('admin.settings');
     // ======================Master Company ========================//
     Route::get('company', [CompanyController::class, 'company'])->name('admin.company');
-    Route::post('addCompany',[CompanyController::class,'addCompany'])->name('admin.addCompany');
+    Route::post('addCompany',[CompanyController::class,'addCompany'])->name('addCompany');
 
 
 
