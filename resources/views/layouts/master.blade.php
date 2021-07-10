@@ -5,13 +5,14 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{csrf_token()}}">
     <!--favicon-->
     <link rel="icon" href="{{ URL::to('/') }}/assets/images/favicon-32x32.png" type="image/png" />
     <!--plugins-->
     <link href="{{ URL::to('/') }}/assets/plugins/simplebar/css/simplebar.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/metismenu/css/metisMenu.min.css" rel="stylesheet" />
-    <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+   <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" /> 
     <!-- loader-->
     <link href="{{ URL::to('/') }}/assets/css/pace.min.css" rel="stylesheet" />
     <script src="{{ URL::to('/') }}/assets/js/pace.min.js"></script>
@@ -24,12 +25,36 @@
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/dark-theme.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/semi-dark.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/header-colors.css" />
+    <link rel="stylesheet" href="{{URL::to('/')}}/assets/css/sweetalert2.min.css"/>
+    <link rel="stylesheet" href="{{URL::to('/')}}/assets/css/toastr.min.css"/>
     <title>HR Recruitment | @yield('title')</title>
     <style>
         .table-hover tbody tr:hover td,
         .table-hover tbody tr:hover th {
             background-color: #AF7AC5;
             color: white;
+        }
+
+        .btn--red {
+            color: #fff;
+            background-color: #e944ff;
+            background: linear-gradient(103deg, #ff0036 0%, #ff9116 0%, #fe19fe 100%);
+        }
+
+        .btn--new {
+            color: #fff;
+            background: #2193b0;
+            /* fallback for old browsers */
+            background: -webkit-linear-gradient(to right, #6dd5ed, #2193b0);
+            background: linear-gradient(to right, #6dd5ed, #2193b0);
+        }
+
+        .btn--edit {
+            color: #fff;
+            background: #8360c3;
+            background: -webkit-linear-gradient(to right, #2ebf91, #8360c3);
+            background: linear-gradient(to right, #2ebf91, #8360c3);
+      
         }
 
     </style>
@@ -59,28 +84,49 @@
                         <div class="menu-title">Dashboard</div>
                     </a>
                 </li>
-                @if(Auth::user()->role=='A')    
-                <li>
-                    <a href="javascript:;" class="has-arrow">
-                        <div class="parent-icon"><i class="bx bx-category  text-danger"></i>
-                        </div>
-                        <div class="menu-title">Master</div>
-                    </a>
-                    <ul>
-                        <li> <a href="/admin/company"><i class="bx bx-right-arrow-alt"></i>Company</a></li>
-                        <li> <a href="/admin/country"><i class="bx bx-right-arrow-alt"></i>Country</a></li>
-                        <li> <a href="/admin/state"><i class="bx bx-right-arrow-alt"></i>State</a></li>
-                        <li> <a href="/admin/district"><i class="bx bx-right-arrow-alt"></i>District</a></li>
-                        <li> <a href="/admin/education"><i class="bx bx-right-arrow-alt"></i>Education</a></li>
-                        <li> <a href="/admin/eduspecialization"><i class="bx bx-right-arrow-alt"></i>Education
-                                Specialization</a></li>
-                        <li> <a href="/admin/eduinstitute"><i class="bx bx-right-arrow-alt"></i>Education Institute</a>
-                        </li>
-                        <li> <a href="/admin/resumesource"><i class="bx bx-right-arrow-alt"></i>Resume Source</a></li>
-                        <li> <a href="/admin/importdata"><i class="bx bx-right-arrow-alt"></i>ImportData</a></li>
-                    </ul>
-                </li>
-              @endif
+                @if (Auth::user()->role == 'A')
+                    <li>
+                        <a href="javascript:;" class="has-arrow">
+                            <div class="parent-icon"><i class="bx bx-category  text-danger"></i>
+                            </div>
+                            <div class="menu-title">Master</div>
+                        </a>
+                        <ul>
+                            <li> <a href="/admin/company"><i class="bx bx-right-arrow-alt"></i>Company</a></li>
+                            <li> <a href="/admin/country"><i class="bx bx-right-arrow-alt"></i>Country</a></li>
+                            <li> <a href="/admin/state"><i class="bx bx-right-arrow-alt"></i>State</a></li>
+                            <li> <a href="/admin/district"><i class="bx bx-right-arrow-alt"></i>District</a></li>
+                            <li> <a href="/admin/education"><i class="bx bx-right-arrow-alt"></i>Education</a></li>
+                            <li> <a href="/admin/eduspecialization"><i class="bx bx-right-arrow-alt"></i>Education
+                                    Specialization</a></li>
+                            <li> <a href="/admin/eduinstitute"><i class="bx bx-right-arrow-alt"></i>Education
+                                    Institute</a>
+                            </li>
+                            <li> <a href="/admin/resumesource"><i class="bx bx-right-arrow-alt"></i>Resume Source</a>
+                            </li>
+                            <li> <a href="/admin/importdata"><i class="bx bx-right-arrow-alt"></i>ImportData</a></li>
+                        </ul>
+                    </li>
+                    <li> <a href="/admin/users">
+                            <div class="parent-icon"><i class='bx bx-user text-info'></i>
+                            </div>
+                            <div class="menu-title">Users</div>
+                        </a></li>
+                    <li>
+                        <a href="/admin/userlogs">
+                            <div class="parent-icon"><i class='bx bx-news text-success'></i>
+                            </div>
+                            <div class="menu-title">Logs</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/userlogs">
+                            <div class="parent-icon"><i class='bx bx-help-circle text-danger'></i>
+                            </div>
+                            <div class="menu-title">Help</div>
+                        </a>
+                    </li>
+                @endif
 
             </ul>
             <!--end navigation-->
@@ -347,14 +393,14 @@
 
         <!--start page wrapper -->
         <div class="page-wrapper">
-          <!--  @yield('PageContent')
+            @yield('PageContent')
         </div>
         <!--end page wrapper -->
         <!--start overlay-->
         <div class="overlay toggle-icon"></div>
         <!--end overlay-->
         <!--Start Back To Top Button-->
-         <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
+        <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
         <!--End Back To Top Button-->
         <footer class="page-footer">
             <p class="mb-0">Developed and Managed By: VNR Seeds Pvt. Ltd.</p>
@@ -463,7 +509,9 @@
     <script src="{{ URL::to('/') }}/assets/plugins/metismenu/js/metisMenu.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
-    <script src="{{ URL::to('/') }}/assets/plugins/datatable/js/dataTables.bootstrap5.min.js"></script>
+    <script src="{{ URL::to('/') }}/assets/plugins/datatable/js/dataTables.bootstrap5.min.js"></script> 
+    <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script> 
+    <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script> 
     <!--app JS-->
     <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
     @yield('scriptsection')
@@ -473,6 +521,13 @@
                 $(".switcher-wrapper").toggleClass("switcher-toggled");
             });
         });
+        toastr.options.preventDuplicates = true;
+        $.ajaxSetup({
+            headers:{
+                'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
     </script>
 </body>
 

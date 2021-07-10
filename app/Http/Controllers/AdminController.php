@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
+
 
 class AdminController extends Controller
 {
@@ -17,11 +16,30 @@ class AdminController extends Controller
         return view('admin.settings');
     }
 
-    function company()
-    {
-       $companydata = Http::get("https://www.vnrseeds.co.in/hrims/RcdDetails?action=Details&val=Company");
-        return view('admin.company',['collection'=>$companydata['company_list']]);
-    }
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     function country()
     {

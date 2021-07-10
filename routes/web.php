@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\RecruiterController;
 use App\Http\Controllers\HodController;
+use App\Http\Controllers\CompanyController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -32,7 +33,12 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('settings', [AdminController::class, 'settings'])->name('admin.settings');
-    Route::get('company', [AdminController::class, 'company'])->name('admin.company');
+    // ======================Master Company ========================//
+    Route::get('company', [CompanyController::class, 'company'])->name('admin.company');
+    Route::post('addCompany',[CompanyController::class,'addCompany'])->name('admin.addCompany');
+
+
+
     Route::get('country', [AdminController::class, 'country'])->name('admin.country');
     Route::get('state', [AdminController::class, 'state'])->name('admin.state');
     Route::get('district', [AdminController::class, 'district'])->name('admin.district');
