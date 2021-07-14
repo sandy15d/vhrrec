@@ -18,7 +18,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover" id="companytable">
+                    <table class="table table-striped table-hover table-condensed" id="companytable" style="width: 100%">
                         <thead>
                             <tr>
                                 <th class="th-sm">S.No</th>
@@ -88,14 +88,59 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="editCompanyModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Company Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('editCompany') }}" method="POST" id="editCompanyForm">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="hidden" name="cid"/>
+                            <label for="editCompanyName">Company Name</label>
+                            <input type="text" class="form-control" name="editCompanyName" placeholder="Enter Company Name">
+                            <span class="text-danger error-text editCompanyName_error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="editCompanyCode">Company Code</label>
+                            <input type="text" class="form-control" name="editCompanyCode" placeholder="Enter Company Code">
+                            <span class="text-danger error-text editCompanyCode_error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="editAddress">Address</label>
+                            <input type="text" class="form-control" name="editAddress" placeholder="Address">
+                            <span class="text-danger error-text editAddress_error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPhone">Phone</label>
+                            <input type="text" class="form-control" name="editPhone" placeholder="Enter Phone Number">
+                            <span class="text-danger error-text editPhone_error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="editStatus">Status</label>
+                            <select name="editStatus"  id="editStatus" class="form-control">
+                                <option value="A">Active</option>
+                                <option value="D">Deactive</option>
+                            </select>
+                            <span class="text-danger error-text editStatus_error"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="UpdateCompany">Update changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scriptsection')
     <script>
-        $(document).ready(function() {
-            $('#companytable').DataTable();
-        });
-
         $('#addCompanyForm').on('submit', function(e) {
             e.preventDefault();
             var form = this;
@@ -114,15 +159,67 @@
                         $.each(data.error, function(prefix, val) {
                             $(form).find('span.' + prefix + '_error').text(val[0]);
                         });
-                    }else{
+                    } else {
                         $(form)[0].reset();
                         $('#addCompanyModal').modal('hide');
+                        $('#companytable').DataTable().ajax.reload(null, false);
                         toastr.success(data.msg);
                     }
                 }
             });
-     
 
+
+        });
+
+        $('#companytable').DataTable({
+            processing: true,
+            info: true,
+            ajax: "{{ route('getAllCompanyData') }}",
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex'
+                },
+                {
+                    data: 'CompanyName',
+                    name: 'CompanyName'
+                },
+                {
+                    data: 'CompanyCode',
+                    name: 'CompanyCode'
+                },
+                {
+                    data: 'Address',
+                    name: 'Address'
+                },
+                {
+                    data: 'Phone',
+                    name: 'Phone'
+                },
+                {
+                    data: 'Status',
+                    name: 'Status'
+                },
+                {
+                    data: 'actions',
+                    name: 'actions'
+                },
+            ]
+        });
+
+        //===============Update Company Record=================
+        $(document).on('click', '#editBtn', function() {
+            var CompanyId = $(this).data('id');
+            $.post('<?= route('getCompanyDetails') ?>', {
+                CompanyId: CompanyId
+            }, function(data) {
+                $('#editCompanyModal').find('input[name="cid"]').val(data.CompanyDetails.CompanyId);
+                $('#editCompanyModal').find('input[name="editCompanyName"]').val(data.CompanyDetails.CompanyName);
+                $('#editCompanyModal').find('input[name="editCompanyCode"]').val(data.CompanyDetails.CompanyCode);
+                $('#editCompanyModal').find('input[name="editAddress"]').val(data.CompanyDetails.Address);
+                $('#editCompanyModal').find('input[name="editPhone"]').val(data.CompanyDetails.Phone);
+                $('#editStatus').val(data.CompanyDetails.Status);
+                $('#editCompanyModal').modal('show');
+            }, 'json');
         });
     </script>
 @endsection

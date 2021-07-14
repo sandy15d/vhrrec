@@ -29,11 +29,11 @@
     <link rel="stylesheet" href="{{URL::to('/')}}/assets/css/toastr.min.css"/>
     <title>HR Recruitment | @yield('title')</title>
     <style>
-        .table-hover tbody tr:hover td,
+        /* .table-hover tbody tr:hover td,
         .table-hover tbody tr:hover th {
             background-color: #AF7AC5;
             color: white;
-        }
+        } */
 
         .btn--red {
             color: #fff;

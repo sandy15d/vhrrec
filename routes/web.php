@@ -33,11 +33,14 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('settings', [AdminController::class, 'settings'])->name('admin.settings');
-    // ======================Master Company ========================//
+
+    // ! ======================Master Company ========================//
     Route::get('company', [CompanyController::class, 'company'])->name('admin.company');
     Route::post('addCompany',[CompanyController::class,'addCompany'])->name('addCompany');
-
-
+    Route::get('getAllCompanyData',[CompanyController::class,'getAllCompanyData'])->name('getAllCompanyData');
+    Route::post('getCompanyDetails',[CompanyController::class,'getCompanyDetails'])->name('getCompanyDetails');
+    Route::post('editCompany',[CompanyController::class,'editCompany'])->name('editCompany');
+   // ! =====================================================================//
 
     Route::get('country', [AdminController::class, 'country'])->name('admin.country');
     Route::get('state', [AdminController::class, 'state'])->name('admin.state');
