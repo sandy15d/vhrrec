@@ -5,14 +5,14 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{csrf_token()}}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!--favicon-->
     <link rel="icon" href="{{ URL::to('/') }}/assets/images/favicon-32x32.png" type="image/png" />
     <!--plugins-->
     <link href="{{ URL::to('/') }}/assets/plugins/simplebar/css/simplebar.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/metismenu/css/metisMenu.min.css" rel="stylesheet" />
-   <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" /> 
+    <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
     <!-- loader-->
     <link href="{{ URL::to('/') }}/assets/css/pace.min.css" rel="stylesheet" />
     <script src="{{ URL::to('/') }}/assets/js/pace.min.js"></script>
@@ -25,8 +25,8 @@
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/dark-theme.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/semi-dark.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/header-colors.css" />
-    <link rel="stylesheet" href="{{URL::to('/')}}/assets/css/sweetalert2.min.css"/>
-    <link rel="stylesheet" href="{{URL::to('/')}}/assets/css/toastr.min.css"/>
+    <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/sweetalert2.min.css" />
+    <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/toastr.min.css" />
     <title>HR Recruitment | @yield('title')</title>
     <style>
         /* .table-hover tbody tr:hover td,
@@ -54,7 +54,7 @@
             background: #8360c3;
             background: -webkit-linear-gradient(to right, #2ebf91, #8360c3);
             background: linear-gradient(to right, #2ebf91, #8360c3);
-      
+
         }
 
     </style>
@@ -509,9 +509,9 @@
     <script src="{{ URL::to('/') }}/assets/plugins/metismenu/js/metisMenu.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
-    <script src="{{ URL::to('/') }}/assets/plugins/datatable/js/dataTables.bootstrap5.min.js"></script> 
-    <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script> 
-    <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script> 
+    <script src="{{ URL::to('/') }}/assets/plugins/datatable/js/dataTables.bootstrap5.min.js"></script>
+    <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
+    <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
     <!--app JS-->
     <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
     @yield('scriptsection')
@@ -523,11 +523,10 @@
         });
         toastr.options.preventDuplicates = true;
         $.ajaxSetup({
-            headers:{
-                'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-
     </script>
 </body>
 

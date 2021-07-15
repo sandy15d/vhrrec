@@ -9,7 +9,7 @@
             <div class="ms-auto">
                 <button class="btn btn--new btn-sm" id="addCompany" data-bs-toggle="modal"
                     data-bs-target="#addCompanyModal">Add New</button>
-                <button class="btn btn-sm btn--red">Sync</button>
+                <button class="btn btn-sm btn--red" id="syncCompany">Sync</button>
             </div>
         </div>
         <!--end breadcrumb-->
@@ -73,7 +73,7 @@
                         </div>
                         <div class="form-group">
                             <label for="Status">Status</label>
-                            <select name="Status" class="form-control">
+                            <select name="Status" class="form-control form-select">
                                 <option value="A">Active</option>
                                 <option value="D">Deactive</option>
                             </select>
@@ -100,7 +100,7 @@
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
-                            <input type="hidden" name="cid"/>
+                            <input type="hidden" name="cid" />
                             <label for="editCompanyName">Company Name</label>
                             <input type="text" class="form-control" name="editCompanyName" placeholder="Enter Company Name">
                             <span class="text-danger error-text editCompanyName_error"></span>
@@ -122,7 +122,7 @@
                         </div>
                         <div class="form-group">
                             <label for="editStatus">Status</label>
-                            <select name="editStatus"  id="editStatus" class="form-control">
+                            <select name="editStatus" id="editStatus" class="form-control form-select">
                                 <option value="A">Active</option>
                                 <option value="D">Deactive</option>
                             </select>
@@ -189,7 +189,8 @@
                 },
                 {
                     data: 'Address',
-                    name: 'Address'
+                    name: 'Address',
+                  
                 },
                 {
                     data: 'Phone',
@@ -203,23 +204,118 @@
                     data: 'actions',
                     name: 'actions'
                 },
-            ]
+            ],
+            
         });
 
-        //===============Update Company Record=================
+        //===============Get Company Record for Updation=================
         $(document).on('click', '#editBtn', function() {
             var CompanyId = $(this).data('id');
             $.post('<?= route('getCompanyDetails') ?>', {
                 CompanyId: CompanyId
             }, function(data) {
                 $('#editCompanyModal').find('input[name="cid"]').val(data.CompanyDetails.CompanyId);
-                $('#editCompanyModal').find('input[name="editCompanyName"]').val(data.CompanyDetails.CompanyName);
-                $('#editCompanyModal').find('input[name="editCompanyCode"]').val(data.CompanyDetails.CompanyCode);
+                $('#editCompanyModal').find('input[name="editCompanyName"]').val(data.CompanyDetails
+                    .CompanyName);
+                $('#editCompanyModal').find('input[name="editCompanyCode"]').val(data.CompanyDetails
+                    .CompanyCode);
                 $('#editCompanyModal').find('input[name="editAddress"]').val(data.CompanyDetails.Address);
                 $('#editCompanyModal').find('input[name="editPhone"]').val(data.CompanyDetails.Phone);
                 $('#editStatus').val(data.CompanyDetails.Status);
                 $('#editCompanyModal').modal('show');
             }, 'json');
+        });
+
+        //===============Update Company Details================================
+        $('#editCompanyForm').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                beforeSend: function() {
+                    $(form).find('span.error-text').text('');
+                },
+                success: function(data) {
+                    if (data.code == 0) {
+                        $.each(data.error, function(prefix, val) {
+                            $(form).find('span.' + prefix + '_error').text(val[0]);
+                        });
+                    } else {
+                        $('#editCompanyModal').modal('hide');
+                        // $('#editCompanyForm').find(form)[0].reset();
+                        $('#companytable').DataTable().ajax.reload(null, false);
+                        toastr.success(data.msg);
+                    }
+                }
+            });
+        });
+
+        // ?==============Delete Company======================//
+        $(document).on('click', '#deleteBtn', function() {
+            var CompanyId = $(this).data('id');
+            var url = '<?= route('deleteCompany') ?>';
+            swal.fire({
+                title: 'Are you sure?',
+                html: 'You want to <b>Delete</b> this Company',
+                showCancelButton: true,
+                showCloseButton: true,
+                cancelButtonText: 'Cancel',
+                confirmButtonText: 'Yes, Delete',
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#556ee6',
+                width: 400,
+                allowOutsideClick: false
+
+            }).then(function(result) {
+                if (result.value) {
+                    $.post(url, {
+                        CompanyId: CompanyId
+                    }, function(data) {
+                        if (data.code == 1) {
+                            $('#companytable').DataTable().ajax.reload(null, false);
+                            toastr.success(data.msg);
+
+                        } else {
+                            toastr.error(data.msg);
+                        }
+                    }, 'json');
+                }
+            });
+        });
+
+        //===================== Synchonize Company Data from ESS===================
+        $(document).on('click','#syncCompany',function(){
+            var url = '<?= route('syncCompany') ?>';
+            swal.fire({
+                title: 'Are you sure?',
+                html: 'Synchronize Company Data from ESS',
+                showCancelButton: true,
+                showCloseButton: true,
+                cancelButtonText: 'Cancel',
+                confirmButtonText: 'Yes, Synchronize',
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#556ee6',
+                width: 400,
+                allowOutsideClick: false
+
+            }).then(function(result) {
+                if (result.value) {
+                    $.post(url, function(data) {
+                        if (data.code == 1) {
+                            $('#companytable').DataTable().ajax.reload(null, false);
+                            toastr.success(data.msg);
+
+                        } else {
+                            toastr.error(data.msg);
+                        }
+                    }, 'json');
+                }
+            });
         });
     </script>
 @endsection

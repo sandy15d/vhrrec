@@ -7,7 +7,9 @@ use App\Models\master_company;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use DataTables;
+
 
 class CompanyController extends Controller
 {
@@ -70,11 +72,81 @@ class CompanyController extends Controller
     {
         $CompanyId = $request->CompanyId;
         $CompanyDetails = master_company::find($CompanyId);
-        return response()->json(['CompanyDetails'=>$CompanyDetails]);
+        return response()->json(['CompanyDetails' => $CompanyDetails]);
     }
 
+    // ?=====================Update Company Details===================
     public function editCompany(Request $request)
     {
-        # code...
+        $CompanyId = $request->cid;
+        $validator = Validator::make($request->all(), [
+            'editCompanyName' => 'required',
+            'editCompanyCode' => 'required',
+            'editAddress' => 'required',
+            'editPhone' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
+        } else {
+            // DB::enableQueryLog();
+            $company = master_company::find($CompanyId);
+            $company->CompanyName = $request->editCompanyName;
+            $company->CompanyCode = $request->editCompanyCode;
+            $company->Address = $request->editAddress;
+            $company->Phone = $request->editPhone;
+            $company->Status = $request->editStatus;
+            $company->UpdatedBy = Auth::user()->id;
+            $company->LastUpdated = now();
+            $query = $company->save();
+            // $sql = DB::getQueryLog();
+            //  dd($sql);
+
+            if (!$query) {
+                return response()->json(['code' => 0, 'msg' => 'Something went wrong..!!']);
+            } else {
+                return response()->json(['code' => 1, 'msg' => 'Company data has been changed successfully.']);
+            }
+        }
+    }
+
+    // !=======================Delete Company ===============================//
+
+    public function deleteCompany(Request $request)
+    {
+        $CompanyId = $request->CompanyId;
+        $query = master_company::find($CompanyId)->delete();
+        if (!$query) {
+            return response()->json(['code' => 0, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['code' => 1, 'msg' => 'Company data has been Deleted.']);
+        }
+    }
+
+    // *====================== Synchronize Company Data From ESS =============================//
+
+    public function syncCompany()
+    {
+
+        $query =  master_company::truncate();
+        $response = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails?action=Details&val=Company')->json();
+        $data = array();
+        foreach ($response['company_list'] as $key => $value) {
+            $temp = array();
+            $temp['CompanyName'] = $value['CompanyName'];
+            $temp['CompanyCode'] = '';
+            $temp['Address'] = $value['address'];
+            $temp['Phone'] = $value['Phone'];
+            $temp['Status'] = $value['Status'];
+            $temp['CreatedBy'] = Auth::user()->id;
+            array_push($data, $temp);
+        }
+        $query = master_company::insert($data);
+
+
+        if ($query) {
+            return response()->json(['code' => 1, 'msg' => 'Company data has been Deleted.']);
+        } else {
+            return response()->json(['code' => 0, 'msg' => 'Something went wrong..!!']);
+        }
     }
 }

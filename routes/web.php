@@ -40,6 +40,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::get('getAllCompanyData',[CompanyController::class,'getAllCompanyData'])->name('getAllCompanyData');
     Route::post('getCompanyDetails',[CompanyController::class,'getCompanyDetails'])->name('getCompanyDetails');
     Route::post('editCompany',[CompanyController::class,'editCompany'])->name('editCompany');
+    Route::post('deleteCompany',[CompanyController::class,'deleteCompany'])->name('deleteCompany');
+    Route::post('syncCompany',[CompanyController::class,'syncCompany'])->name('syncCompany');
    // ! =====================================================================//
 
     Route::get('country', [AdminController::class, 'country'])->name('admin.country');
