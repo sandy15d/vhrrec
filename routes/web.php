@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\RecruiterController;
 use App\Http\Controllers\HodController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\CountryController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -44,7 +45,16 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('syncCompany',[CompanyController::class,'syncCompany'])->name('syncCompany');
    // ! =====================================================================//
 
-    Route::get('country', [AdminController::class, 'country'])->name('admin.country');
+   // ?==========================Master Country ==============================// 
+   Route::get('country', [CountryController::class, 'country'])->name('admin.country');
+   Route::post('addCountry',[CountryController::class,'addCountry'])->name('addCountry');
+   Route::get('getAllCountryData',[CountryController::class,'getAllCountryData'])->name('getAllCountryData');
+   Route::post('getCountryDetails',[CountryController::class,'getCountryDetails'])->name('getCountryDetails');
+   Route::post('editCountry',[CountryController::class,'editCountry'])->name('editCountry');
+   Route::post('deleteCountry',[CountryController::class,'deleteCountry'])->name('deleteCountry');
+   Route::post('syncCountry',[CountryController::class,'syncCountry'])->name('syncCountry');
+ // ?=========================================================================================//
+
     Route::get('state', [AdminController::class, 'state'])->name('admin.state');
     Route::get('district', [AdminController::class, 'district'])->name('admin.district');
     Route::get('education', [AdminController::class, 'education'])->name('admin.education');

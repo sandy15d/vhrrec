@@ -144,7 +144,7 @@ class CompanyController extends Controller
 
 
         if ($query) {
-            return response()->json(['code' => 1, 'msg' => 'Company data has been Deleted.']);
+            return response()->json(['code' => 1, 'msg' => 'Company data has been Synchronized.']);
         } else {
             return response()->json(['code' => 0, 'msg' => 'Something went wrong..!!']);
         }

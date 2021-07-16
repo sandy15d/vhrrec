@@ -301,7 +301,10 @@
                 cancelButtonColor: '#d33',
                 confirmButtonColor: '#556ee6',
                 width: 400,
-                allowOutsideClick: false
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading()
+                },
 
             }).then(function(result) {
                 if (result.value) {
