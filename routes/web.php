@@ -6,11 +6,8 @@ use App\Http\Controllers\RecruiterController;
 use App\Http\Controllers\HodController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CountryController;
-<<<<<<< HEAD
 use App\Http\Controllers\EmployeeController;
-=======
 use App\Http\Controllers\StateController;
->>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
 use Illuminate\Support\Facades\Auth;
 
 /*

@@ -51,7 +51,7 @@ class StateController extends Controller
 
     public function getAllStateData()
     {
-        $State = DB::table('master_state')
+      /*   $State = DB::table('master_state')
                 ->join('master_country','master_country.CountryId','=','master_state.country')
                 ->select('master_state.*', 'master_country.CountryName')
                 ->get();
@@ -63,7 +63,7 @@ class StateController extends Controller
                 <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $row['StateId'] . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
             })
             ->rawColumns(['actions'])
-            ->make(true);
+            ->make(true); */
     }
 
     // ?========================Get State Details for Edit ========================//
