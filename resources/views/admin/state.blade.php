@@ -1,5 +1,8 @@
 @extends('layouts.master')
+<<<<<<< HEAD
 @section('title', 'State')
+=======
+>>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
 @section('title', 'State Master')
 @section('PageContent')
     <div class="page-content">
@@ -7,7 +10,10 @@
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
             <div class="breadcrumb-title pe-3">State Master(HQ)</div>
 
+<<<<<<< HEAD
         <h1>State Page</h1>
+=======
+>>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
             <div class="ms-auto">
                 <button class="btn btn--new btn-sm" id="addState" data-bs-toggle="modal"
                     data-bs-target="#addStateModal">Add New</button>
@@ -156,7 +162,14 @@
                     }
                 }
             });
+<<<<<<< HEAD
         });
+=======
+
+
+        });
+
+>>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
         $('#Statetable').DataTable({
             processing: true,
             info: true,
@@ -189,6 +202,10 @@
             ],
             
         });
+<<<<<<< HEAD
+=======
+
+>>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
         //===============Get State Record for Updation=================
         $(document).on('click', '#editBtn', function() {
             var StateId = $(this).data('id');
@@ -205,6 +222,10 @@
                 $('#editStateModal').modal('show');
             }, 'json');
         });
+<<<<<<< HEAD
+=======
+
+>>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
         //===============Update State Details================================
         $('#editStateForm').on('submit', function(e) {
             e.preventDefault();
@@ -233,6 +254,10 @@
                 }
             });
         });
+<<<<<<< HEAD
+=======
+
+>>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
         // ?==============Delete State======================//
         $(document).on('click', '#deleteBtn', function() {
             var StateId = $(this).data('id');
@@ -248,6 +273,10 @@
                 confirmButtonColor: '#556ee6',
                 width: 400,
                 allowOutsideClick: false
+<<<<<<< HEAD
+=======
+
+>>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
             }).then(function(result) {
                 if (result.value) {
                     $.post(url, {
@@ -256,6 +285,10 @@
                         if (data.code == 1) {
                             $('#Statetable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
                         } else {
                             toastr.error(data.msg);
                         }
@@ -263,6 +296,10 @@
                 }
             });
         });
+<<<<<<< HEAD
+=======
+
+>>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
         //===================== Synchonize State Data from ESS===================
         $(document).on('click','#syncState',function(){
             var url = '<?= route('syncState') ?>';
@@ -280,12 +317,20 @@
                 onBeforeOpen: () => {
                     Swal.showLoading()
                 },
+<<<<<<< HEAD
+=======
+
+>>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
             }).then(function(result) {
                 if (result.value) {
                     $.post(url, function(data) {
                         if (data.code == 1) {
                             $('#Statetable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
                         } else {
                             toastr.error(data.msg);
                         }
@@ -294,4 +339,8 @@
             });
         });
     </script>
+<<<<<<< HEAD
 @endsection
+=======
+@endsection
+>>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
