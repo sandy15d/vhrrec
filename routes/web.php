@@ -6,6 +6,7 @@ use App\Http\Controllers\RecruiterController;
 use App\Http\Controllers\HodController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\EmployeeController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -55,13 +56,27 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
    Route::post('syncCountry',[CountryController::class,'syncCountry'])->name('syncCountry');
  // ?=========================================================================================//
 
-    Route::get('state', [AdminController::class, 'state'])->name('admin.state');
+   // ?==========================Master State ==============================// 
+   Route::get('state', [StateController::class, 'state'])->name('admin.state');
+   Route::post('addState',[StateController::class,'addState'])->name('addState');
+   Route::get('getAllStateData',[StateController::class,'getAllStateData'])->name('getAllStateData');
+   Route::post('getStateDetails',[StateController::class,'getStateDetails'])->name('getStateDetails');
+   Route::post('editState',[StateController::class,'editState'])->name('editState');
+   Route::post('deleteState',[StateController::class,'deleteState'])->name('deleteState');
+   Route::post('syncState',[StateController::class,'syncState'])->name('syncState');
+ // ?=========================================================================================//
+ 
     Route::get('district', [AdminController::class, 'district'])->name('admin.district');
     Route::get('education', [AdminController::class, 'education'])->name('admin.education');
     Route::get('eduspecialization', [AdminController::class, 'eduspecialization'])->name('admin.eduspecialization');
     Route::get('eduinstitute', [AdminController::class, 'eduinstitute'])->name('admin.eduinstitute');
     Route::get('resumesource', [AdminController::class, 'resumesource'])->name('admin.resumesource');
-    Route::get('importdata', [AdminController::class, 'importdata'])->name('admin.importdata');
+
+    //*====================================Master Employee ==================================//
+    Route::get('employee', [EmployeeController::class, 'employee'])->name('admin.employee');
+    Route::get('getAllEmployeeData', [EmployeeController::class, 'getAllEmployeeData'])->name('getAllEmployeeData');
+    Route::post('syncEmployee',[EmployeeController::class,'syncEmployee'])->name('syncEmployee');
+     //*====================================Master Employee ==================================//
 });
 
 

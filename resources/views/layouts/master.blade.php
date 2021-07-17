@@ -94,7 +94,7 @@
                         <ul>
                             <li> <a href="/admin/company"><i class="bx bx-right-arrow-alt"></i>Company</a></li>
                             <li> <a href="/admin/country"><i class="bx bx-right-arrow-alt"></i>Country</a></li>
-                            <li> <a href="/admin/state"><i class="bx bx-right-arrow-alt"></i>State</a></li>
+                            <li> <a href="/admin/state"><i class="bx bx-right-arrow-alt"></i>State(HQ)</a></li>
                             <li> <a href="/admin/district"><i class="bx bx-right-arrow-alt"></i>District</a></li>
                             <li> <a href="/admin/education"><i class="bx bx-right-arrow-alt"></i>Education</a></li>
                             <li> <a href="/admin/eduspecialization"><i class="bx bx-right-arrow-alt"></i>Education
@@ -104,7 +104,7 @@
                             </li>
                             <li> <a href="/admin/resumesource"><i class="bx bx-right-arrow-alt"></i>Resume Source</a>
                             </li>
-                            <li> <a href="/admin/importdata"><i class="bx bx-right-arrow-alt"></i>ImportData</a></li>
+                            <li> <a href="/admin/employee"><i class="bx bx-right-arrow-alt"></i>Employee</a></li>
                         </ul>
                     </li>
                     <li> <a href="/admin/users">
