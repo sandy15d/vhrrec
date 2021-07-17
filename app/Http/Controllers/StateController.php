@@ -51,19 +51,17 @@ class StateController extends Controller
 
     public function getAllStateData()
     {
-      /*   $State = DB::table('master_state')
-                ->join('master_country','master_country.CountryId','=','master_state.country')
-                ->select('master_state.*', 'master_country.CountryName')
-                ->get();
+        $state = DB::table('master_state')->join('master_country', 'master_state.Country', '=', 'master_country.CountryId')
+            ->select(['master_state.StateId', 'master_state.StateName', 'master_state.StateCode', 'master_country.CountryName', 'master_state.Status']);
 
-        return Datatables::of($State)
+        return Datatables::of($state)
             ->addIndexColumn()
-            ->addColumn('actions', function ($row) {
-                return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $row['StateId'] . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  
-                <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $row['StateId'] . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
+            ->addColumn('actions', function ($state) {
+                return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $state->StateId . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  
+                <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $state->StateId. '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
             })
             ->rawColumns(['actions'])
-            ->make(true); */
+            ->make(true);
     }
 
     // ?========================Get State Details for Edit ========================//

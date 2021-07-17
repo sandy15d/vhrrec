@@ -58,9 +58,9 @@ class CompanyController extends Controller
         $company = master_company::all();
         return Datatables::of($company)
             ->addIndexColumn()
-            ->addColumn('actions', function ($row) {
-                return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $row['CompanyId'] . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  
-                <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $row['CompanyId'] . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
+            ->addColumn('actions', function ($company) {
+                return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $company['CompanyId'] . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  
+                <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $company['CompanyId'] . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
             })
             ->rawColumns(['actions'])
             ->make(true);

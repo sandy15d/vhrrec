@@ -42,8 +42,6 @@
 
 @section('scriptsection')
     <script>
-   
-
         $('#employeetable').DataTable({
             processing: true,
             info: true,
@@ -52,13 +50,57 @@
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex'
                 },
-                
+                {
+                    data: 'fullname',
+                    name: 'fullname'
+                },
+                {
+                    data: 'EmpCode',
+                    name: 'EmpCode'
+                },
+                {
+                    data: 'CompanyId',
+                    name: 'CompanyId'
+                },
+                {
+                    data: 'DepartmentId',
+                    name: 'DepartmentId'
+                },
+                {
+                    data: 'DesigId',
+                    name: 'DesigId'
+                },
+                {
+                    data: 'GradeId',
+                    name: 'GradeId'
+                },
+                {
+                    data: 'CTC',
+                    name: 'CTC'
+                },
+                {
+                    data: 'RepEmployeeID',
+                    name: 'RepEmployeeID'
+                },
+                {
+                    data: 'EmpStatus',
+                    name: 'EmpStatus'
+                },
+                {
+                    data: 'DOJ',
+                    name: 'DOJ'
+                },
+                {
+                    data: 'DateOfSepration',
+                    name: 'DateOfSepration'
+                }
+
             ],
-            
+
         });
 
         //===================== Synchonize Company Data from ESS===================
-        $(document).on('click','#syncEmployee',function(){
+        $(document).on('click', '#syncEmployee', function() {
             var url = '<?= route('syncEmployee') ?>';
             swal.fire({
                 title: 'Are you sure?',

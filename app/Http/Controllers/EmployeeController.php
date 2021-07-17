@@ -9,9 +9,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use DataTables;
+
 class EmployeeController extends Controller
 {
-    
+
     public function employee()
     {
         return view('admin.employee');
@@ -21,21 +22,30 @@ class EmployeeController extends Controller
         $employee = master_employee::all();
         return Datatables::of($employee)
             ->addIndexColumn()
-            ->addColumn('actions', function ($row) {
-                return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $row['EmployeeID'] . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  
-                <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $row['EmployeeID'] . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
+            ->addColumn('fullname', function ($employee) {
+                return $employee['Fname'] . ' ' . $employee['Sname'] . ' ' . $employee['Lname'];
+            })
+            ->addColumn('actions', function ($employee) {
+                return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $employee['EmployeeID'] . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  
+                <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $employee['EmployeeID'] . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
             })
             ->rawColumns(['actions'])
             ->make(true);
     }
 
-    public function syncEmployee ()
+    public function syncEmployee()
     {
 
         $query =  master_employee::truncate();
         $response = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails?action=Details&val=Employee')->json();
         $data = array();
         foreach ($response['employee_list'] as $key => $value) {
+            if ($value['DateJoining'] == '0000-00-00' or $value['DateJoining'] == '') {
+                $value['DateJoining'] = NULL;
+            }
+            if ($value['DateOfSepration'] == '0000-00-00' or $value['DateOfSepration'] == '') {
+                $value['DateOfSepration'] = NULL;
+            }
             $temp = array();
             $temp['EmployeeID'] = $value['EmployeeID'];
             $temp['EmpCode'] = $value['EmpCode'];
@@ -48,9 +58,8 @@ class EmployeeController extends Controller
             $temp['DepartmentId'] = $value['DepartmentId'];
             $temp['DesigId'] = $value['DesigId'];
             $temp['RepEmployeeID'] = $value['RepEmployeeID'];
-         //   $temp['DOJ'] = $value['DateJoining'];
-            $temp['DOJ'] = '';
-            $temp['DateOfSepration'] = $value['DateOfSepration'];
+            $temp['DOJ'] = $value['DateJoining'];
+                $temp['DateOfSepration'] = $value['DateOfSepration'];
             $temp['Contact'] = $value['Contact'];
             $temp['Email'] = $value['Email'];
             $temp['Gender'] = $value['Gender'];
@@ -59,7 +68,7 @@ class EmployeeController extends Controller
             $temp['Location'] = $value['HqId'];
             $temp['CTC'] = $value['Tot_CTC'];
             $temp['Title'] = $value['Title'];
-           
+
             array_push($data, $temp);
         }
         $query = master_employee::insert($data);
