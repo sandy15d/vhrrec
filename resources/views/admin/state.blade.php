@@ -273,10 +273,6 @@
                 confirmButtonColor: '#556ee6',
                 width: 400,
                 allowOutsideClick: false
-<<<<<<< HEAD
-=======
-
->>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
             }).then(function(result) {
                 if (result.value) {
                     $.post(url, {
@@ -285,10 +281,6 @@
                         if (data.code == 1) {
                             $('#Statetable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
-<<<<<<< HEAD
-=======
-
->>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
                         } else {
                             toastr.error(data.msg);
                         }
@@ -296,10 +288,6 @@
                 }
             });
         });
-<<<<<<< HEAD
-=======
-
->>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
         //===================== Synchonize State Data from ESS===================
         $(document).on('click','#syncState',function(){
             var url = '<?= route('syncState') ?>';
@@ -317,20 +305,12 @@
                 onBeforeOpen: () => {
                     Swal.showLoading()
                 },
-<<<<<<< HEAD
-=======
-
->>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
             }).then(function(result) {
                 if (result.value) {
                     $.post(url, function(data) {
                         if (data.code == 1) {
                             $('#Statetable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
-<<<<<<< HEAD
-=======
-
->>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
                         } else {
                             toastr.error(data.msg);
                         }
@@ -339,8 +319,4 @@
             });
         });
     </script>
-<<<<<<< HEAD
 @endsection
-=======
-@endsection
->>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9

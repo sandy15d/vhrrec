@@ -18,8 +18,4 @@ class master_state extends Model
         'Status',
         'CreatedBy',
     ];
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9

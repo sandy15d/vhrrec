@@ -51,11 +51,6 @@ class StateController extends Controller
 
     public function getAllStateData()
     {
-<<<<<<< HEAD
-
-=======
-       
->>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
         $State = DB::table('master_state')
                 ->join('master_country','master_country.CountryId','=','master_state.country')
                 ->select('master_state.*', 'master_country.CountryName')
@@ -151,8 +146,4 @@ class StateController extends Controller
             return response()->json(['code' => 0, 'msg' => 'Something went wrong..!!']);
         }
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9

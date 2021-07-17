@@ -60,7 +60,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
    Route::post('syncCountry',[CountryController::class,'syncCountry'])->name('syncCountry');
  // ?=========================================================================================//
 
-<<<<<<< HEAD
    // ?==========================Master State ==============================// 
    Route::get('state', [StateController::class, 'state'])->name('admin.state');
    Route::post('addState',[StateController::class,'addState'])->name('addState');
@@ -71,20 +70,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
    Route::post('syncState',[StateController::class,'syncState'])->name('syncState');
  // ?=========================================================================================//
  
-=======
-
-  // ?==========================Master State ==============================// 
-  Route::get('state', [StateController::class, 'state'])->name('admin.state');
-  Route::post('addState',[StateController::class,'addState'])->name('addState');
-  Route::get('getAllStateData',[StateController::class,'getAllStateData'])->name('getAllStateData');
-  Route::post('getStateDetails',[StateController::class,'getStateDetails'])->name('getStateDetails');
-  Route::post('editState',[StateController::class,'editState'])->name('editState');
-  Route::post('deleteState',[StateController::class,'deleteState'])->name('deleteState');
-  Route::post('syncState',[StateController::class,'syncState'])->name('syncState');
-// ?=========================================================================================//
-
-    
->>>>>>> 72f9292659885612d09f4efc5b8dec58560322c9
     Route::get('district', [AdminController::class, 'district'])->name('admin.district');
     Route::get('education', [AdminController::class, 'education'])->name('admin.education');
     Route::get('eduspecialization', [AdminController::class, 'eduspecialization'])->name('admin.eduspecialization');
