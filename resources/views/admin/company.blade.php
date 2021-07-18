@@ -155,7 +155,7 @@
                     $(form).find('span.error-text').text('');
                 },
                 success: function(data) {
-                    if (data.code == 0) {
+                    if (data.status==400) {
                         $.each(data.error, function(prefix, val) {
                             $(form).find('span.' + prefix + '_error').text(val[0]);
                         });
@@ -241,7 +241,7 @@
                     $(form).find('span.error-text').text('');
                 },
                 success: function(data) {
-                    if (data.code == 0) {
+                    if (data.status==400) {
                         $.each(data.error, function(prefix, val) {
                             $(form).find('span.' + prefix + '_error').text(val[0]);
                         });
@@ -276,7 +276,7 @@
                     $.post(url, {
                         CompanyId: CompanyId
                     }, function(data) {
-                        if (data.code == 1) {
+                        if (data.status==200) {
                             $('#companytable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
 
@@ -309,7 +309,7 @@
             }).then(function(result) {
                 if (result.value) {
                     $.post(url, function(data) {
-                        if (data.code == 1) {
+                        if (data.status==200) {
                             $('#companytable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
 

@@ -32,7 +32,7 @@ class CountryController extends Controller
             
         ]);
         if ($validator->fails()) {
-            return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
+            return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
         } else {
             $country = new master_country();
             $country->CountryName = $request->CountryName;
@@ -42,9 +42,9 @@ class CountryController extends Controller
             $query = $country->save();
 
             if (!$query) {
-                return response()->json(['code' => 0, 'msg' => 'Something went wrong..!!']);
+                return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
-                return response()->json(['code' => 1, 'msg' => 'New Country has been successfully created.']);
+                return response()->json(['status' => 200, 'msg' => 'New Country has been successfully created.']);
             }
         }
     }
@@ -83,7 +83,7 @@ class CountryController extends Controller
             
         ]);
         if ($validator->fails()) {
-            return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
+            return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
         } else {
             // DB::enableQueryLog();
            $country = master_country::find($CountryId);
@@ -97,9 +97,9 @@ class CountryController extends Controller
             //  dd($sql);
 
             if (!$query) {
-                return response()->json(['code' => 0, 'msg' => 'Something went wrong..!!']);
+                return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
-                return response()->json(['code' => 1, 'msg' => 'Country data has been changed successfully.']);
+                return response()->json(['status' => 200, 'msg' => 'Country data has been changed successfully.']);
             }
         }
     }
@@ -111,9 +111,9 @@ class CountryController extends Controller
         $CountryId = $request->CountryId;
         $query = master_country::find($CountryId)->delete();
         if (!$query) {
-            return response()->json(['code' => 0, 'msg' => 'Something went wrong..!!']);
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
-            return response()->json(['code' => 1, 'msg' => 'Company data has been Deleted.']);
+            return response()->json(['status' => 200, 'msg' => 'Company data has been Deleted.']);
         }
     }
 
@@ -137,9 +137,9 @@ class CountryController extends Controller
 
 
         if ($query) {
-            return response()->json(['code' => 1, 'msg' => 'Country data has been Synchronized.']);
+            return response()->json(['status' => 200, 'msg' => 'Country data has been Synchronized.']);
         } else {
-            return response()->json(['code' => 0, 'msg' => 'Something went wrong..!!']);
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         }
     }
 }

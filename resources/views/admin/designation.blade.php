@@ -1,12 +1,12 @@
 @extends('layouts.master')
-@section('title', 'Employee Master')
+@section('title', 'Designation Master')
 @section('PageContent')
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">Employee Master</div>
+            <div class="breadcrumb-title pe-3">Designation Master</div>
             <div class="ms-auto">
-                <button class="btn btn-sm btn--red" id="syncEmployee">Sync</button>
+                <button class="btn btn-sm btn--red" id="syncDesignation">Sync</button>
             </div>
         </div>
         <!--end breadcrumb-->
@@ -14,21 +14,15 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover table-condensed" id="employeetable" style="width: 100%">
+                    <table class="table table-striped table-hover table-condensed" id="designationtable" style="width: 100%">
                         <thead>
                             <tr>
                                 <th class="th-sm">S.No</th>
-                                <th>Employee Name</th>
-                                <th>EmpCode</th>
-                                <th>Company</th>
+                                <th>Designation Name</th>
+                                <th>Designation Code</th>
                                 <th>Department</th>
-                                <th>Designation</th>
-                                <th>Grade</th>
-                                <th>CTC</th>
-                                <th>Reporting To</th>
+                                <th>Company</th>
                                 <th>Status</th>
-                                <th>DOJ</th>
-                                <th>Date of Sepration</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -42,69 +36,44 @@
 
 @section('scriptsection')
     <script>
-        $('#employeetable').DataTable({
+        $('#designationtable').DataTable({
             processing: true,
             info: true,
-            ajax: "{{ route('getAllEmployeeData') }}",
+            ajax: "{{ route('getAllDesignation') }}",
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex'
                 },
                 {
-                    data: 'fullname',
-                    name: 'fullname'
+                    data: 'DesigName',
+                    name: 'DesigName'
                 },
                 {
-                    data: 'EmpCode',
-                    name: 'EmpCode'
+                    data: 'DesigCode',
+                    name: 'DesigCode'
+                },
+                {
+                    data:'DepartmentCode',
+                    name:'DepartmentCode'
                 },
                 {
                     data: 'CompanyCode',
                     name: 'CompanyCode'
                 },
                 {
-                    data: 'DepartmentId',
-                    name: 'DepartmentId'
-                },
-                {
-                    data: 'DesigId',
-                    name: 'DesigId'
-                },
-                {
-                    data: 'GradeId',
-                    name: 'GradeId'
-                },
-                {
-                    data: 'CTC',
-                    name: 'CTC'
-                },
-                {
-                    data: 'RepEmployeeID',
-                    name: 'RepEmployeeID'
-                },
-                {
-                    data: 'EmpStatus',
-                    name: 'EmpStatus'
-                },
-                {
-                    data: 'DOJ',
-                    name: 'DOJ'
-                },
-                {
-                    data: 'DateOfSepration',
-                    name: 'DateOfSepration'
+                    data:'DesigStatus',
+                    name:'DesigStatus'
                 }
-
             ],
 
         });
 
         //===================== Synchonize Company Data from ESS===================
-        $(document).on('click', '#syncEmployee', function() {
-            var url = '<?= route('syncEmployee') ?>';
+        $(document).on('click', '#syncDesignation', function() {
+            var url = '<?= route('syncDesignation') ?>';
             swal.fire({
                 title: 'Are you sure?',
-                html: 'Synchronize Employee Data from ESS',
+                html: 'Synchronize Designation Data from ESS',
                 showCancelButton: true,
                 showCloseButton: true,
                 cancelButtonText: 'Cancel',
@@ -121,9 +90,8 @@
                 if (result.value) {
                     $.post(url, function(data) {
                         if (data.status==200) {
-                            $('#employeetable').DataTable().ajax.reload(null, false);
+                            $('#designationtable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
-
                         } else {
                             toastr.error(data.msg);
                         }

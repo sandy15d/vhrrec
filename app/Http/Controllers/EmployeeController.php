@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\master_employee;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use DataTables;
 
@@ -19,17 +16,15 @@ class EmployeeController extends Controller
     }
     public function getAllEmployeeData()
     {
-        $employee = master_employee::all();
+        $employee = DB::table('master_employee')
+            ->join('master_company', 'master_employee.CompanyId', '=', 'master_company.CompanyId')
+            ->select(['master_employee.*', 'master_company.CompanyCode']);
+
         return Datatables::of($employee)
             ->addIndexColumn()
             ->addColumn('fullname', function ($employee) {
-                return $employee['Fname'] . ' ' . $employee['Sname'] . ' ' . $employee['Lname'];
+                return $employee->Fname . ' ' . $employee->Sname. ' ' . $employee->Lname;
             })
-            ->addColumn('actions', function ($employee) {
-                return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $employee['EmployeeID'] . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  
-                <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $employee['EmployeeID'] . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
-            })
-            ->rawColumns(['actions'])
             ->make(true);
     }
 
@@ -59,7 +54,7 @@ class EmployeeController extends Controller
             $temp['DesigId'] = $value['DesigId'];
             $temp['RepEmployeeID'] = $value['RepEmployeeID'];
             $temp['DOJ'] = $value['DateJoining'];
-                $temp['DateOfSepration'] = $value['DateOfSepration'];
+            $temp['DateOfSepration'] = $value['DateOfSepration'];
             $temp['Contact'] = $value['Contact'];
             $temp['Email'] = $value['Email'];
             $temp['Gender'] = $value['Gender'];
@@ -75,9 +70,9 @@ class EmployeeController extends Controller
 
 
         if ($query) {
-            return response()->json(['code' => 1, 'msg' => 'Employee data has been Synchronized.']);
+            return response()->json(['status' => 200, 'msg' => 'Employee data has been Synchronized.']);
         } else {
-            return response()->json(['code' => 0, 'msg' => 'Something went wrong..!!']);
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         }
     }
 }

@@ -29,7 +29,7 @@ class StateController extends Controller
             'Country' => 'required',
         ]);
         if ($validator->fails()) {
-            return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
+            return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
         } else {
             $State = new master_state;
             $State->StateName = $request->StateName;
@@ -40,9 +40,9 @@ class StateController extends Controller
             $query = $State->save();
 
             if (!$query) {
-                return response()->json(['code' => 0, 'msg' => 'Something went wrong..!!']);
+                return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
-                return response()->json(['code' => 1, 'msg' => 'New State has been successfully created.']);
+                return response()->json(['status' => 200, 'msg' => 'New State has been successfully created.']);
             }
         }
     }
@@ -83,7 +83,7 @@ class StateController extends Controller
             'editCountry' => 'required',
         ]);
         if ($validator->fails()) {
-            return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
+            return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
         } else {
             // DB::enableQueryLog();
             $State = master_state::find($StateId);
@@ -98,9 +98,9 @@ class StateController extends Controller
             //  dd($sql);
 
             if (!$query) {
-                return response()->json(['code' => 0, 'msg' => 'Something went wrong..!!']);
+                return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
-                return response()->json(['code' => 1, 'msg' => 'State data has been changed successfully.']);
+                return response()->json(['status' => 200, 'msg' => 'State data has been changed successfully.']);
             }
         }
     }
@@ -112,9 +112,9 @@ class StateController extends Controller
         $StateId = $request->StateId;
         $query = master_state::find($StateId)->delete();
         if (!$query) {
-            return response()->json(['code' => 0, 'msg' => 'Something went wrong..!!']);
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
-            return response()->json(['code' => 1, 'msg' => 'State data has been Deleted.']);
+            return response()->json(['status' => 200, 'msg' => 'State data has been Deleted.']);
         }
     }
 
@@ -139,9 +139,9 @@ class StateController extends Controller
 
 
         if ($query) {
-            return response()->json(['code' => 1, 'msg' => 'State data has been Synchronized.']);
+            return response()->json(['status' => 200, 'msg' => 'State data has been Synchronized.']);
         } else {
-            return response()->json(['code' => 0, 'msg' => 'Something went wrong..!!']);
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         }
     }
 }

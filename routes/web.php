@@ -6,7 +6,11 @@ use App\Http\Controllers\RecruiterController;
 use App\Http\Controllers\HodController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\DesignationController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\GradeController;
+use App\Http\Controllers\HeadquarterController;
 use App\Http\Controllers\StateController;
 use Illuminate\Support\Facades\Auth;
 
@@ -77,7 +81,31 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::get('employee', [EmployeeController::class, 'employee'])->name('admin.employee');
     Route::get('getAllEmployeeData', [EmployeeController::class, 'getAllEmployeeData'])->name('getAllEmployeeData');
     Route::post('syncEmployee',[EmployeeController::class,'syncEmployee'])->name('syncEmployee');
-     //*====================================Master Employee ==================================//
+    //*======================================================================================//
+
+    //*====================================Master Headquarter ==================================//
+    Route::get('headquarter', [HeadquarterController::class, 'headquarter'])->name('admin.headquarter');
+    Route::get('getAllHeadquarter', [HeadquarterController::class, 'getAllHeadquarter'])->name('getAllHeadquarter');
+    Route::post('syncHeadquarter',[HeadquarterController::class,'syncHeadquarter'])->name('syncHeadquarter');
+    //*==========================================================================================//
+
+    //*====================================Master Department ==================================//
+    Route::get('department', [DepartmentController::class, 'department'])->name('admin.department');
+    Route::get('getAllDepartment', [DepartmentController::class, 'getAllDepartment'])->name('getAllDepartment');
+    Route::post('syncDepartment',[DepartmentController::class,'syncDepartment'])->name('syncDepartment');
+    //*========================================================================================//
+
+    //*====================================Master Designation ==================================//
+    Route::get('designation', [DesignationController::class, 'designation'])->name('admin.designation');
+    Route::get('getAllDesignation', [DesignationController::class, 'getAllDesignation'])->name('getAllDesignation');
+    Route::post('syncDesignation',[DesignationController::class,'syncDesignation'])->name('syncDesignation');
+    //*=================================================================================================//
+
+    //*====================================Master Designation ==================================//
+    Route::get('grade', [GradeController::class, 'grade'])->name('admin.grade');
+    Route::get('getAllGrade', [GradeController::class, 'getAllGrade'])->name('getAllGrade');
+    Route::post('syncGrade',[GradeController::class,'syncGrade'])->name('syncGrade');
+    //*=================================================================================================//
 });
 
 

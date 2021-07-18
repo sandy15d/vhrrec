@@ -7,7 +7,6 @@ use App\Models\master_company;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use DataTables;
 
 
@@ -32,7 +31,7 @@ class CompanyController extends Controller
             'Phone' => 'required',
         ]);
         if ($validator->fails()) {
-            return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
+            return response()->json(['status' => 0, 'error' => $validator->errors()->toArray()]);
         } else {
             $company = new master_company;
             $company->CompanyName = $request->CompanyName;
@@ -44,9 +43,9 @@ class CompanyController extends Controller
             $query = $company->save();
 
             if (!$query) {
-                return response()->json(['code' => 0, 'msg' => 'Something went wrong..!!']);
+                return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
-                return response()->json(['code' => 1, 'msg' => 'New Company has been successfully created.']);
+                return response()->json(['status' => 200, 'msg' => 'New Company has been successfully created.']);
             }
         }
     }
@@ -86,7 +85,7 @@ class CompanyController extends Controller
             'editPhone' => 'required',
         ]);
         if ($validator->fails()) {
-            return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
+            return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
         } else {
             // DB::enableQueryLog();
             $company = master_company::find($CompanyId);
@@ -102,9 +101,9 @@ class CompanyController extends Controller
             //  dd($sql);
 
             if (!$query) {
-                return response()->json(['code' => 0, 'msg' => 'Something went wrong..!!']);
+                return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
-                return response()->json(['code' => 1, 'msg' => 'Company data has been changed successfully.']);
+                return response()->json(['status' => 200, 'msg' => 'Company data has been changed successfully.']);
             }
         }
     }
@@ -116,9 +115,9 @@ class CompanyController extends Controller
         $CompanyId = $request->CompanyId;
         $query = master_company::find($CompanyId)->delete();
         if (!$query) {
-            return response()->json(['code' => 0, 'msg' => 'Something went wrong..!!']);
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
-            return response()->json(['code' => 1, 'msg' => 'Company data has been Deleted.']);
+            return response()->json(['status' => 200, 'msg' => 'Company data has been Deleted.']);
         }
     }
 
@@ -144,9 +143,9 @@ class CompanyController extends Controller
 
 
         if ($query) {
-            return response()->json(['code' => 1, 'msg' => 'Company data has been Synchronized.']);
+            return response()->json(['status' => 200, 'msg' => 'Company data has been Synchronized.']);
         } else {
-            return response()->json(['code' => 0, 'msg' => 'Something went wrong..!!']);
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         }
     }
 }

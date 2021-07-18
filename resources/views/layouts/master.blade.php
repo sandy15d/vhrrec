@@ -95,6 +95,10 @@
                             <li> <a href="/admin/company"><i class="bx bx-right-arrow-alt"></i>Company</a></li>
                             <li> <a href="/admin/country"><i class="bx bx-right-arrow-alt"></i>Country</a></li>
                             <li> <a href="/admin/state"><i class="bx bx-right-arrow-alt"></i>State(HQ)</a></li>
+                            <li> <a href="/admin/headquarter"><i class="bx bx-right-arrow-alt"></i>Headquarter</a></li>
+                            <li> <a href="/admin/department"><i class="bx bx-right-arrow-alt"></i>Department</a></li>
+                            <li> <a href="/admin/designation"><i class="bx bx-right-arrow-alt"></i>Designation</a></li>
+                            <li> <a href="/admin/grade"><i class="bx bx-right-arrow-alt"></i>Grade</a></li>
                             <li> <a href="/admin/district"><i class="bx bx-right-arrow-alt"></i>District</a></li>
                             <li> <a href="/admin/education"><i class="bx bx-right-arrow-alt"></i>Education</a></li>
                             <li> <a href="/admin/eduspecialization"><i class="bx bx-right-arrow-alt"></i>Education
