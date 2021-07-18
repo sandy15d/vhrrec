@@ -1,6 +1,7 @@
 @extends('layouts.master')
 @section('title', 'Employee Master')
 @section('PageContent')
+
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
@@ -63,24 +64,24 @@
                     name: 'CompanyCode'
                 },
                 {
-                    data: 'DepartmentId',
-                    name: 'DepartmentId'
+                    data: 'DepartmentCode',
+                    name: 'DepartmentCode'
                 },
                 {
-                    data: 'DesigId',
-                    name: 'DesigId'
+                    data: 'DesigName',
+                    name: 'DesigName'
                 },
                 {
-                    data: 'GradeId',
-                    name: 'GradeId'
+                    data: 'GradeValue',
+                    name: 'GradeValue'
                 },
                 {
                     data: 'CTC',
                     name: 'CTC'
                 },
                 {
-                    data: 'RepEmployeeID',
-                    name: 'RepEmployeeID'
+                    data: 'Reporting',
+                    name: 'Reporting'
                 },
                 {
                     data: 'EmpStatus',
@@ -120,7 +121,7 @@
             }).then(function(result) {
                 if (result.value) {
                     $.post(url, function(data) {
-                        if (data.status==200) {
+                        if (data.status == 200) {
                             $('#employeetable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
 
@@ -131,5 +132,6 @@
                 }
             });
         });
+
     </script>
 @endsection

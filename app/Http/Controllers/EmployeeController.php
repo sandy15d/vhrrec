@@ -16,14 +16,21 @@ class EmployeeController extends Controller
     }
     public function getAllEmployeeData()
     {
-        $employee = DB::table('master_employee')
-            ->join('master_company', 'master_employee.CompanyId', '=', 'master_company.CompanyId')
-            ->select(['master_employee.*', 'master_company.CompanyCode']);
+        $employee = DB::table('master_employee as e')
+            ->join('master_company as c', 'e.CompanyId', '=', 'c.CompanyId')
+            ->join('master_employee as e1', 'e1.EmployeeID', '=', 'e.RepEmployeeID')
+            ->join('master_department as d','d.DepartmentId','=','e.DepartmentId')
+            ->join('master_designation as dg','dg.DesigId','=','e.DesigId')
+            ->join('master_grade as g','g.GradeId','=','e.GradeId')
+            ->select(['e.*', 'e1.Fname as RFname','e1.Sname as RSname','e1.Lname as RLname','c.CompanyCode','d.DepartmentCode','dg.DesigName','g.GradeValue']);
 
         return Datatables::of($employee)
             ->addIndexColumn()
             ->addColumn('fullname', function ($employee) {
                 return $employee->Fname . ' ' . $employee->Sname. ' ' . $employee->Lname;
+            })
+            ->addColumn('Reporting', function ($employee) {
+                return $employee->RFname . ' ' . $employee->RSname. ' ' . $employee->RLname;
             })
             ->make(true);
     }
