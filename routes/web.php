@@ -8,6 +8,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DesignationController;
+use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\HeadquarterController;
@@ -106,6 +107,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::get('getAllGrade', [GradeController::class, 'getAllGrade'])->name('getAllGrade');
     Route::post('syncGrade',[GradeController::class,'syncGrade'])->name('syncGrade');
     //*=================================================================================================//
+
+    // ?==========================Master District ==============================// 
+   Route::get('district', [DistrictController::class, 'district'])->name('admin.district');
+   Route::post('addDistrict',[DistrictController::class,'addDistrict'])->name('addDistrict');
+   Route::get('getAllDistrict',[DistrictController::class,'getAllDistrict'])->name('getAllDistrict');
+   Route::post('getDistrictDetails',[DistrictController::class,'getDistrictDetails'])->name('getDistrictDetails');
+   Route::post('editDistrict',[DistrictController::class,'editDistrict'])->name('editDistrict');
+   Route::post('deleteDistrict',[DistrictController::class,'deleteDistrict'])->name('deleteDistrict');
+ // ?=========================================================================================//
 });
 
 

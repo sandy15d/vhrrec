@@ -1,5 +1,4 @@
 @extends('layouts.master')
-@section('title', 'State')
 @section('title', 'State Master')
 @section('PageContent')
     <div class="page-content">
@@ -60,7 +59,12 @@
                         </div>
                         <div class="form-group">
                             <label for="Country">Country</label>
-                            <input type="text" class="form-control" name="Country" placeholder="Country">
+                         <select name="Country" class="form-control form-select">
+                             <option value="" selected disabled>Select Country</option>
+                             @foreach ($country_list as $key=>$value)
+                                 <option value="{{$key}}">{{$value}}</option>
+                             @endforeach
+                         </select>
                             <span class="text-danger error-text Country_error"></span>
                         </div>
                         <div class="form-group">
@@ -104,7 +108,11 @@
                         </div>
                         <div class="form-group">
                             <label for="editCountry">Country</label>
-                            <input type="text" class="form-control" name="editCountry" placeholder="Country">
+                            <select name="editCountry" id="editCountry" class="form-control form-select">
+                                @foreach ($country_list as $key=>$value)
+                                    <option value="{{$key}}">{{$value}}</option>
+                                @endforeach
+                            </select>
                             <span class="text-danger error-text editCountry_error"></span>
                         </div>
                         <div class="form-group">
@@ -198,7 +206,7 @@
                     .StateName);
                 $('#editStateModal').find('input[name="editStateCode"]').val(data.StateDetails
                     .StateCode);
-                $('#editStateModal').find('input[name="editCountry"]').val(data.StateDetails.Country);
+                $('#editCountry').val(data.StateDetails.Country);
                 $('#editStatus').val(data.StateDetails.Status);
                 $('#editStateModal').modal('show');
             }, 'json');

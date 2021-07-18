@@ -10,28 +10,27 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use DataTables;
 
-class StateController extends Controller
+class DistrictController extends Controller
 {
     // ?=====================Load State Page===================
-    function state()
+    function district()
     {
-        $country_list = DB::table("master_country")->pluck("CountryName", "CountryId");
-        return view('admin.state', compact('country_list'));
+        $state_list = DB::table("states")->pluck("StateName","StateId");
+        return view('admin.district',compact('state_list'));
     }
 
 
-    // ?===============Insert Company records in Database===================
-    public function addState(Request $request)
+    // ?===============Insert District records in Database===================
+    public function addDistrict(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'StateName' => 'required',
-            'StateCode' => 'required',
-            'Country' => 'required'
+            'DistrictName' => 'required',
+            'State' => 'required',
+          
         ]);
         if ($validator->fails()) {
             return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
         } else {
-            // DB::enableQueryLog();
             $State = new master_state;
             $State->StateName = $request->StateName;
             $State->StateCode = $request->StateCode;
@@ -39,8 +38,7 @@ class StateController extends Controller
             $State->Status = $request->Status;
             $State->CreatedBy = Auth::user()->id;
             $query = $State->save();
-            //$sql = DB::getQueryLog();
-            //dd($sql);
+
             if (!$query) {
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
@@ -60,7 +58,7 @@ class StateController extends Controller
             ->addIndexColumn()
             ->addColumn('actions', function ($state) {
                 return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $state->StateId . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  
-                <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $state->StateId . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
+                <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $state->StateId. '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
             })
             ->rawColumns(['actions'])
             ->make(true);
