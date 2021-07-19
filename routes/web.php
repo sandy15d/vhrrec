@@ -13,6 +13,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\HeadquarterController;
 use App\Http\Controllers\StateController;
+use App\Http\Controllers\EducationController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -72,8 +73,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
    Route::post('syncState',[StateController::class,'syncState'])->name('syncState');
  // ?=========================================================================================//
  
-    Route::get('district', [AdminController::class, 'district'])->name('admin.district');
-    Route::get('education', [AdminController::class, 'education'])->name('admin.education');
+  
+    
     Route::get('eduspecialization', [AdminController::class, 'eduspecialization'])->name('admin.eduspecialization');
     Route::get('eduinstitute', [AdminController::class, 'eduinstitute'])->name('admin.eduinstitute');
     Route::get('resumesource', [AdminController::class, 'resumesource'])->name('admin.resumesource');
@@ -108,14 +109,23 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('syncGrade',[GradeController::class,'syncGrade'])->name('syncGrade');
     //*=================================================================================================//
 
-    // ?==========================Master District ==============================// 
+   // ?==========================Master District ==============================// 
    Route::get('district', [DistrictController::class, 'district'])->name('admin.district');
    Route::post('addDistrict',[DistrictController::class,'addDistrict'])->name('addDistrict');
    Route::get('getAllDistrict',[DistrictController::class,'getAllDistrict'])->name('getAllDistrict');
    Route::post('getDistrictDetails',[DistrictController::class,'getDistrictDetails'])->name('getDistrictDetails');
    Route::post('editDistrict',[DistrictController::class,'editDistrict'])->name('editDistrict');
    Route::post('deleteDistrict',[DistrictController::class,'deleteDistrict'])->name('deleteDistrict');
- // ?=========================================================================================//
+   // ?=========================================================================================//
+
+    // ?==========================Master Education ==============================// 
+    Route::get('education', [EducationController::class, 'education'])->name('admin.education');
+    Route::post('addEducation',[EducationController::class,'addEducation'])->name('addEducation');
+    Route::get('getAllEducation',[EducationController::class,'getAllEducation'])->name('getAllEducation');
+    Route::post('getEducationDetails',[EducationController::class,'getEducationDetails'])->name('getEducationDetails');
+    Route::post('editEducation',[EducationController::class,'editEducation'])->name('editEducation');
+    Route::post('deleteEducation',[EducationController::class,'deleteEducation'])->name('deleteEducation');
+   // ?=========================================================================================//
 });
 
 
