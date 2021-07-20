@@ -23,6 +23,7 @@
                                 <th>Education</th>
                                 <th>Code</th>
                                 <th>Type</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -39,7 +40,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add New District</h5>
+                    <h5 class="modal-title">Add New Education</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('addEducation') }}" method="POST" id="addEducationForm">
@@ -99,8 +100,8 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <input type="hidden" name="EId" />
-                            <label for="editEducation">Education</label>
-                            <input type="text" class="form-control" name="editEducation">
+                            <label for="editEducationName">Education</label>
+                            <input type="text" class="form-control" name="editEducationName">
                             <span class="text-danger error-text editEducation_error"></span>
                         </div>
                         <div class="form-group">
@@ -172,7 +173,7 @@
         $('#EducationTable').DataTable({
             processing: true,
             info: true,
-            ajax: "{{ route('getAllDistrict') }}",
+            ajax: "{{ route('getAllEducation') }}",
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex'
@@ -190,6 +191,10 @@
                     name: 'EducationType'
                 },
                 {
+                    data:'Status',
+                    name:'Status'
+                },
+                {
                     data: 'actions',
                     name: 'actions'
                 },
@@ -198,13 +203,15 @@
         });
         //===============Get District Record for Updation=================
         $(document).on('click', '#editBtn', function() {
-            var StateId = $(this).data('id');
+            var EducationId = $(this).data('id');
             $.post('<?= route('getEducationDetails') ?>', {
-                StateId: StateId
+                EducationId: EducationId
             }, function(data) {
-                $('#editEducationModal').find('input[name="districtId"]').val(data.EducationDetails.DistrictId);
-                $('#editEducationModal').find('input[name="editEducation"]').val(data.EducationDetails
+                $('#editEducationModal').find('input[name="EId"]').val(data.EducationDetails.EducationId);
+                $('#editEducationModal').find('input[name="editEducationName"]').val(data.EducationDetails
                     .EducationName);
+                    $('#editEducationModal').find('input[name="editEducationCode"]').val(data.EducationDetails
+                    .EducationCode);
                 $('#editEducationType').val(data.EducationDetails
                     .EducationType);
                 $('#editStatus').val(data.EducationDetails.Status);

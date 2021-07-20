@@ -110,30 +110,5 @@ class DistrictController extends Controller
         }
     }
 
-    // *====================== Synchronize Company Data From ESS =============================//
-
-    public function syncState()
-    {
-
-        $query =  master_state::truncate();
-        $response = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails?action=Details&val=State')->json();
-        $data = array();
-        foreach ($response['State_list'] as $key => $value) {
-            $temp = array();
-            $temp['StateName'] = $value['State'];
-            $temp['StateCode'] = $value['StateCode'];
-            $temp['Country'] = $value['CountryId'];
-            $temp['Status'] = $value['Status'];
-            $temp['CreatedBy'] = Auth::user()->id;
-            array_push($data, $temp);
-        }
-        $query = master_state::insert($data);
-
-
-        if ($query) {
-            return response()->json(['status' => 200, 'msg' => 'State data has been Synchronized.']);
-        } else {
-            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
-        }
-    }
+    
 }
