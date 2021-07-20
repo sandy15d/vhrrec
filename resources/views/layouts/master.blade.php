@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="{{ session('ThemeStyle')}} {{session('SidebarColor') }}">
 
 <head>
     <!-- Required meta tags -->
@@ -423,53 +423,26 @@
             <hr />
             <div class="d-flex align-items-center justify-content-between">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="lightmode" checked>
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="lightmode"
+                        {{ session('ThemeStyle') == 'light-theme' ? 'checked' : '' }}>
                     <label class="form-check-label" for="lightmode">Light</label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="darkmode">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="darkmode"
+                        {{ session('ThemeStyle') == 'dark-theme' ? 'checked' : '' }}>
                     <label class="form-check-label" for="darkmode">Dark</label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="semidark">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="semidark"
+                        {{ session('ThemeStyle') == 'semi-dark' ? 'checked' : '' }}>
                     <label class="form-check-label" for="semidark">Semi Dark</label>
                 </div>
             </div>
             <hr />
             <div class="form-check">
-                <input class="form-check-input" type="radio" id="minimaltheme" name="flexRadioDefault">
+                <input class="form-check-input" type="radio" id="minimaltheme" name="flexRadioDefault"
+                    {{ session('ThemeStyle') == 'minimal-theme' ? 'checked' : '' }}>
                 <label class="form-check-label" for="minimaltheme">Minimal Theme</label>
-            </div>
-            <hr />
-            <h6 class="mb-0">Header Colors</h6>
-            <hr />
-            <div class="header-colors-indigators">
-                <div class="row row-cols-auto g-3">
-                    <div class="col">
-                        <div class="indigator headercolor1" id="headercolor1"></div>
-                    </div>
-                    <div class="col">
-                        <div class="indigator headercolor2" id="headercolor2"></div>
-                    </div>
-                    <div class="col">
-                        <div class="indigator headercolor3" id="headercolor3"></div>
-                    </div>
-                    <div class="col">
-                        <div class="indigator headercolor4" id="headercolor4"></div>
-                    </div>
-                    <div class="col">
-                        <div class="indigator headercolor5" id="headercolor5"></div>
-                    </div>
-                    <div class="col">
-                        <div class="indigator headercolor6" id="headercolor6"></div>
-                    </div>
-                    <div class="col">
-                        <div class="indigator headercolor7" id="headercolor7"></div>
-                    </div>
-                    <div class="col">
-                        <div class="indigator headercolor8" id="headercolor8"></div>
-                    </div>
-                </div>
             </div>
             <hr />
             <h6 class="mb-0">Sidebar Colors</h6>
@@ -524,6 +497,237 @@
             $(document).on('click', '#sidebarsetting', function() {
                 $(".switcher-wrapper").toggleClass("switcher-toggled");
             });
+            //=====================Set Light Theme=====================
+            $(document).on('click', '#lightmode', function() {
+                $.ajax({
+                    url: 'setTheme',
+                    method: 'POST',
+                    data: {
+                        ThemeStyle: 'lightmode'
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.status == 200) {
+
+                            location.reload();
+                        } else {
+                            alert('failed');
+                        }
+                    }
+                });
+            });
+            //======================Set Dark Theme  ========================
+
+            $(document).on('click', '#darkmode', function() {
+                $.ajax({
+                    url: 'setTheme',
+                    method: 'POST',
+                    data: {
+                        ThemeStyle: 'darkmode'
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.status == 200) {
+
+                            location.reload();
+                        } else {
+                            alert('failed');
+                        }
+                    }
+                });
+            });
+
+            //======================Set Semi Dark Theme  ========================
+
+            $(document).on('click', '#semidark', function() {
+                $.ajax({
+                    url: 'setTheme',
+                    method: 'POST',
+                    data: {
+                        ThemeStyle: 'semidark'
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.status == 200) {
+
+                            location.reload();
+                        } else {
+                            alert('failed');
+                        }
+                    }
+                });
+            });
+
+            // ======================Set minimaltheme Theme  ========================
+
+            $(document).on('click', '#minimaltheme', function() {
+                $.ajax({
+                    url: 'setTheme',
+                    method: 'POST',
+                    data: {
+                        ThemeStyle: 'minimaltheme'
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.status == 200) {
+
+                            location.reload();
+                        } else {
+                            alert('failed');
+                        }
+                    }
+                });
+            });
+            // ======================Set Sidebar1 Theme  ========================
+
+            $(document).on('click', '#sidebarcolor1', function() {
+                $.ajax({
+                    url: 'setTheme',
+                    method: 'POST',
+                    data: {
+                        ThemeStyle: 'sidebarcolor1'
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.status == 200) {
+
+                            location.reload();
+                        } else {
+                            alert('failed');
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click', '#sidebarcolor2', function() {
+                $.ajax({
+                    url: 'setTheme',
+                    method: 'POST',
+                    data: {
+                        ThemeStyle: 'sidebarcolor2'
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.status == 200) {
+
+                            location.reload();
+                        } else {
+                            alert('failed');
+                        }
+                    }
+                });
+            });
+            $(document).on('click', '#sidebarcolor3', function() {
+                $.ajax({
+                    url: 'setTheme',
+                    method: 'POST',
+                    data: {
+                        ThemeStyle: 'sidebarcolor3'
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.status == 200) {
+
+                            location.reload();
+                        } else {
+                            alert('failed');
+                        }
+                    }
+                });
+            });
+            $(document).on('click', '#sidebarcolor4', function() {
+                $.ajax({
+                    url: 'setTheme',
+                    method: 'POST',
+                    data: {
+                        ThemeStyle: 'sidebarcolor4'
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.status == 200) {
+
+                            location.reload();
+                        } else {
+                            alert('failed');
+                        }
+                    }
+                });
+            });
+            $(document).on('click', '#sidebarcolor5', function() {
+                $.ajax({
+                    url: 'setTheme',
+                    method: 'POST',
+                    data: {
+                        ThemeStyle: 'sidebarcolor5'
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.status == 200) {
+
+                            location.reload();
+                        } else {
+                            alert('failed');
+                        }
+                    }
+                });
+            });
+            $(document).on('click', '#sidebarcolor6', function() {
+                $.ajax({
+                    url: 'setTheme',
+                    method: 'POST',
+                    data: {
+                        ThemeStyle: 'sidebarcolor6'
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.status == 200) {
+
+                            location.reload();
+                        } else {
+                            alert('failed');
+                        }
+                    }
+                });
+            });
+            $(document).on('click', '#sidebarcolor7', function() {
+                $.ajax({
+                    url: 'setTheme',
+                    method: 'POST',
+                    data: {
+                        ThemeStyle: 'sidebarcolor7'
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.status == 200) {
+
+                            location.reload();
+                        } else {
+                            alert('failed');
+                        }
+                    }
+                });
+            });
+            $(document).on('click', '#sidebarcolor8', function() {
+                $.ajax({
+                    url: 'setTheme',
+                    method: 'POST',
+                    data: {
+                        ThemeStyle: 'sidebarcolor8'
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.status == 200) {
+
+                            location.reload();
+                        } else {
+                            alert('failed');
+                        }
+                    }
+                });
+            });
+
+
+
         });
         toastr.options.preventDuplicates = true;
         $.ajaxSetup({

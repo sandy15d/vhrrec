@@ -14,6 +14,7 @@ use App\Http\Controllers\GradeController;
 use App\Http\Controllers\HeadquarterController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\EducationController;
+use App\Http\Controllers\EduSpecialController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -63,22 +64,16 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
    Route::post('syncCountry',[CountryController::class,'syncCountry'])->name('syncCountry');
  // ?=========================================================================================//
 
-   // ?==========================Master State ==============================// 
-   Route::get('state', [StateController::class, 'state'])->name('admin.state');
-   Route::post('addState',[StateController::class,'addState'])->name('addState');
-   Route::get('getAllStateData',[StateController::class,'getAllStateData'])->name('getAllStateData');
-   Route::post('getStateDetails',[StateController::class,'getStateDetails'])->name('getStateDetails');
-   Route::post('editState',[StateController::class,'editState'])->name('editState');
-   Route::post('deleteState',[StateController::class,'deleteState'])->name('deleteState');
-   Route::post('syncState',[StateController::class,'syncState'])->name('syncState');
- // ?=========================================================================================//
+    // ?==========================Master State ==============================// 
+    Route::get('state', [StateController::class, 'state'])->name('admin.state');
+    Route::post('addState',[StateController::class,'addState'])->name('addState');
+    Route::get('getAllStateData',[StateController::class,'getAllStateData'])->name('getAllStateData');
+    Route::post('getStateDetails',[StateController::class,'getStateDetails'])->name('getStateDetails');
+    Route::post('editState',[StateController::class,'editState'])->name('editState');
+    Route::post('deleteState',[StateController::class,'deleteState'])->name('deleteState');
+    Route::post('syncState',[StateController::class,'syncState'])->name('syncState');
+    // ?=========================================================================================//
  
-  
-    
-    Route::get('eduspecialization', [AdminController::class, 'eduspecialization'])->name('admin.eduspecialization');
-    Route::get('eduinstitute', [AdminController::class, 'eduinstitute'])->name('admin.eduinstitute');
-    Route::get('resumesource', [AdminController::class, 'resumesource'])->name('admin.resumesource');
-
     //*====================================Master Employee ==================================//
     Route::get('employee', [EmployeeController::class, 'employee'])->name('admin.employee');
     Route::get('getAllEmployeeData', [EmployeeController::class, 'getAllEmployeeData'])->name('getAllEmployeeData');
@@ -126,6 +121,19 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('editEducation',[EducationController::class,'editEducation'])->name('editEducation');
     Route::post('deleteEducation',[EducationController::class,'deleteEducation'])->name('deleteEducation');
    // ?=========================================================================================//
+
+   //** ======================= Education Specialization ===================== */
+   Route::get('eduspecialization', [EduSpecialController::class, 'eduspecialization'])->name('admin.eduspecialization');
+   //**====================================================================== */
+
+   
+  
+    
+  
+   Route::get('eduinstitute', [AdminController::class, 'eduinstitute'])->name('admin.eduinstitute');
+   Route::get('resumesource', [AdminController::class, 'resumesource'])->name('admin.resumesource');
+   Route::post('setTheme',[AdminController::class,'setTheme'])->name('admin.setTheme');
+
 });
 
 

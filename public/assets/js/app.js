@@ -42,15 +42,10 @@ $(function() {
 		$(".switcher-wrapper").toggleClass("switcher-toggled")
 	}), $(".close-switcher").on("click", function() {
 		$(".switcher-wrapper").removeClass("switcher-toggled")
-	}), $("#lightmode").on("click", function() {
-		$("html").attr("class", "light-theme")
-	}), $("#darkmode").on("click", function() {
-		$("html").attr("class", "dark-theme")
-	}), $("#semidark").on("click", function() {
-		$("html").attr("class", "semi-dark")
-	}), $("#minimaltheme").on("click", function() {
-		$("html").attr("class", "minimal-theme")
-	}), $("#headercolor1").on("click", function() {
+	}), 
+	
+	
+ $("#headercolor1").on("click", function() {
 		$("html").addClass("color-header headercolor1"), $("html").removeClass("headercolor2 headercolor3 headercolor4 headercolor5 headercolor6 headercolor7 headercolor8")
 	}), $("#headercolor2").on("click", function() {
 		$("html").addClass("color-header headercolor2"), $("html").removeClass("headercolor1 headercolor3 headercolor4 headercolor5 headercolor6 headercolor7 headercolor8")
