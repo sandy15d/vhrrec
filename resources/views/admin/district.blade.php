@@ -46,7 +46,7 @@
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="DistrictName">State Name</label>
+                            <label for="DistrictName">District Name</label>
                             <input type="text" class="form-control" name="DistrictName" placeholder="Enter State Name">
                             <span class="text-danger error-text DistrictName_error"></span>
                         </div>
@@ -95,8 +95,12 @@
                             <span class="text-danger error-text editDistrict_error"></span>
                         </div>
                         <div class="form-group">
-                            <label for="editState">State Code</label>
-                            <input type="text" class="form-control" name="editState" placeholder="Enter State Code">
+                            <label for="editState">State</label>
+                           <select id="editState" name="editState" class="form-control form-select">
+                               @foreach ($state_list as $state=>$value)
+                                   <option value="{{$state}}">{{$value}}</option>
+                               @endforeach
+                           </select>
                             <span class="text-danger error-text editState_error"></span>
                         </div>
                         <div class="form-group">
@@ -156,8 +160,8 @@
                     name: 'DT_RowIndex'
                 },
                 {
-                    data: 'name',
-                    name: 'name'
+                    data: 'DistrictName',
+                    name: 'DistrictName'
                 },
                 {
                     data: 'StateName',
@@ -176,15 +180,14 @@
         });
         //===============Get District Record for Updation=================
         $(document).on('click', '#editBtn', function() {
-            var StateId = $(this).data('id');
+            var DistrictId = $(this).data('id');
             $.post('<?= route('getDistrictDetails') ?>', {
-                StateId: StateId
+                DistrictId: DistrictId
             }, function(data) {
                 $('#editDistrictModal').find('input[name="districtId"]').val(data.DistrictDetails.DistrictId);
                 $('#editDistrictModal').find('input[name="editDistrict"]').val(data.DistrictDetails
                     .DistrictName);
-                $('#editDistrictModal').find('input[name="editstate"]').val(data.DistrictDetails
-                    .StateId);
+                $('#editState').val(data.DistrictDetails.StateId);
                 $('#editStatus').val(data.DistrictDetails.Status);
                 $('#editDistrictModal').modal('show');
             }, 'json');

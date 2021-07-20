@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\master_district;
 use Illuminate\Http\Request;
 use App\Models\master_state;
 use Illuminate\Support\Facades\Http;
@@ -31,34 +32,33 @@ class DistrictController extends Controller
         if ($validator->fails()) {
             return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
         } else {
-            $State = new master_state;
-            $State->StateName = $request->StateName;
-            $State->StateCode = $request->StateCode;
-            $State->Country = $request->Country;
-            $State->Status = $request->Status;
-            $State->CreatedBy = Auth::user()->id;
-            $query = $State->save();
+            $district = new master_district;
+            $district->DistrictName = $request->DistrictName;
+            $district->StateId = $request->State;
+            $district->IsDeleted = '0';
+            $district->Status = $request->Status;
+            $query = $district->save();
 
             if (!$query) {
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
-                return response()->json(['status' => 200, 'msg' => 'New State has been successfully created.']);
+                return response()->json(['status' => 200, 'msg' => 'New District has been successfully created.']);
             }
         }
     }
 
     // ?====================Get All Company Data From Datatabse=====================
 
-    public function getAllStateData()
+    public function getAllDistrict()
     {
-        $state = DB::table('master_state')->join('master_country', 'master_state.Country', '=', 'master_country.CountryId')
-            ->select(['master_state.StateId', 'master_state.StateName', 'master_state.StateCode', 'master_country.CountryName', 'master_state.Status']);
+        $district = DB::table('districts')->join('states', 'states.StateId', '=', 'districts.StateId')
+            ->select(['districts.*', 'states.StateName']);
 
-        return Datatables::of($state)
+        return Datatables::of($district)
             ->addIndexColumn()
-            ->addColumn('actions', function ($state) {
-                return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $state->StateId . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  
-                <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $state->StateId. '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
+            ->addColumn('actions', function ($district) {
+                return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $district->DistrictId . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  
+                <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $district->DistrictId. '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
             })
             ->rawColumns(['actions'])
             ->make(true);
@@ -66,55 +66,47 @@ class DistrictController extends Controller
 
     // ?========================Get State Details for Edit ========================//
 
-    public function getStateDetails(Request $request)
+    public function getDistrictDetails(Request $request)
     {
-        $StateId = $request->StateId;
-        $StateDetails = master_state::find($StateId);
-        return response()->json(['StateDetails' => $StateDetails]);
+        $DistrictId = $request->DistrictId;
+        $DistrictDetails = master_district::find($DistrictId);
+        return response()->json(['DistrictDetails' => $DistrictDetails]);
     }
 
     // ?=====================Update State Details===================
-    public function editState(Request $request)
+    public function editDistrict(Request $request)
     {
-        $StateId = $request->stid;
+        $DistrictId = $request->districtId;
         $validator = Validator::make($request->all(), [
-            'editStateName' => 'required',
-            'editStateCode' => 'required',
-            'editCountry' => 'required',
+            'editDistrict' => 'required',
+            'editState' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
         } else {
-            // DB::enableQueryLog();
-            $State = master_state::find($StateId);
-            $State->StateName = $request->editStateName;
-            $State->StateCode = $request->editStateCode;
-            $State->Country = $request->editCountry;
-            $State->Status = $request->editStatus;
-            $State->UpdatedBy = Auth::user()->id;
-            $State->LastUpdated = now();
-            $query = $State->save();
-            // $sql = DB::getQueryLog();
-            //  dd($sql);
-
+           $district = master_district::find($DistrictId);
+           $district->DistrictName = $request->editDistrict;
+           $district->StateId = $request->editState;
+           $district->Status = $request->editStatus;
+            $query =$district->save();
             if (!$query) {
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
-                return response()->json(['status' => 200, 'msg' => 'State data has been changed successfully.']);
+                return response()->json(['status' => 200, 'msg' => 'District data has been changed successfully.']);
             }
         }
     }
 
     // !=======================Delete Company ===============================//
 
-    public function deleteState(Request $request)
+    public function deleteDistrict(Request $request)
     {
-        $StateId = $request->StateId;
-        $query = master_state::find($StateId)->delete();
+        $DistrictId = $request->DistrictId;
+        $query = master_district::find($DistrictId)->delete();
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
-            return response()->json(['status' => 200, 'msg' => 'State data has been Deleted.']);
+            return response()->json(['status' => 200, 'msg' => 'District data has been Deleted.']);
         }
     }
 
