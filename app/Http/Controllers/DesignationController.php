@@ -6,6 +6,7 @@ use App\Models\master_designation;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use DataTables;
+
 class DesignationController extends Controller
 {
     public function designation()
@@ -17,7 +18,7 @@ class DesignationController extends Controller
         $designation = DB::table('master_designation')
             ->join('master_company', 'master_designation.CompanyId', '=', 'master_company.CompanyId')
             ->join('master_department', 'master_designation.DepartmentId', '=', 'master_department.DepartmentId')
-            ->select(['master_designation.*', 'master_company.CompanyCode','master_department.DepartmentCode']);
+            ->select(['master_designation.*', 'master_company.CompanyCode', 'master_department.DepartmentCode']);
 
         return Datatables::of($designation)
             ->addIndexColumn()
@@ -31,7 +32,7 @@ class DesignationController extends Controller
         $response = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails?action=Details&val=Designation')->json();
         $data = array();
         foreach ($response['Designation_list'] as $key => $value) {
-           
+
             $temp = array();
             $temp['DesigId'] = $value['DesigId'];
             $temp['DesigName'] = $value['DesigName'];
@@ -42,11 +43,11 @@ class DesignationController extends Controller
         }
         $query = master_designation::insert($data);
         $response1 = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails?action=Details&val=DeptDesig')->json();
-      
-        foreach($response1['Department_Designation_list'] as $key=>$value){
+
+        foreach ($response1['Department_Designation_list'] as $key => $value) {
             $data1 = DB::table('master_designation')
-                    ->where('DesigId',$value['DesigId'])
-                    ->update(['DepartmentId'=>$value['DepartmentId']]);
+                ->where('DesigId', $value['DesigId'])
+                ->update(['DepartmentId' => $value['DepartmentId']]);
         }
 
         if ($query) {

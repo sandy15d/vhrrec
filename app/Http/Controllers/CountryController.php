@@ -29,7 +29,7 @@ class CountryController extends Controller
         $validator = Validator::make($request->all(), [
             'CountryName' => 'required',
             'CountryCode' => 'required',
-            
+
         ]);
         if ($validator->fails()) {
             return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
@@ -80,19 +80,19 @@ class CountryController extends Controller
         $validator = Validator::make($request->all(), [
             'editCountryName' => 'required',
             'editCountryCode' => 'required',
-            
+
         ]);
         if ($validator->fails()) {
             return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
         } else {
             // DB::enableQueryLog();
-           $country = master_country::find($CountryId);
-           $country->CountryName = $request->editCountryName;
-           $country->CountryCode = $request->editCountryCode;
-           $country->Status = $request->editStatus;
-           $country->UpdatedBy = Auth::user()->id;
-           $country->LastUpdated = now();
-            $query =$country->save();
+            $country = master_country::find($CountryId);
+            $country->CountryName = $request->editCountryName;
+            $country->CountryCode = $request->editCountryCode;
+            $country->Status = $request->editStatus;
+            $country->UpdatedBy = Auth::user()->id;
+            $country->LastUpdated = now();
+            $query = $country->save();
             // $sql = DB::getQueryLog();
             //  dd($sql);
 

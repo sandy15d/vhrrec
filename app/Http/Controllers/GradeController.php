@@ -6,6 +6,7 @@ use App\Models\master_grade;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use DataTables;
+
 class GradeController extends Controller
 {
     public function grade()
@@ -30,7 +31,7 @@ class GradeController extends Controller
         $response = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails?action=Details&val=Grade')->json();
         $data = array();
         foreach ($response['grade_list'] as $key => $value) {
-           
+
             $temp = array();
             $temp['GradeId'] = $value['GradeId'];
             $temp['GradeValue'] = $value['GradeValue'];

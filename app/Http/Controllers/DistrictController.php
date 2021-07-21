@@ -16,8 +16,8 @@ class DistrictController extends Controller
     // ?=====================Load State Page===================
     function district()
     {
-        $state_list = DB::table("states")->pluck("StateName","StateId");
-        return view('admin.district',compact('state_list'));
+        $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
+        return view('admin.district', compact('state_list'));
     }
 
 
@@ -27,7 +27,7 @@ class DistrictController extends Controller
         $validator = Validator::make($request->all(), [
             'DistrictName' => 'required',
             'State' => 'required',
-          
+
         ]);
         if ($validator->fails()) {
             return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
@@ -58,7 +58,7 @@ class DistrictController extends Controller
             ->addIndexColumn()
             ->addColumn('actions', function ($district) {
                 return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $district->DistrictId . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  
-                <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $district->DistrictId. '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
+                <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $district->DistrictId . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
             })
             ->rawColumns(['actions'])
             ->make(true);
@@ -84,11 +84,11 @@ class DistrictController extends Controller
         if ($validator->fails()) {
             return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
         } else {
-           $district = master_district::find($DistrictId);
-           $district->DistrictName = $request->editDistrict;
-           $district->StateId = $request->editState;
-           $district->Status = $request->editStatus;
-            $query =$district->save();
+            $district = master_district::find($DistrictId);
+            $district->DistrictName = $request->editDistrict;
+            $district->StateId = $request->editState;
+            $district->Status = $request->editStatus;
+            $query = $district->save();
             if (!$query) {
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
@@ -109,6 +109,4 @@ class DistrictController extends Controller
             return response()->json(['status' => 200, 'msg' => 'District data has been Deleted.']);
         }
     }
-
-    
 }

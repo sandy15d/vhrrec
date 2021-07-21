@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="{{ session('ThemeStyle')}} {{session('SidebarColor') }}">
+<html lang="en" class="{{ session('ThemeStyle') }} {{ session('SidebarColor') }}">
 
 <head>
     <!-- Required meta tags -->
@@ -29,11 +29,10 @@
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/toastr.min.css" />
     <title>HR Recruitment | @yield('title')</title>
     <style>
-        /* .table-hover tbody tr:hover td,
-        .table-hover tbody tr:hover th {
-            background-color: #AF7AC5;
-            color: white;
-        } */
+        button.multiselect {
+            background-color: initial;
+            border: 1px solid #ced4da;
+        }
 
         .btn--red {
             color: #fff;
@@ -489,6 +488,7 @@
     <script src="{{ URL::to('/') }}/assets/plugins/datatable/js/dataTables.bootstrap5.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
+   
     <!--app JS-->
     <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
     @yield('scriptsection')

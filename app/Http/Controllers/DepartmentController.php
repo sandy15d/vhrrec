@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use DataTables;
+
 class DepartmentController extends Controller
 {
     public function department()
@@ -31,7 +32,7 @@ class DepartmentController extends Controller
         $response = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails?action=Details&val=Department')->json();
         $data = array();
         foreach ($response['department_list'] as $key => $value) {
-           
+
             $temp = array();
             $temp['DepartmentId'] = $value['DepartmentId'];
             $temp['DepartmentName'] = $value['DepartmentName'];

@@ -8,6 +8,6 @@ class HodController extends Controller
 {
     function index()
     {
-       return view('hod.index');
+        return view('hod.index');
     }
 }

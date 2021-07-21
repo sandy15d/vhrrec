@@ -20,49 +20,49 @@ class AdminController extends Controller
     function setTheme(Request $request)
     {
         $ThemeStyle = $request->ThemeStyle;
-        if ($ThemeStyle != '' ) {
+        if ($ThemeStyle != '') {
             if ($ThemeStyle == 'lightmode') {
                 $Style = 'light-theme';
-                $SidebarColor='';
-            }elseif ($ThemeStyle == 'darkmode') {
+                $SidebarColor = '';
+            } elseif ($ThemeStyle == 'darkmode') {
                 $Style = 'dark-theme';
-                $SidebarColor='';
-            }elseif ($ThemeStyle=='semidark') {
+                $SidebarColor = '';
+            } elseif ($ThemeStyle == 'semidark') {
                 $Style = 'semi-dark';
-                $SidebarColor='';
-            }elseif ($ThemeStyle =='minimaltheme') {
+                $SidebarColor = '';
+            } elseif ($ThemeStyle == 'minimaltheme') {
                 $Style = 'minimal-theme';
-                $SidebarColor='';
-            }elseif ($ThemeStyle=='sidebarcolor1') {
+                $SidebarColor = '';
+            } elseif ($ThemeStyle == 'sidebarcolor1') {
                 $Style = '';
-                $SidebarColor='color-sidebar sidebarcolor1';
-            }elseif ($ThemeStyle=='sidebarcolor2') {
+                $SidebarColor = 'color-sidebar sidebarcolor1';
+            } elseif ($ThemeStyle == 'sidebarcolor2') {
                 $Style = '';
-                $SidebarColor='color-sidebar sidebarcolor2';
-            }elseif ($ThemeStyle=='sidebarcolor3') {
+                $SidebarColor = 'color-sidebar sidebarcolor2';
+            } elseif ($ThemeStyle == 'sidebarcolor3') {
                 $Style = '';
-                $SidebarColor='color-sidebar sidebarcolor3';
-            }elseif ($ThemeStyle=='sidebarcolor4') {
+                $SidebarColor = 'color-sidebar sidebarcolor3';
+            } elseif ($ThemeStyle == 'sidebarcolor4') {
                 $Style = '';
-                $SidebarColor='color-sidebar sidebarcolor4';
-            }elseif ($ThemeStyle=='sidebarcolor5') {
+                $SidebarColor = 'color-sidebar sidebarcolor4';
+            } elseif ($ThemeStyle == 'sidebarcolor5') {
                 $Style = '';
-                $SidebarColor='color-sidebar sidebarcolor5';
-            }elseif ($ThemeStyle=='sidebarcolor6') {
+                $SidebarColor = 'color-sidebar sidebarcolor5';
+            } elseif ($ThemeStyle == 'sidebarcolor6') {
                 $Style = '';
-                $SidebarColor='color-sidebar sidebarcolor6';
-            }elseif ($ThemeStyle=='sidebarcolor7') {
+                $SidebarColor = 'color-sidebar sidebarcolor6';
+            } elseif ($ThemeStyle == 'sidebarcolor7') {
                 $Style = '';
-                $SidebarColor='color-sidebar sidebarcolor7';
-            }elseif ($ThemeStyle=='sidebarcolor8') {
+                $SidebarColor = 'color-sidebar sidebarcolor7';
+            } elseif ($ThemeStyle == 'sidebarcolor8') {
                 $Style = '';
-                $SidebarColor='color-sidebar sidebarcolor8';
+                $SidebarColor = 'color-sidebar sidebarcolor8';
             }
 
 
             $data = array(
                 'ThemeStyle' => $Style,
-                'SidebarColor'=>$SidebarColor,
+                'SidebarColor' => $SidebarColor,
                 'UserId' => Auth::user()->id,
             );
             $query =  ThemeDetail::updateOrCreate(['UserId' => Auth::user()->id], $data);
