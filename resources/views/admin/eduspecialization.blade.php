@@ -100,7 +100,9 @@
                         <div class="form-group">
                             <label for="editEducation">Education Type</label>
                             <select name="editEducation" id="editEducation" class="form-control">
-
+                                @foreach ($edu_list as $key => $value)
+                                <option value="{{ $key }}">{{ $value }}</option>
+                            @endforeach
                             </select>
                             <span class="text-danger error-text editEducation_error"></span>
                         </div>

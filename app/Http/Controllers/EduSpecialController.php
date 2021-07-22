@@ -40,7 +40,7 @@ class EduSpecialController extends Controller
             if (!$query) {
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
-                return response()->json(['status' => 200, 'msg' => 'New Education has been successfully created.']);
+                return response()->json(['status' => 200, 'msg' => 'New Education Specialization has been successfully created.']);
             }
         }
     }
@@ -66,45 +66,43 @@ class EduSpecialController extends Controller
 
     public function getEduSpeDetails(Request $request)
     {
-        $EducationId = $request->EducationId;
-        $EducationDetails = master_specialization::find($EducationId);
-        return response()->json(['EducationDetails' => $EducationDetails]);
+        $SpId = $request->SpId;
+        $EduSpeDetails = master_specialization::find($SpId);
+        return response()->json(['EduSpeDetails' => $EduSpeDetails]);
     }
 
     // ?=====================Update Education Details===================
     public function editEduSpe(Request $request)
     {
-        $EducationId = $request->EId;
+        $SpId = $request->SpId;
         $validator = Validator::make($request->all(), [
-            'editEducationName' => 'required',
-            'editEducationCode' => 'required',
-            'editEducationType' => 'required'
+            'editEduSpe' => 'required',
+            'editEducation' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
         } else {
-            $education = master_specialization::find($EducationId);
-            $education->EducationName = $request->editEducationName;
-            $education->EducationCode = $request->editEducationCode;
-            $education->EducationType = $request->editEducationType;
-            $education->Status = $request->editStatus;
-            $query = $education->save();
+            $Specialization = master_specialization::find($SpId);
+            $Specialization->EducationId = $request->editEducation;
+            $Specialization->Specialization = $request->editEduSpe;
+            $Specialization->Status = $request->editStatus;
+            $query = $Specialization->save();
             if (!$query) {
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
-                return response()->json(['status' => 200, 'msg' => 'Education data has been changed successfully.']);
+                return response()->json(['status' => 200, 'msg' => 'Education Specialization data has been changed successfully.']);
             }
         }
     }
 
     public function deleteEduSpe(Request $request)
     {
-        $EducationId = $request->EducationId;
-        $query = master_specialization::find($EducationId)->delete();
+        $SpId = $request->SpId;
+        $query = master_specialization::find($SpId)->delete();
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
-            return response()->json(['status' => 200, 'msg' => 'Education data has been Deleted.']);
+            return response()->json(['status' => 200, 'msg' => 'Specialization data has been Deleted.']);
         }
     }
 }
