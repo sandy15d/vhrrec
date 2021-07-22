@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\LogActivity;
 use App\Models\master_district;
 use Illuminate\Http\Request;
 use App\Models\master_state;
@@ -44,11 +45,12 @@ class DistrictController extends Controller
             } else {
                 // Add activity logs
                
-            activity('District')
+           /*  activity('District')
             ->performedOn($district)
             ->causedBy(Auth::user()->id)
             ->withProperties(['customProperty' => 'customValue'])
-            ->log($request->DistrictName .'created by ' . Auth::user()->name);
+            ->log($request->DistrictName .'created by ' . Auth::user()->name); */
+            LogActivity::addToLog('New District Has been created');
                 return response()->json(['status' => 200, 'msg' => 'New District has been successfully created.']);
             }
         }

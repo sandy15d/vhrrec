@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLogbookTable extends Migration
+class CreatLogbookTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,11 +14,14 @@ class CreateLogbookTable extends Migration
     public function up()
     {
         Schema::create('logbook', function (Blueprint $table) {
-            $table->integer('logid', true);
-            $table->integer('uId');
-            $table->integer('EmpCode');
-            $table->string('action', 500);
-            $table->dateTime('logDateTime');
+            $table->increments('id');
+            $table->string('subject');
+            $table->string('url');
+            $table->string('method');
+            $table->string('ip');
+            $table->string('agent')->nullable();
+            $table->integer('user_id')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -29,6 +32,6 @@ class CreateLogbookTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('logbook');
+        Schema::drop('logbook');
     }
 }
