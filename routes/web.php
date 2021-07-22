@@ -16,8 +16,10 @@ use App\Http\Controllers\StateController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\EduSpecialController;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\Models\Activity;
 
 Route::get('/', function () {
+    //return Activity::all();
     return view('auth.login');
 });
 

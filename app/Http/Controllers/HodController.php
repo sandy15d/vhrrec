@@ -10,4 +10,6 @@ class HodController extends Controller
     {
         return view('hod.index');
     }
+
+
 }
