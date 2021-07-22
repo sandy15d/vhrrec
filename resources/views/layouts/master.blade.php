@@ -9,10 +9,12 @@
     <!--favicon-->
     <link rel="icon" href="{{ URL::to('/') }}/assets/images/favicon-32x32.png" type="image/png" />
     <!--plugins-->
+
     <link href="{{ URL::to('/') }}/assets/plugins/simplebar/css/simplebar.css" rel="stylesheet" />
+    <link href="{{ URL::to('/') }}/assets/plugins/select2/css/select2.min.css" rel="stylesheet" />
+    <link href="{{ URL::to('/') }}/assets/plugins/select2/css/select2-bootstrap4.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/metismenu/css/metisMenu.min.css" rel="stylesheet" />
-    <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
     <!-- loader-->
     <link href="{{ URL::to('/') }}/assets/css/pace.min.css" rel="stylesheet" />
     <script src="{{ URL::to('/') }}/assets/js/pace.min.js"></script>
@@ -27,13 +29,13 @@
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/header-colors.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/sweetalert2.min.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/toastr.min.css" />
+    <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+
+
+
+
     <title>HR Recruitment | @yield('title')</title>
     <style>
-        button.multiselect {
-            background-color: initial;
-            border: 1px solid #ced4da;
-        }
-
         .btn--red {
             color: #fff;
             background-color: #e944ff;
@@ -484,16 +486,23 @@
     <script src="{{ URL::to('/') }}/assets/plugins/simplebar/js/simplebar.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/metismenu/js/metisMenu.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
+    <script src="{{ URL::to('/') }}/assets/plugins/select2/js/select2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/datatable/js/dataTables.bootstrap5.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
-   
     <!--app JS-->
     <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
     @yield('scriptsection')
     <script>
         $(document).ready(function() {
+            $('.multiple-select').select2({
+                theme: 'bootstrap4',
+                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' :
+                    'style',
+                placeholder: $(this).data('placeholder'),
+                allowClear: Boolean($(this).data('allow-clear')),
+            });
             $(document).on('click', '#sidebarsetting', function() {
                 $(".switcher-wrapper").toggleClass("switcher-toggled");
             });

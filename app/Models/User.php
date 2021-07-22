@@ -6,11 +6,10 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\Activitylog\LogOptions;
+
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, LogsActivity;
+    use HasFactory, Notifiable;
 
 protected static $logAttributes =['name','email'];
     protected $fillable = [
@@ -39,11 +38,5 @@ protected static $logAttributes =['name','email'];
         'email_verified_at' => 'datetime',
     ];
 
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            -> logOnly(['text'])
-            -> logOnlyDirty()
-            -> dontSubmitEmptyLogs();
-    }
+
 }

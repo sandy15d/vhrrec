@@ -21,20 +21,21 @@ class EduSpecialController extends Controller
     public function addEduSpe(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'EducationName' => 'required',
-            'EducationCode' => 'required',
-            'EducationType' => 'required',
-
+            'Specialization' => 'required',
+            'Education' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
         } else {
-            $Education = new master_specialization;
-            $Education->EducationName = $request->EducationName;
-            $Education->EducationCode = $request->EducationCode;
-            $Education->EducationType = $request->EducationType;
-            $Education->Status = $request->Status;
-            $query = $Education->save();
+            $data = array();
+            foreach ($request->Education as $key => $value) {
+                $temp = array();
+                $temp['EducationId'] = $value;
+                $temp['Specialization'] = $request->Specialization;
+                $temp['Status'] = $request->Status;
+                array_push($data, $temp);
+            }
+            $query = master_specialization::insert($data);
 
             if (!$query) {
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
@@ -48,13 +49,14 @@ class EduSpecialController extends Controller
 
     public function getAllEduSpe()
     {
-        $Education = master_specialization::all();
+       $Education= DB::table('master_specialization')->join('master_education', 'master_specialization.EducationId', '=', 'master_education.EducationId')
+        ->select(['master_specialization.*', 'master_education.EducationCode']);
 
         return Datatables::of($Education)
             ->addIndexColumn()
             ->addColumn('actions', function ($Education) {
-                return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $Education['EducationId'] . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  
-           <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $Education['EducationId'] . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
+                return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $Education->SpId . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  
+           <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $Education->SpId . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
             })
             ->rawColumns(['actions'])
             ->make(true);

@@ -48,13 +48,13 @@
                         <div class="form-group">
                             <label for="Specialization">Specialization</label>
                             <input type="text" class="form-control" name="Specialization"
-                                placeholder="Enter Education Name">
+                                placeholder="Enter Specialization">
                             <span class="text-danger error-text Specialization_error"></span>
                         </div>
                         <div class="form-group">
                             <label for="Education">Education</label>
-                            <select id="Education" name="Education" class="multiple-select" multiple>
-                                
+                            <select id="Education" name="Education[]"class="multiple-select" data-placeholder="Choose anything" multiple="multiple">
+
                                 @foreach ($edu_list as $key => $value)
                                     <option value="{{ $key }}">{{ $value }}</option>
                                 @endforeach
@@ -99,7 +99,7 @@
 
                         <div class="form-group">
                             <label for="editEducation">Education Type</label>
-                            <select name="editEducation" id="editEducation" class="form-control form-select">
+                            <select name="editEducation" id="editEducation" class="form-control">
 
                             </select>
                             <span class="text-danger error-text editEducation_error"></span>
@@ -125,6 +125,8 @@
 
 @section('scriptsection')
     <script>
+      
+
 
 
         $('#addEduSpeForm').on('submit', function(e) {
