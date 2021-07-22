@@ -42,6 +42,13 @@ class DistrictController extends Controller
             if (!$query) {
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
+                // Add activity logs
+               
+            activity('District')
+            ->performedOn($district)
+            ->causedBy(Auth::user()->id)
+            ->withProperties(['customProperty' => 'customValue'])
+            ->log($request->DistrictName .'created by ' . Auth::user()->name);
                 return response()->json(['status' => 200, 'msg' => 'New District has been successfully created.']);
             }
         }
