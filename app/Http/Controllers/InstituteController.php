@@ -13,7 +13,8 @@ class InstituteController extends Controller
     public function institute()
     {
         $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
-        return view('admin.institute', compact('state_list'));
+        $district_list = DB::table("master_district")->orderBy('DistrictName', 'asc')->pluck("DistrictName", "DistrictId");
+        return view('admin.institute', compact('state_list','district_list'));
     }
 
     public function getDistrict(Request $request)

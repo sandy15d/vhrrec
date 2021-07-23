@@ -131,54 +131,102 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="SaveEducation">Save changes</button>
+                        <button type="submit" class="btn btn-primary" id="SaveInstitute">Save changes</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="editEducationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="editInstituteModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Update Education Details</h5>
+                    <h5 class="modal-title">Update Institute Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('editEducation') }}" method="POST" id="editEducationForm">
+                <form action="{{ route('editInstitute') }}" method="POST" id="editInstituteForm">
                     @csrf
                     <div class="modal-body">
-                        <div class="form-group">
-                            <input type="hidden" name="EId" />
-                            <label for="editEducationName">Education</label>
-                            <input type="text" class="form-control" name="editEducationName">
-                            <span class="text-danger error-text editEducation_error"></span>
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="form-group">
+                                    <label for="editInstituteName">Institute Name</label>
+                                    <input type="text" class="form-control" name="editInstituteName"
+                                        placeholder="Enter Institute Name">
+                                    <span class="text-danger error-text editInstituteName_error"></span>
+                                </div>
+
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="InstituteCode">Institute Code</label>
+                                    <input type="text" class="form-control" name="InstituteCode"
+                                        placeholder="Education Code">
+                                    <span class="text-danger error-text InstituteCode_error"></span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="editEducationCode">Education Code</label>
-                            <input type="text" class="form-control" name="editEducationCode" placeholder="Enter State Code">
-                            <span class="text-danger error-text editEducationCode_error"></span>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="State">State</label>
+                                    <select name="State" id="State" class="form-control form-select">
+                                        <option value="" selected disabled>Select State</option>
+                                        @foreach ($state_list as $key => $state)
+                                            <option value="{{ $key }}">{{ $state }}</option>
+                                        @endforeach
+                                    </select>
+                                    <span class="text-danger error-text State_error"></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="District">District</label>
+                                    <select name="District" id="District" class="form-control form-select">
+
+                                    </select>
+                                    <span class="text-danger error-text District_error"></span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="editEducationType">Education Type</label>
-                            <select name="editEducationType" id="editEducationType" class="form-control form-select">
-                                <option value="10th">10th</option>
-                                <option value="12th">12th</option>
-                                <option value="Graduation">Graduation</option>
-                                <option value="PostGraduation">Post Graduation</option>
-                                <option value="PhD">PhD</option>
-                                <option value="MPhil">MPhil</option>
-                                <option value="Technical">Technical</option>
-                            </select>
-                            <span class="text-danger error-text editEducationType_error"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="editStatus">Status</label>
-                            <select name="editStatus" id="editStatus" class="form-control form-select">
-                                <option value="A">Active</option>
-                                <option value="D">Deactive</option>
-                            </select>
-                            <span class="text-danger error-text editStatus_error"></span>
+
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="Category">Category</label>
+                                    <select name="Category" class="form-control form-select">
+                                        <option value="" selected disabled>Select Category</option>
+                                        <option value="Central">Central</option>
+                                        <option value="State">State</option>
+                                        <option value="Deemed">Deemed</option>
+                                        <option value="Private">Private</option>
+
+                                    </select>
+                                    <span class="text-danger error-text Category_error"></span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="Type">Type</label>
+                                    <select name="Type" class="form-control form-select">
+                                        <option value="" selected disabled>Select Type</option>
+                                        <option value="Agri">Agri</option>
+                                        <option value="Non-Agri">Non-Agri</option>
+                                    </select>
+                                    <span class="text-danger error-text Type_error"></span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <label for="Status">Status</label>
+                                    <select name="Status" class="form-control form-select">
+                                        <option value="A">Active</option>
+                                        <option value="D">Deactive</option>
+                                    </select>
+                                    <span class="text-danger error-text Status_error"></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -298,15 +346,15 @@
             $.post('<?= route('getEducationDetails') ?>', {
                 EducationId: EducationId
             }, function(data) {
-                $('#editEducationModal').find('input[name="EId"]').val(data.EducationDetails.EducationId);
-                $('#editEducationModal').find('input[name="editEducationName"]').val(data.EducationDetails
+                $('#editInstituteModal').find('input[name="EId"]').val(data.EducationDetails.EducationId);
+                $('#editInstituteModal').find('input[name="editEducationName"]').val(data.EducationDetails
                     .EducationName);
-                $('#editEducationModal').find('input[name="editEducationCode"]').val(data.EducationDetails
+                $('#editInstituteModal').find('input[name="editEducationCode"]').val(data.EducationDetails
                     .EducationCode);
                 $('#editEducationType').val(data.EducationDetails
                     .EducationType);
                 $('#editStatus').val(data.EducationDetails.Status);
-                $('#editEducationModal').modal('show');
+                $('#editInstituteModal').modal('show');
             }, 'json');
         });
         //===============Update District Details================================
@@ -329,7 +377,7 @@
                             $(form).find('span.' + prefix + '_error').text(val[0]);
                         });
                     } else {
-                        $('#editEducationModal').modal('hide');
+                        $('#editInstituteModal').modal('hide');
                         // $('#editEducationForm').find(form)[0].reset();
                         $('#EducationTable').DataTable().ajax.reload(null, false);
                         toastr.success(data.msg);
