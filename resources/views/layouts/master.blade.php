@@ -104,7 +104,7 @@
                             <li> <a href="/admin/education"><i class="bx bx-right-arrow-alt"></i>Education</a></li>
                             <li> <a href="/admin/eduspecialization"><i class="bx bx-right-arrow-alt"></i>Education
                                     Specialization</a></li>
-                            <li> <a href="/admin/eduinstitute"><i class="bx bx-right-arrow-alt"></i>Education
+                            <li> <a href="/admin/institute"><i class="bx bx-right-arrow-alt"></i>Education
                                     Institute</a>
                             </li>
                             <li> <a href="/admin/resumesource"><i class="bx bx-right-arrow-alt"></i>Resume Source</a>
@@ -501,6 +501,7 @@
                 width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' :
                     'style',
                 placeholder: $(this).data('placeholder'),
+                
                 allowClear: Boolean($(this).data('allow-clear')),
             });
             $(document).on('click', '#sidebarsetting', function() {

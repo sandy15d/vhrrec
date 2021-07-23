@@ -15,11 +15,10 @@ use App\Http\Controllers\HeadquarterController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\EduSpecialController;
+use App\Http\Controllers\InstituteController;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Activitylog\Models\Activity;
 
 Route::get('/', function () {
-    //return Activity::all();
     return view('auth.login');
 });
 
@@ -122,11 +121,17 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
    Route::post('deleteEduSpe',[EduSpecialController::class,'deleteEduSpe'])->name('deleteEduSpe');
    //**====================================================================== */
 
+    //? ======================= Education Specialization ===================== */
+    Route::get('institute', [InstituteController::class, 'institute'])->name('admin.institute');
+    Route::post('addInstitute',[InstituteController::class,'addInstitute'])->name('addInstitute');
+    Route::get('getAllInstitute',[InstituteController::class,'getAllInstitute'])->name('getAllInstitute');
+    Route::post('getInstituteDetails',[InstituteController::class,'getInstituteDetails'])->name('getInstituteDetails');
+    Route::post('editInstitute',[InstituteController::class,'editInstitute'])->name('editInstitute');
+    Route::post('deleteInstitute',[InstituteController::class,'deleteInstitute'])->name('deleteInstitute');
+    Route::get('getDistrict',[InstituteController::class, 'getDistrict'])->name('getDistrict');
+    //?====================================================================== */
    
   
-    
-  
-   Route::get('eduinstitute', [AdminController::class, 'eduinstitute'])->name('admin.eduinstitute');
    Route::get('resumesource', [AdminController::class, 'resumesource'])->name('admin.resumesource');
    Route::post('setTheme',[AdminController::class,'setTheme'])->name('admin.setTheme');
 

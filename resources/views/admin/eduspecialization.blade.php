@@ -127,9 +127,6 @@
 
 @section('scriptsection')
     <script>
-      
-
-
 
         $('#addEduSpeForm').on('submit', function(e) {
             e.preventDefault();
@@ -177,6 +174,7 @@
                 {
                     data: 'Status',
                     name: 'Status'
+                    
                 },
                 {
                     data: 'actions',

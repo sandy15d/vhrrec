@@ -5,10 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\LogActivity;
 use App\Models\master_district;
 use Illuminate\Http\Request;
-use App\Models\master_state;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use DataTables;
 
