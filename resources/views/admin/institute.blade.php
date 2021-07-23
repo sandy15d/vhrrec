@@ -60,10 +60,10 @@
                             </div>
                             <div class="col-4">
                                 <div class="form-group">
-                                    <label for="InstitueCode">Institute Code</label>
-                                    <input type="text" class="form-control" name="InstitueCode"
+                                    <label for="InstituteCode">Institute Code</label>
+                                    <input type="text" class="form-control" name="InstituteCode"
                                         placeholder="Education Code">
-                                    <span class="text-danger error-text InstitueCode_error"></span>
+                                    <span class="text-danger error-text InstituteCode_error"></span>
                                 </div>
                             </div>
                         </div>
@@ -201,11 +201,12 @@
                     url: "{{ route('getDistrict') }}?StateId="+StateId,
                  
                     success: function(res) {
+                        console.log(res);
                         if (res) {
                             $("#District").empty();
                             $("#District").append('<option>Select District</option>');
                             $.each(res, function(key, value) {
-                                $("#District").append('<option value="' + key + '">' + value +
+                                $("#District").append('<option value="' + value + '">' + key +
                                     '</option>');
                             });
 
@@ -257,28 +258,28 @@
                     name: 'DT_RowIndex'
                 },
                 {
-                    data: 'EducationName',
-                    name: 'EducationName'
+                    data: 'InstituteName',
+                    name: 'InstituteName'
                 },
                 {
-                    data: 'EducationCode',
-                    name: 'EducationCode'
+                    data: 'InstituteCode',
+                    name: 'InstituteCode'
                 },
                 {
-                    data: 'EducationType',
-                    name: 'EducationType'
+                    data: 'Category',
+                    name: 'Category'
                 },
                 {
-                    data: 'EducationType',
-                    name: 'EducationType'
+                    data: 'Type',
+                    name: 'Type'
                 },
                 {
-                    data: 'EducationType',
-                    name: 'EducationType'
+                    data: 'StateCode',
+                    name: 'StateCode'
                 },
                 {
-                    data: 'EducationType',
-                    name: 'EducationType'
+                    data: 'DistrictName',
+                    name: 'DistrictName'
                 },
                 {
                     data: 'Status',

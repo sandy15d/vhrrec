@@ -18,13 +18,10 @@ class InstituteController extends Controller
 
     public function getDistrict(Request $request)
     {
-       // DB::enableQueryLog();
-        $district = DB::table("master_district")
-            ->where("StateId", $request->StateId)->orderBy('DistrictName')
-            ->pluck("DistrictName", "DistrictId");
-          //  $sql = DB::getQueryLog();
-           // dd($sql);
-        return response()->json($district);
+        $district = DB::table("master_district")->orderBy('DistrictName','asc')
+            ->where("StateId", $request->StateId)
+            ->pluck( "DistrictId","DistrictName");
+       return response()->json($district);
           
     }
 
@@ -33,7 +30,7 @@ class InstituteController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'InstituteName' => 'required',
-            'InstitueCode' => 'required',
+            'InstituteCode' => 'required',
             'State' => 'required',
             'District' => 'required',
             'Category' => 'required',
@@ -45,7 +42,7 @@ class InstituteController extends Controller
         } else {
             $Institute = new master_institute;
             $Institute->InstituteName = $request->InstituteName;
-            $Institute->InstitueCode = $request->InstitueCode;
+            $Institute->InstituteCode = $request->InstituteCode;
             $Institute->StateId = $request->State;
             $Institute->DistrictId = $request->District;
             $Institute->Category = $request->Category;
