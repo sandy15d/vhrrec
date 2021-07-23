@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class master_district extends Model
 {
     use HasFactory ;
-    protected $table = 'districts';
+    protected $table = 'master_district';
     protected $primaryKey = 'DistrictId';
     public $timestamps = false;
     protected $fillable = [

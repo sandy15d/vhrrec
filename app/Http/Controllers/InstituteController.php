@@ -19,7 +19,7 @@ class InstituteController extends Controller
     public function getDistrict(Request $request)
     {
        // DB::enableQueryLog();
-        $district = DB::table("districts")
+        $district = DB::table("master_district")
             ->where("StateId", $request->StateId)->orderBy('DistrictName')
             ->pluck("DistrictName", "DistrictId");
           //  $sql = DB::getQueryLog();
@@ -66,8 +66,8 @@ class InstituteController extends Controller
     public function getAllInstitute()
     {
         $Institute = DB::table('master_institute')->join('states', 'states.StateId', '=', 'master_institute.StateId')
-            ->join('districts', 'districts.DistrictId', '=', 'master_institute.DistrictId')
-            ->select(['master_institute.*', 'states.StateCode', 'districts.DistrictName']);
+            ->join('master_district', 'master_district.DistrictId', '=', 'master_institute.DistrictId')
+            ->select(['master_institute.*', 'states.StateCode', 'master_district.DistrictName']);
 
         return Datatables::of($Institute)
             ->addIndexColumn()

@@ -50,8 +50,8 @@ class DistrictController extends Controller
 
     public function getAllDistrict()
     {
-        $district = DB::table('districts')->join('states', 'states.StateId', '=', 'districts.StateId')
-            ->select(['districts.*', 'states.StateName']);
+        $district = DB::table('master_district')->join('states', 'states.StateId', '=', 'master_district.StateId')
+            ->select(['master_district.*', 'states.StateName']);
 
         return Datatables::of($district)
             ->addIndexColumn()
