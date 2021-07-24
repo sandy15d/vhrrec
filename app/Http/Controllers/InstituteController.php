@@ -91,8 +91,8 @@ class InstituteController extends Controller
     {
         $InstituteId = $request->EId;
         $validator = Validator::make($request->all(), [
-            'editInstitute' => 'required',
-            'editCode' => 'required',
+            'editInstituteName' => 'required',
+            'editInstituteCode' => 'required',
             'editState' => 'required',
             'editDistrict' => 'required',
             'editCategory' => 'required',
@@ -102,13 +102,13 @@ class InstituteController extends Controller
             return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
         } else {
             $Institute = master_institute::find($InstituteId);
-            $Institute->InstituteName = $request->editInstitute;
-            $Institute->InstitueCode = $request->editCode;
+            $Institute->InstituteName = $request->editInstituteName;
+            $Institute->InstituteCode = $request->editInstituteCode;
             $Institute->StateId = $request->editState;
             $Institute->DistrictId = $request->editDistrict;
             $Institute->Category = $request->editCategory;
             $Institute->Type = $request->editType;
-            $Institute->Status = $request->Status;
+            $Institute->Status = $request->editStatus;
             $query = $Institute->save();
             if (!$query) {
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);

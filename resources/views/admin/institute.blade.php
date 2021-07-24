@@ -148,6 +148,7 @@
                 <form action="{{ route('editInstitute') }}" method="POST" id="editInstituteForm">
                     @csrf
                     <div class="modal-body">
+                        <input type="hidden" id="EId" name="EId">
                         <div class="row">
                             <div class="col-8">
                                 <div class="form-group">
@@ -160,33 +161,35 @@
                             </div>
                             <div class="col-4">
                                 <div class="form-group">
-                                    <label for="InstituteCode">Institute Code</label>
-                                    <input type="text" class="form-control" name="InstituteCode"
+                                    <label for="editInstituteCode">Institute Code</label>
+                                    <input type="text" class="form-control" name="editInstituteCode"
                                         placeholder="Education Code">
-                                    <span class="text-danger error-text InstituteCode_error"></span>
+                                    <span class="text-danger error-text editInstituteCode_error"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label for="State">State</label>
-                                    <select name="State" id="State" class="form-control form-select">
+                                    <label for="editState">State</label>
+                                    <select name="editState" id="editState" class="form-control form-select">
                                         <option value="" selected disabled>Select State</option>
                                         @foreach ($state_list as $key => $state)
                                             <option value="{{ $key }}">{{ $state }}</option>
                                         @endforeach
                                     </select>
-                                    <span class="text-danger error-text State_error"></span>
+                                    <span class="text-danger error-text editState_error"></span>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label for="District">District</label>
-                                    <select name="District" id="District" class="form-control form-select">
-
+                                    <label for="editDistrict">District</label>
+                                    <select name="editDistrict" id="editDistrict" class="form-control form-select">
+                                        @foreach ($district_list as $key => $state)
+                                        <option value="{{ $key }}">{{ $state }}</option>
+                                    @endforeach
                                     </select>
-                                    <span class="text-danger error-text District_error"></span>
+                                    <span class="text-danger error-text editDistrict_error"></span>
                                 </div>
                             </div>
                         </div>
@@ -194,8 +197,8 @@
                         <div class="row">
                             <div class="col-4">
                                 <div class="form-group">
-                                    <label for="Category">Category</label>
-                                    <select name="Category" class="form-control form-select">
+                                    <label for="editCategory">Category</label>
+                                    <select name="editCategory" id="editCategory" class="form-control form-select">
                                         <option value="" selected disabled>Select Category</option>
                                         <option value="Central">Central</option>
                                         <option value="State">State</option>
@@ -203,28 +206,28 @@
                                         <option value="Private">Private</option>
 
                                     </select>
-                                    <span class="text-danger error-text Category_error"></span>
+                                    <span class="text-danger error-text editCategory_error"></span>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <div class="form-group">
-                                    <label for="Type">Type</label>
-                                    <select name="Type" class="form-control form-select">
+                                    <label for="editType">Type</label>
+                                    <select name="editType" id="editType" class="form-control form-select">
                                         <option value="" selected disabled>Select Type</option>
                                         <option value="Agri">Agri</option>
                                         <option value="Non-Agri">Non-Agri</option>
                                     </select>
-                                    <span class="text-danger error-text Type_error"></span>
+                                    <span class="text-danger error-text editType_error"></span>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <div class="form-group">
-                                    <label for="Status">Status</label>
-                                    <select name="Status" class="form-control form-select">
+                                    <label for="editStatus">Status</label>
+                                    <select name="editStatus" id="editStatus" class="form-control form-select">
                                         <option value="A">Active</option>
                                         <option value="D">Deactive</option>
                                     </select>
-                                    <span class="text-danger error-text Status_error"></span>
+                                    <span class="text-danger error-text editStatus_error"></span>
                                 </div>
                             </div>
                         </div>
@@ -340,25 +343,27 @@
             ],
 
         });
-        //===============Get District Record for Updation=================
+        //===============Get Institute Record for Updation=================
         $(document).on('click', '#editBtn', function() {
-            var EducationId = $(this).data('id');
-            $.post('<?= route('getEducationDetails') ?>', {
-                EducationId: EducationId
+            var InstituteId = $(this).data('id');
+            $.post('<?= route('getInstituteDetails') ?>', {
+                InstituteId: InstituteId
             }, function(data) {
-                $('#editInstituteModal').find('input[name="EId"]').val(data.EducationDetails.EducationId);
-                $('#editInstituteModal').find('input[name="editEducationName"]').val(data.EducationDetails
-                    .EducationName);
-                $('#editInstituteModal').find('input[name="editEducationCode"]').val(data.EducationDetails
-                    .EducationCode);
-                $('#editEducationType').val(data.EducationDetails
-                    .EducationType);
-                $('#editStatus').val(data.EducationDetails.Status);
+                $('#editInstituteModal').find('input[name="EId"]').val(data.IntituteDetails.InstituteId);
+                $('#editInstituteModal').find('input[name="editInstituteName"]').val(data.IntituteDetails
+                    .InstituteName);
+                $('#editInstituteModal').find('input[name="editInstituteCode"]').val(data.IntituteDetails
+                    .InstituteCode);
+                $('#editState').val(data.IntituteDetails.StateId);
+                $('#editDistrict').val(data.IntituteDetails.DistrictId);
+                $('#editCategory').val(data.IntituteDetails.Category);
+                $('#editType').val(data.IntituteDetails.Type);
+                $('#editStatus').val(data.IntituteDetails.Status);
                 $('#editInstituteModal').modal('show');
             }, 'json');
         });
-        //===============Update District Details================================
-        $('#editEducationForm').on('submit', function(e) {
+        //===============Update Institute Details================================
+        $('#editInstituteForm').on('submit', function(e) {
             e.preventDefault();
             var form = this;
             $.ajax({
@@ -378,20 +383,19 @@
                         });
                     } else {
                         $('#editInstituteModal').modal('hide');
-                        // $('#editEducationForm').find(form)[0].reset();
                         $('#EducationTable').DataTable().ajax.reload(null, false);
                         toastr.success(data.msg);
                     }
                 }
             });
         });
-        // ?==============Delete District======================//
+        // ?==============Delete Institute======================//
         $(document).on('click', '#deleteBtn', function() {
-            var EducationId = $(this).data('id');
-            var url = '<?= route('deleteEducation') ?>';
+            var InstituteId = $(this).data('id');
+            var url = '<?= route('deleteInstitute') ?>';
             swal.fire({
                 title: 'Are you sure?',
-                html: 'You want to <b>Delete</b> this Education',
+                html: 'You want to <b>Delete</b> this Institute',
                 showCancelButton: true,
                 showCloseButton: true,
                 cancelButtonText: 'Cancel',
@@ -403,7 +407,7 @@
             }).then(function(result) {
                 if (result.value) {
                     $.post(url, {
-                        EducationId: EducationId
+                        InstituteId: InstituteId
                     }, function(data) {
                         if (data.status == 200) {
                             $('#EducationTable').DataTable().ajax.reload(null, false);
@@ -414,6 +418,37 @@
                     }, 'json');
                 }
             });
+        });
+
+
+
+
+        $('#editState').change(function() {
+            var StateId = $(this).val();
+            if (StateId) {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('getDistrict') }}?StateId="+StateId,
+                 
+                    success: function(res) {
+                        console.log(res);
+                        if (res) {
+                            $("#editDistrict").empty();
+                            $("#editDistrict").append('<option>Select District</option>');
+                            $.each(res, function(key, value) {
+                                $("#editDistrict").append('<option value="' + value + '">' + key +
+                                    '</option>');
+                            });
+
+                        } else {
+                            $("#editDistrict").empty();
+                        }
+                    }
+                });
+            } else {
+                $("#editDistrict").empty();
+              
+            }
         });
     </script>
 @endsection
