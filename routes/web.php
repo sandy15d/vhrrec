@@ -1,21 +1,24 @@
 <?php
 
+use App\Http\Controllers\Admin\ResumeSourcController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminController;
+
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\CountryController;
+use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\Admin\DesignationController;
+use App\Http\Controllers\Admin\DistrictController;
+use App\Http\Controllers\Admin\EmployeeController;
+use App\Http\Controllers\Admin\GradeController;
+use App\Http\Controllers\Admin\HeadquarterController;
+use App\Http\Controllers\Admin\StateController;
+use App\Http\Controllers\Admin\EducationController;
+use App\Http\Controllers\Admin\EduSpecialController;
+use App\Http\Controllers\Admin\InstituteController;
+
 use App\Http\Controllers\RecruiterController;
 use App\Http\Controllers\HodController;
-use App\Http\Controllers\CompanyController;
-use App\Http\Controllers\CountryController;
-use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\DesignationController;
-use App\Http\Controllers\DistrictController;
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\GradeController;
-use App\Http\Controllers\HeadquarterController;
-use App\Http\Controllers\StateController;
-use App\Http\Controllers\EducationController;
-use App\Http\Controllers\EduSpecialController;
-use App\Http\Controllers\InstituteController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -32,7 +35,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-    Route::get('settings', [AdminController::class, 'settings'])->name('admin.settings');
+  
 
     // ! ======================Master Company ========================//
     Route::get('company', [CompanyController::class, 'company'])->name('admin.company');
@@ -131,8 +134,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::get('getDistrict',[InstituteController::class, 'getDistrict'])->name('getDistrict');
     //?====================================================================== */
    
-  
-   Route::get('resumesource', [AdminController::class, 'resumesource'])->name('admin.resumesource');
+  //**=============================Resume Source================================================= */
+   Route::get('resumesource',[ResumeSourcController::class,'resumesource'])->name('admin.resumesource');
+   Route::post('addResumeSource',[ResumeSourcController::class,'addResumeSource'])->name('addResumeSource');
+   Route::get('getAllResumeSource',[ResumeSourcController::class,'getAllResumeSource'])->name('getAllResumeSource');
+   Route::post('getResumeSourceDetails',[ResumeSourcController::class,'getResumeSourceDetails'])->name('getResumeSourceDetails');
+   Route::post('editResumeSource',[ResumeSourcController::class,'editResumeSource'])->name('editResumeSource');
+   Route::post('deleteResumeSource',[ResumeSourcController::class,'deleteResumeSource'])->name('deleteResumeSource');
+  //**=========================================================================================== */
+
    Route::post('setTheme',[AdminController::class,'setTheme'])->name('admin.setTheme');
 
 });
