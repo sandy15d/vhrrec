@@ -133,6 +133,30 @@
                     </li>
                 @endif
 
+                @if (Auth::user()->role == 'H')
+                <li>
+                    <a href="/hod/myteam">
+                        <div class="parent-icon"><i class='bx bx-help-circle text-danger'></i>
+                        </div>
+                        <div class="menu-title">My Team Details</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="/hod/newmrf">
+                        <div class="parent-icon"><i class='bx bx-help-circle text-danger'></i>
+                        </div>
+                        <div class="menu-title">New MRF</div>
+                    </a>
+                </li>  
+                <li>
+                    <a href="/hod/interviewschedule">
+                        <div class="parent-icon"><i class='bx bx-help-circle text-danger'></i>
+                        </div>
+                        <div class="menu-title">Interview Schedule</div>
+                    </a>
+                </li>
+                @endif
+
             </ul>
             <!--end navigation-->
         </div>

@@ -17,5 +17,6 @@ class master_user extends Model
         'role',
         'Contact',
         'password',
+        'Status'
     ];
 }

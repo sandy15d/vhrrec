@@ -19,7 +19,7 @@ class UserController extends Controller
 {
     public function userlist()
     {
-     
+
         $company_list = DB::table("master_company")->orderBy('CompanyId', 'asc')->pluck("CompanyCode", "CompanyId");
         return view('admin.userlist', compact('company_list'));
     }
@@ -34,6 +34,7 @@ class UserController extends Controller
             'EmployeeID'
         )
             ->where('CompanyId', $request->CompanyId)
+            ->where('EmpStatus', 'A')
             ->pluck('name', 'EmployeeID');
         return response()->json($Employee);
     }
@@ -50,7 +51,7 @@ class UserController extends Controller
     public function addUser(Request $request)
     {
         $validator = Validator::make($request->all(), [
-          
+
             'Employee' => 'required',
             'Username' => 'required',
             'Password' => 'required',
@@ -70,8 +71,9 @@ class UserController extends Controller
             $User->email = $request->Email;
             $User->role = $request->UserType;
             $User->Contact = $request->Contact;
+            $User->Status = $request->Status;
             $User->password =  Hash::make($request->Password);
-          
+
             $query = $User->save();
 
             if (!$query) {
@@ -84,58 +86,34 @@ class UserController extends Controller
 
     // ?====================Get All Education Data From Datatabse=====================
 
-    public function getAllResumeSource()
+    public function getAllUser()
     {
-        $ResumeSource = master_user::all();
-        return Datatables::of($ResumeSource)
+        $User = master_user::all();
+        return Datatables::of($User)
             ->addIndexColumn()
-            ->addColumn('actions', function ($ResumeSource) {
-                if ($ResumeSource['Editable'] == 1) {
-                    return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $ResumeSource['ResumeSouId'] . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  
-             <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $ResumeSource['ResumeSouId'] . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
-                } else {
-                    return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $ResumeSource['ResumeSouId'] . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>';
+            ->addColumn('actions', function ($User) {
+            
+                    return '<button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $User['id'] . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button> <button class="btn btn-sm btn-outline-warning font-12 cngpwd" data-id="' . $User['id'] . '"><i class="fadeIn animated bx bx-key"></i></button> <button class="btn btn-sm btn-outline-info font-12 cngpwd" data-id="' . $User['id'] . '"><i class="fadeIn animated bx bx-lock"></i></button>'; 
+            })
+
+            ->addColumn('UserType',function($User){
+                if($User['role']=='H'){
+                    return 'Employee';
+                }elseif($User['role']=='R'){
+                    return 'Recruiter';
+                }elseif ($User['role']=='A') {
+                    return 'Admin';
                 }
             })
-            ->rawColumns(['actions'])
+            ->rawColumns(['actions','UserType'])
             ->make(true);
     }
 
-    // ?========================Get Education Details for Edit ========================//
 
-    public function getResumeSourceDetails(Request $request)
+    public function deleteUser(Request $request)
     {
-        $ResumeSouId = $request->ResumeSouId;
-        $ResumeSourceDetail = master_user::find($ResumeSouId);
-        return response()->json(['ResumeSourceDetail' => $ResumeSourceDetail]);
-    }
-
-    // ?=====================Update Education Details===================
-    public function editResumeSource(Request $request)
-    {
-        $ResumeSouId = $request->RId;
-        $validator = Validator::make($request->all(), [
-            'editResumeSource' => 'required',
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
-        } else {
-            $ResumeSource = master_user::find($ResumeSouId);
-            $ResumeSource->ResumeSource = $request->editResumeSource;
-            $ResumeSource->Status = $request->editStatus;
-            $query = $ResumeSource->save();
-            if (!$query) {
-                return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
-            } else {
-                return response()->json(['status' => 200, 'msg' => 'Resume Source data has been changed successfully.']);
-            }
-        }
-    }
-
-    public function deleteResumeSource(Request $request)
-    {
-        $ResumeSouId = $request->ResumeSouId;
-        $query = master_user::find($ResumeSouId)->delete();
+        $UserId = $request->UserId;
+        $query = master_user::find($UserId)->delete();
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
