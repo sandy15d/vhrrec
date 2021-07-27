@@ -8,11 +8,9 @@
             <div class="ms-auto">
                 <button class="btn btn--new btn-sm" id="addUser" data-bs-toggle="modal" data-bs-target="#addUserModal">Add
                     New</button>
-
             </div>
         </div>
         <!--end breadcrumb-->
-
         <hr />
         <div class="card">
             <div class="card-body">
@@ -57,6 +55,9 @@
                                     <label for="Company">Company</label>
                                     <select id="Company" name="Company" class="form-select">
                                         <option value="" selected disabled>Select Company</option>
+                                        @foreach ($company_list as $key => $value)
+                                            <option value="{{ $key }}">{{ $value }}</option>
+                                        @endforeach
                                     </select>
                                     <span class="text-danger error-text Company_error"></span>
                                 </div>
@@ -64,7 +65,7 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label for="Employee">Name</label>
-                                    <select name="Employee" class="form-control form-select">
+                                    <select name="Employee" id="Employee" class="form-control form-select">
                                         <option value="" selected disabled>Select Employee</option>
 
                                     </select>
@@ -93,8 +94,9 @@
                                 <div class="form-group">
                                     <label for="UserType">User Type</label>
                                     <select name="UserType" class="form-control form-select">
-                                        <option value="A">Active</option>
-                                        <option value="D">Deactive</option>
+                                        <option value="" disabled selected>Select</option>
+                                        <option value="E">Employee</option>
+                                        <option value="R">Recruiter</option>
                                     </select>
                                     <span class="text-danger error-text UserType_error"></span>
                                 </div>
@@ -102,7 +104,7 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label for="Contact">Contact</label>
-                                    <input type="text" class="form-control" id="Contact" name="Contact">
+                                    <input type="text" class="form-control" id="Contact" name="Contact" readonly>
                                     <span class="text-danger error-text Contact_error"></span>
                                 </div>
                             </div>
@@ -114,7 +116,7 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label for="Email">Email</label>
-                                    <input type="text" class="form-control" id="Email" name="Email">
+                                    <input type="text" class="form-control" id="Email" name="Email" readonly>
                                     <span class="text-danger error-text Email_error"></span>
                                 </div>
                             </div>
@@ -189,6 +191,46 @@
 
 @section('scriptsection')
     <script>
+        $('#Company').change(function() {
+            var CompanyId = $(this).val();
+            if (CompanyId) {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('getEmployee') }}?CompanyId=" + CompanyId,
+
+                    success: function(res) {
+                        console.log(res);
+                        if (res) {
+                            $("#Employee").empty();
+                            $("#Employee").append('<option>Select Employee</option>');
+                            $.each(res, function(key, value) {
+                                $("#Employee").append('<option value="' + key + '">' + value +
+                                    '</option>');
+                            });
+
+                        } else {
+                            $("#Employee").empty();
+                        }
+                    }
+                });
+            } else {
+                $("#Employee").empty();
+
+            }
+        });
+
+
+        //=================================//
+        $(document).on('change', '#Employee', function() {
+            var EmployeeID = $(this).val();
+            $.get('<?= route('getEmployeeDetail') ?>', {
+                EmployeeID: EmployeeID
+            }, function(data) {
+                $('#Contact').val(data.EmployeeDetail.Contact);
+                $('#Email').val(data.EmployeeDetail.Email);
+            }, 'json');
+        });
+
         $('#addUserForm').on('submit', function(e) {
             e.preventDefault();
             var form = this;
