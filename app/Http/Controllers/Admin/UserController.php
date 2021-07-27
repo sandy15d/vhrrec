@@ -9,12 +9,17 @@ use App\Models\master_employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use App\Helpers\Helper;
 use DataTables;
+
+use function App\Helpers\getFullName;
 
 class UserController extends Controller
 {
     public function userlist()
     {
+     
         $company_list = DB::table("master_company")->orderBy('CompanyId', 'asc')->pluck("CompanyCode", "CompanyId");
         return view('admin.userlist', compact('company_list'));
     }
@@ -45,22 +50,34 @@ class UserController extends Controller
     public function addUser(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'ResumeSource' => 'required',
+          
+            'Employee' => 'required',
+            'Username' => 'required',
+            'Password' => 'required',
+            'UserType' => 'required',
+            'Contact' => 'required',
+            'Email' => 'required',
+
 
         ]);
         if ($validator->fails()) {
             return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
         } else {
-            $ResumeSource = new master_user;
-            $ResumeSource->ResumeSource = $request->ResumeSource;
-            $ResumeSource->Editable = 1;
-            $ResumeSource->Status = $request->Status;
-            $query = $ResumeSource->save();
+            $User = new master_user;
+            $User->id = $request->Employee;
+            $User->name = getFullName($request->Employee);
+            $User->Username = $request->Username;
+            $User->email = $request->Email;
+            $User->role = $request->UserType;
+            $User->Contact = $request->Contact;
+            $User->password =  Hash::make($request->Password);
+          
+            $query = $User->save();
 
             if (!$query) {
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
-                return response()->json(['status' => 200, 'msg' => 'New Resume Source has been successfully created.']);
+                return response()->json(['status' => 200, 'msg' => 'New User has been successfully created.']);
             }
         }
     }

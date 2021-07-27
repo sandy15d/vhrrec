@@ -95,7 +95,7 @@
                                     <label for="UserType">User Type</label>
                                     <select name="UserType" class="form-control form-select">
                                         <option value="" disabled selected>Select</option>
-                                        <option value="E">Employee</option>
+                                        <option value="H">Employee</option>
                                         <option value="R">Recruiter</option>
                                     </select>
                                     <span class="text-danger error-text UserType_error"></span>
@@ -110,8 +110,6 @@
                             </div>
 
                         </div>
-
-
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
@@ -258,6 +256,7 @@
                 }
             });
         });
+
         $('#UserTable').DataTable({
             processing: true,
             info: true,

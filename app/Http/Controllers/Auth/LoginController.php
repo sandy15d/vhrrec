@@ -60,7 +60,7 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
 
-        if (auth()->attempt(array('email' => $input['email'], 'password' => $input['password']))) {
+        if (auth()->attempt(array('email' => $input['email'], 'password' => $input['password'])) ||auth()->attempt(array('Username' => $input['email'], 'password' => $input['password'])) ) {
            
             $userId = Auth::user()->id;
             $themedetail = DB::table("theme_customizer")->where("UserId",$userId)->get();
