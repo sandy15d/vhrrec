@@ -16,7 +16,7 @@ use App\Http\Controllers\Admin\StateController;
 use App\Http\Controllers\Admin\EducationController;
 use App\Http\Controllers\Admin\EduSpecialController;
 use App\Http\Controllers\Admin\InstituteController;
-
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\RecruiterController;
 use App\Http\Controllers\HodController;
 use Illuminate\Support\Facades\Auth;
@@ -35,7 +35,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-  
+    Route::post('setTheme',[AdminController::class,'setTheme'])->name('admin.setTheme');
 
     // ! ======================Master Company ========================//
     Route::get('company', [CompanyController::class, 'company'])->name('admin.company');
@@ -143,7 +143,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
    Route::post('deleteResumeSource',[ResumeSourcController::class,'deleteResumeSource'])->name('deleteResumeSource');
   //**=========================================================================================== */
 
-   Route::post('setTheme',[AdminController::class,'setTheme'])->name('admin.setTheme');
+      //? ======================= User Master ===================== */
+      Route::get('userlist', [UserController::class, 'userlist'])->name('admin.userlist');
+      Route::post('addUser',[UserController::class,'addUser'])->name('addUser');
+      Route::get('getAllUser',[UserController::class,'getAllUser'])->name('getAllUser');
+      Route::post('getUserDetails',[UserController::class,'getUserDetails'])->name('getUserDetails');
+      Route::post('editUser',[UserController::class,'editUser'])->name('editUser');
+      Route::post('deleteUser',[UserController::class,'deleteUser'])->name('deleteUser');
+      //?====================================================================== */
+  
 
 });
 

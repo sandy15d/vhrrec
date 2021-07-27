@@ -112,7 +112,7 @@
                             <li> <a href="/admin/employee"><i class="bx bx-right-arrow-alt"></i>Employee</a></li>
                         </ul>
                     </li>
-                    <li> <a href="/admin/users">
+                    <li> <a href="/admin/userlist">
                             <div class="parent-icon"><i class='bx bx-user text-info'></i>
                             </div>
                             <div class="menu-title">Users</div>
