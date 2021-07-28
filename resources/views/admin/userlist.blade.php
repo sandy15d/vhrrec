@@ -37,7 +37,35 @@
         </div>
     </div>
 
-
+<div class="modal fade" id="cngPasswordModal" tabindex="1" area-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Change Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" area-label="Close"></button>
+            </div>
+            <form action="{{ route('cngUserPwd') }}" method="POST" id="changePasswordForm">
+                @csrf
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="NewPassword">Password</label>
+                            <input type="password" class="form-control" name="NewPassword" id="NewPassword">
+                        </div>
+                        <div class="col-6">
+                            <label for="CnfPassword">Confirm Password</label>
+                            <input type="text" class="form-control" name="CnfPassword" id="CnfPassword">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="ChangePassword">Update Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
     <div class="modal fade" id="addUserModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -315,5 +343,10 @@
             });
         });
        
+        //*****==============================Change Password**********//
+        $(document).on('click', '.cngpwd', function() {
+            var UId = $(this).data('id');
+            $('#cngPasswordModal').modal('show');
+        });
     </script>
 @endsection

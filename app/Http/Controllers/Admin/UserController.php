@@ -93,7 +93,7 @@ class UserController extends Controller
             ->addIndexColumn()
             ->addColumn('actions', function ($User) {
             
-                    return '<button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $User['id'] . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button> <button class="btn btn-sm btn-outline-warning font-12 cngpwd" data-id="' . $User['id'] . '"><i class="fadeIn animated bx bx-key"></i></button> <button class="btn btn-sm btn-outline-info font-12 cngpwd" data-id="' . $User['id'] . '"><i class="fadeIn animated bx bx-lock"></i></button>'; 
+                    return '<button class="btn btn-sm btn btn-outline-danger font-12 delete" data-id="' . $User['id'] . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button> <button class="btn btn-sm btn-outline-warning font-12 cngpwd" data-id="' . $User['id'] . '"><i class="fadeIn animated bx bx-key"></i></button> <button class="btn btn-sm btn-outline-info font-12 setpermission" data-id="' . $User['id'] . '"><i class="fadeIn animated bx bx-lock"></i></button>'; 
             })
 
             ->addColumn('UserType',function($User){

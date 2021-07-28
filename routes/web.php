@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\Admin\ResumeSourcController;
+
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CompanyController;
@@ -16,10 +17,16 @@ use App\Http\Controllers\Admin\StateController;
 use App\Http\Controllers\Admin\EducationController;
 use App\Http\Controllers\Admin\EduSpecialController;
 use App\Http\Controllers\Admin\InstituteController;
+use App\Http\Controllers\Admin\ResumeSourcController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\RecruiterController;
-use App\Http\Controllers\HodController;
-use Illuminate\Support\Facades\Auth;
+
+
+use App\Http\Controllers\Recruiter\RecruiterController;
+
+
+use App\Http\Controllers\Hod\HodController;
+
+
 
 Route::get('/', function () {
     return view('auth.login');
@@ -147,8 +154,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::get('userlist', [UserController::class, 'userlist'])->name('admin.userlist');
     Route::post('addUser', [UserController::class, 'addUser'])->name('addUser');
     Route::get('getAllUser', [UserController::class, 'getAllUser'])->name('getAllUser');
-    Route::post('getUserDetails', [UserController::class, 'getUserDetails'])->name('getUserDetails');
-    Route::post('editUser', [UserController::class, 'editUser'])->name('editUser');
+   
+    Route::post('cngUserPwd', [UserController::class, 'cngUserPwd'])->name('cngUserPwd');
     Route::post('deleteUser', [UserController::class, 'deleteUser'])->name('deleteUser');
     Route::get('getEmployee',[UserController::class, 'getEmployee'])->name('getEmployee');
     Route::get('getEmployeeDetail',[UserController::class, 'getEmployeeDetail'])->name('getEmployeeDetail');
@@ -161,10 +168,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
 
 Route::group(['prefix' => 'recruiter', 'middleware' => ['isRecruiter', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [RecruiterController::class, 'index'])->name('recruiter.dashboard');
-    Route::get('settings', [RecruiterController::class, 'settings'])->name('recruiter.settings');
+    Route::post('setTheme', [RecruiterController::class, 'setTheme'])->name('setTheme');
 });
 
 Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [HodController::class, 'index'])->name('hod.dashboard');
-    Route::get('settings', [HodController::class, 'settings'])->name('hod.settings');
+    Route::get('myteam',[HodController::class,'myteam'])->name('myteam');
+    Route::get('getAllMyTeamMember', [HodController::class, 'getAllMyTeamMember'])->name('getAllMyTeamMember');
+    Route::post('setTheme', [HodController::class, 'setTheme'])->name('setTheme');
+   
 });

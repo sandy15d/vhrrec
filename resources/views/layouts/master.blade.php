@@ -30,7 +30,7 @@
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/sweetalert2.min.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/toastr.min.css" />
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
-
+    <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
 
 
 
@@ -80,7 +80,7 @@
             <ul class="metismenu" id="menu">
                 <li class="{{ request()->is('admin/dashboard') ? 'mm-active' : '' }}">
                     <a href="/admin/dashboard">
-                        <div class="parent-icon"><i class='bx bx-home-circle text-primary'></i>
+                        <div class="parent-icon"><i class="fas fa-laptop-house text-primary"></i>
                         </div>
                         <div class="menu-title">Dashboard</div>
                     </a>
@@ -136,21 +136,21 @@
                 @if (Auth::user()->role == 'H')
                 <li>
                     <a href="/hod/myteam">
-                        <div class="parent-icon"><i class='bx bx-help-circle text-danger'></i>
+                        <div class="parent-icon"><i class="fas fa-users text-info"></i>
                         </div>
                         <div class="menu-title">My Team Details</div>
                     </a>
                 </li>
                 <li>
                     <a href="/hod/newmrf">
-                        <div class="parent-icon"><i class='bx bx-help-circle text-danger'></i>
+                        <div class="parent-icon"><i class="fas fa-feather-alt text-success"></i>
                         </div>
                         <div class="menu-title">New MRF</div>
                     </a>
                 </li>  
                 <li>
                     <a href="/hod/interviewschedule">
-                        <div class="parent-icon"><i class='bx bx-help-circle text-danger'></i>
+                        <div class="parent-icon"><i class="far fa-calendar-alt text-warning"></i>
                         </div>
                         <div class="menu-title">Interview Schedule</div>
                     </a>
