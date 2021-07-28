@@ -189,6 +189,7 @@
                                 </a>
 
                             </li>
+                            @if (Auth::user()->role == 'A' || Auth::user()->role == 'R')
                             <li class="nav-item dropdown dropdown-large">
                                 <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button"
                                     data-bs-toggle="dropdown" aria-expanded="false"> <i class='bx bx-category'></i>
@@ -379,6 +380,7 @@
 
                                 </div>
                             </li>
+                            @endif
                         </ul>
                     </div>
                     <div class="user-box dropdown">
