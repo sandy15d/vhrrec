@@ -50,6 +50,7 @@
                 {
                     data: 'EmpCode',
                     name: 'EmpCode'
+                    
                 },
                 {
                     data: 'fullname',

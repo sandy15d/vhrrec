@@ -25,8 +25,8 @@ use App\Http\Controllers\Recruiter\RecruiterController;
 
 
 use App\Http\Controllers\Hod\HodController;
-
-
+use App\Http\Controllers\Hod\MrfController;
+use App\Http\Controllers\Hod\MyTeamController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -173,8 +173,16 @@ Route::group(['prefix' => 'recruiter', 'middleware' => ['isRecruiter', 'auth', '
 
 Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [HodController::class, 'index'])->name('hod.dashboard');
-    Route::get('myteam',[HodController::class,'myteam'])->name('myteam');
-    Route::get('getAllMyTeamMember', [HodController::class, 'getAllMyTeamMember'])->name('getAllMyTeamMember');
     Route::post('setTheme', [HodController::class, 'setTheme'])->name('setTheme');
+
+    //**========================My Team =========================================== */
+    Route::get('myteam',[MyTeamController::class,'myteam'])->name('myteam');
+    Route::get('getAllMyTeamMember', [MyTeamController::class, 'getAllMyTeamMember'])->name('getAllMyTeamMember');
+    //**=========================================================================== */
+
+    //!=============================MRF===============================================//
+    Route::get('newmrf',[MrfController::class,'newmrf'])->name('newmrf');
+    //!==============================================================================//
+ 
    
 });
