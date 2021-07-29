@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
-
 use App\Models\master_institute;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;

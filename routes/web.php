@@ -154,7 +154,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::get('userlist', [UserController::class, 'userlist'])->name('admin.userlist');
     Route::post('addUser', [UserController::class, 'addUser'])->name('addUser');
     Route::get('getAllUser', [UserController::class, 'getAllUser'])->name('getAllUser');
-   
     Route::post('cngUserPwd', [UserController::class, 'cngUserPwd'])->name('cngUserPwd');
     Route::post('deleteUser', [UserController::class, 'deleteUser'])->name('deleteUser');
     Route::get('getEmployee',[UserController::class, 'getEmployee'])->name('getEmployee');
@@ -182,6 +181,10 @@ Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackH
 
     //!=============================MRF===============================================//
     Route::get('newmrf',[MrfController::class,'newmrf'])->name('newmrf');
+    Route::post('addNewMrf', [MrfController::class, 'addNewMrf'])->name('addNewMrf');
+    Route::get('getDepartment', [MrfController::class,'getDepartment'])->name('getDepartment');
+    Route::get('getDesignation', [MrfController::class,'getDesignation'])->name('getDesignation');
+    Route::get('getReportingManager', [MrfController::class,'getReportingManager'])->name('getReportingManager');
     //!==============================================================================//
  
    
