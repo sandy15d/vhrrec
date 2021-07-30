@@ -14,7 +14,8 @@ class MrfController extends Controller
     {
         $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
         $department_list = DB::table("master_department")->where('DeptStatus', 'A')->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
-        return view('hod.newmrf', compact('company_list', 'department_list'));
+        $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
+        return view('hod.newmrf', compact('company_list', 'department_list','state_list'));
     }
 
 
@@ -48,6 +49,20 @@ class MrfController extends Controller
                 return response()->json(['status' => 200, 'msg' => 'New Institute has been successfully created.']);
             } */
         }
+    }
+    public function getState(Request $request)
+    {
+        $State = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateId", "StateName");
+        return response()->json($State);
+       
+    }
+
+    public function getDistrict(Request $request)
+    {
+        $District = DB::table("master_district")->orderBy('DistrictName', 'asc')
+            ->where("StateId", $request->StateId)
+            ->pluck("DistrictId", "DistrictName");
+        return response()->json($District);
     }
 
     public function getDepartment(Request $request)

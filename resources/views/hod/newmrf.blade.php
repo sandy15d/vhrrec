@@ -24,7 +24,8 @@
                     </div>
                     <hr>
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover display compact" id="mrfsummarytable" style="width: 100%">
+                        <table class="table table-striped table-hover display compact" id="mrfsummarytable"
+                            style="width: 100%">
                             <thead>
                                 <tr>
                                     <th class="th-sm">S.No</th>
@@ -45,77 +46,123 @@
         </div>
     </div>
 
-    <div class="modal fade" id="addNewMRFModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="addNewMRFModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
-                <div class="modal-header bg-primary">
+                <div class="modal-header bg-info bg-gradient">
                     <h5 class="modal-title text-white">New Manpower Requisition Form</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('addNewMrf') }}" method="POST" id="addNewMrfForm">
                     @csrf
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label for="Reason">Reason For Creating New Position<font class="text-danger">*</font></label>
-                            <textarea class="form-control" rows="1" name="Reason" tabindex="1" autofocus></textarea>
-                            <span class="text-danger error-text Reason_error"></span>
-                        </div>
-                        <div class="row">
-                            <div class="col-3">
-                                <div class="form-group">
-                                    <label for="Company">Company<font class="text-danger">*</font></label>
-                                    <select id="Company" name="Company" class="form-control form-select form-select-sm">
-                                        <option value="" selected disabled>Select Company</option>
-                                        @foreach ($company_list as $key => $value)
-                                            <option value="{{ $key }}">{{ $value }}</option>
-                                        @endforeach
-                                    </select>
-                                    <span class="text-danger error-text Company_error"></span>
-                                </div>
-                            </div>
-                            <div class="col-3">
+                        <table class="table borderless">
+                            <tbody>
+                                <tr>
+                                    <th style="width:200px;">Reason for Creating New Position<font class="text-danger">*
+                                        </font>
+                                    </th>
+                                    <td>
+                                        <textarea class="form-control" rows="1" name="Reason" tabindex="1"
+                                            autofocus></textarea>
+                                        <span class="text-danger error-text Reason_error"></span>
 
-                                <div class="form-group">
-                                    <label for="Department">Department<font class="text-danger">*</font></label>
-                                    <div class="spinner-border text-primary d-none" role="status" id="DeptLoader"> <span
-                                            class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <select id="Department" name="Department"
-                                        class="form-control form-select form-select-sm">
-                                        <option value="" selected disabled >Select Department</option>
-                                    </select>
-                                    <span class="text-danger error-text Department_error"></span>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="form-group">
-                                    <div class="spinner-border text-primary d-none" role="status" id="DesigLoader"> <span
-                                            class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <label for="Designation">Designation<font class="text-danger">*</font></label>
-                                    <select id="Designation" name="Designation"
-                                        class="form-control form-select form-select-sm">
-                                        <option value="" selected disabled >Select Designation</option>
-                                    </select>
-                                    <span class="text-danger error-text Designation_error"></span>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="form-group">
-                                    <div class="spinner-border text-primary d-none" role="status" id="RepLoader"> <span
-                                        class="visually-hidden">Loading...</span>
-                                </div>
-                                    <label for="ReportingManager">Reporting Manager<font class="text-danger">*</font>
-                                    </label>
-                                    <select id="ReportingManager" name="ReportingManager"
-                                        class="form-control form-select form-select-sm">
-                                        <option value="" selected disabled >Select Reporting Manager</option>
-                                    </select>
-                                    <span class="text-danger error-text ReportingManager_error"></span>
-                                </div>
-                            </div>
-                        </div>
-
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Company<font class="text-danger">*</font>
+                                    </th>
+                                    <td><select id="Company" name="Company" class="form-control form-select form-select-sm">
+                                            <option value="" selected disabled>Select Company</option>
+                                            @foreach ($company_list as $key => $value)
+                                                <option value="{{ $key }}">{{ $value }}</option>
+                                            @endforeach
+                                        </select>
+                                        <span class="text-danger error-text Company_error"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Deartment<font class="text-danger">*</font>
+                                    </th>
+                                    <td>
+                                        <div class="spinner-border text-primary d-none" role="status" id="DeptLoader"> <span
+                                                class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <select id="Department" name="Department"
+                                            class="form-control form-select form-select-sm">
+                                            <option value="" selected disabled>Select Department</option>
+                                        </select>
+                                        <span class="text-danger error-text Department_error"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Designation<font class="text-danger">*</font>
+                                    </th>
+                                    <td>
+                                        <div class="spinner-border text-primary d-none" role="status" id="DesigLoader">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <select id="Designation" name="Designation"
+                                            class="form-control form-select form-select-sm">
+                                            <option value="" selected disabled>Select Designation</option>
+                                        </select>
+                                        <span class="text-danger error-text Designation_error"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Reporting Manager<font class="text-danger">*</font>
+                                    </th>
+                                    <td>
+                                        <div class="spinner-border text-primary d-none" role="status" id="RepLoader"> <span
+                                                class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <select id="ReportingManager" name="ReportingManager"
+                                            class="form-control form-select form-select-sm">
+                                            <option value="" selected disabled>Select Reporting Manager</option>
+                                        </select>
+                                        <span class="text-danger error-text ReportingManager_error"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Location & Man Power <font class="text-danger">*</font>
+                                    </th>
+                                    <td>
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tbody id="MulLocation">
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Expected CTC (in Lacs) <font class="text-danger">*</font>
+                                    </th>
+                                    <td>
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tr>
+                                                <td><input type="text" name="MinCTC" id="MinCTC"
+                                                        class="form-control form-control-sm" placeholder="Min"></td>
+                                                <td><input type="text" name="MaxCTC" id="MaxCTC"
+                                                        class="form-control form-control-sm" placeholder="Max"> </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Work Experience <font class="text-danger">*</font>
+                                    </th>
+                                    <td>
+                                        <input type="text" name="WorkExp" id="WorkExp" class="form-control form-control-sm">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Any Other Job-related information</th>
+                                    <td>
+                                        <textarea name="JobInfo" id="JobInfo" rows="3" class="form-control"></textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -129,6 +176,111 @@
 
 @section('scriptsection')
     <script>
+       
+        var LocCount = 1;
+        var StateList;
+        var DistrictList;
+        getState();
+
+        function getState() {
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getState') }}",
+                async: false,
+                success: function(res) {
+
+                    if (res) {
+                        $.each(res, function(key, value) {
+                            StateList = StateList + '<option value="' + value + '">' + key +
+                                '</option>';
+                        });
+
+                    }
+                }
+            });
+        }
+        mulLocation(LocCount);
+
+        function mulLocation(number) {
+            x = '<tr>';
+            x += '<td >' +
+                ' <select  name="State' + number + '" id="State' +
+                number +
+                '" class="form-control form-select form-select-sm" onchange="getLocation(this.value,' + number + ')">' +
+                '  <option value="" selected disabled>Select State</option>' + StateList +
+                '</select>' +
+                ' <span class="text-danger error-text State' + number + '_error"></span>' +
+                '</td>';
+            x += '<td>' +
+                '<div class="spinner-border text-primary d-none" role="status" id="LocLoader' + number +
+                '"> <span class="visually-hidden">Loading...</span></div>' +
+                '       <select  id="City' + number + '" name="City' + number +
+                '" class="form-control form-select form-select-sm">' +
+                '    <option value="" selected disabled>Select City</option>' +
+                '</select>' +
+                '<span class="text-danger error-text City' + number + '_error"></span>' +
+                '</td>';
+            x += '<td>' +
+                '  <input type="text" name="ManPower' + number + '" id="ManPower' + number +
+                '" class="form-control form-control-sm" style="width:130px" placeholder="No. of Manpower">' +
+                '<span class="text-danger error-text ManPower' + number + '_error"></span>' +
+                '</td>';
+
+            if (number > 1) {
+                x +=
+                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-xs  removeLocation">Remove</td></tr>';
+                $('#MulLocation').append(x);
+            } else {
+                x +=
+                    '<td><button type="button" name="add" id="add" class="btn btn-warning btn-xs ">Add</button></td></tr>';
+                $('#MulLocation').html(x);
+            }
+        }
+
+        $(document).on('click', '#add', function() {
+            LocCount++;
+            mulLocation(LocCount);
+        });
+
+        $(document).on('click', '.removeLocation', function() {
+            LocCount--;
+            $(this).closest("tr").remove();
+        });
+
+
+
+        function getLocation(StateId, No) {
+            var StateId = StateId;
+            var No = No;
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getDistrict') }}?StateId=" + StateId,
+                async: false,
+                beforeSend: function() {
+                    $('#LocLoader' + No).removeClass('d-none');
+                    $('#City' + No).addClass('d-none');
+                },
+
+                success: function(res) {
+
+                    if (res) {
+                        $('#LocLoader' + No).addClass('d-none');
+                        $('#City' + No).removeClass('d-none');
+                        $("#City" + No).empty();
+                        $("#City" + No).append(
+                            '<option value="" selected disabled >Select City</option>');
+
+                        $.each(res, function(key, value) {
+                            $("#City" + No).append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+
+                    } else {
+                        $("#City" + No).empty();
+                    }
+                }
+            });
+        }
         //==================================Get Department List on Change Company========================//
         $('#Company').change(function() {
             var CompanyId = $(this).val();
@@ -141,7 +293,7 @@
                         $('#Department').addClass('d-none');
                     },
                     success: function(res) {
-                        console.log(res);
+
                         if (res) {
                             $('#DeptLoader').addClass('d-none');
                             $('#Department').removeClass('d-none');
@@ -154,7 +306,7 @@
                                 '<option value="" selected disabled >Select Designation</option>');
                             $("#ReportingManager").append(
                                 '<option value="" selected disabled >Select Reporting Manager</option>'
-                                );
+                            );
                             $.each(res, function(key, value) {
                                 $("#Department").append('<option value="' + value + '">' + key +
                                     '</option>');
@@ -183,7 +335,7 @@
                         $('#Designation').addClass('d-none');
                     },
                     success: function(res) {
-                        console.log(res);
+
                         if (res) {
                             $('#DesigLoader').addClass('d-none');
                             $('#Designation').removeClass('d-none');
@@ -193,7 +345,7 @@
                                 '<option value="" selected disabled >Select Designation</option>');
                             $("#ReportingManager").append(
                                 '<option value="" selected disabled >Select Reporting Manager</option>'
-                                );
+                            );
                             $.each(res, function(key, value) {
                                 $("#Designation").append('<option value="' + value + '">' +
                                     key +
@@ -223,14 +375,14 @@
                         $('#ReportingManager').addClass('d-none');
                     },
                     success: function(res) {
-                        console.log(res);
+
                         if (res) {
                             $('#RepLoader').addClass('d-none');
                             $('#ReportingManager').removeClass('d-none');
                             $("#ReportingManager").empty();
                             $("#ReportingManager").append(
                                 '<option value="" selected disabled >Select Reporting Manager</option>'
-                                );
+                            );
                             $.each(res, function(key, value) {
                                 $("#ReportingManager").append('<option value="' + value + '">' +
                                     key +

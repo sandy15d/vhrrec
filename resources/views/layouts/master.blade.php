@@ -31,7 +31,7 @@
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/toastr.min.css" />
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
-
+   
 
 
     <title>HR Recruitment | @yield('title')</title>
@@ -56,6 +56,19 @@
             background: -webkit-linear-gradient(to right, #2ebf91, #8360c3);
             background: linear-gradient(to right, #2ebf91, #8360c3);
 
+        }
+
+        .btn-group-xs>.btn,
+        .btn-xs {
+            padding: .25rem .4rem;
+            font-size: .875rem;
+            line-height: .5;
+            border-radius: .2rem;
+        }
+
+        .borderless td,
+        .borderless th {
+            border: none;
         }
 
     </style>
@@ -134,27 +147,27 @@
                 @endif
 
                 @if (Auth::user()->role == 'H')
-                <li>
-                    <a href="/hod/myteam">
-                        <div class="parent-icon"><i class="fas fa-users text-info"></i>
-                        </div>
-                        <div class="menu-title">My Team Details</div>
-                    </a>
-                </li>
-                <li>
-                    <a href="/hod/newmrf">
-                        <div class="parent-icon"><i class="fas fa-feather-alt text-success"></i>
-                        </div>
-                        <div class="menu-title">New MRF</div>
-                    </a>
-                </li>  
-                <li>
-                    <a href="/hod/interviewschedule">
-                        <div class="parent-icon"><i class="far fa-calendar-alt text-warning"></i>
-                        </div>
-                        <div class="menu-title">Interview Schedule</div>
-                    </a>
-                </li>
+                    <li>
+                        <a href="/hod/myteam">
+                            <div class="parent-icon"><i class="fas fa-users text-info"></i>
+                            </div>
+                            <div class="menu-title">My Team Details</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/hod/newmrf">
+                            <div class="parent-icon"><i class="fas fa-feather-alt text-success"></i>
+                            </div>
+                            <div class="menu-title">New MRF</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/hod/interviewschedule">
+                            <div class="parent-icon"><i class="far fa-calendar-alt text-warning"></i>
+                            </div>
+                            <div class="menu-title">Interview Schedule</div>
+                        </a>
+                    </li>
                 @endif
 
             </ul>
@@ -189,7 +202,7 @@
                                 </a>
 
                             </li>
-                          {{--   @if (Auth::user()->role == 'A' || Auth::user()->role == 'R') --}}
+                            {{-- @if (Auth::user()->role == 'A' || Auth::user()->role == 'R') --}}
                             <li class="nav-item dropdown dropdown-large">
                                 <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button"
                                     data-bs-toggle="dropdown" aria-expanded="false"> <i class='bx bx-category'></i>
@@ -380,7 +393,7 @@
 
                                 </div>
                             </li>
-                        {{--     @endif --}}
+                            {{-- @endif --}}
                         </ul>
                     </div>
                     <div class="user-box dropdown">
@@ -508,7 +521,9 @@
     <!-- Bootstrap JS -->
     <script src="{{ URL::to('/') }}/assets/js/bootstrap.bundle.min.js"></script>
     <!--plugins-->
+  
     <script src="{{ URL::to('/') }}/assets/js/jquery.min.js"></script>
+  
     <script src="{{ URL::to('/') }}/assets/plugins/simplebar/js/simplebar.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/metismenu/js/metisMenu.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
@@ -517,8 +532,10 @@
     <script src="{{ URL::to('/') }}/assets/plugins/datatable/js/dataTables.bootstrap5.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
+
     <!--app JS-->
     <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
+    
     @yield('scriptsection')
     <script>
         $(document).ready(function() {
@@ -527,7 +544,7 @@
                 width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' :
                     'style',
                 placeholder: $(this).data('placeholder'),
-                
+
                 allowClear: Boolean($(this).data('allow-clear')),
             });
             $(document).on('click', '#sidebarsetting', function() {

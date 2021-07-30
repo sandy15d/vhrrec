@@ -185,6 +185,8 @@ Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackH
     Route::get('getDepartment', [MrfController::class,'getDepartment'])->name('getDepartment');
     Route::get('getDesignation', [MrfController::class,'getDesignation'])->name('getDesignation');
     Route::get('getReportingManager', [MrfController::class,'getReportingManager'])->name('getReportingManager');
+    Route::get('getState', [MrfController::class,'getState'])->name('getState');
+    Route::get('getDistrict', [MrfController::class,'getDistrict'])->name('getDistrict');
     //!==============================================================================//
  
    
