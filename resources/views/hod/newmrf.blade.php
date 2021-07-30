@@ -158,7 +158,7 @@
                                 <tr>
                                     <th>Any Other Job-related information</th>
                                     <td>
-                                        <textarea name="JobInfo" id="JobInfo" rows="3" class="form-control"></textarea>
+                                        <textarea name="JobInfo" id="editor" rows="3" class="form-control"></textarea>
                                     </td>
                                 </tr>
                             </tbody>
@@ -175,6 +175,9 @@
 @endsection
 
 @section('scriptsection')
+<script>
+    CKEDITOR.replace( 'JobInfo' );
+</script>
     <script>
        
         var LocCount = 1;
