@@ -66,7 +66,7 @@
                         <table class="table borderless">
                             <tbody>
                                 <tr>
-                                    <th style="width:200px;">Reason for Creating New Position<font class="text-danger">*
+                                    <th style="width:250px;">Reason for Creating New Position<font class="text-danger">*
                                         </font>
                                     </th>
                                     <td>
@@ -181,7 +181,8 @@
                                 <tr>
                                     <th>Desired University/College</th>
                                     <td>
-                                        <select name="University" id="University" class="form-control form-select form-select-sm" >
+                                        <select name="University" id="University"
+                                            class="form-control form-select form-select-sm">
                                             <option value="" selected disabled>Select</option>
                                         </select>
                                     </td>
@@ -189,10 +190,17 @@
                                 <tr>
                                     <th>Key Position Criteria</th>
                                     <td>
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                                            <label class="form-check-label" for="flexSwitchCheckDefault">Default switch checkbox input</label>
-                                        </div>
+                                        
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tbody id="MulKP">
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Remarks for HR</th>
+                                    <td>
+                                        <textarea name="Remark" id="Remark" class="form-control"></textarea>
                                     </td>
                                 </tr>
                             </tbody>
@@ -217,8 +225,9 @@
     <script>
         var StateList;
         var DistrictList;
-        var EducationList
+        var EducationList;
         getState();
+
         function getState() {
             $.ajax({
                 type: "GET",
@@ -255,7 +264,7 @@
                     }
                 }
             });
-          }
+        }
 
         //=========================Start multiple Location==================
         var LocCount = 1;
@@ -332,7 +341,7 @@
                 '</select>' +
                 '<span class="text-danger error-text Specialization' + num + '_error"></span>' +
                 '</td>';
-          
+
 
             if (num > 1) {
                 x +=
@@ -355,6 +364,40 @@
             $(this).closest("tr").remove();
         });
         //===========================End Multiple Location=====================================//
+        //=====================Start KeyPosition Criteria========================//
+
+      
+        var KPCount = 1;
+       
+               
+               mulKP();
+        function mulKP(n) {
+            x = '<tr>';
+            x += '<td >' +
+                '<input type="text" class="form-control form-control-sm" id="KeyPosition' + n + '" name="KeyPosition' + n +
+                '">' +
+                '</td>';
+
+            if (n > 1) {
+                x +=
+                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-xs  removeKP">Remove</td></tr>';
+                $('#MulKP').append(x);
+            } else {
+                x +=
+                    '<td><button type="button" name="add" id="addKP" class="btn btn-warning btn-sm ">Add</button></td></tr>';
+                $('#MulKP').html(x);
+            }
+        }
+        $(document).on('click', '#addKP', function() {
+            KPCount++;
+            mulKP(KPCount);
+        });
+
+        $(document).on('click', '.removeKP', function() {
+            KPCount--;
+            $(this).closest("tr").remove();
+        });
+        //=====================End KP========================
         function getLocation(StateId, No) {
             var StateId = StateId;
             var No = No;
