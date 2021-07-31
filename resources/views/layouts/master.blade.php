@@ -33,7 +33,7 @@
     <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
 
     <!-- CkEditor -->
-    <script src="https://cdn.ckeditor.com/4.16.1/standard/ckeditor.js"></script>
+    <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
    
 
     <title>HR Recruitment | @yield('title')</title>

@@ -65,6 +65,23 @@ class MrfController extends Controller
         return response()->json($District);
     }
 
+
+    public function getEducation(Request $request)
+    {
+        $Education = DB::table("master_education")->orderBy('EducationName', 'asc')->pluck("EducationId", "EducationCode");
+        return response()->json($Education);
+       
+    }
+
+    public function getSpecialization(Request $request)
+    {
+        $Specialization = DB::table("master_specialization")->orderBy('Specialization', 'asc')
+            ->where("EducationId", $request->EducationId)
+            ->pluck("EducationId", "Specialization");
+        return response()->json($Specialization);
+    }
+
+
     public function getDepartment(Request $request)
     {
         $Department = DB::table("master_department")->orderBy('DepartmentName', 'asc')

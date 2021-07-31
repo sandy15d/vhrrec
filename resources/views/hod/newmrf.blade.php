@@ -1,7 +1,13 @@
 @extends('layouts.master')
+
 @section('title', 'New MRF')
 @section('PageContent')
+    <style>
+        .table>:not(caption)>*>* {
+            padding: 1px 1px;
+        }
 
+    </style>
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
@@ -158,7 +164,35 @@
                                 <tr>
                                     <th>Any Other Job-related information</th>
                                     <td>
-                                        <textarea name="JobInfo" id="editor" rows="3" class="form-control"></textarea>
+                                        <textarea name="JobInfo" id="JobInfo"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Desired Eductaion
+                                    </th>
+                                    <td>
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tbody id="MulEducation">
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th>Desired University/College</th>
+                                    <td>
+                                        <select name="University" id="University" class="form-control form-select form-select-sm" >
+                                            <option value="" selected disabled>Select</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Key Position Criteria</th>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                                            <label class="form-check-label" for="flexSwitchCheckDefault">Default switch checkbox input</label>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -175,16 +209,16 @@
 @endsection
 
 @section('scriptsection')
-<script>
-    CKEDITOR.replace( 'JobInfo' );
-</script>
     <script>
-       
-        var LocCount = 1;
+        CKEDITOR.replace('JobInfo', {
+            height: 100
+        });
+    </script>
+    <script>
         var StateList;
         var DistrictList;
+        var EducationList
         getState();
-
         function getState() {
             $.ajax({
                 type: "GET",
@@ -202,6 +236,29 @@
                 }
             });
         }
+
+        getEducation();
+
+        function getEducation() {
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getEducation') }}",
+                async: false,
+                success: function(res) {
+
+                    if (res) {
+                        $.each(res, function(key, value) {
+                            EducationList = EducationList + '<option value="' + value + '">' + key +
+                                '</option>';
+                        });
+
+                    }
+                }
+            });
+          }
+
+        //=========================Start multiple Location==================
+        var LocCount = 1;
         mulLocation(LocCount);
 
         function mulLocation(number) {
@@ -235,12 +292,12 @@
                 $('#MulLocation').append(x);
             } else {
                 x +=
-                    '<td><button type="button" name="add" id="add" class="btn btn-warning btn-xs ">Add</button></td></tr>';
+                    '<td><button type="button" name="add" id="addLocation" class="btn btn-warning btn-sm ">Add</button></td></tr>';
                 $('#MulLocation').html(x);
             }
         }
 
-        $(document).on('click', '#add', function() {
+        $(document).on('click', '#addLocation', function() {
             LocCount++;
             mulLocation(LocCount);
         });
@@ -249,9 +306,55 @@
             LocCount--;
             $(this).closest("tr").remove();
         });
+        //===========================End Multiple Location===========================//
 
+        //-------------------------------Start Multiple Education===========================//
 
+        var EduCount = 1;
+        mulEducation(EduCount);
 
+        function mulEducation(num) {
+            x = '<tr>';
+            x += '<td >' +
+                ' <select  name="Education' + num + '" id="Education' +
+                num +
+                '" class="form-control form-select form-select-sm" onchange="getSpecialization(this.value,' + num + ')">' +
+                '  <option value="" selected disabled>Select Education</option>' + EducationList +
+                '</select>' +
+                ' <span class="text-danger error-text Education' + num + '_error"></span>' +
+                '</td>';
+            x += '<td>' +
+                '<div class="spinner-border text-primary d-none" role="status" id="SpeLoader' + num +
+                '"> <span class="visually-hidden">Loading...</span></div>' +
+                '       <select  id="Specialization' + num + '" name="Specialization' + num +
+                '" class="form-control form-select form-select-sm">' +
+                '    <option value="" selected disabled>Select Specialization</option>' +
+                '</select>' +
+                '<span class="text-danger error-text Specialization' + num + '_error"></span>' +
+                '</td>';
+          
+
+            if (num > 1) {
+                x +=
+                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-xs  removeEducation">Remove</td></tr>';
+                $('#MulEducation').append(x);
+            } else {
+                x +=
+                    '<td><button type="button" name="add" id="addEducation" class="btn btn-warning btn-sm ">Add</button></td></tr>';
+                $('#MulEducation').html(x);
+            }
+        }
+
+        $(document).on('click', '#addEducation', function() {
+            EduCount++;
+            mulEducation(EduCount);
+        });
+
+        $(document).on('click', '.removeEducation', function() {
+            EduCount--;
+            $(this).closest("tr").remove();
+        });
+        //===========================End Multiple Location=====================================//
         function getLocation(StateId, No) {
             var StateId = StateId;
             var No = No;
@@ -280,6 +383,40 @@
 
                     } else {
                         $("#City" + No).empty();
+                    }
+                }
+            });
+        }
+
+
+        function getSpecialization(EducationId, No) {
+            var EducationId = EducationId;
+            var No = No;
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getSpecialization') }}?EducationId=" + EducationId,
+                async: false,
+                beforeSend: function() {
+                    $('#SpeLoader' + No).removeClass('d-none');
+                    $('#City' + No).addClass('d-none');
+                },
+
+                success: function(res) {
+
+                    if (res) {
+                        $('#SpeLoader' + No).addClass('d-none');
+                        $('#Specialization' + No).removeClass('d-none');
+                        $("#Specialization" + No).empty();
+                        $("#Specialization" + No).append(
+                            '<option value="" selected disabled >Select Specialization</option>');
+
+                        $.each(res, function(key, value) {
+                            $("#Specialization" + No).append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+
+                    } else {
+                        $("#Specialization" + No).empty();
                     }
                 }
             });
