@@ -29,12 +29,14 @@
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/header-colors.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/sweetalert2.min.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/toastr.min.css" />
+    <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/mdb.min.css" />
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+   
     <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
 
     <!-- CkEditor -->
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
-   
+
 
     <title>HR Recruitment | @yield('title')</title>
     <style>
@@ -534,7 +536,10 @@
     <script src="{{ URL::to('/') }}/assets/plugins/datatable/js/dataTables.bootstrap5.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.6.0/umd/popper.min.js"></script>
+    <script src="{{ URL::to('/') }}/assets/js/mdb.min.js"></script>
+    <script src="{{ URL::to('/') }}/assets/js/BsMultiSelect.js"></script>
+   
     <!--app JS-->
     <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
 
@@ -549,6 +554,8 @@
 
                 allowClear: Boolean($(this).data('allow-clear')),
             });
+
+   
             $(document).on('click', '#sidebarsetting', function() {
                 $(".switcher-wrapper").toggleClass("switcher-toggled");
             });

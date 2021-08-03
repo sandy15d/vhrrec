@@ -15,7 +15,8 @@ class MrfController extends Controller
         $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
         $department_list = DB::table("master_department")->where('DeptStatus', 'A')->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
         $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
-        return view('hod.newmrf', compact('company_list', 'department_list','state_list'));
+        $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+        return view('hod.newmrf', compact('company_list', 'department_list','state_list','institute_list'));
     }
 
 
