@@ -34,6 +34,22 @@ class MrfController extends Controller
         if ($validator->fails()) {
             return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
         } else {
+
+
+            $locCount = (int)$_POST['locCount'];
+            $locArray = array();
+            for ($lc = 1; $lc <= $locCount; $lc++) {
+              if (isset($_POST['state' . $lc]) && $_POST['state' . $lc] != '') {
+                $location = array(
+                  "state" => $_POST['state' . $lc],
+                  "city" => $_POST['location' . $lc],
+                  "nop"=>$_POST['nop'.$lc],
+                );
+                array_push($locArray, $location);
+              }
+             
+            }
+            $locArray_str = serialize($locArray);
             /* $Institute = new master_institute;
             $Institute->InstituteName = $request->InstituteName;
             $Institute->InstituteCode = $request->InstituteCode;

@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/header-colors.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/sweetalert2.min.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/toastr.min.css" />
-    <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/mdb.min.css" />
+  
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
    
     <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
@@ -525,9 +525,7 @@
     <!-- Bootstrap JS -->
     <script src="{{ URL::to('/') }}/assets/js/bootstrap.bundle.min.js"></script>
     <!--plugins-->
-
     <script src="{{ URL::to('/') }}/assets/js/jquery.min.js"></script>
-
     <script src="{{ URL::to('/') }}/assets/plugins/simplebar/js/simplebar.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/metismenu/js/metisMenu.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
@@ -537,7 +535,6 @@
     <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.6.0/umd/popper.min.js"></script>
-    <script src="{{ URL::to('/') }}/assets/js/mdb.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/BsMultiSelect.js"></script>
    
     <!--app JS-->
