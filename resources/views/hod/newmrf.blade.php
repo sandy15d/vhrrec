@@ -3,9 +3,9 @@
 @section('title', 'New MRF')
 @section('PageContent')
     <style>
-        .table>:not(caption)>*>* {
-            padding: 1px 1px;
-        }
+        /*  .table>:not(caption)>*>* {
+                padding: 1px 1px;
+            } */
 
     </style>
     <div class="page-content">
@@ -22,7 +22,6 @@
         <hr />
         <div class="card border-top border-0 border-4 border-primary">
             <div class="card-body">
-
                 <div class="card-title d-flex align-items-center">
                     <div><i class="bx bx-info-square me-1 font-20 text-primary"></i>
                     </div>
@@ -30,7 +29,8 @@
                 </div>
                 <hr>
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover display compact text-center table-bordered" id="mrfsummarytable" style="width: 100%">
+                    <table class="table table-striped table-hover display compact text-center table-bordered"
+                        id="mrfsummarytable" style="width: 100%">
                         <thead>
                             <tr>
                                 <th class="th-sm">S.No</th>
@@ -43,7 +43,7 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody >
+                        <tbody>
                         </tbody>
                     </table>
                 </div>
@@ -251,7 +251,6 @@
         }
 
         getEducation();
-
         function getEducation() {
             $.ajax({
                 type: "GET",
@@ -273,7 +272,6 @@
         //=========================Start multiple Location==================
         var LocCount = 1;
         mulLocation(LocCount);
-
         function mulLocation(number) {
             x = '<tr>';
             x += '<td >' +
@@ -652,12 +650,12 @@
                     name: 'MRFDate'
                 },
                 {
-                    data:'CreatedBy',
-                    name:'CreatedBy'
+                    data: 'CreatedBy',
+                    name: 'CreatedBy'
                 },
                 {
-                    data:'actions',
-                    name:'actions'
+                    data: 'actions',
+                    name: 'actions'
                 }
 
 
