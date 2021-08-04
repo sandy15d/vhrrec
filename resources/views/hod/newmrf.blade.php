@@ -181,8 +181,8 @@
                                 <tr>
                                     <th>Desired University/College</th>
                                     <td>
-                                        <select name="University" id="University"
-                                            class="form-control form-select form-select-sm">
+                                        <select name="University[]" id="University"
+                                            class="form-control form-select form-select-sm" multiple="multiple">
                                             <option value="" selected disabled>Select</option>
                                         </select>
                                     </td>
@@ -283,8 +283,7 @@
             x += '<td>' +
                 '<div class="spinner-border text-primary d-none" role="status" id="LocLoader' + number +
                 '"> <span class="visually-hidden">Loading...</span></div>' +
-                '       <select  id="City' + number + '" name="City' + number +
-                '" class="form-control form-select form-select-sm">' +
+                '       <select  id="City' + number + '" name="City' + number + '" class="form-control form-select form-select-sm">' +
                 '    <option value="" selected disabled>Select City</option>' +
                 '</select>' +
                 '<span class="text-danger error-text City' + number + '_error"></span>' +
@@ -596,7 +595,9 @@
                 contentType: false,
                 beforeSend: function() {
                     $(form).find('span.error-text').text('');
+                  
                 },
+
                 success: function(data) {
                     if (data.status == 400) {
                         $.each(data.error, function(prefix, val) {
@@ -610,6 +611,58 @@
                     }
                 }
             });
+        });
+
+        $(document).ready(function() {
+            $('#University').bsMultiSelect({
+
+            });
+
+            /* $(document).on('click', '#SaveNewMrf', function() {
+               
+                    var totPosition = 0;
+                    $('.manpower').each(function() {
+                        totPosition += parseInt($(this).val());
+                    });
+
+                    var LocationArray = [];
+                    var EducationArray = [];
+                    var Reason = $('#Reason').val();
+                    var Company = $('#Company').val();
+                    var Department = $('#Department').val();
+                    var Designation = $('#Designation').val();
+                    var ReportingManager = $('#ReportingManager').val();
+                     for(i=1;i<=LocCount;i++){
+                        var State = $('#State'+i).val();
+                        var City = $('#City'+i).val();
+                        var ManPower = $('#ManPower'+i).val();
+
+                        LocationArray.push({
+                            'State':State,
+                            'City':City,
+                            'ManPower':ManPower
+                        });
+                     }
+                     var MaxCTC = $('#MaxCTC').val();
+                     var MinCTC = $('#MinCTC').val();
+                     var WorkExp = $('#WorkExp').val();
+                     var JobInfo = $('#JobInfo').val();
+
+                     for(j=1;j<=EduCount;j++){
+                         var Education = $('#Education'+j).val();
+                         var Specialization = $('#Specialization'+j).val();
+
+                         EducationArray.push({
+                            'Education':Education,
+                            'Specialization':Specialization
+                         });
+                     }
+                     
+
+                });
+     */
+
+
         });
     </script>
 @endsection
