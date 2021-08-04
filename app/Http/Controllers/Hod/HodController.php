@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use DataTables;
 
+use function App\Helpers\getFullName;
+
 class HodController extends Controller
 {
     function index()
@@ -16,7 +18,49 @@ class HodController extends Controller
         return view('hod.index');
     }
 
-    
+
+
+    public function mrfbyme()
+    {
+        $mrf = DB::table('manpowerrequisition')
+            ->Join('master_designation', 'manpowerrequisition.DesigId', '=', 'master_designation.DesigId')
+            ->where('manpowerrequisition.CreatedBy',Auth::user()->id)
+            ->orWhere('manpowerrequisition.OnBehalf',Auth::user()->id)
+            ->select('manpowerrequisition.MRFId', 'manpowerrequisition.Type', 'manpowerrequisition.JobCode', 'manpowerrequisition.CreatedBy', 'master_designation.DesigName', 'manpowerrequisition.Status', 'manpowerrequisition.CreatedTime');
+       
+            return Datatables::of($mrf)
+            ->addIndexColumn()
+            ->addColumn('MRFDate', function ($mrf) {
+                return date('d-m-Y', strtotime($mrf->CreatedTime));
+            })
+            ->addColumn('CreatedBy', function ($mrf) {
+                if ($mrf->Type == 'N_HrManual' || $mrf->Type == 'R_HrManual') {
+                    return 'HR';
+                } else {
+                    return getFullName($mrf->CreatedBy);
+                }
+            })
+
+            ->editColumn('Type', function ($mrf) {
+                if ($mrf->Type == 'N' || $mrf->Type == 'N_HrManual') {
+                    return 'New';
+                } else {
+                    return 'Replacement';
+                }
+            })
+
+            ->addColumn('actions', function ($mrf) {
+                if ($mrf->Status == 'New') {
+                    return '<button class="btn btn-sm  btn-outline-info font-13 view" data-id="' . $mrf->MRFId . '" id="viewBtn"><i class="fadeIn animated lni lni-eye"></i></button> <button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $mrf->MRFId . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  
+                <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $mrf->MRFId . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
+                } else {
+                    return '<button class="btn btn-sm  btn-outline-primary font-13 view" data-id="' . $mrf->MRFId . '" id="viewBtn"><i class="fadeIn animated lni lni-eye"></i></button>';
+                }
+            })
+            ->rawColumns(['actions'])
+            ->make(true);
+    }
+
     function setTheme(Request $request)
     {
         $ThemeStyle = $request->ThemeStyle;

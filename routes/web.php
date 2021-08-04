@@ -173,6 +173,7 @@ Route::group(['prefix' => 'recruiter', 'middleware' => ['isRecruiter', 'auth', '
 Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [HodController::class, 'index'])->name('hod.dashboard');
     Route::post('setTheme', [HodController::class, 'setTheme'])->name('setTheme');
+    Route::get('mrfbyme', [HodController::class,'mrfbyme'])->name('mrfbyme');
 
     //**========================My Team =========================================== */
     Route::get('myteam',[MyTeamController::class,'myteam'])->name('myteam');

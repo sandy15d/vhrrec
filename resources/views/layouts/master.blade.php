@@ -29,15 +29,15 @@
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/header-colors.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/sweetalert2.min.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/toastr.min.css" />
-  
+
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
-   
+
     <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
 
     <!-- CkEditor -->
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
-  
-   
+
+
 
     <title>HR Recruitment | @yield('title')</title>
     <style>
@@ -96,14 +96,15 @@
             </div>
             <!--navigation-->
             <ul class="metismenu" id="menu">
-                <li class="{{ request()->is('admin/dashboard') ? 'mm-active' : '' }}">
-                    <a href="/admin/dashboard">
-                        <div class="parent-icon"><i class="fas fa-laptop-house text-primary"></i>
-                        </div>
-                        <div class="menu-title">Dashboard</div>
-                    </a>
-                </li>
+
                 @if (Auth::user()->role == 'A')
+                    <li class="{{ request()->is('admin/dashboard') ? 'mm-active' : '' }}">
+                        <a href="/admin/dashboard">
+                            <div class="parent-icon"><i class="fas fa-laptop-house text-primary"></i>
+                            </div>
+                            <div class="menu-title">Dashboard</div>
+                        </a>
+                    </li>
                     <li>
                         <a href="javascript:;" class="has-arrow">
                             <div class="parent-icon"><i class="bx bx-category  text-danger"></i>
@@ -152,6 +153,13 @@
                 @endif
 
                 @if (Auth::user()->role == 'H')
+                <li class="{{ request()->is('hod/dashboard') ? 'mm-active' : '' }}">
+                    <a href="/hod/dashboard">
+                        <div class="parent-icon"><i class="fas fa-laptop-house text-primary"></i>
+                        </div>
+                        <div class="menu-title">Dashboard</div>
+                    </a>
+                </li>
                     <li>
                         <a href="/hod/myteam">
                             <div class="parent-icon"><i class="fas fa-users text-info"></i>
@@ -550,7 +558,7 @@
                 allowClear: Boolean($(this).data('allow-clear')),
             });
 
-   
+
             $(document).on('click', '#sidebarsetting', function() {
                 $(".switcher-wrapper").toggleClass("switcher-toggled");
             });

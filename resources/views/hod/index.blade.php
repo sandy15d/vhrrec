@@ -44,11 +44,16 @@ $ActiveMember = $sql->count();
             </div>
         </div>
         <!--end row-->
-        <div class="col-8">
+        <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                    <div class="card-title d-flex align-items-center">
+                        <div><i class="bx bx-info-square me-1 font-20 text-primary"></i>
+                        </div>
+                        <h6 class="mb-0 text-primary">MRF Summary</h6>
+                    </div>
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover display compact" id="myteamtable" style="width: 100%">
+                        <table class="table table-striped table-hover display compact" id="mrfsummarytable" style="width: 100%">
                             <thead>
                                 <tr>
                                     <th class="th-sm">S.No</th>
@@ -58,7 +63,7 @@ $ActiveMember = $sql->count();
                                     <th>Status</th>
                                     <th>MRF Date</th>
                                     <th>MRF By</th>
-                                    <th>Details</th>
+                                    <th>Action</th>
                                    
                                 </tr>
                             </thead>
@@ -70,4 +75,56 @@ $ActiveMember = $sql->count();
             </div>
         </div>
     </div>
+@endsection
+
+@section('scriptsection')
+    <script>
+         $('#mrfsummarytable').DataTable({
+            processing: true,
+            info: true,
+            ajax: "{{ route('mrfbyme') }}",
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex'
+                },
+                {
+                    data: 'Type',
+                    name: 'Type'
+
+                },
+                {
+                    data: 'JobCode',
+                    name: 'JobCode'
+                },
+
+                {
+                    data: 'DesigName',
+                    name: 'DesigName'
+                },
+
+
+                {
+                    data: 'Status',
+                    name: 'Status'
+                },
+
+                {
+                    data: 'MRFDate',
+                    name: 'MRFDate'
+                },
+                {
+                    data: 'CreatedBy',
+                    name: 'CreatedBy'
+                },
+                {
+                    data: 'actions',
+                    name: 'actions'
+                }
+
+
+            ],
+
+
+        });
+    </script>
 @endsection

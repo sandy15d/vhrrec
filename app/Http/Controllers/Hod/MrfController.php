@@ -189,6 +189,7 @@ class MrfController extends Controller
     {
         $mrf = DB::table('manpowerrequisition')
             ->Join('master_designation', 'manpowerrequisition.DesigId', '=', 'master_designation.DesigId')
+            ->where('CreatedBy',Auth::user()->id)
             ->select('manpowerrequisition.MRFId', 'manpowerrequisition.Type', 'manpowerrequisition.JobCode', 'manpowerrequisition.CreatedBy', 'master_designation.DesigName', 'manpowerrequisition.Status', 'manpowerrequisition.CreatedTime');
         return Datatables::of($mrf)
             ->addIndexColumn()

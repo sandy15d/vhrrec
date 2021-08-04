@@ -39,7 +39,7 @@
                                 <th>Designation</th>
                                 <th>Status</th>
                                 <th>MRF Date</th>
-                                <th>Created By</th>
+                              
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -649,10 +649,7 @@
                     data: 'MRFDate',
                     name: 'MRFDate'
                 },
-                {
-                    data: 'CreatedBy',
-                    name: 'CreatedBy'
-                },
+              
                 {
                     data: 'actions',
                     name: 'actions'
