@@ -189,6 +189,7 @@ Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackH
     Route::get('getDistrict', [MrfController::class,'getDistrict'])->name('getDistrict');
     Route::get('getEducation', [MrfController::class,'getEducation'])->name('getEducation');
     Route::get('getSpecialization', [MrfController::class,'getSpecialization'])->name('getSpecialization');
+    Route::get('getAllMRFCreatedByMe', [MrfController::class,'getAllMRFCreatedByMe'])->name('getAllMRFCreatedByMe');
     //!==============================================================================//
  
    

@@ -22,32 +22,32 @@
         <hr />
         <div class="card border-top border-0 border-4 border-primary">
             <div class="card-body">
-                <div class="border p-4 rounded">
-                    <div class="card-title d-flex align-items-center">
-                        <div><i class="bx bx-info-square me-1 font-20 text-primary"></i>
-                        </div>
-                        <h6 class="mb-0 text-primary">MRF Summary</h6>
+
+                <div class="card-title d-flex align-items-center">
+                    <div><i class="bx bx-info-square me-1 font-20 text-primary"></i>
                     </div>
-                    <hr>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover display compact" id="mrfsummarytable"
-                            style="width: 100%">
-                            <thead>
-                                <tr>
-                                    <th class="th-sm">S.No</th>
-                                    <th class="th-sm">Type</th>
-                                    <th>Job Code</th>
-                                    <th>Designation</th>
-                                    <th>Status</th>
-                                    <th>MRF Date</th>
-                                    <th>Details</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
+                    <h6 class="mb-0 text-primary">MRF Summary</h6>
                 </div>
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover display compact text-center table-bordered" id="mrfsummarytable" style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th class="th-sm">S.No</th>
+                                <th class="th-sm">Type</th>
+                                <th>Job Code</th>
+                                <th>Designation</th>
+                                <th>Status</th>
+                                <th>MRF Date</th>
+                                <th>Created By</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody >
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
     </div>
@@ -182,15 +182,19 @@
                                     <th>Desired University/College</th>
                                     <td>
                                         <select name="University[]" id="University"
-                                            class="form-control form-select form-select-sm" multiple="multiple">
-                                            <option value="" selected disabled>Select</option>
+                                            class="form-control form-select form-select-sm multiple-select"
+                                            multiple="multiple">
+
+                                            @foreach ($institute_list as $key => $value)
+                                                <option value="{{ $key }}">{{ $value }}</option>
+                                            @endforeach
                                         </select>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Key Position Criteria</th>
                                     <td>
-                                        
+
                                         <table class="table borderless" style="margin-bottom: 0px;">
                                             <tbody id="MulKP">
                                             </tbody>
@@ -273,7 +277,7 @@
         function mulLocation(number) {
             x = '<tr>';
             x += '<td >' +
-                ' <select  name="State' + number + '" id="State' +
+                ' <select  name="State[]" id="State' +
                 number +
                 '" class="form-control form-select form-select-sm" onchange="getLocation(this.value,' + number + ')">' +
                 '  <option value="" selected disabled>Select State</option>' + StateList +
@@ -283,13 +287,13 @@
             x += '<td>' +
                 '<div class="spinner-border text-primary d-none" role="status" id="LocLoader' + number +
                 '"> <span class="visually-hidden">Loading...</span></div>' +
-                '       <select  id="City' + number + '" name="City' + number + '" class="form-control form-select form-select-sm">' +
+                '       <select  id="City' + number + '" name="City[]" class="form-control form-select form-select-sm">' +
                 '    <option value="" selected disabled>Select City</option>' +
                 '</select>' +
                 '<span class="text-danger error-text City' + number + '_error"></span>' +
                 '</td>';
             x += '<td>' +
-                '  <input type="text" name="ManPower' + number + '" id="ManPower' + number +
+                '  <input type="text" name="ManPower[]" id="ManPower' + number +
                 '" class="form-control form-control-sm" style="width:130px" placeholder="No. of Manpower">' +
                 '<span class="text-danger error-text ManPower' + number + '_error"></span>' +
                 '</td>';
@@ -324,7 +328,7 @@
         function mulEducation(num) {
             x = '<tr>';
             x += '<td >' +
-                ' <select  name="Education' + num + '" id="Education' +
+                ' <select  name="Education[]" id="Education' +
                 num +
                 '" class="form-control form-select form-select-sm" onchange="getSpecialization(this.value,' + num + ')">' +
                 '  <option value="" selected disabled>Select Education</option>' + EducationList +
@@ -334,8 +338,8 @@
             x += '<td>' +
                 '<div class="spinner-border text-primary d-none" role="status" id="SpeLoader' + num +
                 '"> <span class="visually-hidden">Loading...</span></div>' +
-                '       <select  id="Specialization' + num + '" name="Specialization' + num +
-                '" class="form-control form-select form-select-sm">' +
+                '       <select  id="Specialization' + num +
+                '" name="Specialization[]" class="form-control form-select form-select-sm">' +
                 '    <option value="" selected disabled>Select Specialization</option>' +
                 '</select>' +
                 '<span class="text-danger error-text Specialization' + num + '_error"></span>' +
@@ -365,16 +369,16 @@
         //===========================End Multiple Location=====================================//
         //=====================Start KeyPosition Criteria========================//
 
-      
+
         var KPCount = 1;
-       
-               
-               mulKP();
+
+
+        mulKP();
+
         function mulKP(n) {
             x = '<tr>';
             x += '<td >' +
-                '<input type="text" class="form-control form-control-sm" id="KeyPosition' + n + '" name="KeyPosition' + n +
-                '">' +
+                '<input type="text" class="form-control form-control-sm" id="KeyPosition' + n + '" name="KeyPosition[]">' +
                 '</td>';
 
             if (n > 1) {
@@ -440,7 +444,7 @@
                 async: false,
                 beforeSend: function() {
                     $('#SpeLoader' + No).removeClass('d-none');
-                    $('#City' + No).addClass('d-none');
+                    $('#Specialization' + No).addClass('d-none');
                 },
 
                 success: function(res) {
@@ -456,6 +460,8 @@
                             $("#Specialization" + No).append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
+                        $("#Specialization" + No).append('<option value="0">Other</option>');
+
 
                     } else {
                         $("#Specialization" + No).empty();
@@ -595,7 +601,7 @@
                 contentType: false,
                 beforeSend: function() {
                     $(form).find('span.error-text').text('');
-                  
+
                 },
 
                 success: function(data) {
@@ -612,55 +618,50 @@
                 }
             });
         });
+        $('#mrfsummarytable').DataTable({
+            processing: true,
+            info: true,
+            ajax: "{{ route('getAllMRFCreatedByMe') }}",
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex'
+                },
+                {
+                    data: 'Type',
+                    name: 'Type'
 
-        $(document).ready(function() {
-            $('#University').bsMultiSelect({
+                },
+                {
+                    data: 'JobCode',
+                    name: 'JobCode'
+                },
 
-            });
+                {
+                    data: 'DesigName',
+                    name: 'DesigName'
+                },
 
-            /* $(document).on('click', '#SaveNewMrf', function() {
-               
-                    var totPosition = 0;
-                    $('.manpower').each(function() {
-                        totPosition += parseInt($(this).val());
-                    });
 
-                    var LocationArray = [];
-                    var EducationArray = [];
-                    var Reason = $('#Reason').val();
-                    var Company = $('#Company').val();
-                    var Department = $('#Department').val();
-                    var Designation = $('#Designation').val();
-                    var ReportingManager = $('#ReportingManager').val();
-                     for(i=1;i<=LocCount;i++){
-                        var State = $('#State'+i).val();
-                        var City = $('#City'+i).val();
-                        var ManPower = $('#ManPower'+i).val();
+                {
+                    data: 'Status',
+                    name: 'Status'
+                },
 
-                        LocationArray.push({
-                            'State':State,
-                            'City':City,
-                            'ManPower':ManPower
-                        });
-                     }
-                     var MaxCTC = $('#MaxCTC').val();
-                     var MinCTC = $('#MinCTC').val();
-                     var WorkExp = $('#WorkExp').val();
-                     var JobInfo = $('#JobInfo').val();
+                {
+                    data: 'MRFDate',
+                    name: 'MRFDate'
+                },
+                {
+                    data:'CreatedBy',
+                    name:'CreatedBy'
+                },
+                {
+                    data:'actions',
+                    name:'actions'
+                }
 
-                     for(j=1;j<=EduCount;j++){
-                         var Education = $('#Education'+j).val();
-                         var Specialization = $('#Specialization'+j).val();
 
-                         EducationArray.push({
-                            'Education':Education,
-                            'Specialization':Specialization
-                         });
-                     }
-                     
-
-                });
-     */
+            ],
 
 
         });

@@ -37,7 +37,7 @@
     <!-- CkEditor -->
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
   
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css">
+   
 
     <title>HR Recruitment | @yield('title')</title>
     <style>
@@ -535,9 +535,6 @@
     <script src="{{ URL::to('/') }}/assets/plugins/datatable/js/dataTables.bootstrap5.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.6.0/umd/popper.min.js"></script>
-    <script src="{{ URL::to('/') }}/assets/js/BsMultiSelect.js"></script>
-   
     <!--app JS-->
     <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
 
