@@ -4,7 +4,7 @@
 @section('PageContent')
     <style>
         .table>:not(caption)>*>* {
-            padding: 2px 2px;
+            padding: 1px 1px;
         }
 
     </style>
@@ -181,19 +181,16 @@
                                 <tr>
                                     <th>Desired University/College</th>
                                     <td>
-                                        <select name="University[]" id="University"
-                                            class="form-control form-select form-select-sm"   multiple="multiple">
+                                        <select name="University" id="University"
+                                            class="form-control form-select form-select-sm">
                                             <option value="" selected disabled>Select</option>
-                                            @foreach ($institute_list as $key => $value)
-                                                <option value="{{ $key }}">{{ $value }}</option>
-                                            @endforeach
                                         </select>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Key Position Criteria</th>
                                     <td>
-
+                                        
                                         <table class="table borderless" style="margin-bottom: 0px;">
                                             <tbody id="MulKP">
                                             </tbody>
@@ -211,7 +208,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="SaveNewMrf">Save changes</button>
+                        <button type="submit" class="btn btn-primary" id="SaveNewMrf">Save changes</button>
                     </div>
                 </form>
             </div>
@@ -294,7 +291,7 @@
                 '</td>';
             x += '<td>' +
                 '  <input type="text" name="ManPower' + number + '" id="ManPower' + number +
-                '" class="form-control form-control-sm manpower" style="width:130px" placeholder="No. of Manpower">' +
+                '" class="form-control form-control-sm" style="width:130px" placeholder="No. of Manpower">' +
                 '<span class="text-danger error-text ManPower' + number + '_error"></span>' +
                 '</td>';
 
@@ -369,12 +366,11 @@
         //===========================End Multiple Location=====================================//
         //=====================Start KeyPosition Criteria========================//
 
-
+      
         var KPCount = 1;
-
-
-        mulKP();
-
+       
+               
+               mulKP();
         function mulKP(n) {
             x = '<tr>';
             x += '<td >' +
@@ -589,10 +585,6 @@
 
         //====================================== Add New MRF to the Database==========================//
         $('#addNewMrfForm').on('submit', function(e) {
-            var totPosition = 0;
-            $('.manpower').each(function() {
-                totPosition += parseInt($(this).val());
-            });
             e.preventDefault();
             var form = this;
             $.ajax({
@@ -618,22 +610,6 @@
                     }
                 }
             });
-        });
-
-        $(document).ready(function() {
-            $('#University').bsMultiSelect({
-                
-            });
-
-            $(document).on('click', '#SaveNewMrf', function() {
-                var totPosition = 0;
-                $('.manpower').each(function() {
-                    totPosition += parseInt($(this).val());
-                });
-            });
-
-
-
         });
     </script>
 @endsection

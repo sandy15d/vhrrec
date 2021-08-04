@@ -36,7 +36,8 @@
 
     <!-- CkEditor -->
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
-
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css">
 
     <title>HR Recruitment | @yield('title')</title>
     <style>
