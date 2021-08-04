@@ -3,9 +3,9 @@
 @section('title', 'New MRF')
 @section('PageContent')
     <style>
-        /*  .table>:not(caption)>*>* {
+         .table>:not(caption)>*>* {
                 padding: 1px 1px;
-            } */
+            }
 
     </style>
     <div class="page-content">

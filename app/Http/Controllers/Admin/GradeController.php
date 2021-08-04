@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 
-use App\Models\master_grade;
+use App\Models\Admin\master_grade;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use DataTables;

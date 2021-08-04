@@ -5,7 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ThemeDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
+
 
 
 class AdminController extends Controller
@@ -15,6 +15,9 @@ class AdminController extends Controller
         return view('admin.index');
     }
 
+    function mrf(){
+        return view('admin.mrf');
+    }
 
 
     function setTheme(Request $request)

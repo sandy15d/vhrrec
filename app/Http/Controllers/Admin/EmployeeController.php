@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 
-use App\Models\master_employee;
+use App\Models\Admin\master_employee;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use DataTables;

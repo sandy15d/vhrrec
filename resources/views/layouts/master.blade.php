@@ -131,6 +131,18 @@
                             <li> <a href="/admin/employee"><i class="bx bx-right-arrow-alt"></i>Employee</a></li>
                         </ul>
                     </li>
+                    <li>
+                        <a href="javascript:;" class="has-arrow">
+                            <div class="parent-icon"><i class="bx bx-category  text-danger"></i>
+                            </div>
+                            <div class="menu-title">MRF</div>
+                        </a>
+                        <ul>
+                            <li> <a href="/admin/company"><i class="bx bx-right-arrow-alt"></i>MRF Details</a></li>
+                            <li> <a href="/admin/country"><i class="bx bx-right-arrow-alt"></i>Manual Entry</a></li>
+                           
+                        </ul>
+                    </li>
                     <li> <a href="/admin/userlist">
                             <div class="parent-icon"><i class='bx bx-user text-info'></i>
                             </div>

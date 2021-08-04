@@ -42,6 +42,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('mrf', [AdminController::class, 'mrf'])->name('admin.mrf');
     Route::post('setTheme', [AdminController::class, 'setTheme'])->name('admin.setTheme');
 
     // ! ======================Master Company ========================//

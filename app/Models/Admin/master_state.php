@@ -1,19 +1,20 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class master_country extends Model
+class master_state extends Model
 {
     use HasFactory;
-    protected $table = 'master_country';
-    protected $primaryKey = 'CountryId';
+    protected $table = 'master_state';
+    protected $primaryKey = 'StateId';
     public $timestamps = false;
     protected $fillable = [
-        'CountryName',
-        'CountryCode',
+        'StateName',
+        'StateCode',
+        'Country',
         'Status',
         'CreatedBy',
     ];
