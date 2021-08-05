@@ -57,9 +57,9 @@ class AdminController extends Controller
                 $location = unserialize($mrf->LocationIds);
                 $loc = '';
                 foreach ($location as $key => $value) {
-                    $loc .= getDistrictName($value['city']) . ', ';
+                    $loc .= getDistrictName($value['city']) . ' ';
                     $loc .= getStateCode($value['state']) . ' - ';
-                    $loc .= $value['nop'];
+                    $loc .= $value['nop'].', ';
                     $loc . '<br>';
                 }
                 return $loc;
@@ -74,7 +74,14 @@ class AdminController extends Controller
             })
 
             ->addColumn('Status', function ($mrf) {
-                return '<a href="#" data-name="MRFStatus" class="MRFStatus" data-type="select" data-pk="'.$mrf->MRFId.'"></a>';
+                return '<select name="mrfstatus" id="mrfstatus'.$mrf->MRFId.'" class="form-control form-select form-select-sm  d-inline" disabled onchange="chngmrfsts()" style="width: 80px; ">
+                <option value="New"></option>
+                <option>Approved</option>
+                <option>On Hold</option>
+                <option>Rejected</option>
+            </select><i class="fa fa-pencil-square-o text-primary d-inline" aria-hidden="true"
+            id="msedit'.$mrf->MRFId.'" onclick="editmstst('.$mrf->MRFId.',this)"
+            style="font-size: 16px;cursor: pointer;"></i>';
             })
             ->rawColumns(['Status'])
             ->make(true);

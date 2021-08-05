@@ -32,7 +32,7 @@
                     </div>
                 </div>
 
-                <div class="">
+                <div class="table-responsive">
                     <table class="table table-striped table-hover table-condensed " id="MRFTable" style="width: 100%">
                         <thead>
                             <tr>
@@ -108,19 +108,28 @@
                         name: 'Status'
                     },
                     {
-                        data: 'DOJ',
-                        name: 'DOJ'
+                        data: '',
+                        name: ''
                     },
                     {
-                        data: 'DateOfSepration',
-                        name: 'DateOfSepration'
+                        data: '',
+                        name: ''
                     }
 
                 ],
 
             });
         });
-        
+
+        function editmstst(MRFId, th) {
+
+            $('#mrfstatus' + MRFId).prop('disabled', false);
+
+            $(th).hide(500);
+
+
+
+        }
     </script>
 
 @endsection
