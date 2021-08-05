@@ -10,19 +10,44 @@
         <hr />
         <div class="card">
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover table-condensed" id="UserTable" style="width: 100%">
+                <div class="row mb-1">
+                    <div class="col-2"></div>
+                    <div class="col-2">
+                        <select name="Department" id="Department" class="form-select form-select-sm">
+                            <option value="">Select Department</option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <select name="Year" id="Year" class="form-select form-select-sm">
+                            <option value="">Select Year</option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <select name="Month" id="Month" class="form-select form-select-sm">
+                            <option value="">Select Month</option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <button type="reset" class="btn btn-danger btn-sm"><i class="bx bx-refresh"></i></button>
+                    </div>
+                </div>
+
+                <div class="">
+                    <table class="table table-striped table-hover table-condensed " id="MRFTable" style="width: 100%">
                         <thead>
                             <tr>
-                                <th class="th-sm">S.No</th>
-                                <th>Name</th>
-                                <th>Username</th>
-                                <th>User Type</th>
-                                <th>Contact</th>
-                                <th>Email</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                              
+                                <td class="th-sm">S.No</td>
+                                <td>Type</td>
+                                <td>JobCode</td>
+                                <td>Department</td>
+                                <td>Designation</td>
+                                <td>Position</td>
+                                <td>Location</td>
+                                <td>MRF Date</td>
+                                <td>Created By</td>
+                                <td>Status</td>
+                                <td>Allocated Task to</td>
+                                <td>Details</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -32,5 +57,70 @@
             </div>
         </div>
     </div>
+
+@endsection
+@section('scriptsection')
+    <script>
+        $(document).ready(function() {
+
+            $('#MRFTable').DataTable({
+                processing: true,
+                info: true,
+                ajax: "{{ route('getAllMRF') }}",
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex'
+                    },
+                    {
+                        data: 'Type',
+                        name: 'Type'
+                    },
+                    {
+                        data: 'JobCode',
+                        name: 'JobCode'
+                    },
+                    {
+                        data: 'DepartmentId',
+                        name: 'DepartmentId'
+                    },
+                    {
+                        data: 'DesigId',
+                        name: 'DesigId'
+                    },
+                    {
+                        data: 'Positions',
+                        name: 'Positions'
+                    },
+                    {
+                        data: 'LocationIds',
+                        name: 'LocationIds'
+                    },
+                    {
+                        data: 'MRFDate',
+                        name: 'MRFDate'
+                    },
+                    {
+                        data: 'CreatedBy',
+                        name: 'CreatedBy'
+                    },
+                    {
+                        data: 'Status',
+                        name: 'Status'
+                    },
+                    {
+                        data: 'DOJ',
+                        name: 'DOJ'
+                    },
+                    {
+                        data: 'DateOfSepration',
+                        name: 'DateOfSepration'
+                    }
+
+                ],
+
+            });
+        });
+        
+    </script>
 
 @endsection

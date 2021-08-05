@@ -1,12 +1,21 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
 
 use App\Models\ThemeDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\DB;
+use DataTables;
 
+use function App\Helpers\getDepartmentCode;
+use function App\Helpers\getDesignationCode;
+use function App\Helpers\getDistrictName;
+use function App\Helpers\getFullName;
+use function App\Helpers\getStateCode;
 
 class AdminController extends Controller
 {
@@ -15,10 +24,61 @@ class AdminController extends Controller
         return view('admin.index');
     }
 
-    function mrf(){
+    function mrf()
+    {
         return view('admin.mrf');
     }
 
+
+    
+    function getAllMRF()
+    {
+        $mrf = DB::table('manpowerrequisition as mr')
+            ->where('MRFId', '!=', 0)
+            ->where('Status', '!=', 'Close')
+            ->select(['mr.*']);
+
+        return Datatables::of($mrf)
+            ->addIndexColumn()
+            ->editColumn('Type', function ($mrf) {
+                if ($mrf->Type == 'N' || $mrf->Type == 'N_HrManual') {
+                    return 'New';
+                } else {
+                    return 'Replacement';
+                }
+            })
+            ->editColumn('DepartmentId', function ($mrf) {
+                return getDepartmentCode($mrf->DepartmentId);
+            })
+            ->editColumn('DesigId', function ($mrf) {
+                return getDesignationCode($mrf->DesigId);
+            })
+            ->editColumn('LocationIds', function ($mrf) {
+                $location = unserialize($mrf->LocationIds);
+                $loc = '';
+                foreach ($location as $key => $value) {
+                    $loc .= getDistrictName($value['city']) . ', ';
+                    $loc .= getStateCode($value['state']) . ' - ';
+                    $loc .= $value['nop'];
+                    $loc . '<br>';
+                }
+                return $loc;
+            })
+            ->addColumn('MRFDate', function ($mrf) {
+                return date('d-m-Y', strtotime($mrf->CreatedTime));
+            })
+
+            ->addColumn('CreatedBy', function ($mrf) {
+
+                return getFullName($mrf->CreatedBy);
+            })
+
+            ->addColumn('Status', function ($mrf) {
+                return '<a href="#" data-name="MRFStatus" class="MRFStatus" data-type="select" data-pk="'.$mrf->MRFId.'"></a>';
+            })
+            ->rawColumns(['Status'])
+            ->make(true);
+    }
 
     function setTheme(Request $request)
     {

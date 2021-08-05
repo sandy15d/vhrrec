@@ -27,4 +27,15 @@ if (!function_exists('getFullName')) {
 		$DesigCode = Db::table('master_designation')->select('DesigCode')->where('DesigId',$DesigId)->first();
 		return $DesigCode->DesigCode;
 	}
+
+	function getStateCode($StateId){
+		$StateCode = Db::table('states')->select('StateCode')->where('StateId',$StateId)->first();
+		return $StateCode->StateCode;
+	}
+
+	function getDistrictName($DistrictId){
+		$DistrictName = Db::table('master_district')->select('DistrictName')->where('DistrictId',$DistrictId)->first();
+		return $DistrictName->DistrictName;
+	}
+
 }

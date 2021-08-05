@@ -220,6 +220,8 @@ class MrfController extends Controller
                     return '<button class="btn btn-sm  btn-outline-primary font-13 view" data-id="' . $mrf->MRFId . '" id="viewBtn"><i class="fadeIn animated lni lni-eye"></i></button>';
                 }
             })
+
+      
             ->rawColumns(['actions'])
             ->make(true);
     }
