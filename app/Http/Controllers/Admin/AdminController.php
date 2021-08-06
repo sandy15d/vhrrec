@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\DB;
 use DataTables;
+use PHPUnit\TextUI\XmlConfiguration\CodeCoverage\Report\Php;
 
 use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getDesignationCode;
@@ -30,7 +31,9 @@ class AdminController extends Controller
     }
 
 
-    
+
+
+
     function getAllMRF()
     {
         $mrf = DB::table('manpowerrequisition as mr')
@@ -59,7 +62,7 @@ class AdminController extends Controller
                 foreach ($location as $key => $value) {
                     $loc .= getDistrictName($value['city']) . ' ';
                     $loc .= getStateCode($value['state']) . ' - ';
-                    $loc .= $value['nop'].', ';
+                    $loc .= $value['nop'] . ', ';
                     $loc . '<br>';
                 }
                 return $loc;
@@ -74,16 +77,44 @@ class AdminController extends Controller
             })
 
             ->addColumn('Status', function ($mrf) {
-                return '<select name="mrfstatus" id="mrfstatus'.$mrf->MRFId.'" class="form-control form-select form-select-sm  d-inline" disabled onchange="chngmrfsts()" style="width: 80px; ">
-                <option value="New"></option>
-                <option>Approved</option>
-                <option>On Hold</option>
-                <option>Rejected</option>
-            </select><i class="fa fa-pencil-square-o text-primary d-inline" aria-hidden="true"
-            id="msedit'.$mrf->MRFId.'" onclick="editmstst('.$mrf->MRFId.',this)"
-            style="font-size: 16px;cursor: pointer;"></i>';
+               $list = array('New','Approved','Hold','Rejected');
+               
+                return '<select name="mrfstatus" id="mrfstatus' . $mrf->MRFId . '" class="form-control form-select form-select-sm  d-inline" disabled onchange="chngmrfsts(' . $mrf->MRFId . ',this.value)" style="width: 80px; ">
+                <option value="New">Select</option>
+                <option value="Approved">Approved</option>
+                <option value="Hold">On Hold</option>
+                <option value="Rejected">Rejected</option>
+               </select>  <i class="fa fa-pencil-square-o text-primary d-inline" aria-hidden="true" id="msedit' . $mrf->MRFId . '" onclick="editmstst(' . $mrf->MRFId . ',this)" style="font-size: 16px;cursor: pointer;"></i>';
             })
-            ->rawColumns(['Status'])
+
+
+            ->addColumn('Allocated', function ($mrf) {
+                if ($mrf->Status == 'Approved') {
+                    $user_list = DB::table('users')
+                        ->where('role', 'R')
+                        ->where('Status', 'A')
+                        ->orderBy('name', 'ASC')
+                        ->get();
+
+                    $x = '<select name="allocate" id="allocate' . $mrf->MRFId . '" class="form-control form-select form-select-sm  d-inline" disabled style="width: 100px; "><option value="">Select</option>';
+                    foreach ($user_list as $list) {
+                    if($mrf->Allocated==$list->id){
+                        $x .= '<option value=' . $list->id . ' selected>' . substr($list->name,0,strrpos($list->name,' ')) . '</option>';
+                    }else{
+                        $x .= '<option value=' . $list->id . '>' . substr($list->name,0,strrpos($list->name,' ')) . '</option>';
+                    }
+                      
+                    }
+                    $x .= '</select> <i class="fa fa-pencil-square-o text-primary d-inline" aria-hidden="true" id="mrfedit' . $mrf->MRFId . '" onclick="editmrf(' . $mrf->MRFId . ')" style="font-size: 16px;cursor: pointer;"></i>';
+                    return $x;
+                } else {
+                    return '';
+                }
+            })
+            ->addColumn('Details', function ($mrf) {
+                return '<i class="fa fa-eye text-info" style="font-size: 16px;cursor: pointer;"></i>';
+            })
+            ->rawColumns(['Status', 'Allocated', 'Details'])
             ->make(true);
     }
 

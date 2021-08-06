@@ -13,6 +13,7 @@
                 <div class="row mb-1">
                     <div class="col-2"></div>
                     <div class="col-2">
+
                         <select name="Department" id="Department" class="form-select form-select-sm">
                             <option value="">Select Department</option>
                         </select>
@@ -33,8 +34,8 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover table-condensed " id="MRFTable" style="width: 100%">
-                        <thead>
+                    <table class="table  table-hover table-condensed text-center" id="MRFTable" style="width: 100%">
+                        <thead class="text-center">
                             <tr>
                                 <td class="th-sm">S.No</td>
                                 <td>Type</td>
@@ -46,7 +47,7 @@
                                 <td>MRF Date</td>
                                 <td>Created By</td>
                                 <td>Status</td>
-                                <td>Allocated Task to</td>
+                                <td style="width: 200px;">Allocated Task to</td>
                                 <td>Details</td>
                             </tr>
                         </thead>
@@ -108,12 +109,12 @@
                         name: 'Status'
                     },
                     {
-                        data: '',
-                        name: ''
+                        data: 'Allocated',
+                        name: 'Allocated'
                     },
                     {
-                        data: '',
-                        name: ''
+                        data: 'Details',
+                        name: 'Details'
                     }
 
                 ],
@@ -122,13 +123,11 @@
         });
 
         function editmstst(MRFId, th) {
-
             $('#mrfstatus' + MRFId).prop('disabled', false);
+        }
 
-            $(th).hide(500);
-
-
-
+        function editmrf(id) {
+            $('#allocate' + id).prop("disabled", false);
         }
     </script>
 

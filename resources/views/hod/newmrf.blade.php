@@ -609,7 +609,7 @@
                         });
                     } else {
                         $(form)[0].reset();
-                        $('#addNewMrfModal').modal('hide');
+                        $('#addNewMRFModal').modal('hide');
                         $('#mrfsummarytable').DataTable().ajax.reload(null, false);
                         toastr.success(data.msg);
                     }
