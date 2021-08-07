@@ -44,6 +44,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::get('dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('mrf', [AdminController::class, 'mrf'])->name('admin.mrf');
     Route::get('getAllMRF', [AdminController::class, 'getAllMRF'])->name('getAllMRF');
+    Route::post('updateMRFStatus',[AdminController::class,'updateMRFStatus'])->name('updateMRFStatus');
+    Route::post('allocateMRF',[AdminController::class,'allocateMRF'])->name('allocateMRF');
+    Route::get('getDepartmentMRFAdmin', [AdminController::class,'getDepartmentMRFAdmin'])->name('getDepartmentMRFAdmin');
+    Route::get('getDesignationMRFAdmin', [AdminController::class,'getDesignationMRFAdmin'])->name('getDesignationMRFAdmin');
+    Route::get('getRepMgrMRFAdmin', [AdminController::class,'getRepMgrMRFAdmin'])->name('getRepMgrMRFAdmin');
+    Route::post('getMRFDetails', [AdminController::class,'getMRFDetails'])->name('getMRFDetails');
+    Route::post('editMRFAdmin', [AdminController::class, 'editMRFAdmin'])->name('editMRFAdmin');
     Route::post('setTheme', [AdminController::class, 'setTheme'])->name('admin.setTheme');
 
     // ! ======================Master Company ========================//
@@ -197,3 +204,7 @@ Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackH
  
    
 });
+
+
+
+

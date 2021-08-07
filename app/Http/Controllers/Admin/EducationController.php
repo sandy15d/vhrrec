@@ -48,7 +48,7 @@ class EducationController extends Controller
     {
         $Education = master_education::all();
 
-        return Datatables::of($Education)
+        return datatables()::of($Education)
             ->addIndexColumn()
             ->addColumn('actions', function ($Education) {
                 return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $Education['EducationId'] . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  

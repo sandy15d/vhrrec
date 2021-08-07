@@ -54,7 +54,7 @@ class CountryController extends Controller
     public function getAllCountryData()
     {
         $company = master_country::all();
-        return Datatables::of($company)
+        return datatables()::of($company)
             ->addIndexColumn()
             ->addColumn('actions', function ($row) {
                 return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $row['CountryId'] . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  

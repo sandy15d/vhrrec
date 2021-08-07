@@ -28,7 +28,7 @@ class HodController extends Controller
             ->orWhere('manpowerrequisition.OnBehalf',Auth::user()->id)
             ->select('manpowerrequisition.MRFId', 'manpowerrequisition.Type', 'manpowerrequisition.JobCode', 'manpowerrequisition.CreatedBy', 'master_designation.DesigName', 'manpowerrequisition.Status', 'manpowerrequisition.CreatedTime');
        
-            return Datatables::of($mrf)
+            return datatables()::of($mrf)
             ->addIndexColumn()
             ->addColumn('MRFDate', function ($mrf) {
                 return date('d-m-Y', strtotime($mrf->CreatedTime));

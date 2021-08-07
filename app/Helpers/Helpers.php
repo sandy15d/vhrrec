@@ -38,4 +38,12 @@ if (!function_exists('getFullName')) {
 		return $DistrictName->DistrictName;
 	}
 
+	function convertData($body_content) {
+	
+		$body_content = stripslashes($body_content);
+	//	$body_content = htmlspecialchars($body_content);
+		$body_content = addslashes($body_content);
+		return $body_content;
+	 } 
+
 }

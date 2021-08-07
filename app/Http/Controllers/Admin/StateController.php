@@ -57,7 +57,7 @@ class StateController extends Controller
         $state = DB::table('master_state')->join('master_country', 'master_state.Country', '=', 'master_country.CountryId')
             ->select(['master_state.StateId', 'master_state.StateName', 'master_state.StateCode', 'master_country.CountryName', 'master_state.Status']);
 
-        return Datatables::of($state)
+        return datatables()::of($state)
             ->addIndexColumn()
             ->addColumn('actions', function ($state) {
                 return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $state->StateId . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  

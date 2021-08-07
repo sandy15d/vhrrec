@@ -89,7 +89,7 @@ class UserController extends Controller
     public function getAllUser()
     {
         $User = master_user::all();
-        return Datatables::of($User)
+        return datatables()::of($User)
             ->addIndexColumn()
             ->addColumn('actions', function ($User) {
             

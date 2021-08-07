@@ -20,7 +20,7 @@ class DepartmentController extends Controller
             ->join('master_company', 'master_department.CompanyId', '=', 'master_company.CompanyId')
             ->select(['master_department.*', 'master_company.CompanyCode']);
 
-        return Datatables::of($department)
+        return datatables()::of($department)
             ->addIndexColumn()
             ->make(true);
     }

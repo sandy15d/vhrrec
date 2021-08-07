@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+
+use function App\Helpers\convertData;
 use function App\Helpers\getCompanyCode;
 use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getDesignationCode;
@@ -89,10 +91,6 @@ class MrfController extends Controller
 
             $KpArray_str = serialize($KpArray);
             $UniversityArray = serialize($request->University);
-
-
-
-
             $MRF = new master_mrf;
             $MRF->Type = 'N';
             $MRF->Reason = $request->Reason;
@@ -106,12 +104,13 @@ class MrfController extends Controller
             $MRF->MaxCTC = $request->MaxCTC;
             $MRF->WorkExp = $request->WorkExp;
             $MRF->Remarks = $request->Remark;
-            $MRF->Info = $request->JobInfo;
+            $MRF->Info = convertData($request->JobInfo);
             $MRF->EducationId = $EduArray_str;
             $MRF->EducationInsId = $UniversityArray;
             $MRF->KeyPositionCriteria = $KpArray_str;
             $MRF->CreatedBy =  Auth::user()->id;
             $MRF->Status = 'New';
+          //  dd($MRF->Info);die;
             $query = $MRF->save();
 
             $InsertId = $MRF->MRFId;
@@ -191,7 +190,7 @@ class MrfController extends Controller
             ->Join('master_designation', 'manpowerrequisition.DesigId', '=', 'master_designation.DesigId')
             ->where('CreatedBy',Auth::user()->id)
             ->select('manpowerrequisition.MRFId', 'manpowerrequisition.Type', 'manpowerrequisition.JobCode', 'manpowerrequisition.CreatedBy', 'master_designation.DesigName', 'manpowerrequisition.Status', 'manpowerrequisition.CreatedTime');
-        return Datatables::of($mrf)
+        return datatables()::of($mrf)
             ->addIndexColumn()
             ->addColumn('MRFDate', function ($mrf) {
                 return date('d-m-Y', strtotime($mrf->CreatedTime));

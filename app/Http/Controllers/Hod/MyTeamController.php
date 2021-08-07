@@ -35,7 +35,7 @@ class MyTeamController extends Controller
             ->select(['e.*', 'e1.Fname as RFname', 'e1.Sname as RSname', 'e1.Lname as RLname', 'c.CompanyCode', 'd.DepartmentCode', 'dg.DesigName', 'g.GradeValue', 'h.HqName']);
 
 
-        return Datatables::of($employee)
+        return datatables()::of($employee)
             ->addIndexColumn()
             ->addColumn('fullname', function ($employee) {
                 return $employee->Fname . ' ' . $employee->Sname . ' ' . $employee->Lname;

@@ -20,7 +20,7 @@ class GradeController extends Controller
             ->join('master_company', 'master_grade.CompanyId', '=', 'master_company.CompanyId')
             ->select(['master_grade.*', 'master_company.CompanyCode']);
 
-        return Datatables::of($grade)
+        return datatables()::of($grade)
             ->addIndexColumn()
             ->make(true);
     }

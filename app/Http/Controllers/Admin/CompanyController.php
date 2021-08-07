@@ -56,7 +56,7 @@ class CompanyController extends Controller
     public function getAllCompanyData()
     {
         $company = master_company::all();
-        return Datatables::of($company)
+        return datatables()::of($company)
             ->addIndexColumn()
             ->addColumn('actions', function ($company) {
                 return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $company['CompanyId'] . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  
