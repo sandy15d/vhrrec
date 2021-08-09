@@ -139,8 +139,8 @@
                             <div class="menu-title">MRF</div>
                         </a>
                         <ul>
-                            <li> <a href="/admin/company"><i class="bx bx-right-arrow-alt"></i>MRF Details</a></li>
-                            <li> <a href="/admin/country"><i class="bx bx-right-arrow-alt"></i>Manual Entry</a></li>
+                            <li> <a href="/admin/mrf"><i class="bx bx-right-arrow-alt"></i>MRF Details</a></li>
+                            <li> <a href="/admin/mrfentry"><i class="bx bx-right-arrow-alt"></i>Manual Entry</a></li>
                            
                         </ul>
                     </li>
