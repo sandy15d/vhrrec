@@ -45,8 +45,8 @@
             </div>
             <hr />
             <div class="table-responsive">
-                <table class="table  table-hover table-condensed text-center" id="MRFTable" style="width: 100%">
-                    <thead class="text-center">
+                <table class="table  table-hover table-condensed table-bordered" id="MRFTable" style="width: 100%">
+                    <thead>
                         <tr>
                             <td class="th-sm">S.No</td>
                             <td>Type</td>

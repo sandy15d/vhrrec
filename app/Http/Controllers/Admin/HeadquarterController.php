@@ -21,7 +21,7 @@ class HeadquarterController extends Controller
             ->join('master_state', 'master_headquater.StateId', '=', 'master_state.StateId')
             ->select(['master_headquater.*', 'master_company.CompanyCode', 'master_state.StateName']);
 
-        return datatables()::of($headquarter)
+        return datatables()->of($headquarter)
             ->addIndexColumn()
             ->make(true);
     }

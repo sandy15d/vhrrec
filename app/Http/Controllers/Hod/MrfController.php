@@ -190,7 +190,7 @@ class MrfController extends Controller
             ->Join('master_designation', 'manpowerrequisition.DesigId', '=', 'master_designation.DesigId')
             ->where('CreatedBy',Auth::user()->id)
             ->select('manpowerrequisition.MRFId', 'manpowerrequisition.Type', 'manpowerrequisition.JobCode', 'manpowerrequisition.CreatedBy', 'master_designation.DesigName', 'manpowerrequisition.Status', 'manpowerrequisition.CreatedTime');
-        return datatables()::of($mrf)
+        return datatables()->of($mrf)
             ->addIndexColumn()
             ->addColumn('MRFDate', function ($mrf) {
                 return date('d-m-Y', strtotime($mrf->CreatedTime));

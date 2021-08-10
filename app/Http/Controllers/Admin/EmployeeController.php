@@ -25,7 +25,7 @@ class EmployeeController extends Controller
             ->join('master_grade as g', 'g.GradeId', '=', 'e.GradeId')
             ->select(['e.*', 'e1.Fname as RFname', 'e1.Sname as RSname', 'e1.Lname as RLname', 'c.CompanyCode', 'd.DepartmentCode', 'dg.DesigName', 'g.GradeValue']);
 
-        return datatables()::of($employee)
+        return datatables()->of($employee)
             ->addIndexColumn()
             ->addColumn('fullname', function ($employee) {
                 return $employee->Fname . ' ' . $employee->Sname . ' ' . $employee->Lname;

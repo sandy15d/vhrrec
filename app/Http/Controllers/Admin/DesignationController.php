@@ -21,7 +21,7 @@ class DesignationController extends Controller
             ->join('master_department', 'master_designation.DepartmentId', '=', 'master_department.DepartmentId')
             ->select(['master_designation.*', 'master_company.CompanyCode', 'master_department.DepartmentCode']);
 
-        return datatables()::of($designation)
+        return datatables()->of($designation)
             ->addIndexColumn()
             ->make(true);
     }

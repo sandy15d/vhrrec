@@ -67,7 +67,7 @@ class InstituteController extends Controller
             ->join('master_district', 'master_district.DistrictId', '=', 'master_institute.DistrictId')
             ->select(['master_institute.*', 'states.StateCode', 'master_district.DistrictName']);
 
-        return datatables()::of($Institute)
+        return datatables()->of($Institute)
             ->addIndexColumn()
             ->addColumn('actions', function ($Institute) {
                 return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $Institute->InstituteId . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  

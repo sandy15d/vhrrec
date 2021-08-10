@@ -54,7 +54,7 @@ class DistrictController extends Controller
         $district = DB::table('master_district')->join('states', 'states.StateId', '=', 'master_district.StateId')
             ->select(['master_district.*', 'states.StateName']);
 
-        return datatables()::of($district)
+        return datatables()->of($district)
             ->addIndexColumn()
             ->addColumn('actions', function ($district) {
                 return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $district->DistrictId . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  

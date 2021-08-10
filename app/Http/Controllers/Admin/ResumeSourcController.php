@@ -49,7 +49,7 @@ class ResumeSourcController extends Controller
     public function getAllResumeSource()
     {
         $ResumeSource = resumesource_master::all();
-        return datatables()::of($ResumeSource)
+        return datatables()->of($ResumeSource)
             ->addIndexColumn()
             ->addColumn('actions', function ($ResumeSource) {
                 if($ResumeSource['Editable']==1){

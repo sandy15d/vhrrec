@@ -51,7 +51,7 @@ class EduSpecialController extends Controller
        $Education= DB::table('master_specialization')->join('master_education', 'master_specialization.EducationId', '=', 'master_education.EducationId')
         ->select(['master_specialization.*', 'master_education.EducationCode']);
 
-        return datatables()::of($Education)
+        return datatables()->of($Education)
             ->addIndexColumn()
             ->addColumn('actions', function ($Education) {
                 return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $Education->SpId . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  

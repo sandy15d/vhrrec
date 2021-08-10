@@ -43,9 +43,10 @@ class AdminController extends Controller
         $mrf = DB::table('manpowerrequisition as mr')
             ->where('MRFId', '!=', 0)
             ->where('Status', '!=', 'Close')
+            ->orderBy('CreatedTime','DESC')
             ->select(['mr.*']);
 
-        return datatables()::of($mrf)
+        return datatables()->of($mrf)
             ->addIndexColumn()
             ->editColumn('Type', function ($mrf) {
                 if ($mrf->Type == 'N' || $mrf->Type == 'N_HrManual') {
@@ -144,6 +145,7 @@ class AdminController extends Controller
         $MRF = master_mrf::find($request->MRFId);
         $MRF->Allocated = $request->va;
         $MRF->UpdatedBy = Auth::user()->id;
+        $MRF->AllocatedDt = now();
         $MRF->LastUpdated = now();
         $query = $MRF->save();
         if (!$query) {
@@ -186,13 +188,29 @@ class AdminController extends Controller
         return response()->json(['MRFDetails' => $MRFDetails]);
     }
 
-    function getTaskList()
+    function getTaskList(Request $request)
     {
-        # code...
+        $sql =DB::table('manpowerrequisition')
+        ->where('Status','Approved')
+        ->where('Status','!=','Close')
+        ->where('Allocated',$request->Uid)
+        ->get(); 
+
+        return datatables()->of($sql)
+        ->addIndexColumn()
+      ->addColumn('actions', function ($sql) {
+            return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $sql->MRFId . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>';
+        })
+        ->rawColumns(['actions']) 
+        ->make(true);
     }
 
 
-
+function getRecruiterName(Request $request)
+{
+   $result = getFullName($request->Uid);
+   return response()->json(['details' => $result]);
+}
 
 
 
