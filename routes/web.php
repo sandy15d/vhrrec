@@ -51,6 +51,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::get('getRepMgrMRFAdmin', [AdminController::class,'getRepMgrMRFAdmin'])->name('getRepMgrMRFAdmin');
     Route::post('getMRFDetails', [AdminController::class,'getMRFDetails'])->name('getMRFDetails');
     Route::post('editMRFAdmin', [AdminController::class, 'editMRFAdmin'])->name('editMRFAdmin');
+    Route::post('getTaskList', [AdminController::class, 'getTaskList'])->name('getTaskList');
     Route::post('setTheme', [AdminController::class, 'setTheme'])->name('admin.setTheme');
 
     // ! ======================Master Company ========================//

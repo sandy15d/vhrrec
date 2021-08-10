@@ -1,4 +1,5 @@
 @php
+use function App\Helpers\ActiveMRFCount;
 $NewMRFSQL = DB::table('manpowerrequisition')
     ->where('Status', 'New')
     ->get();
@@ -21,7 +22,12 @@ $CloseMRF = $CloseActive->count();
 @section('title', 'Dashboard')
 @section('PageContent')
 <div class="page-content">
-
+    <style>
+        .table>:not(caption)>*>* {
+            padding: 2px 1px;
+        }
+    
+    </style>
     <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
         <div class="col">
             <a href="/admin/mrf">
@@ -162,7 +168,8 @@ $CloseMRF = $CloseActive->count();
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover table-condensed" id="recruitertable"
+                        <h6 class="mb-0 text-primary">Recruiters</h6>
+                        <table class="table table-striped table-hover table-condensed text-center" id="recruitertable"
                             style="width: 100%">
                             <thead>
                                 <tr>
@@ -173,7 +180,46 @@ $CloseMRF = $CloseActive->count();
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                    $sql = DB::table('users')
+                                        ->where('role', 'R')
+                                        ->where('Status', 'A')
+                                        ->get();
+                                    $i = 1;
+                                @endphp
+                                @foreach ($sql as $item)
+                                    @if (ActiveMRFCount($item->id) > 0)
+                                        <tr>
+                                            <td>{{ $i++ }}</td>
+                                            <td>{{ $item->name }}</td>
+                                            <td>{{ ActiveMRFCount($item->id) }}</td>
+                                            <td><button type="button" class="btn btn-sm btn-outline-primary viewTask" data-id="{{$item->id}}"><i
+                                                        class="fadeIn animated bx bx-window-open"></i>
+                                                </button></td>
+                                        </tr>
+                                    @endif
+                                @endforeach
                             </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card d-none" id="TaskDetailDiv">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <h6 class="mb-0 text-primary">Task Allocation</h6>
+                        <table class="table table-striped table-hover table-condensed text-center" id="taskTable"
+                            style="width: 100%">
+                            <thead>
+                                <tr>
+                                    <th class="th-sm">S.No</th>
+                                    <th>MRF Allocated</th>
+                                    <th>MRF Allocation Date</th>
+                                    <th>MRF Status</th>
+                                </tr>
+                            </thead>
                         </table>
                     </div>
                 </div>
@@ -181,4 +227,39 @@ $CloseMRF = $CloseActive->count();
         </div>
     </div>
 </div>
+@endsection
+@section('scriptsection')
+<script>
+        $(document).on('click','.viewTask',function () { 
+            var Uid = $(this).data('id');
+            getTaskList(Uid);
+         });
+
+         function getTaskList(Uid) {  
+            $('#TaskDetailDiv').removeClass('d-none');
+            $('#taskTable').DataTable({
+            processing: true,
+            info: true,
+            ajax: "{{ route('getTaskList') }}?Uid=" + Uid,
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex'
+                },
+                {
+                    data: '',
+                    name: ''
+                },
+                {
+                    data: '',
+                    name: ''
+                },
+                {
+                    data: '',
+                    name: ''
+                }
+            ],
+
+        });
+         }
+</script>
 @endsection

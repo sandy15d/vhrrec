@@ -46,4 +46,13 @@ if (!function_exists('getFullName')) {
 		return $body_content;
 	 } 
 
+	 function ActiveMRFCount($Uid){
+		 $sql =DB::table('manpowerrequisition')
+		 ->where('Status','Approved')
+		 ->where('Status','!=','Close')
+		 ->where('Allocated',$Uid)
+		 ->get();
+		return $sql->count();
+	 }
+
 }
