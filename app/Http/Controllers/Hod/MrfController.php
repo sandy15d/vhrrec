@@ -14,10 +14,6 @@ use function App\Helpers\getCompanyCode;
 use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getDesignationCode;
 use function App\Helpers\getFullName;
-
-use DataTables;
-use PHPUnit\Framework\Constraint\Count;
-
 class MrfController extends Controller
 {
     function newmrf()
@@ -110,7 +106,7 @@ class MrfController extends Controller
             $MRF->KeyPositionCriteria = $KpArray_str;
             $MRF->CreatedBy =  Auth::user()->id;
             $MRF->Status = 'New';
-          //  dd($MRF->Info);die;
+            dd($MRF->Info);die;
             $query = $MRF->save();
 
             $InsertId = $MRF->MRFId;

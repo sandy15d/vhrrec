@@ -16,10 +16,13 @@ class HeadquarterController extends Controller
     }
     public function getAllHeadquarter()
     {
+
+
         $headquarter = DB::table('master_headquater')
             ->join('master_company', 'master_headquater.CompanyId', '=', 'master_company.CompanyId')
             ->join('master_state', 'master_headquater.StateId', '=', 'master_state.StateId')
             ->select(['master_headquater.*', 'master_company.CompanyCode', 'master_state.StateName']);
+
 
         return datatables()->of($headquarter)
             ->addIndexColumn()

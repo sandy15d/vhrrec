@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Hod;
 
 use App\Http\Controllers\Controller;
+use App\Models\master_mrf;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use DataTables;
@@ -16,6 +17,9 @@ class MyTeamController extends Controller
 
     function getAllMyTeamMember()
     {
+        
+        
+        
         $employee = DB::table('master_employee as e')
             ->Join('master_company as c', 'e.CompanyId', '=', 'c.CompanyId')
             ->Join('master_employee as e1', 'e1.EmployeeID', '=', 'e.RepEmployeeID')
@@ -34,13 +38,14 @@ class MyTeamController extends Controller
             ->where('e.RepEmployeeID', Auth::user()->id)
             ->select(['e.*', 'e1.Fname as RFname', 'e1.Sname as RSname', 'e1.Lname as RLname', 'c.CompanyCode', 'd.DepartmentCode', 'dg.DesigName', 'g.GradeValue', 'h.HqName']);
 
-
+      
+           
         return datatables()::of($employee)
             ->addIndexColumn()
             ->addColumn('fullname', function ($employee) {
                 return $employee->Fname . ' ' . $employee->Sname . ' ' . $employee->Lname;
             })
-           
+
             ->addColumn('Reporting', function ($employee) {
                 return $employee->RFname . ' ' . $employee->RSname . ' ' . $employee->RLname;
             })
@@ -54,7 +59,8 @@ class MyTeamController extends Controller
                 }
             })
 
+            ->addColumn('MStatus', function ($employee) {
+            })
             ->make(true);
     }
-
 }

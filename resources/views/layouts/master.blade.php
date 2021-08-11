@@ -36,8 +36,10 @@
     <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
 
     <!-- CkEditor -->
+   
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
 
+    
 
 
     <title>HR Recruitment | @yield('title')</title>
@@ -141,7 +143,7 @@
                         <ul>
                             <li> <a href="/admin/mrf"><i class="bx bx-right-arrow-alt"></i>MRF Details</a></li>
                             <li> <a href="/admin/mrfentry"><i class="bx bx-right-arrow-alt"></i>Manual Entry</a></li>
-                           
+
                         </ul>
                     </li>
                     <li> <a href="/admin/userlist">
@@ -166,13 +168,13 @@
                 @endif
 
                 @if (Auth::user()->role == 'H')
-                <li class="{{ request()->is('hod/dashboard') ? 'mm-active' : '' }}">
-                    <a href="/hod/dashboard">
-                        <div class="parent-icon"><i class="fas fa-laptop-house text-primary"></i>
-                        </div>
-                        <div class="menu-title">Dashboard</div>
-                    </a>
-                </li>
+                    <li class="{{ request()->is('hod/dashboard') ? 'mm-active' : '' }}">
+                        <a href="/hod/dashboard">
+                            <div class="parent-icon"><i class="fas fa-laptop-house text-primary"></i>
+                            </div>
+                            <div class="menu-title">Dashboard</div>
+                        </a>
+                    </li>
                     <li>
                         <a href="/hod/myteam">
                             <div class="parent-icon"><i class="fas fa-users text-info"></i>

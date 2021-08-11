@@ -86,8 +86,8 @@
                     name: 'Status'
                 },
                 {
-                    data: 'DOJ',
-                    name: 'DOJ'
+                    data: 'MStatus',
+                    name: 'MStatus'
                 }
 
             ],
