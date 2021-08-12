@@ -66,6 +66,8 @@
         </div>
     </div>
 </div>
+
+
 @endsection
 
 @section('scriptsection')
@@ -132,7 +134,8 @@
 
     $(document).on('click', '.addRepMRF', function() {
         var EmployeeID = $(this).data('id');
-        alert(EmployeeID);
+        
+        window.location.href ="{{route('repmrf')}}?ei="+EmployeeID;
     });
 
 

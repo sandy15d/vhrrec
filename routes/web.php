@@ -191,6 +191,8 @@ Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackH
     Route::get('myteam',[MyTeamController::class,'myteam'])->name('myteam');
     Route::get('getAllMyTeamMember', [MyTeamController::class, 'getAllMyTeamMember'])->name('getAllMyTeamMember');
     Route::post('getMyTeam', [MyTeamController::class, 'getMyTeam'])->name('getMyTeam');
+    Route::get('repmrf', [MyTeamController::class,'repmrf'])->name('repmrf');
+        
     //**=========================================================================== */
 
     //!=============================MRF===============================================//

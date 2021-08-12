@@ -45,9 +45,9 @@
             </div>
             <hr />
             <div class="table-responsive">
-                <table class="table  table-hover table-condensed table-bordered" id="MRFTable" style="width: 100%">
+                <table class="table  table-hover table-condensed table-bordered text-center" id="MRFTable" style="width: 100%">
                     <thead>
-                        <tr>
+                        <tr class="text-center">
                             <td class="th-sm">S.No</td>
                             <td>Type</td>
                             <td>JobCode</td>

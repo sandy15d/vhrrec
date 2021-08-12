@@ -18,6 +18,11 @@ class MyTeamController extends Controller
         return view('hod.myteam');
     }
 
+    function repmrf()
+    {
+        return view('hod.replacementmrf');
+    }
+
     function getAllMyTeamMember()
     {
         $employee = DB::table('master_employee as e')
