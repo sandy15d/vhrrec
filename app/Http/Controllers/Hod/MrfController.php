@@ -106,7 +106,7 @@ class MrfController extends Controller
             $MRF->KeyPositionCriteria = $KpArray_str;
             $MRF->CreatedBy =  Auth::user()->id;
             $MRF->Status = 'New';
-            dd($MRF->Info);die;
+           
             $query = $MRF->save();
 
             $InsertId = $MRF->MRFId;

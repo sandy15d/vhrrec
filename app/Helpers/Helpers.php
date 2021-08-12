@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use Hamcrest\Core\IsNull;
 use Illuminate\Support\Facades\DB;
 
 if (!function_exists('getFullName')) {
@@ -53,6 +54,17 @@ if (!function_exists('getFullName')) {
 		 ->where('Allocated',$Uid)
 		 ->get();
 		return $sql->count();
+	 }
+
+	 function CheckReplacementMRF($empid){
+		$sql = Db::table('manpowerrequisition')->select('MRFId')->where('RepEmployeeID',$empid)->first();
+		
+		if(is_null($sql)){
+			return '0';
+		}else{
+			return '1';
+		}
+		
 	 }
 
 }
