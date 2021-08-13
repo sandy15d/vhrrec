@@ -123,6 +123,112 @@ class MrfController extends Controller
             }
         }
     }
+    public function addRepMrf(Request $request)
+    {
+   
+
+        $validator = Validator::make($request->all(), []);
+        if ($validator->fails()) {
+            return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
+        } else {
+
+            $sql = DB::table('master_employee')->select('CompanyId','GradeId','DepartmentId','DesigId')->where('EmployeeID', $request->ReplacementFor)->first();
+            $CompanyId = $sql->CompanyId;
+            $GradeId = $sql->GradeId;
+            $DepartmentId = $sql->DepartmentId;
+            $DesigId = $sql->DesigId;
+         
+            $State = $request->State;
+            $City = $request->City;
+            $Education = $request->Education;
+            $Specialization = $request->Specialization;
+            $KeyPosition = $request->KeyPosition;
+
+            $locArray = array();
+            if ($State != '') {
+               
+
+                    $location = array(
+                        "state" => $State,
+                        "city" => $City,
+                        "nop" => '1',
+                    );
+                    array_push($locArray, $location);
+                
+            }
+            $locArray_str = serialize($locArray);
+
+            $Eduarray = array();
+            if ($Education != '') {
+                for ($count = 0; $count < Count($Education); $count++) {
+
+                    $e = array(
+                        "e" => $Education[$count],
+                        "s" => $Specialization[$count]
+                    );
+                    array_push($Eduarray, $e);
+                }
+            }
+            $EduArray_str = serialize($Eduarray);
+
+            $KpArray = array();
+            if ($KeyPosition != '') {
+                for ($i = 0; $i < Count($KeyPosition); $i++) {
+                    $KP = addslashes($KeyPosition[$i]);
+                    array_push($KpArray, $KP);
+                }
+            }
+
+            $KpArray_str = serialize($KpArray);
+            $UniversityArray = serialize($request->University);
+            
+            $MRF = new master_mrf;
+            $MRF->Type = 'R';
+            $MRF->Reason = "For Replacment Of ".getFullName($request->ReplacementFor);
+            $MRF->CompanyId = $CompanyId;
+            $MRF->DepartmentId = $DepartmentId;
+            $MRF->DesigId =$DesigId;
+            $MRF->GradeId=$GradeId;
+            $MRF->RepEmployeeID =$request->ReplacementFor;
+            $MRF->Positions = 1;
+            $MRF->LocationIds = $locArray_str;
+            $MRF->Reporting = '';
+            $MRF->ExistCTC = $request->ExCTC;
+            $MRF->MinCTC = $request->MinCTC;
+            $MRF->MaxCTC = $request->MaxCTC;
+            $MRF->WorkExp = $request->WorkExp;
+            $MRF->Remarks = $request->Remark;
+            $MRF->Info = convertData($request->JobInfo);
+            $MRF->EducationId = $EduArray_str;
+            $MRF->EducationInsId = $UniversityArray;
+            $MRF->KeyPositionCriteria = $KpArray_str;
+            $MRF->CreatedBy =  Auth::user()->id;
+            $MRF->Status = 'New';
+            $MRF->Reporting = 0;
+           
+            $query = $MRF->save();
+
+            $InsertId = $MRF->MRFId;
+
+            $jobCode = getCompanyCode($CompanyId) . '/' . getDepartmentCode($DepartmentId) . '/' . getDesignationCode($DesigId) . '/' . $InsertId . '-' . date('Y');
+            $query1 = DB::table('manpowerrequisition')
+                ->where('MRFId', $InsertId)
+                ->update(['JobCode' => $jobCode]);
+
+            if (!$query1) {
+                return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+            } else {
+                return response()->json(['status' => 200, 'msg' => 'New MRF has been successfully created.']);
+            }
+        }
+    }
+
+
+
+
+
+
+
     public function getState()
     {
         $State = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateId", "StateName");

@@ -70,7 +70,7 @@
         .btn-xs {
             padding: .25rem .4rem;
             font-size: .875rem;
-            line-height: .5;
+          /*   line-height: .5; */
             border-radius: .2rem;
         }
 

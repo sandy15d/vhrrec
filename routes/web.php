@@ -198,6 +198,8 @@ Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackH
     //!=============================MRF===============================================//
     Route::get('newmrf',[MrfController::class,'newmrf'])->name('newmrf');
     Route::post('addNewMrf', [MrfController::class, 'addNewMrf'])->name('addNewMrf');
+    Route::post('addRepMrf', [MrfController::class, 'addRepMrf'])->name('addRepMrf');
+
     Route::get('getDepartment', [MrfController::class,'getDepartment'])->name('getDepartment');
     Route::get('getDesignation', [MrfController::class,'getDesignation'])->name('getDesignation');
     Route::get('getReportingManager', [MrfController::class,'getReportingManager'])->name('getReportingManager');
