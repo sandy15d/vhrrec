@@ -390,7 +390,6 @@
             $('#MinCTC').val(data.MRFDetails.MinCTC);
             $('#MaxCTC').val(data.MRFDetails.MaxCTC);
             $('#WorkExp').val(data.MRFDetails.WorkExp);
-          //  $('#JobInfo').val(data.MRFDetails.Info);
             CKEDITOR.instances['JobInfo'].setData(data.MRFDetails.Info);
             $('#editMRFModal').modal('show');
         }, 'json');

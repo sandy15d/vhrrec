@@ -222,9 +222,7 @@
 @endsection
 
 @section('scriptsection')
-<script type="text/javascript">
 
-</script>
 <script>
     var StateList;
     var DistrictList;

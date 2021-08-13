@@ -29,6 +29,17 @@ if (!function_exists('getFullName')) {
 		return $DesigCode->DesigCode;
 	}
 
+	function getGradeValue($GradeId){
+		$GradeValue = Db::table('master_grade')->select('GradeValue')->where('GradeId',$GradeId)->first();
+		return $GradeValue->GradeValue;
+	}
+
+	function getHQ($HqId){
+		$HqName = Db::table('master_headquater')->select('HqName')->where('HqId',$HqId)->first();
+		return $HqName->HqName;
+	}
+
+
 	function getStateCode($StateId){
 		$StateCode = Db::table('states')->select('StateCode')->where('StateId',$StateId)->first();
 		return $StateCode->StateCode;
