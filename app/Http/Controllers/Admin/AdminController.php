@@ -185,9 +185,10 @@ class AdminController extends Controller
     {
         $MRFId = $request->MRFId;
         $MRFDetails = master_mrf::find($MRFId);
-       $LocationDetail = unserialize($MRFDetails->LocationIds);
-       
-        return response()->json(['MRFDetails' => $MRFDetails,'LocationDetails'=>$LocationDetail]);
+        $LocationDetail = unserialize($MRFDetails->LocationIds);
+        $UniversityDetail = unserialize($MRFDetails->EducationInsId);
+       $KPDetail = unserialize($MRFDetails->KeyPositionCriteria);
+        return response()->json(['MRFDetails' => $MRFDetails,'LocationDetails'=>$LocationDetail,'UniversityDetails'=>$UniversityDetail,'KPDetails'=>$KPDetail]);
     }
 
     function getTaskList(Request $request)

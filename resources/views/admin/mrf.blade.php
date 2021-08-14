@@ -229,6 +229,8 @@
                                         <tbody id="MulKP">
                                         </tbody>
                                     </table>
+                                    <button type="button" name="add" id="addKP"
+                                        class="btn btn-warning btn-xs mb-2 mt-2"><i class="bx bx-plus"></i></button>
                                 </td>
                             </tr>
                             <tr>
@@ -251,6 +253,7 @@
 @endsection
 @section('scriptsection')
 <script>
+      var KPCount=1;
     CKEDITOR.replace('JobInfo', {
         height: 100
     });
@@ -393,6 +396,26 @@
             $('#MaxCTC').val(data.MRFDetails.MaxCTC);
             $('#WorkExp').val(data.MRFDetails.WorkExp);
             CKEDITOR.instances['JobInfo'].setData(data.MRFDetails.Info);
+            $('#Remark').val(data.MRFDetails.Remarks);
+
+            var UniversityValue = data.UniversityDetails;
+            var selectedOptions = UniversityValue.toString().split(",");
+            $('#University').select2({
+                multiple: true,
+            });
+            $('#University').val(selectedOptions).trigger('change');
+
+            var KPlength = (data.KPDetails).length;
+            var KPValue = data.KPDetails.toString().split(",");
+        
+            for(i=1;i<=KPlength;i++){
+                mulKP(i);
+            
+                $('#KeyPosition'+i).val(KPValue[i]);
+            }
+
+           
+
             $('#editMRFModal').modal('show');
         }, 'json');
     });
@@ -519,6 +542,7 @@
     });
     var StateList;
     getState();
+
     function getState() {
         $.ajax({
             type: "GET",
@@ -538,7 +562,7 @@
     }
     var LocCount = 1;
     mulLocation(LocCount);
-    
+
     function mulLocation(number) {
         x = '<tr>';
         x += '<td >' +
@@ -581,6 +605,38 @@
 
     $(document).on('click', '.removeLocation', function() {
         LocCount--;
+        $(this).closest("tr").remove();
+    });
+
+
+  
+
+
+    mulKP();
+
+    function mulKP(n) {
+        x = '<tr>';
+        x += '<td >' +
+            '<input type="text" class="form-control form-control-sm" id="KeyPosition' + n + '" name="KeyPosition[]">' +
+            '</td>';
+
+        if (n > 1) {
+            x +=
+                '<td><button type="button" name="remove" id="" class="btn btn-danger btn-xs  removeKP"><i class="bx bx-x"></td></tr>';
+            $('#MulKP').append(x);
+        } else {
+            x +=
+                '';
+            $('#MulKP').html(x);
+        }
+    }
+    $(document).on('click', '#addKP', function() {
+        KPCount++;
+        mulKP(KPCount);
+    });
+
+    $(document).on('click', '.removeKP', function() {
+        KPCount--;
         $(this).closest("tr").remove();
     });
 </script>
