@@ -185,7 +185,9 @@ class AdminController extends Controller
     {
         $MRFId = $request->MRFId;
         $MRFDetails = master_mrf::find($MRFId);
-        return response()->json(['MRFDetails' => $MRFDetails]);
+       $LocationDetail = unserialize($MRFDetails->LocationIds);
+       
+        return response()->json(['MRFDetails' => $MRFDetails,'LocationDetails'=>$LocationDetail]);
     }
 
     function getTaskList(Request $request)
@@ -212,6 +214,11 @@ function getRecruiterName(Request $request)
    return response()->json(['details' => $result]);
 }
 
+public function getStateAdmin()
+{
+    $State = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateId", "StateName");
+    return response()->json($State);
+}
 
 
 

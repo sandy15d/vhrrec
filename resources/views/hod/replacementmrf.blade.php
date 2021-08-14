@@ -69,8 +69,8 @@ $institute_list = DB::table('master_institute')
                         <tr>
                             <th>Existing Location:</th>
                             <td>
-                                <input type="text" class="form-control form-control-sm" id="ExistingLocation" name="ExistingLocation"
-                                    value="{{ getHQ($res[0]->Location) }}" readonly>
+                                <input type="text" class="form-control form-control-sm" id="ExistingLocation"
+                                    name="ExistingLocation" value="{{ getHQ($res[0]->Location) }}" readonly>
                             </td>
                         </tr>
                         <tr>
@@ -84,7 +84,7 @@ $institute_list = DB::table('master_institute')
                             <th>Desired Location:</th>
                             <td>
                                 <div style="width: 50%;display: inline-block;float: left">
-                                    <select id="State" name="State" class="form-control form-select form-select-sm"
+                                    <select id="State" name="State" class="form-control form-select form-select-sm reqinp"
                                         onchange="getLocation(this.value)">
                                         <option disabled="" selected="">Select State</option>
                                         @foreach ($state_list as $key => $value)
@@ -143,7 +143,7 @@ $institute_list = DB::table('master_institute')
                             <th>Work Experience <font class="text-danger">*</font>
                             </th>
                             <td>
-                                <input type="text" name="WorkExp" id="WorkExp" class="form-control form-control-sm">
+                                <input type="text" name="WorkExp" id="WorkExp" class="form-control form-control-sm reqinp">
                             </td>
                         </tr>
                         <tr>
@@ -221,7 +221,8 @@ $institute_list = DB::table('master_institute')
         x += '<td >' +
             ' <select  name="Education[]" id="Education' +
             num +
-            '" class="form-control form-select form-select-sm" onchange="getSpecialization(this.value,' + num + ')">' +
+            '" class="form-control form-select form-select-sm reqinp" onchange="getSpecialization(this.value,' + num +
+            ')">' +
             '  <option value="" selected disabled>Select Education</option>' + EducationList +
             '</select>' +
             ' <span class="text-danger error-text Education' + num + '_error"></span>' +
@@ -230,7 +231,7 @@ $institute_list = DB::table('master_institute')
             '<div class="spinner-border text-primary d-none" role="status" id="SpeLoader' + num +
             '"> <span class="visually-hidden">Loading...</span></div>' +
             '       <select  id="Specialization' + num +
-            '" name="Specialization[]" class="form-control form-select form-select-sm">' +
+            '" name="Specialization[]" class="form-control form-select form-select-sm reqinp">' +
             '    <option value="" selected disabled>Select Specialization</option>' +
             '</select>' +
             '<span class="text-danger error-text Specialization' + num + '_error"></span>' +
@@ -366,37 +367,56 @@ $institute_list = DB::table('master_institute')
         });
     }
 
-        //====================================== Add Replacement MRF to the Database==========================//
-        $('#addRepMrfForm').on('submit', function(e) {
+    //====================================== Add Replacement MRF to the Database==========================//
+    $('#addRepMrfForm').on('submit', function(e) {
         e.preventDefault();
         var form = this;
         for (instance in CKEDITOR.instances) {
             CKEDITOR.instances[instance].updateElement();
         }
-        $.ajax({
-            url: $(form).attr('action'),
-            method: $(form).attr('method'),
-            data: new FormData(form),
-            processData: false,
-            dataType: 'json',
-            contentType: false,
-            beforeSend: function() {
-                $(form).find('span.error-text').text('');
+        var reqcond = checkRequired();
+        if (reqcond == 1) {
+            alert('Please fill required field...!');
+        } else {
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                beforeSend: function() {
+                    $(form).find('span.error-text').text('');
 
-            },
+                },
 
-            success: function(data) {
-                if (data.status == 400) {
-                    $.each(data.error, function(prefix, val) {
-                        $(form).find('span.' + prefix + '_error').text(val[0]);
-                    });
-                } else {
-                    $(form)[0].reset();
-                    toastr.success(data.msg);
-                    window.location.href="{{route('hod.dashboard')}}";
+                success: function(data) {
+                    if (data.status == 400) {
+                        $.each(data.error, function(prefix, val) {
+                            $(form).find('span.' + prefix + '_error').text(val[0]);
+                        });
+                    } else {
+                        $(form)[0].reset();
+                        toastr.success(data.msg);
+                        window.location.href = "{{ route('hod.dashboard') }}";
+                    }
                 }
+            });
+        }
+
+    });
+
+    function checkRequired() {
+        var res = 0;
+        $('.reqinp').each(function() {
+            if ($(this).val() == '' || $(this).val() == null) {
+                $(this).addClass('errorfield');
+                res = 1;
+            } else {
+                $(this).removeClass('errorfield');
             }
         });
-    });
+        return res;
+    }
 </script>
 @endsection

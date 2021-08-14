@@ -36,10 +36,10 @@
     <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
 
     <!-- CkEditor -->
-   
+
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
 
-    
+
 
 
     <title>HR Recruitment | @yield('title')</title>
@@ -70,13 +70,17 @@
         .btn-xs {
             padding: .25rem .4rem;
             font-size: .875rem;
-          /*   line-height: .5; */
+            /*   line-height: .5; */
             border-radius: .2rem;
         }
 
         .borderless td,
         .borderless th {
             border: none;
+        }
+
+        .errorfield {
+            border: 2px solid #E8290B;
         }
 
     </style>

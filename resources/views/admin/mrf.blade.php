@@ -45,7 +45,8 @@
             </div>
             <hr />
             <div class="table-responsive">
-                <table class="table  table-hover table-condensed table-bordered text-center" id="MRFTable" style="width: 100%">
+                <table class="table  table-hover table-condensed table-bordered text-center" id="MRFTable"
+                    style="width: 100%">
                     <thead>
                         <tr class="text-center">
                             <td class="th-sm">S.No</td>
@@ -381,6 +382,7 @@
         $.post('<?= route('getMRFDetails') ?>', {
             MRFId: MRFId
         }, function(data) {
+            console.log(data.LocationDetails);
             $('#editMRFModal').find('input[name="MRFId"]').val(data.MRFDetails.MRFId);
             $('#editReason').val(data.MRFDetails.Reason);
             $('#editCompany').val(data.MRFDetails.CompanyId);
@@ -394,9 +396,6 @@
             $('#editMRFModal').modal('show');
         }, 'json');
     });
-
-
-
 
     //==================================Get Department List on Change Company========================//
     $('#editCompany').change(function() {
@@ -517,6 +516,72 @@
             $("#editReportingManager").empty();
 
         }
+    });
+    var StateList;
+    getState();
+    function getState() {
+        $.ajax({
+            type: "GET",
+            url: "{{ route('getStateAdmin') }}",
+            async: false,
+            success: function(res) {
+
+                if (res) {
+                    $.each(res, function(key, value) {
+                        StateList = StateList + '<option value="' + value + '">' + key +
+                            '</option>';
+                    });
+
+                }
+            }
+        });
+    }
+    var LocCount = 1;
+    mulLocation(LocCount);
+    
+    function mulLocation(number) {
+        x = '<tr>';
+        x += '<td >' +
+            ' <select  name="State[]" id="State' +
+            number +
+            '" class="form-control form-select form-select-sm" onchange="getLocation(this.value,' + number + ')">' +
+            '  <option value="" selected disabled>Select State</option>' + StateList +
+            '</select>' +
+            ' <span class="text-danger error-text State' + number + '_error"></span>' +
+            '</td>';
+        x += '<td>' +
+            '<div class="spinner-border text-primary d-none" role="status" id="LocLoader' + number +
+            '"> <span class="visually-hidden">Loading...</span></div>' +
+            '       <select  id="City' + number + '" name="City[]" class="form-control form-select form-select-sm">' +
+            '    <option value="" selected disabled>Select City</option>' +
+            '</select>' +
+            '<span class="text-danger error-text City' + number + '_error"></span>' +
+            '</td>';
+        x += '<td>' +
+            '  <input type="text" name="ManPower[]" id="ManPower' + number +
+            '" class="form-control form-control-sm" style="width:130px" placeholder="No. of Manpower">' +
+            '<span class="text-danger error-text ManPower' + number + '_error"></span>' +
+            '</td>';
+
+        if (number > 1) {
+            x +=
+                '<td><button type="button" name="remove" id="" class="btn btn-danger btn-xs  removeLocation">Remove</td></tr>';
+            $('#MulLocation').append(x);
+        } else {
+            x +=
+                '<td><button type="button" name="add" id="addLocation" class="btn btn-warning btn-sm ">Add</button></td></tr>';
+            $('#MulLocation').html(x);
+        }
+    }
+
+    $(document).on('click', '#addLocation', function() {
+        LocCount++;
+        mulLocation(LocCount);
+    });
+
+    $(document).on('click', '.removeLocation', function() {
+        LocCount--;
+        $(this).closest("tr").remove();
     });
 </script>
 

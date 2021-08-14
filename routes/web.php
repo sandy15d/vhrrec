@@ -53,6 +53,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('editMRFAdmin', [AdminController::class, 'editMRFAdmin'])->name('editMRFAdmin');
     Route::post('getTaskList', [AdminController::class, 'getTaskList'])->name('getTaskList');
     Route::post('getRecruiterName', [AdminController::class, 'getRecruiterName'])->name('getRecruiterName');
+    Route::get('getStateAdmin', [AdminController::class,'getStateAdmin'])->name('getStateAdmin');
 
     Route::post('setTheme', [AdminController::class, 'setTheme'])->name('admin.setTheme');
 
