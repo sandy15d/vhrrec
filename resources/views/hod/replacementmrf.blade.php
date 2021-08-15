@@ -102,7 +102,7 @@ $institute_list = DB::table('master_institute')
                             </td>
                         </tr>
                         <tr>
-                            <th>Desired CTC (in Lacs):</th>
+                            <th>Desired CTC (in Rs.):</th>
                             <td>
                                 <div style="width: 50%;display: inline-block;float: left">
                                     <input type="text" name="MinCTC" id="MinCTC" class="form-control form-control-sm"
@@ -147,7 +147,7 @@ $institute_list = DB::table('master_institute')
                             </td>
                         </tr>
                         <tr>
-                            <th>Key Position Criteria</th>
+                            <th>Mandatory Requirements</th>
                             <td>
                                 <table class="table borderless" style="margin-bottom: 0px;">
                                     <tbody id="MulKP">
@@ -158,13 +158,13 @@ $institute_list = DB::table('master_institute')
                             </td>
                         </tr>
                         <tr>
-                            <th>Any Other Job-related information</th>
+                            <th>Job Description</th>
                             <td>
                                 <textarea name="JobInfo" id="JobInfo" class="JobInfo"></textarea>
                             </td>
                         </tr>
                         <tr>
-                            <th>Remarks for HR</th>
+                            <th>Any Other Remark</th>
                             <td>
                                 <textarea name="Remark" id="Remark" class="form-control" rows="2"></textarea>
                             </td>

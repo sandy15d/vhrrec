@@ -43,7 +43,7 @@ class AdminController extends Controller
         $mrf = DB::table('manpowerrequisition as mr')
             ->where('MRFId', '!=', 0)
             ->where('Status', '!=', 'Close')
-            ->orderBy('CreatedTime','DESC')
+            ->orderBy('CreatedTime', 'DESC')
             ->select(['mr.*']);
 
         return datatables()->of($mrf)
@@ -187,52 +187,55 @@ class AdminController extends Controller
         $MRFDetails = master_mrf::find($MRFId);
         $LocationDetail = unserialize($MRFDetails->LocationIds);
         $UniversityDetail = unserialize($MRFDetails->EducationInsId);
-       $KPDetail = unserialize($MRFDetails->KeyPositionCriteria);
-        return response()->json(['MRFDetails' => $MRFDetails,'LocationDetails'=>$LocationDetail,'UniversityDetails'=>$UniversityDetail,'KPDetails'=>$KPDetail]);
+        $KPDetail = unserialize($MRFDetails->KeyPositionCriteria);
+        return response()->json(['MRFDetails' => $MRFDetails, 'LocationDetails' => $LocationDetail, 'UniversityDetails' => $UniversityDetail, 'KPDetails' => $KPDetail]);
     }
 
     function getTaskList(Request $request)
     {
-        $sql =DB::table('manpowerrequisition')
-        ->where('Status','Approved')
-        ->where('Status','!=','Close')
-        ->where('Allocated',$request->Uid)
-        ->get(); 
+        $sql = DB::table('manpowerrequisition')
+            ->where('Status', 'Approved')
+            ->where('Status', '!=', 'Close')
+            ->where('Allocated', $request->Uid)
+            ->get();
 
         return datatables()->of($sql)
-        ->addIndexColumn()
-      ->addColumn('actions', function ($sql) {
-            return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $sql->MRFId . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>';
-        })
-        ->rawColumns(['actions']) 
-        ->make(true);
+            ->addIndexColumn()
+            ->addColumn('actions', function ($sql) {
+                return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $sql->MRFId . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>';
+            })
+            ->rawColumns(['actions'])
+            ->make(true);
     }
 
 
-function getRecruiterName(Request $request)
-{
-   $result = getFullName($request->Uid);
-   return response()->json(['details' => $result]);
-}
+    function getRecruiterName(Request $request)
+    {
+        $result = getFullName($request->Uid);
+        return response()->json(['details' => $result]);
+    }
 
-public function getStateAdmin()
-{
-    $State = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateId", "StateName");
-    return response()->json($State);
-}
-
-
+    public function getStateAdmin()
+    {
+        $State = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateId", "StateName");
+        return response()->json($State);
+    }
 
 
 
 
+    public function getCityAdmin()
+    {
+        $State = DB::table("master_district")->orderBy('DistrictName', 'asc')->pluck("DistrictId", "DistrictName");
+        return response()->json($State);
+    }
 
 
-
-
-
-
-
+    public function getEducation()
+    {
+        $Education = DB::table("master_education")->orderBy('EducationName', 'asc')->pluck("EducationId", "EducationCode");
+        return response()->json($Education);
+    }
     function setTheme(Request $request)
     {
         $ThemeStyle = $request->ThemeStyle;

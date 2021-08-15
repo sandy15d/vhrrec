@@ -54,6 +54,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('getTaskList', [AdminController::class, 'getTaskList'])->name('getTaskList');
     Route::post('getRecruiterName', [AdminController::class, 'getRecruiterName'])->name('getRecruiterName');
     Route::get('getStateAdmin', [AdminController::class,'getStateAdmin'])->name('getStateAdmin');
+    Route::get('getCityAdmin', [AdminController::class,'getCityAdmin'])->name('getCityAdmin');
+    Route::get('getEducationAdmin', [AdminController::class,'getEducationAdmin'])->name('getEducationAdmin');
 
     Route::post('setTheme', [AdminController::class, 'setTheme'])->name('admin.setTheme');
 

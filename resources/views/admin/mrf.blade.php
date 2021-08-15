@@ -253,10 +253,10 @@
 @endsection
 @section('scriptsection')
 <script>
-      var KPCount=1;
     CKEDITOR.replace('JobInfo', {
         height: 100
     });
+    var KPCount;
     $(document).ready(function() {
 
         $('#MRFTable').DataTable({
@@ -385,7 +385,7 @@
         $.post('<?= route('getMRFDetails') ?>', {
             MRFId: MRFId
         }, function(data) {
-            console.log(data.LocationDetails);
+            // console.log(data.LocationDetails);
             $('#editMRFModal').find('input[name="MRFId"]').val(data.MRFDetails.MRFId);
             $('#editReason').val(data.MRFDetails.Reason);
             $('#editCompany').val(data.MRFDetails.CompanyId);
@@ -405,16 +405,25 @@
             });
             $('#University').val(selectedOptions).trigger('change');
 
-            var KPlength = (data.KPDetails).length;
+            KPCount = (data.KPDetails).length;
             var KPValue = data.KPDetails.toString().split(",");
-        
-            for(i=1;i<=KPlength;i++){
+
+            for (i = 1; i <= KPCount; i++) {
                 mulKP(i);
-            
-                $('#KeyPosition'+i).val(KPValue[i]);
+
+                $('#KeyPosition' + i).val(KPValue[i - 1]);
             }
 
-           
+            LocCount = (data.LocationDetails).length;
+
+            for (j = 1; j <= LocCount; j++) {
+                mulLocation(j);
+                $('#State' + j).val(data.LocationDetails[j - 1].state);
+                $('#City' + j).val(data.LocationDetails[j - 1].city);
+                $('#ManPower' + j).val(data.LocationDetails[j - 1].nop);
+                console.log(data.LocationDetails[j - 1].city);
+            }
+
 
             $('#editMRFModal').modal('show');
         }, 'json');
@@ -541,6 +550,7 @@
         }
     });
     var StateList;
+    var CityList;
     getState();
 
     function getState() {
@@ -553,6 +563,46 @@
                 if (res) {
                     $.each(res, function(key, value) {
                         StateList = StateList + '<option value="' + value + '">' + key +
+                            '</option>';
+                    });
+
+                }
+            }
+        });
+    }
+
+    getCity();
+
+    function getCity() {
+        $.ajax({
+            type: "GET",
+            url: "{{ route('getCityAdmin') }}",
+            async: false,
+            success: function(res) {
+
+                if (res) {
+                    $.each(res, function(key, value) {
+                        CityList = CityList + '<option value="' + value + '">' + key +
+                            '</option>';
+                    });
+
+                }
+            }
+        });
+    }
+
+    getEducation();
+
+    function getEducation() {
+        $.ajax({
+            type: "GET",
+            url: "{{ route('getEducationAdmin') }}",
+            async: false,
+            success: function(res) {
+
+                if (res) {
+                    $.each(res, function(key, value) {
+                        EducationList = EducationList + '<option value="' + value + '">' + key +
                             '</option>';
                     });
 
@@ -577,7 +627,7 @@
             '<div class="spinner-border text-primary d-none" role="status" id="LocLoader' + number +
             '"> <span class="visually-hidden">Loading...</span></div>' +
             '       <select  id="City' + number + '" name="City[]" class="form-control form-select form-select-sm">' +
-            '    <option value="" selected disabled>Select City</option>' +
+            '    <option value="" selected disabled>Select City</option>' + CityList +
             '</select>' +
             '<span class="text-danger error-text City' + number + '_error"></span>' +
             '</td>';
@@ -609,7 +659,7 @@
     });
 
 
-  
+
 
 
     mulKP();

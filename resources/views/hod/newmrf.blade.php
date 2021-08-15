@@ -142,7 +142,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>Expected CTC (in Lacs) <font class="text-danger">*</font>
+                                <th>Desired CTC (in Rs.) <font class="text-danger">*</font>
                                 </th>
                                 <td>
                                     <table class="table borderless" style="margin-bottom: 0px;">
@@ -156,19 +156,6 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>Work Experience <font class="text-danger">*</font>
-                                </th>
-                                <td>
-                                    <input type="text" name="WorkExp" id="WorkExp" class="form-control form-control-sm">
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Any Other Job-related information</th>
-                                <td>
-                                    <textarea name="JobInfo" id="JobInfo" class="JobInfo"></textarea>
-                                </td>
-                            </tr>
-                            <tr>
                                 <th>Desired Eductaion
                                 </th>
                                 <td>
@@ -178,7 +165,6 @@
                                     </table>
                                 </td>
                             </tr>
-
                             <tr>
                                 <th>Desired University/College</th>
                                 <td>
@@ -193,7 +179,23 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>Key Position Criteria</th>
+                                <th>Work Experience <font class="text-danger">*</font>
+                                </th>
+                                <td>
+                                    <input type="text" name="WorkExp" id="WorkExp" class="form-control form-control-sm">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Job Description</th>
+                                <td>
+                                    <textarea name="JobInfo" id="JobInfo" class="JobInfo"></textarea>
+                                </td>
+                            </tr>
+                          
+
+                         
+                            <tr>
+                                <th>Mandatory Requirements</th>
                                 <td>
 
                                     <table class="table borderless" style="margin-bottom: 0px;">
@@ -203,7 +205,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>Remarks for HR</th>
+                                <th>Any Other Remark</th>
                                 <td>
                                     <textarea name="Remark" id="Remark" class="form-control"></textarea>
                                 </td>
