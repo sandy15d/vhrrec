@@ -4,6 +4,8 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
+
+
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\CountryController;
@@ -27,6 +29,7 @@ use App\Http\Controllers\Recruiter\RecruiterController;
 use App\Http\Controllers\Hod\HodController;
 use App\Http\Controllers\Hod\MrfController;
 use App\Http\Controllers\Hod\MyTeamController;
+use App\Http\Controllers\TestMail;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -37,7 +40,7 @@ Route::middleware(['middleware' => 'PreventBackHistory'])->group(function () {
 });
 
 
-
+Route::get('TestMail',[TestMail::class,'sendMail'] )->name('TestMail');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventBackHistory']], function () {
