@@ -12,6 +12,7 @@
         "laravel/framework": "^8.40",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.3",
+        "snowfire/beautymail": "^1.1",
         "yajra/laravel-datatables-oracle": "~9.0"
     },
     "require-dev": {

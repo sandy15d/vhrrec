@@ -41,6 +41,7 @@ Route::middleware(['middleware' => 'PreventBackHistory'])->group(function () {
 
 
 Route::get('TestMail',[TestMail::class,'sendMail'] )->name('TestMail');
+Route::get('TestMail1',[TestMail::class,'sendMail1'] )->name('TestMail1');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventBackHistory']], function () {
