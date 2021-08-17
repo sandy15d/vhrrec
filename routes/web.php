@@ -61,6 +61,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::get('getCityAdmin', [AdminController::class,'getCityAdmin'])->name('getCityAdmin');
     Route::get('getEducationAdmin', [AdminController::class,'getEducationAdmin'])->name('getEducationAdmin');
 
+    Route::get('setting', [AdminController::class, 'setting'])->name('admin.setting');
+
     Route::post('setTheme', [AdminController::class, 'setTheme'])->name('admin.setTheme');
 
     // ! ======================Master Company ========================//
