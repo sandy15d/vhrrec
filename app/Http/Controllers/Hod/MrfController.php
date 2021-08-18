@@ -87,7 +87,12 @@ class MrfController extends Controller
             }
 
             $KpArray_str = serialize($KpArray);
-            $UniversityArray = serialize($request->University);
+
+            
+
+            if($request->University!=''){
+                $UniversityArray = serialize($request->University);
+            }
             $MRF = new master_mrf;
             $MRF->Type = 'N';
             $MRF->Reason = $request->Reason;
@@ -107,8 +112,7 @@ class MrfController extends Controller
             $MRF->KeyPositionCriteria = $KpArray_str;
             $MRF->CreatedBy =  Auth::user()->id;
             $MRF->Status = 'New';
-
-            $query = $MRF->save();
+            $MRF->save();
 
             $InsertId = $MRF->MRFId;
 
@@ -212,12 +216,6 @@ class MrfController extends Controller
             return response()->json(['status' => 200, 'msg' => 'New MRF has been successfully created.']);
         }
     }
-
-
-
-
-
-
 
     public function getState()
     {

@@ -4,8 +4,6 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-
-
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\CountryController;
@@ -21,7 +19,6 @@ use App\Http\Controllers\Admin\EduSpecialController;
 use App\Http\Controllers\Admin\InstituteController;
 use App\Http\Controllers\Admin\ResumeSourcController;
 use App\Http\Controllers\Admin\UserController;
-
 
 use App\Http\Controllers\Recruiter\RecruiterController;
 
@@ -60,9 +57,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::get('getStateAdmin', [AdminController::class,'getStateAdmin'])->name('getStateAdmin');
     Route::get('getCityAdmin', [AdminController::class,'getCityAdmin'])->name('getCityAdmin');
     Route::get('getEducationAdmin', [AdminController::class,'getEducationAdmin'])->name('getEducationAdmin');
+    Route::get('getSpecializationAdmin', [AdminController::class,'getSpecializationAdmin'])->name('getSpecializationAdmin');
+    Route::get('getAllSP', [AdminController::class,'getAllSP'])->name('getAllSP');
 
     Route::get('setting', [AdminController::class, 'setting'])->name('admin.setting');
-
     Route::post('setTheme', [AdminController::class, 'setTheme'])->name('admin.setTheme');
 
     // ! ======================Master Company ========================//

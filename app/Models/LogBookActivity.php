@@ -10,6 +10,6 @@ class LogBookActivity extends Model
     use HasFactory;
     protected $table = 'logbook';
     protected $fillable = [
-        'subject', 'url', 'method', 'ip', 'agent', 'user_id'
+        'subject','type', 'url', 'method', 'ip', 'agent', 'user_id'
     ];
 }

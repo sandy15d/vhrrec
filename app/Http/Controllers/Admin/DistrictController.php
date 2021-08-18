@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
 
 use App\Helpers\LogActivity;
@@ -41,7 +42,7 @@ class DistrictController extends Controller
             if (!$query) {
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
-            LogActivity::addToLog('New District '.$request->DistrictName.' has been created');
+                LogActivity::addToLog($request->DistrictName . ' District has been created','Create');
                 return response()->json(['status' => 200, 'msg' => 'New District has been successfully created.']);
             }
         }
@@ -92,6 +93,7 @@ class DistrictController extends Controller
             if (!$query) {
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
+                LogActivity::addToLog($request->editDistrict. ' District is Updated','Update');
                 return response()->json(['status' => 200, 'msg' => 'District data has been changed successfully.']);
             }
         }
@@ -102,10 +104,13 @@ class DistrictController extends Controller
     public function deleteDistrict(Request $request)
     {
         $DistrictId = $request->DistrictId;
+        $DistrictDetails = master_district::find($DistrictId);
+        $DistrictName = $DistrictDetails->DistrictName;
         $query = master_district::find($DistrictId)->delete();
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
+            LogActivity::addToLog($DistrictName . ' District is Deleted','Delete');
             return response()->json(['status' => 200, 'msg' => 'District data has been Deleted.']);
         }
     }

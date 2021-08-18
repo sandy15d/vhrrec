@@ -226,9 +226,9 @@
 @section('scriptsection')
 
 <script>
-    var StateList;
-    var DistrictList;
-    var EducationList;
+    var StateList='';
+    var DistrictList='';
+    var EducationList='';
     getState();
 
     function getState() {

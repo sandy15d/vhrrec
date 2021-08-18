@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\LogActivity;
 use App\Http\Controllers\Controller;
 use App\Models\master_mrf;
 use App\Models\ThemeDetail;
@@ -140,6 +141,8 @@ class AdminController extends Controller
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
+            $jobCode = $MRF->JobCode;
+            LogActivity::addToLog('MRF '.$jobCode . ' is '.$request->va,'Update');
             return response()->json(['status' => 200, 'msg' => 'MRF Status has been changed successfully.']);
         }
     }
@@ -155,6 +158,8 @@ class AdminController extends Controller
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
+            $jobCode = $MRF->JobCode;
+            LogActivity::addToLog('MRF '.$jobCode . ' is allocated to '.$request->va,'Update');
             return response()->json(['status' => 200, 'msg' => 'Task has been allocated to recruiter successfully.']);
         }
     }
@@ -192,7 +197,8 @@ class AdminController extends Controller
         $LocationDetail = unserialize($MRFDetails->LocationIds);
         $UniversityDetail = unserialize($MRFDetails->EducationInsId);
         $KPDetail = unserialize($MRFDetails->KeyPositionCriteria);
-        return response()->json(['MRFDetails' => $MRFDetails, 'LocationDetails' => $LocationDetail, 'UniversityDetails' => $UniversityDetail, 'KPDetails' => $KPDetail]);
+        $EducationDetail = unserialize($MRFDetails->EducationId);
+        return response()->json(['MRFDetails' => $MRFDetails, 'LocationDetails' => $LocationDetail, 'UniversityDetails' => $UniversityDetail, 'KPDetails' => $KPDetail,'EducationDetails'=>$EducationDetail]);
     }
 
     function getTaskList(Request $request)
@@ -235,11 +241,24 @@ class AdminController extends Controller
     }
 
 
-    public function getEducation()
+    public function getEducationAdmin()
     {
         $Education = DB::table("master_education")->orderBy('EducationName', 'asc')->pluck("EducationId", "EducationCode");
         return response()->json($Education);
     }
+    public function getSpecializationAdmin(Request $request)
+    {
+        $Specialization = DB::table("master_specialization")->orderBy('Specialization', 'asc')
+            ->where("EducationId", $request->EducationId)
+            ->pluck("EducationId", "Specialization");
+        return response()->json($Specialization);
+    }
+    public function getAllSP()
+    {
+        $Sp = DB::table("master_specialization")->orderBy('Specialization', 'asc')->pluck("SpId", "Specialization");
+        return response()->json($Sp);
+    }
+
     function setTheme(Request $request)
     {
         $ThemeStyle = $request->ThemeStyle;

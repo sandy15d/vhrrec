@@ -39,7 +39,7 @@
     <!-- CkEditor -->
 
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 
 @livewireStyles
 
@@ -475,7 +475,7 @@
         <!--start page wrapper -->
         <div class="page-wrapper">
             @yield('PageContent')
-            @livewire('livewire-ui-spotlight')
+         
         </div>
     
         <!--end page wrapper -->
@@ -828,7 +828,7 @@
         });
     </script>
    
-    @livewireScripts
+
 </body>
 
 </html>
