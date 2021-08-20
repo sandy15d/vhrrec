@@ -28,7 +28,7 @@ class SampleMail extends Mailable
      */
     public function build()
     {
-      //  return $this->markdown('emails.SampleMail');
-      return $this->subject("Test Mail from Sandeep")->markdown('emails.SampleMail');
+  
+      return $this->subject($this->details['subject'])->markdown('emails.SampleMail');
     }
 }

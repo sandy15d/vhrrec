@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Hod;
 
+use App\Helpers\LogActivity;
 use App\Http\Controllers\Controller;
+use App\Mail\MrfCreationMail;
 use App\Models\master_mrf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 use function App\Helpers\convertData;
@@ -88,9 +91,9 @@ class MrfController extends Controller
 
             $KpArray_str = serialize($KpArray);
 
-            
 
-            if($request->University!=''){
+            $UniversityArray = array();
+            if ($request->University != '') {
                 $UniversityArray = serialize($request->University);
             }
             $MRF = new master_mrf;
@@ -112,6 +115,7 @@ class MrfController extends Controller
             $MRF->KeyPositionCriteria = $KpArray_str;
             $MRF->CreatedBy =  Auth::user()->id;
             $MRF->Status = 'New';
+
             $MRF->save();
 
             $InsertId = $MRF->MRFId;
@@ -124,6 +128,12 @@ class MrfController extends Controller
             if (!$query1) {
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
+                LogActivity::addToLog('New MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id), 'Create');
+                $details = [
+                    "subject" => 'New MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id),
+                    "Employee" => getFullName(Auth::user()->id),
+                ];
+                Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
                 return response()->json(['status' => 200, 'msg' => 'New MRF has been successfully created.']);
             }
         }
@@ -213,6 +223,12 @@ class MrfController extends Controller
         if (!$query1) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
+            LogActivity::addToLog('Replacement MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id), 'Create');
+            $details = [
+                "subject" => 'Replacement MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id),
+                "Employee" => getFullName(Auth::user()->id),
+            ];
+            Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
             return response()->json(['status' => 200, 'msg' => 'New MRF has been successfully created.']);
         }
     }

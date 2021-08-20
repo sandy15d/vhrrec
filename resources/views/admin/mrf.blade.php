@@ -49,6 +49,7 @@
                         style="width: 100%">
                         <thead>
                             <tr class="text-center">
+                                <td></td>
                                 <td class="th-sm">S.No</td>
                                 <td>Type</td>
                                 <td>JobCode</td>
@@ -262,7 +263,13 @@
                 processing: true,
                 info: true,
                 ajax: "{{ route('getAllMRF') }}",
-                columns: [{
+                columns: [
+                    
+                    {
+                        data:'chk',
+                        name:'chk'
+                    },
+                    {
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex'
                     },
@@ -761,6 +768,16 @@
             EduCount--;
             $(this).closest("tr").remove();
         });
+
+
+        $(document).on('click', '.select_all', function() {
+            if($(this).prop("checked")==true){
+                $(this).closest("tr").addClass("bg-secondary bg-gradient");
+            }else{
+                $(this).closest("tr").removeClass("bg-secondary bg-gradient");
+            }
+        });
+
     </script>
 
 @endsection

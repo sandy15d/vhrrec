@@ -24,7 +24,7 @@ class Logout extends SpotlightCommand
     public function shouldBeShown(Request $request):bool
     {
       
-        return $request->user()->can('Logout');
+      dd($request->user()->role());
      
        
     }

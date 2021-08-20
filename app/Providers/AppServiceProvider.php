@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Support\ServiceProvider;
-use LivewireUI\Spotlight\Commands\Logout;
-use LivewireUI\Spotlight\Spotlight;
+
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,6 +29,6 @@ class AppServiceProvider extends ServiceProvider
     {
 
 
-       Spotlight::registerCommandIf(Auth::check() && Auth::user()->role == 'A',Logout::class);
+    //   Spotlight::registerCommandIf(Auth::check() && Auth::user()->role == 'A',Logout::class);
     }
 }

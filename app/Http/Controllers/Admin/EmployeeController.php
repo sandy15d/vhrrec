@@ -27,12 +27,16 @@ class EmployeeController extends Controller
 
         return datatables()->of($employee)
             ->addIndexColumn()
+            ->addColumn('chk',function(){
+                return '<input type="checkbox" class="select_all">';
+            })
             ->addColumn('fullname', function ($employee) {
                 return $employee->Fname . ' ' . $employee->Sname . ' ' . $employee->Lname;
             })
             ->addColumn('Reporting', function ($employee) {
                 return $employee->RFname . ' ' . $employee->RSname . ' ' . $employee->RLname;
             })
+            ->rawColumns(['chk'])
             ->make(true);
     }
 

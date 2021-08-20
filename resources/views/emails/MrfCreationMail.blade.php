@@ -1,12 +1,14 @@
 @component('mail::message')
-# Introduction
+<p>Dear Sir/Madam,</p>
 
-The body of your message.
+<p>New MRF has been created by {{$details['Employee']}}</p>
+<p>To act login to your account and see the details under the MRF page.
 
-@component('mail::button', ['url' => ''])
-Button Text
-@endcomponent
+<small>*Please do not reply to this email- This is an automated message and responses cannot be received by our system.</small>
+
+
+
 
 Thanks,<br>
-{{ config('app.name') }}
+VNR Recruitment
 @endcomponent

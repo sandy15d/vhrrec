@@ -53,6 +53,9 @@ class AdminController extends Controller
 
         return datatables()->of($mrf)
             ->addIndexColumn()
+            ->addColumn('chk',function(){
+                return '<input type="checkbox" class="select_all">';
+            })
             ->editColumn('Type', function ($mrf) {
                 if ($mrf->Type == 'N' || $mrf->Type == 'N_HrManual') {
                     return 'New';
@@ -126,7 +129,7 @@ class AdminController extends Controller
             ->addColumn('Details', function ($mrf) {
                 return '<i class="fa fa-eye text-info" style="font-size: 16px;cursor: pointer;" id="viewMRF" data-id=' . $mrf->MRFId . '></i>';
             })
-            ->rawColumns(['Status', 'Allocated', 'Details'])
+            ->rawColumns(['chk','Status', 'Allocated', 'Details'])
             ->make(true);
     }
 

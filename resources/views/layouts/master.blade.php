@@ -19,7 +19,7 @@
     <link href="{{ URL::to('/') }}/assets/css/pace.min.css" rel="stylesheet" />
     <script src="{{ URL::to('/') }}/assets/js/pace.min.js"></script>
     <!-- Bootstrap CSS -->
-   
+
     <link href="{{ URL::to('/') }}/assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&amp;display=swap" rel="stylesheet">
     <link href="{{ URL::to('/') }}/assets/css/app.css" rel="stylesheet">
@@ -40,11 +40,10 @@
 
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
 
+{{--     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script> --}}
 
-@livewireStyles
 
 
-    
 
     <title>HR Recruitment | @yield('title')</title>
     <style>
@@ -91,7 +90,7 @@
 </head>
 
 <body>
-   
+
     <!--wrapper-->
     <div class="wrapper">
         <!--sidebar wrapper -->
@@ -160,6 +159,15 @@
                             </div>
                             <div class="menu-title">Users</div>
                         </a></li>
+
+
+                    <li>
+                        <a href="/admin/sentemails" target="_blank">
+                            <div class="parent-icon"><i class='fadeIn animated bx bx-mail-send text-primary'></i>
+                            </div>
+                            <div class="menu-title">Sent Mails</div>
+                        </a>
+                    </li>
                     <li>
                         <a href="/admin/userlogs">
                             <div class="parent-icon"><i class='bx bx-news text-success'></i>
@@ -471,13 +479,13 @@
             </div>
         </header>
         <!--end header -->
-     
+
         <!--start page wrapper -->
         <div class="page-wrapper">
             @yield('PageContent')
-         
+          {{--   @livewire('livewire-ui-spotlight') --}}
         </div>
-    
+
         <!--end page wrapper -->
         <!--start overlay-->
         <div class="overlay toggle-icon"></div>
@@ -827,8 +835,8 @@
             }
         });
     </script>
-   
 
+   {{--  @livewireScripts --}}
 </body>
 
 </html>

@@ -53,9 +53,11 @@ $ActiveMember = $sql->count();
                         <h6 class="mb-0 text-primary">MRF Summary</h6>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover display compact" id="mrfsummarytable" style="width: 100%">
+                        <table class="table table-striped table-hover display compact" id="mrfsummarytable"
+                            style="width: 100%">
                             <thead>
                                 <tr>
+                                    <th></th>
                                     <th class="th-sm">S.No</th>
                                     <th class="th-sm">Type</th>
                                     <th>Job Code</th>
@@ -64,7 +66,7 @@ $ActiveMember = $sql->count();
                                     <th>MRF Date</th>
                                     <th>MRF By</th>
                                     <th>Action</th>
-                                   
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -79,11 +81,15 @@ $ActiveMember = $sql->count();
 
 @section('scriptsection')
     <script>
-         $('#mrfsummarytable').DataTable({
+        $('#mrfsummarytable').DataTable({
             processing: true,
             info: true,
             ajax: "{{ route('mrfbyme') }}",
             columns: [{
+                    data: 'chk',
+                    name: 'chk'
+                },
+                {
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex'
                 },
@@ -125,6 +131,13 @@ $ActiveMember = $sql->count();
             ],
 
 
+        });
+        $(document).on('click', '.select_all', function() {
+            if ($(this).prop("checked") == true) {
+                $(this).closest("tr").addClass("bg-secondary bg-gradient");
+            } else {
+                $(this).closest("tr").removeClass("bg-secondary bg-gradient");
+            }
         });
     </script>
 @endsection

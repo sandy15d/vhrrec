@@ -69,11 +69,14 @@ class InstituteController extends Controller
 
         return datatables()->of($Institute)
             ->addIndexColumn()
+            ->addColumn('chk',function(){
+                return '<input type="checkbox" class="select_all">';
+            })
             ->addColumn('actions', function ($Institute) {
                 return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $Institute->InstituteId . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  
                 <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $Institute->InstituteId . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
             })
-            ->rawColumns(['actions'])
+            ->rawColumns(['chk','actions'])
             ->make(true);
     }
 

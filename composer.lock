@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ea4ad58b98ff64145002db8e266d8f0e",
+    "content-hash": "6884e41cfde374b90b2b8f811157f288",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -117,6 +117,112 @@
                 }
             ],
             "time": "2021-01-20T22:51:39+00:00"
+        },
+        {
+            "name": "citco/carbon",
+            "version": "2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/citco/carbon.git",
+                "reference": "95d60ab38f6d4eeb259f0518ecd42c9f1c01e665"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/citco/carbon/zipball/95d60ab38f6d4eeb259f0518ecd42c9f1c01e665",
+                "reference": "95d60ab38f6d4eeb259f0518ecd42c9f1c01e665",
+                "shasum": ""
+            },
+            "require": {
+                "nesbot/carbon": "2.*",
+                "php": ">=7.1.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Citco\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "This is a wrapper for nesbot/carbon which also calculates which days are British bank holidays (England & Wales only).",
+            "keywords": [
+                "Bank",
+                "british",
+                "england",
+                "holiday",
+                "holidays",
+                "wales"
+            ],
+            "support": {
+                "issues": "https://github.com/citco/carbon/issues",
+                "source": "https://github.com/citco/carbon/tree/2.0.2"
+            },
+            "time": "2020-11-12T14:14:31+00:00"
+        },
+        {
+            "name": "dcblogdev/laravel-sent-emails",
+            "version": "v1.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dcblogdev/laravel-sent-emails.git",
+                "reference": "aebef2498e9024a76c5bfae5bfab90c2527c77b6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dcblogdev/laravel-sent-emails/zipball/aebef2498e9024a76c5bfae5bfab90c2527c77b6",
+                "reference": "aebef2498e9024a76c5bfae5bfab90c2527c77b6",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "5.5.x|5.6.x|5.7.x|5.8.x|6.x|7.x|8.x"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Dcblogdev\\LaravelSentEmails\\SentEmailsServiceProvider"
+                    ],
+                    "aliases": {
+                        "SentEmails": "Dcblogdev\\LaravelSentEmails\\Facades\\SentEmailsFacade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Dcblogdev\\LaravelSentEmails\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "David Carr",
+                    "email": "dave@dcblog.dev",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Store outgoing emails in Laravel",
+            "homepage": "https://github.com/dcblogdev/laravel-sent-emails",
+            "keywords": [
+                "dcblogdev",
+                "laravel",
+                "sent-emails"
+            ],
+            "support": {
+                "issues": "https://github.com/dcblogdev/laravel-sent-emails/issues",
+                "source": "https://github.com/dcblogdev/laravel-sent-emails/tree/v1.0.6"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/dcblogdev",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-05-13T07:47:15+00:00"
         },
         {
             "name": "dflydev/dot-access-data",

@@ -12,6 +12,7 @@ class TestMail extends Controller
     public function sendMail()
     {
         $details = [
+            "subject"=>"MRF Created by Sandeep",
             "title" =>"Sample Title From Mail",
             "body" =>"This is sample content we have added for this test mail"
         ];

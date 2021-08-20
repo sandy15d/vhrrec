@@ -28,6 +28,6 @@ class MrfCreationMail extends Mailable
      */
     public function build()
     {
-        return $this->subject("")->markdown('emails.MrfCreationMail')->with("details",$this->details);
+        return $this->from("recruitment@vnr.in","VNR Recruitment")->subject($this->details['subject'])->markdown('emails.MrfCreationMail')->with("details",$this->details);
     }
 }

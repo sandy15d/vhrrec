@@ -18,6 +18,7 @@
                     <table class="table table-striped table-hover table-condensed" id="employeetable" style="width: 100%">
                         <thead>
                             <tr>
+                                <th></th>
                                 <th class="th-sm">S.No</th>
                                 <th>Employee Name</th>
                                 <th>EmpCode</th>
@@ -47,7 +48,13 @@
             processing: true,
             info: true,
             ajax: "{{ route('getAllEmployeeData') }}",
-            columns: [{
+            columns: [
+
+                {
+                    data: 'chk',
+                    name: 'chk'
+                },
+                {
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex'
                 },
@@ -132,6 +139,12 @@
                 }
             });
         });
-
+        $(document).on('click', '.select_all', function() {
+            if ($(this).prop("checked") == true) {
+                $(this).closest("tr").addClass("bg-secondary bg-gradient");
+            } else {
+                $(this).closest("tr").removeClass("bg-secondary bg-gradient");
+            }
+        });
     </script>
 @endsection
