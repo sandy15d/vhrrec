@@ -9,7 +9,6 @@
     <!--favicon-->
     <link rel="icon" href="{{ URL::to('/') }}/assets/images/favicon-32x32.png" type="image/png" />
     <!--plugins-->
-
     <link href="{{ URL::to('/') }}/assets/plugins/simplebar/css/simplebar.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/select2/css/select2.min.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/select2/css/select2-bootstrap4.css" rel="stylesheet" />
@@ -30,20 +29,11 @@
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/header-colors.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/sweetalert2.min.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/toastr.min.css" />
-
-
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
-
     <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
-
-    <!-- CkEditor -->
-
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
 
-{{--     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script> --}}
-
-
-
+    {{-- <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script> --}}
 
     <title>HR Recruitment | @yield('title')</title>
     <style>
@@ -56,7 +46,7 @@
         .btn--new {
             color: #fff;
             background: #2193b0;
-            /* fallback for old browsers */
+
             background: -webkit-linear-gradient(to right, #6dd5ed, #2193b0);
             background: linear-gradient(to right, #6dd5ed, #2193b0);
         }
@@ -73,7 +63,7 @@
         .btn-xs {
             padding: .25rem .4rem;
             font-size: .875rem;
-            /*   line-height: .5; */
+
             border-radius: .2rem;
         }
 
@@ -86,19 +76,37 @@
             border: 2px solid #E8290B;
         }
 
+        .overlay {
+            display: none;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 999;
+            background: rgba(255, 255, 255, 0.8) url("loader.gif") center no-repeat;
+        }
+
+
+        body.loading {
+            overflow: hidden;
+        }
+
+
+        body.loading .overlay {
+            display: block;
+        }
+
     </style>
 </head>
 
 <body>
 
-    <!--wrapper-->
+
     <div class="wrapper">
-        <!--sidebar wrapper -->
+
         <div class="sidebar-wrapper" data-simplebar="true">
             <div class="sidebar-header">
-                {{-- <div>
-                    <img src="{{ URL::to('/') }}/assets/images/logo-icon.png" class="logo-icon" alt="logo icon">
-                </div> --}}
                 <div>
                     <h4 class="logo-text">HR Recruitment</h4>
                 </div>
@@ -216,10 +224,9 @@
                 @endif
 
             </ul>
-            <!--end navigation-->
+         
         </div>
-        <!--end sidebar wrapper -->
-        <!--start header -->
+
         <header>
             <div class="topbar d-flex align-items-center">
                 <nav class="navbar navbar-expand">
@@ -247,7 +254,7 @@
                                 </a>
 
                             </li>
-                            {{-- @if (Auth::user()->role == 'A' || Auth::user()->role == 'R') --}}
+
                             <li class="nav-item dropdown dropdown-large">
                                 <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button"
                                     data-bs-toggle="dropdown" aria-expanded="false"> <i class='bx bx-category'></i>
@@ -438,7 +445,7 @@
 
                                 </div>
                             </li>
-                            {{-- @endif --}}
+
                         </ul>
                     </div>
                     <div class="user-box dropdown">
@@ -448,7 +455,7 @@
                                 alt="user avatar">
                             <div class="user-info ps-3">
                                 <p class="user-name mb-0"> {{ Auth::user()->name }}</p>
-                                {{-- <p class="designattion mb-0">Web Designer</p> --}}
+
                             </div>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
@@ -478,27 +485,35 @@
                 </nav>
             </div>
         </header>
-        <!--end header -->
 
-        <!--start page wrapper -->
         <div class="page-wrapper">
             @yield('PageContent')
-          {{--   @livewire('livewire-ui-spotlight') --}}
+
+
+            <div class="modal" id="loader"  data-bs-backdrop="static"
+            data-bs-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered" style="width:220px;">
+                    <div class="modal-content" style="border-radius:10px;">
+
+                        <div class="modal-body">
+                            <img alt="" src="{{ URL::to('/') }}/assets/images/loader.gif">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-        <!--end page wrapper -->
-        <!--start overlay-->
+
         <div class="overlay toggle-icon"></div>
-        <!--end overlay-->
-        <!--Start Back To Top Button-->
+
         <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
-        <!--End Back To Top Button-->
+
         <footer class="page-footer">
             <p class="mb-0">Developed and Managed By: VNR Seeds Pvt. Ltd.</p>
         </footer>
     </div>
-    <!--end wrapper-->
-    <!--start switcher-->
+
     <div class="switcher-wrapper">
         <div class="switcher-body">
             <div class="d-flex align-items-center">
@@ -836,7 +851,7 @@
         });
     </script>
 
-   {{--  @livewireScripts --}}
+    {{-- @livewireScripts --}}
 </body>
 
 </html>

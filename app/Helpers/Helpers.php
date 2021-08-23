@@ -13,6 +13,13 @@ if (!function_exists('getFullName')) {
 		return $Name->full_name;
 	}
 
+	function getEmailID($empid)
+	{
+		$Name = DB::table('users')->select("email")->where('id', $empid)->first();
+		return $Name->email;
+	}
+
+
 	function getCompanyCode($companyId)
 	{
 		$CompanyCode = Db::table('master_company')->select('CompanyCode')->where('CompanyId',$companyId)->first();

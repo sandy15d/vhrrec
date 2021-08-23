@@ -4,14 +4,18 @@ namespace App\Http\Controllers\Admin;
 
 use App\Helpers\LogActivity;
 use App\Http\Controllers\Controller;
+use App\Mail\MrfStatusChangeMail;
 use App\Models\master_mrf;
 use App\Models\ThemeDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+
 use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getDesignationCode;
 use function App\Helpers\getDistrictName;
+use function App\Helpers\getEmailID;
 use function App\Helpers\getFullName;
 use function App\Helpers\getStateCode;
 
@@ -23,7 +27,8 @@ class AdminController extends Controller
     }
 
 
-    function setting(){
+    function setting()
+    {
         return view('admin.settings');
     }
     function mrf()
@@ -53,7 +58,7 @@ class AdminController extends Controller
 
         return datatables()->of($mrf)
             ->addIndexColumn()
-            ->addColumn('chk',function(){
+            ->addColumn('chk', function () {
                 return '<input type="checkbox" class="select_all">';
             })
             ->editColumn('Type', function ($mrf) {
@@ -129,7 +134,7 @@ class AdminController extends Controller
             ->addColumn('Details', function ($mrf) {
                 return '<i class="fa fa-eye text-info" style="font-size: 16px;cursor: pointer;" id="viewMRF" data-id=' . $mrf->MRFId . '></i>';
             })
-            ->rawColumns(['chk','Status', 'Allocated', 'Details'])
+            ->rawColumns(['chk', 'Status', 'Allocated', 'Details'])
             ->make(true);
     }
 
@@ -145,7 +150,23 @@ class AdminController extends Controller
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
             $jobCode = $MRF->JobCode;
-            LogActivity::addToLog('MRF '.$jobCode . ' is '.$request->va,'Update');
+            LogActivity::addToLog('MRF ' . $jobCode . ' is ' . $request->va, 'Update');
+            $CreatedBy = $MRF->CreatedBy;
+
+            if ($MRF->Type == 'N') {
+                $type = 'New';
+            } else {
+                $type = 'Replacement';
+            }
+            $details = [
+                "subject" => 'MRF (' . $type . ') - ' . $jobCode . ', Status - ' . $request->va,
+                "Status" => $request->va,
+                "Type" => $type,
+            ];
+            if ($request->va != 'New') {
+                // Mail::to(getEmailID($CreatedBy))->send(new MrfStatusChangeMail($details)); // Need to active when s/w is live
+                Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfStatusChangeMail($details));
+            }
             return response()->json(['status' => 200, 'msg' => 'MRF Status has been changed successfully.']);
         }
     }
@@ -162,7 +183,7 @@ class AdminController extends Controller
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
             $jobCode = $MRF->JobCode;
-            LogActivity::addToLog('MRF '.$jobCode . ' is allocated to '.$request->va,'Update');
+            LogActivity::addToLog('MRF ' . $jobCode . ' is allocated to ' . $request->va, 'Update');
             return response()->json(['status' => 200, 'msg' => 'Task has been allocated to recruiter successfully.']);
         }
     }
@@ -201,7 +222,7 @@ class AdminController extends Controller
         $UniversityDetail = unserialize($MRFDetails->EducationInsId);
         $KPDetail = unserialize($MRFDetails->KeyPositionCriteria);
         $EducationDetail = unserialize($MRFDetails->EducationId);
-        return response()->json(['MRFDetails' => $MRFDetails, 'LocationDetails' => $LocationDetail, 'UniversityDetails' => $UniversityDetail, 'KPDetails' => $KPDetail,'EducationDetails'=>$EducationDetail]);
+        return response()->json(['MRFDetails' => $MRFDetails, 'LocationDetails' => $LocationDetail, 'UniversityDetails' => $UniversityDetail, 'KPDetails' => $KPDetail, 'EducationDetails' => $EducationDetail]);
     }
 
     function getTaskList(Request $request)

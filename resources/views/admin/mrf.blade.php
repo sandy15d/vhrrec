@@ -264,10 +264,10 @@
                 info: true,
                 ajax: "{{ route('getAllMRF') }}",
                 columns: [
-                    
+
                     {
-                        data:'chk',
-                        name:'chk'
+                        data: 'chk',
+                        name: 'chk'
                     },
                     {
                         data: 'DT_RowIndex',
@@ -329,55 +329,93 @@
             $('#allocate' + id).prop("disabled", false);
         }
 
+
+
+
         function chngmrfsts(MRFId, va) {
-            var url = '<?= route('updateMRFStatus') ?>';
             if (va == 'Hold' || va == 'Rejected') {
                 var RemarkHr = prompt("Please Enter Remark");
                 if (RemarkHr != null) {
-                    $.post(url, {
+                    $.ajax({
+                        url: "{{ route('updateMRFStatus') }}",
+                        type: 'POST',
+                        data: {
+                            MRFId: MRFId,
+                            va: va,
+                            RemarkHr: RemarkHr
+                        },
+                        dataType: 'json',
+                        beforeSend: function() {
+                            $("#loader").modal('show');
+                        },
+                        success: function(data) {
+                            if (data.status == 200) {
+                                $("#loader").modal('hide');
+                                $('#MRFTable').DataTable().ajax.reload(null, false);
+                                toastr.success(data.msg);
+                            } else {
+                                toastr.error(data.msg);
+                            }
+                        }
+                    });
+                } else {
+                    alert('Please Enter Remark');
+                }
+            } else {
+                var RemarkHr = '';
+                $.ajax({
+                    url: "{{ route('updateMRFStatus') }}",
+                    type: 'POST',
+                    data: {
                         MRFId: MRFId,
                         va: va,
                         RemarkHr: RemarkHr
-                    }, function(data) {
+                    },
+                    dataType: 'json',
+                    beforeSend: function() {
+                        $("#loader").modal('show');
+                    },
+                    success: function(data) {
                         if (data.status == 200) {
+                            $("#loader").modal('hide');
                             $('#MRFTable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
                         } else {
                             toastr.error(data.msg);
                         }
-                    }, 'json');
-                }
-            } else {
-                var RemarkHr = '';
-                $.post(url, {
+                    }
+                });
+            }
+        }
+
+
+
+
+
+        function allocatemrf(MRFId, va) {
+            $.ajax({
+                url: "{{ route('allocateMRF') }}",
+                type: 'POST',
+                data: {
                     MRFId: MRFId,
-                    va: va,
-                    RemarkHr: RemarkHr
-                }, function(data) {
+                    va: va
+                },
+                dataType: 'json',
+                beforeSend: function() {
+                    $("#loader").modal('show');
+                },
+                success: function(data) {
                     if (data.status == 200) {
+                        $("#loader").modal('hide');
                         $('#MRFTable').DataTable().ajax.reload(null, false);
                         toastr.success(data.msg);
                     } else {
                         toastr.error(data.msg);
                     }
-                }, 'json');
-            }
+                }
+            });
         }
 
-        function allocatemrf(MRFId, va) {
-            var url = '<?= route('allocateMRF') ?>';
-            $.post(url, {
-                MRFId: MRFId,
-                va: va,
-            }, function(data) {
-                if (data.status == 200) {
-                    $('#MRFTable').DataTable().ajax.reload(null, false);
-                    toastr.success(data.msg);
-                } else {
-                    toastr.error(data.msg);
-                }
-            }, 'json');
-        }
         $(document).on('click', '#reset', function() {
             location.reload();
         });
@@ -543,10 +581,10 @@
                 $("#editReportingManager").empty();
             }
         });
-        var StateList='';
-        var CityList='';
-        var EducationList='';
-        var SpecializationList='';
+        var StateList = '';
+        var CityList = '';
+        var EducationList = '';
+        var SpecializationList = '';
         getState();
 
         function getState() {
@@ -583,6 +621,7 @@
         }
         getEducation();
         getAllSP();
+
         function getEducation() {
             $.ajax({
                 type: "GET",
@@ -607,7 +646,8 @@
                 success: function(res) {
                     if (res) {
                         $.each(res, function(key, value) {
-                            SpecializationList = SpecializationList + '<option value="' + value + '">' + key +
+                            SpecializationList = SpecializationList + '<option value="' + value + '">' +
+                                key +
                                 '</option>';
                         });
                     }
@@ -616,39 +656,39 @@
         }
 
         function getSpecialization(EducationId, No) {
-        var EducationId = EducationId;
-        var No = No;
-        $.ajax({
-            type: "GET",
-            url: "{{ route('getSpecializationAdmin') }}?EducationId=" + EducationId,
-            async: false,
-            beforeSend: function() {
-                $('#SpeLoader' + No).removeClass('d-none');
-                $('#Specialization' + No).addClass('d-none');
-            },
+            var EducationId = EducationId;
+            var No = No;
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getSpecializationAdmin') }}?EducationId=" + EducationId,
+                async: false,
+                beforeSend: function() {
+                    $('#SpeLoader' + No).removeClass('d-none');
+                    $('#Specialization' + No).addClass('d-none');
+                },
 
-            success: function(res) {
+                success: function(res) {
 
-                if (res) {
-                    $('#SpeLoader' + No).addClass('d-none');
-                    $('#Specialization' + No).removeClass('d-none');
-                    $("#Specialization" + No).empty();
-                    $("#Specialization" + No).append(
-                        '<option value="" selected disabled >Select Specialization</option>');
+                    if (res) {
+                        $('#SpeLoader' + No).addClass('d-none');
+                        $('#Specialization' + No).removeClass('d-none');
+                        $("#Specialization" + No).empty();
+                        $("#Specialization" + No).append(
+                            '<option value="" selected disabled >Select Specialization</option>');
 
-                    $.each(res, function(key, value) {
-                        $("#Specialization" + No).append('<option value="' + value + '">' + key +
-                            '</option>');
-                    });
-                    $("#Specialization" + No).append('<option value="0">Other</option>');
+                        $.each(res, function(key, value) {
+                            $("#Specialization" + No).append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+                        $("#Specialization" + No).append('<option value="0">Other</option>');
 
 
-                } else {
-                    $("#Specialization" + No).empty();
+                    } else {
+                        $("#Specialization" + No).empty();
+                    }
                 }
-            }
-        });
-    }
+            });
+        }
 
 
         var LocCount = 1;
@@ -771,13 +811,12 @@
 
 
         $(document).on('click', '.select_all', function() {
-            if($(this).prop("checked")==true){
+            if ($(this).prop("checked") == true) {
                 $(this).closest("tr").addClass("bg-secondary bg-gradient");
-            }else{
+            } else {
                 $(this).closest("tr").removeClass("bg-secondary bg-gradient");
             }
         });
-
     </script>
 
 @endsection

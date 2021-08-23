@@ -1,4 +1,2 @@
 
 
-@livewire('livewire-ui-spotlight')
-

@@ -153,6 +153,7 @@
                 contentType: false,
                 beforeSend: function() {
                     $(form).find('span.error-text').text('');
+                    $('#loader').modal('show');
                 },
                 success: function(data) {
                     if (data.status==400) {
@@ -161,6 +162,7 @@
                         });
                     } else {
                         $(form)[0].reset();
+                        $('#loader').modal('hide');
                         $('#addCompanyModal').modal('hide');
                         $('#companytable').DataTable().ajax.reload(null, false);
                         toastr.success(data.msg);
@@ -302,14 +304,13 @@
                 confirmButtonColor: '#556ee6',
                 width: 400,
                 allowOutsideClick: false,
-                onBeforeOpen: () => {
-                    Swal.showLoading()
-                },
+              
 
             }).then(function(result) {
                 if (result.value) {
                     $.post(url, function(data) {
                         if (data.status==200) {
+                            $('#loader').modal('hide');
                             $('#companytable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
 
