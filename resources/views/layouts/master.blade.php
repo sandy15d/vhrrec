@@ -126,7 +126,7 @@
                     </li>
                     <li>
                         <a href="javascript:;" class="has-arrow">
-                            <div class="parent-icon"><i class="bx bx-category  text-danger"></i>
+                            <div class="parent-icon"><i class="lni lni-react  text-danger"></i>
                             </div>
                             <div class="menu-title">Master</div>
                         </a>
@@ -152,7 +152,7 @@
                     </li>
                     <li>
                         <a href="javascript:;" class="has-arrow">
-                            <div class="parent-icon"><i class="bx bx-category  text-danger"></i>
+                            <div class="parent-icon"><i class="bx bx-category" style="color: maroon"></i>
                             </div>
                             <div class="menu-title">MRF</div>
                         </a>
@@ -162,6 +162,74 @@
 
                         </ul>
                     </li>
+                    <li>
+                        <a href="javascript:;" class="has-arrow">
+                            <div class="parent-icon"><i class="lni lni-write text-warning"></i>
+                            </div>
+                            <div class="menu-title">Job Application Management</div>
+                        </a>
+                        <ul>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job & Response</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job Application</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job Application Form (Manual
+                                    Entry)</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="has-arrow">
+                            <div class="parent-icon"><i class="lni lni-ux  text-primary"></i>
+                            </div>
+                            <div class="menu-title">Campus Hirings</div>
+                        </a>
+                        <ul>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Registration Form (Create)</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Campus Application</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Campus Hiring Costing</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="has-arrow">
+                            <div class="parent-icon"><i class="lni lni-timer  text-info"></i>
+                            </div>
+                            <div class="menu-title">Recruitment Tracker</div>
+                        </a>
+                        <ul>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>HR Screening Tracker</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Technical Screening Tracker</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Interview Tracker</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="has-arrow">
+                            <div class="parent-icon"><i class="fadeIn animated bx bx-walk  text-success"></i>
+                            </div>
+                            <div class="menu-title">Onboarding</div>
+                        </a>
+                        <ul>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job Offers</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Candidates for Joining</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Appointments</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="has-arrow">
+                            <div class="parent-icon"><i class="fadeIn animated bx bx-atom  text-danger"></i>
+                            </div>
+                            <div class="menu-title">Trainee</div>
+                        </a>
+                        <ul>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Trainee Details</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Trainee Costing</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="/">
+                            <div class="parent-icon"><i class="lni lni-target-customer" style="color: #6610f2"></i>
+                            </div>
+                            <div class="menu-title">Online Test Module</div>
+                        </a>
+                    </li>
+
                     <li> <a href="/admin/userlist">
                             <div class="parent-icon"><i class='bx bx-user text-info'></i>
                             </div>
@@ -176,6 +244,14 @@
                             <div class="menu-title">Sent Mails</div>
                         </a>
                     </li>
+                    
+                    <li>
+                        <a href="/">
+                            <div class="parent-icon"><i class='lni lni-slack' style="color: crimson"></i>
+                            </div>
+                            <div class="menu-title">Reports</div>
+                        </a>
+                    </li>
                     <li>
                         <a href="/admin/userlogs">
                             <div class="parent-icon"><i class='bx bx-news text-success'></i>
@@ -183,13 +259,7 @@
                             <div class="menu-title">Logs</div>
                         </a>
                     </li>
-                    <li>
-                        <a href="/admin/userlogs">
-                            <div class="parent-icon"><i class='bx bx-help-circle text-danger'></i>
-                            </div>
-                            <div class="menu-title">Help</div>
-                        </a>
-                    </li>
+
                 @endif
 
                 @if (Auth::user()->role == 'H')
@@ -222,9 +292,99 @@
                         </a>
                     </li>
                 @endif
+                @if (Auth::user()->role == 'R')
+                    <li class="{{ request()->is('recruiter/dashboard') ? 'mm-active' : '' }}">
+                        <a href="/recruiter/dashboard">
+                            <div class="parent-icon"><i class="fas fa-laptop-house text-primary"></i>
+                            </div>
+                            <div class="menu-title">Dashboard</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="has-arrow">
+                            <div class="parent-icon"><i class="bx bx-category" style="color: #198754"></i>
+                            </div>
+                            <div class="menu-title">MRF</div>
+                        </a>
+                        <ul>
+                            <li> <a href="/recruiter/mrf_allocated"><i class="bx bx-right-arrow-alt"></i>MRF
+                                    Allocated</a></li>
+                            <li> <a href="/recruiter/recruiter_mrf_entry"><i class="bx bx-right-arrow-alt"></i>Manual
+                                    Entry</a></li>
 
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="has-arrow">
+                            <div class="parent-icon"><i class="lni lni-write text-warning"></i>
+                            </div>
+                            <div class="menu-title">Job Application Management</div>
+                        </a>
+                        <ul>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job & Response</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job Application</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job Application Form (Manual
+                                    Entry)</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="has-arrow">
+                            <div class="parent-icon"><i class="lni lni-ux  text-primary"></i>
+                            </div>
+                            <div class="menu-title">Campus Hirings</div>
+                        </a>
+                        <ul>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Registration Form (Create)</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Campus Application</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Campus Hiring Costing</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="has-arrow">
+                            <div class="parent-icon"><i class="lni lni-timer  text-info"></i>
+                            </div>
+                            <div class="menu-title">Recruitment Tracker</div>
+                        </a>
+                        <ul>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>HR Screening Tracker</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Technical Screening Tracker</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Interview Tracker</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="has-arrow">
+                            <div class="parent-icon"><i class="fadeIn animated bx bx-walk  text-success"></i>
+                            </div>
+                            <div class="menu-title">Onboarding</div>
+                        </a>
+                        <ul>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job Offers</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Candidates for Joining</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Appointments</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="has-arrow">
+                            <div class="parent-icon"><i class="fadeIn animated bx bx-atom  text-danger"></i>
+                            </div>
+                            <div class="menu-title">Trainee</div>
+                        </a>
+                        <ul>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Trainee Details</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Trainee Costing</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="/">
+                            <div class="parent-icon"><i class="lni lni-target-customer" style="color: #6610f2"></i>
+                            </div>
+                            <div class="menu-title">Online Test Module</div>
+                        </a>
+                    </li>
+
+                @endif
             </ul>
-         
+
         </div>
 
         <header>
@@ -232,21 +392,10 @@
                 <nav class="navbar navbar-expand">
                     <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
                     </div>
-                    <div class="search-bar flex-grow-1">
-                        <div class="position-relative search-bar-box">
-                            <input type="text" class="form-control search-control" placeholder="Type to search...">
-                            <span class="position-absolute top-50 search-show translate-middle-y"><i
-                                    class='bx bx-search'></i></span>
-                            <span class="position-absolute top-50 search-close translate-middle-y"><i
-                                    class='bx bx-x'></i></span>
-                        </div>
-                    </div>
+
                     <div class="top-menu ms-auto">
                         <ul class="navbar-nav align-items-center">
-                            <li class="nav-item mobile-search-icon">
-                                <a class="nav-link" href="#"> <i class='bx bx-search'></i>
-                                </a>
-                            </li>
+
 
                             <li class="nav-item dropdown-large">
                                 <a id="sidebarsetting" class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"
@@ -462,9 +611,7 @@
                             <li><a class="dropdown-item" href="javascript:;"><i
                                         class="bx bx-user"></i><span>Profile</span></a>
                             </li>
-                            <li><a class="dropdown-item" href="javascript:;"><i
-                                        class="bx bx-cog"></i><span>Settings</span></a>
-                            </li>
+
 
                             <li>
                                 <div class="dropdown-divider mb-0"></div>
@@ -490,8 +637,7 @@
             @yield('PageContent')
 
 
-            <div class="modal" id="loader"  data-bs-backdrop="static"
-            data-bs-keyboard="false">
+            <div class="modal" id="loader" data-bs-backdrop="static" data-bs-keyboard="false">
                 <div class="modal-dialog modal-dialog-centered" style="width:220px;">
                     <div class="modal-content" style="border-radius:10px;">
 

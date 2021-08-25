@@ -607,7 +607,7 @@
             contentType: false,
             beforeSend: function() {
                 $(form).find('span.error-text').text('');
-
+                $("#loader").modal('show');
             },
 
             success: function(data) {
@@ -617,6 +617,7 @@
                     });
                 } else {
                     $(form)[0].reset();
+                    $('#loader').modal('hide');
                     $('#addNewMRFModal').modal('hide');
                     $('#mrfsummarytable').DataTable().ajax.reload(null, false);
                     toastr.success(data.msg);

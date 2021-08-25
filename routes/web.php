@@ -21,6 +21,8 @@ use App\Http\Controllers\Admin\ResumeSourcController;
 use App\Http\Controllers\Admin\UserController;
 
 use App\Http\Controllers\Recruiter\RecruiterController;
+use App\Http\Controllers\Recruiter\MrfAllocatedController;
+use App\Http\Controllers\Recruiter\ManualEntryController;
 
 
 use App\Http\Controllers\Hod\HodController;
@@ -186,6 +188,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
 
 Route::group(['prefix' => 'recruiter', 'middleware' => ['isRecruiter', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [RecruiterController::class, 'index'])->name('recruiter.dashboard');
+    Route::get('mrf_allocated', [MrfAllocatedController::class, 'mrf_allocated'])->name('mrf_allocated');
+    Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');
+    
     Route::post('setTheme', [RecruiterController::class, 'setTheme'])->name('setTheme');
 });
 

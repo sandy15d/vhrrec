@@ -13,6 +13,9 @@ class RecruiterController extends Controller
         return view('recruiter.index');
     }
 
+
+
+
     function setTheme(Request $request)
     {
         $ThemeStyle = $request->ThemeStyle;
