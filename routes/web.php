@@ -39,8 +39,7 @@ Route::middleware(['middleware' => 'PreventBackHistory'])->group(function () {
 });
 
 
-Route::get('TestMail',[TestMail::class,'sendMail'] )->name('TestMail');
-Route::get('TestMail1',[TestMail::class,'sendMail1'] )->name('TestMail1');
+
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventBackHistory']], function () {
@@ -191,7 +190,7 @@ Route::group(['prefix' => 'recruiter', 'middleware' => ['isRecruiter', 'auth', '
     Route::get('mrf_allocated', [MrfAllocatedController::class, 'mrf_allocated'])->name('mrf_allocated');
   
     Route::post('getAllAllocatedMRF', [MrfAllocatedController::class, 'getAllAllocatedMRF'])->name('getAllAllocatedMRF');
-
+    Route::get('getDepartmentForRec', [MrfAllocatedController::class,'getDepartmentForRec'])->name('getDepartmentForRec');
 
     Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');
     Route::post('setTheme', [RecruiterController::class, 'setTheme'])->name('setTheme');
