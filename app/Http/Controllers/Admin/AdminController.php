@@ -80,7 +80,7 @@ class AdminController extends Controller
                 foreach ($location as $key => $value) {
                     $loc .= getDistrictName($value['city']) . ' ';
                     $loc .= getStateCode($value['state']) . ' - ';
-                    $loc .= $value['nop'] . ', ';
+                    $loc .= $value['nop'];
                     $loc . '<br>';
                 }
                 return $loc;

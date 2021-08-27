@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\MrfCreationMail;
 use App\Models\master_mrf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -48,16 +49,13 @@ class MrfController extends Controller
             $State = $request->State;
             $City = $request->City;
             $ManPower = $request->ManPower;
-
             $Education = $request->Education;
             $Specialization = $request->Specialization;
-
             $KeyPosition = $request->KeyPosition;
 
             $locArray = array();
             if ($State != '') {
                 for ($lc = 0; $lc < Count($State); $lc++) {
-
                     $location = array(
                         "state" => $State[$lc],
                         "city" => $City[$lc],
@@ -148,6 +146,7 @@ class MrfController extends Controller
 
         $State = $request->State;
         $City = $request->City;
+
         $Education = $request->Education;
         $Specialization = $request->Specialization;
         $KeyPosition = $request->KeyPosition;
@@ -185,7 +184,12 @@ class MrfController extends Controller
         }
 
         $KpArray_str = serialize($KpArray);
-        $UniversityArray = serialize($request->University);
+
+        $UniversityArray =Array();
+        if($request->University!=''){
+            $UniversityArray = serialize($request->University);
+        }
+      
 
         $MRF = new master_mrf;
         $MRF->Type = 'R';

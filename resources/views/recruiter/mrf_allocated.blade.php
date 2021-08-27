@@ -8,6 +8,17 @@
         ->pluck('CompanyCode', 'CompanyId');
     $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
 
+    $CloseActive = DB::table('manpowerrequisition')
+        ->where('Allocated', Auth::user()->id)
+        ->where('Status', 'Close')
+        ->get();
+    $CloseMRF = $CloseActive->count();
+
+    $OpenMRFSQL = DB::table('manpowerrequisition')
+        ->where('Allocated', Auth::user()->id)
+        ->where('Status', '!=', 'Close')
+        ->get();
+    $OpenMRF = $OpenMRFSQL->count();
     @endphp
     <style>
         .table>:not(caption)>*>* {
@@ -26,11 +37,12 @@
             <div class="card-body">
                 <div class="row mb-1">
                     <div class="col-3">
-                        <button type="button" class="btn btn-primary btn-sm" id="openMrf">Open MRF <span
-                                class="badge bg-warning text-dark" style="font-size: 10px;">4</span>
+                        <button type="button" class="btn btn-primary btn-sm" id="openMrf" data-status='Open'>Open MRF <span
+                                class="badge bg-warning text-dark" style="font-size: 10px;">{{ $OpenMRF }}</span>
                         </button>
-                        <button class="btn btn-secondary btn-sm pull-right" id="closedMrf">Closed MRF <span
-                                class="badge bg-warning text-dark" style="font-size: 10px;">4</span></button>
+                        <button class="btn btn-outline-primary btn-sm pull-right" data-status='Close' id="closedMrf">Closed MRF <span
+                                class="badge bg-warning text-dark"
+                                style="font-size: 10px;">{{ $CloseMRF }}</span></button>
                     </div>
 
                     <div class="col-2">
@@ -54,7 +66,7 @@
                         <select name="Year" id="Year" class="form-select form-select-sm" onchange="GetAllocatedMrf();">
                             <option value="">Select Year</option>
                             @for ($i = 2021; $i <= date('Y'); $i++)
-                                <option value="{{$i}}">{{$i}}</option>
+                                <option value="{{ $i }}">{{ $i }}</option>
                             @endfor
                         </select>
                     </div>
@@ -62,8 +74,8 @@
                         <select name="Month" id="Month" class="form-select form-select-sm" onchange="GetAllocatedMrf();">
                             <option value="">Select Month</option>
                             @foreach ($months as $key => $value)
-                            <option value="{{ $key }}">{{ $value }}</option>
-                        @endforeach
+                                <option value="{{ $key }}">{{ $value }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="col-1">
@@ -71,8 +83,8 @@
                     </div>
                 </div>
                 <hr />
-                <div class="table-responsive">
-                    <table class="table  table-hover table-condensed table-bordered text-center" id="MRFTable"
+                <div class="">
+                    <table class="table  table-hover table-striped table-condensed align-middle table-bordered text-center" id="MRFTable"
                         style="width: 100%">
                         <thead class="text-center">
                             <tr class="text-center">
@@ -99,12 +111,14 @@
 @endsection
 @section('scriptsection')
     <script>
-        $('#MRFTable').DataTable({
+        var MrfStatus = 'Open';
+       var table = $('#MRFTable').DataTable({
             processing: true,
             serverSide: true,
             info: true,
-            searching: false,
+            //searching: false,
             lengthChange: false,
+            buttons: [ 'copy', 'excel', 'pdf', 'print'],
             ajax: {
                 url: "{{ route('getAllAllocatedMRF') }}",
                 headers: {
@@ -112,9 +126,10 @@
                 },
                 data: function(d) {
                     d.Company = $('#Company').val(),
-                    d.Department = $('#Department').val()
+                        d.Department = $('#Department').val()
                     d.Year = $('#Year').val();
                     d.Month = $('#Month').val();
+                    d.MrfStatus = MrfStatus;
                 },
                 type: 'POST',
                 dataType: "JSON",
@@ -159,8 +174,8 @@
                     name: 'DepartmentCode'
                 },
                 {
-                    data: 'DepartmentCode',
-                    name: 'DepartmentCode'
+                    data: 'JobShow',
+                    name: 'JobShow'
                 },
 
                 {
@@ -171,10 +186,31 @@
 
         });
 
+        table.buttons().container().appendTo('#MRFTable_wrapper .col-md-6:eq(0)');
         function GetAllocatedMrf() {
             $('#MRFTable').DataTable().draw(true);
             //$('#MRFTable').DataTable().ajax.reload(null, false);
         }
+
+
+        $(document).on('click', '#openMrf', function() {
+            MrfStatus = 'Open';
+            $('#openMrf').removeClass('btn-outline-primary');
+            $('#closedMrf').removeClass('btn-primary');
+            $('#closedMrf').addClass('btn-outline-primary');
+            $('#openMrf').addClass('btn-primary');
+            GetAllocatedMrf();
+        });
+
+        $(document).on('click', '#closedMrf', function() {
+
+            MrfStatus = 'Close';
+            $('#closedMrf').removeClass('btn-outline-primary');
+            $('#openMrf').removeClass('btn-primary');
+            $('#openMrf').addClass('btn-outline-primary');
+            $('#closedMrf').addClass('btn-primary');
+            GetAllocatedMrf();
+        });
 
         function GetDepartment() {
             var CompanyId = $('#Company').val();
@@ -182,7 +218,7 @@
                 type: "GET",
                 url: "{{ route('getDepartmentForRec') }}?CompanyId=" + CompanyId,
                 beforeSend: function() {
-                   
+
                 },
                 success: function(res) {
 
@@ -210,10 +246,10 @@
             }
         });
 
-        $(document).on('click','#reset',function(){
+        $(document).on('click', '#reset', function() {
             window.location.reload();
         });
-        $(document).on('click','#closedMrf',function(){
+        $(document).on('click', '#closedMrf', function() {
             GetAllocatedMrf();
         });
     </script>

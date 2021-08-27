@@ -287,7 +287,7 @@
             '<div class="spinner-border text-primary d-none" role="status" id="LocLoader' + number +
             '"> <span class="visually-hidden">Loading...</span></div>' +
             '       <select  id="City' + number + '" name="City[]" class="form-control form-select form-select-sm">' +
-            '    <option value="" selected disabled>Select City</option>' +
+            '    <option value="0" selected>Select City</option>' +
             '</select>' +
             '<span class="text-danger error-text City' + number + '_error"></span>' +
             '</td>';
@@ -419,7 +419,7 @@
                     $('#City' + No).removeClass('d-none');
                     $("#City" + No).empty();
                     $("#City" + No).append(
-                        '<option value="" selected disabled >Select City</option>');
+                        '<option value="0" selected>Select City</option>');
 
                     $.each(res, function(key, value) {
                         $("#City" + No).append('<option value="' + value + '">' + key +

@@ -54,7 +54,12 @@ if (!function_exists('getFullName')) {
 
 	function getDistrictName($DistrictId){
 		$DistrictName = Db::table('master_district')->select('DistrictName')->where('DistrictId',$DistrictId)->first();
-		return $DistrictName->DistrictName;
+		if(is_null($DistrictName)){
+			return '';
+		}else{
+			return $DistrictName->DistrictName;
+		}
+	
 	}
 
 	function convertData($body_content) {
@@ -76,6 +81,17 @@ if (!function_exists('getFullName')) {
 
 	 function CheckReplacementMRF($empid){
 		$sql = Db::table('manpowerrequisition')->select('MRFId')->where('RepEmployeeID',$empid)->first();
+		
+		if(is_null($sql)){
+			return '0';
+		}else{
+			return '1';
+		}
+		
+	 }
+
+	 function CheckJobPostCreated($mrfid){
+		$sql = Db::table('jobpost')->select('JPId')->where('MRFId',$mrfid)->first();
 		
 		if(is_null($sql)){
 			return '0';

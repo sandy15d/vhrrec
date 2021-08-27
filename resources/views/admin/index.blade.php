@@ -230,6 +230,8 @@ $CloseMRF = $CloseActive->count();
                 </div>
             </div>
         </div>
+
+        
     </div>
 @endsection
 @section('scriptsection')
