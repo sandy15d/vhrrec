@@ -19,7 +19,7 @@ use App\Http\Controllers\Admin\EduSpecialController;
 use App\Http\Controllers\Admin\InstituteController;
 use App\Http\Controllers\Admin\ResumeSourcController;
 use App\Http\Controllers\Admin\UserController;
-
+use App\Http\Controllers\CommonController;
 use App\Http\Controllers\Recruiter\RecruiterController;
 use App\Http\Controllers\Recruiter\MrfAllocatedController;
 use App\Http\Controllers\Recruiter\ManualEntryController;
@@ -28,7 +28,7 @@ use App\Http\Controllers\Recruiter\ManualEntryController;
 use App\Http\Controllers\Hod\HodController;
 use App\Http\Controllers\Hod\MrfController;
 use App\Http\Controllers\Hod\MyTeamController;
-use App\Http\Controllers\TestMail;
+use App\Http\Controllers\JobController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -40,27 +40,27 @@ Route::middleware(['middleware' => 'PreventBackHistory'])->group(function () {
 
 
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/jobs', [JobController::class, 'jobs'])->name('jobs');
+Route::get('getDepartment', [CommonController::class, 'getDepartment'])->name('getDepartment');
+Route::get('getDesignation', [CommonController::class, 'getDesignation'])->name('getDesignation');
+Route::get('getReportingManager', [CommonController::class, 'getReportingManager'])->name('getReportingManager');
+Route::get('getState', [CommonController::class, 'getState'])->name('getState');
+Route::get('getDistrict', [CommonController::class, 'getDistrict'])->name('getDistrict');
+Route::get('getEducation', [CommonController::class, 'getEducation'])->name('getEducation');
+Route::get('getSpecialization', [CommonController::class, 'getSpecialization'])->name('getSpecialization');
+Route::get('getAllDistrict', [CommonController::class, 'getAllDistrict'])->name('getAllDistrict');
+Route::get('getAllSP', [CommonController::class, 'getAllSP'])->name('getAllSP');
 
 Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('mrf', [AdminController::class, 'mrf'])->name('admin.mrf');
     Route::get('getAllMRF', [AdminController::class, 'getAllMRF'])->name('getAllMRF');
-    Route::post('updateMRFStatus',[AdminController::class,'updateMRFStatus'])->name('updateMRFStatus');
-    Route::post('allocateMRF',[AdminController::class,'allocateMRF'])->name('allocateMRF');
-    Route::get('getDepartmentMRFAdmin', [AdminController::class,'getDepartmentMRFAdmin'])->name('getDepartmentMRFAdmin');
-    Route::get('getDesignationMRFAdmin', [AdminController::class,'getDesignationMRFAdmin'])->name('getDesignationMRFAdmin');
-    Route::get('getRepMgrMRFAdmin', [AdminController::class,'getRepMgrMRFAdmin'])->name('getRepMgrMRFAdmin');
-    Route::post('getMRFDetails', [AdminController::class,'getMRFDetails'])->name('getMRFDetails');
+    Route::post('updateMRFStatus', [AdminController::class, 'updateMRFStatus'])->name('updateMRFStatus');
+    Route::post('allocateMRF', [AdminController::class, 'allocateMRF'])->name('allocateMRF');
+    Route::post('getMRFDetails', [AdminController::class, 'getMRFDetails'])->name('getMRFDetails');
     Route::post('editMRFAdmin', [AdminController::class, 'editMRFAdmin'])->name('editMRFAdmin');
     Route::post('getTaskList', [AdminController::class, 'getTaskList'])->name('getTaskList');
     Route::post('getRecruiterName', [AdminController::class, 'getRecruiterName'])->name('getRecruiterName');
-    Route::get('getStateAdmin', [AdminController::class,'getStateAdmin'])->name('getStateAdmin');
-    Route::get('getCityAdmin', [AdminController::class,'getCityAdmin'])->name('getCityAdmin');
-    Route::get('getEducationAdmin', [AdminController::class,'getEducationAdmin'])->name('getEducationAdmin');
-    Route::get('getSpecializationAdmin', [AdminController::class,'getSpecializationAdmin'])->name('getSpecializationAdmin');
-    Route::get('getAllSP', [AdminController::class,'getAllSP'])->name('getAllSP');
-
     Route::get('setting', [AdminController::class, 'setting'])->name('admin.setting');
     Route::post('setTheme', [AdminController::class, 'setTheme'])->name('admin.setTheme');
 
@@ -127,7 +127,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     // ?==========================Master District ==============================// 
     Route::get('district', [DistrictController::class, 'district'])->name('admin.district');
     Route::post('addDistrict', [DistrictController::class, 'addDistrict'])->name('addDistrict');
-    Route::get('getAllDistrict', [DistrictController::class, 'getAllDistrict'])->name('getAllDistrict');
+    Route::get('getDistrictList', [DistrictController::class, 'getDistrictList'])->name('getDistrictList');
     Route::post('getDistrictDetails', [DistrictController::class, 'getDistrictDetails'])->name('getDistrictDetails');
     Route::post('editDistrict', [DistrictController::class, 'editDistrict'])->name('editDistrict');
     Route::post('deleteDistrict', [DistrictController::class, 'deleteDistrict'])->name('deleteDistrict');
@@ -158,7 +158,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('getInstituteDetails', [InstituteController::class, 'getInstituteDetails'])->name('getInstituteDetails');
     Route::post('editInstitute', [InstituteController::class, 'editInstitute'])->name('editInstitute');
     Route::post('deleteInstitute', [InstituteController::class, 'deleteInstitute'])->name('deleteInstitute');
-    Route::get('getDistrict', [InstituteController::class, 'getDistrict'])->name('getDistrict');
+  //  Route::get('getDistrict', [InstituteController::class, 'getDistrict'])->name('getDistrict');
     //?====================================================================== */
 
     //**=============================Resume Source================================================= */
@@ -176,9 +176,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::get('getAllUser', [UserController::class, 'getAllUser'])->name('getAllUser');
     Route::post('cngUserPwd', [UserController::class, 'cngUserPwd'])->name('cngUserPwd');
     Route::post('deleteUser', [UserController::class, 'deleteUser'])->name('deleteUser');
-    Route::get('getEmployee',[UserController::class, 'getEmployee'])->name('getEmployee');
-    Route::get('getEmployeeDetail',[UserController::class, 'getEmployeeDetail'])->name('getEmployeeDetail');
-    
+    Route::get('getEmployee', [UserController::class, 'getEmployee'])->name('getEmployee');
+    Route::get('getEmployeeDetail', [UserController::class, 'getEmployeeDetail'])->name('getEmployeeDetail');
+
     //?====================================================================== */
 
 
@@ -188,10 +188,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
 Route::group(['prefix' => 'recruiter', 'middleware' => ['isRecruiter', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [RecruiterController::class, 'index'])->name('recruiter.dashboard');
     Route::get('mrf_allocated', [MrfAllocatedController::class, 'mrf_allocated'])->name('mrf_allocated');
-  
     Route::post('getAllAllocatedMRF', [MrfAllocatedController::class, 'getAllAllocatedMRF'])->name('getAllAllocatedMRF');
-    Route::get('getDepartmentForRec', [MrfAllocatedController::class,'getDepartmentForRec'])->name('getDepartmentForRec');
-
+    Route::post('getDetailForJobPost', [MrfAllocatedController::class, 'getDetailForJobPost'])->name('getDetailForJobPost');
+    Route::post('createJobPost', [MrfAllocatedController::class, 'createJobPost'])->name('createJobPost');
     Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');
     Route::post('setTheme', [RecruiterController::class, 'setTheme'])->name('setTheme');
 });
@@ -199,34 +198,16 @@ Route::group(['prefix' => 'recruiter', 'middleware' => ['isRecruiter', 'auth', '
 Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [HodController::class, 'index'])->name('hod.dashboard');
     Route::post('setTheme', [HodController::class, 'setTheme'])->name('setTheme');
-    Route::get('mrfbyme', [HodController::class,'mrfbyme'])->name('mrfbyme');
-
+    Route::get('mrfbyme', [HodController::class, 'mrfbyme'])->name('mrfbyme');
     //**========================My Team =========================================== */
-    Route::get('myteam',[MyTeamController::class,'myteam'])->name('myteam');
+    Route::get('myteam', [MyTeamController::class, 'myteam'])->name('myteam');
     Route::get('getAllMyTeamMember', [MyTeamController::class, 'getAllMyTeamMember'])->name('getAllMyTeamMember');
     Route::post('getMyTeam', [MyTeamController::class, 'getMyTeam'])->name('getMyTeam');
-    Route::get('repmrf', [MyTeamController::class,'repmrf'])->name('repmrf');
-        
-    //**=========================================================================== */
-
+    Route::get('repmrf', [MyTeamController::class, 'repmrf'])->name('repmrf');
     //!=============================MRF===============================================//
-    Route::get('newmrf',[MrfController::class,'newmrf'])->name('newmrf');
+    Route::get('newmrf', [MrfController::class, 'newmrf'])->name('newmrf');
     Route::post('addNewMrf', [MrfController::class, 'addNewMrf'])->name('addNewMrf');
     Route::post('addRepMrf', [MrfController::class, 'addRepMrf'])->name('addRepMrf');
-
-    Route::get('getDepartment', [MrfController::class,'getDepartment'])->name('getDepartment');
-    Route::get('getDesignation', [MrfController::class,'getDesignation'])->name('getDesignation');
-    Route::get('getReportingManager', [MrfController::class,'getReportingManager'])->name('getReportingManager');
-    Route::get('getState', [MrfController::class,'getState'])->name('getState');
-    Route::get('getDistrict', [MrfController::class,'getDistrict'])->name('getDistrict');
-    Route::get('getEducation', [MrfController::class,'getEducation'])->name('getEducation');
-    Route::get('getSpecialization', [MrfController::class,'getSpecialization'])->name('getSpecialization');
-    Route::get('getAllMRFCreatedByMe', [MrfController::class,'getAllMRFCreatedByMe'])->name('getAllMRFCreatedByMe');
+    Route::get('getAllMRFCreatedByMe', [MrfController::class, 'getAllMRFCreatedByMe'])->name('getAllMRFCreatedByMe');
     //!==============================================================================//
- 
-   
 });
-
-
-
-

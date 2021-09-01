@@ -20,7 +20,7 @@
     <!-- Bootstrap CSS -->
 
     <link href="{{ URL::to('/') }}/assets/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&amp;display=swap" rel="stylesheet">
     <link href="{{ URL::to('/') }}/assets/css/app.css" rel="stylesheet">
     <link href="{{ URL::to('/') }}/assets/css/icons.css" rel="stylesheet">
@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/sweetalert2.min.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/toastr.min.css" />
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTablesButtons.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
 
@@ -60,7 +61,7 @@
 
         }
 
-        .btn-group-xs>.btn,
+
         .btn-xs {
             padding: .25rem .4rem;
             font-size: .875rem;
@@ -75,6 +76,33 @@
 
         .errorfield {
             border: 2px solid #E8290B;
+        }
+
+        div.dt-buttons {
+            float: right;
+        }
+
+        .btn-outline-secondary {
+            position: relative;
+         
+            display: inline-block;
+            box-sizing: border-box;
+            margin-right: 0.333em;
+            padding: 2px 6.2px;
+         
+            border-radius: 0px;
+            cursor: pointer;
+            font-size: 14px;
+          
+            white-space: nowrap;
+            overflow: hidden;
+            background-color: #fff;
+          
+            outline: none;
+            border-top: 0;
+            border-left: 0;
+            border-right: 0;
+            border-bottom: 1px solid #ddd;
         }
 
         .overlay {
@@ -245,7 +273,7 @@
                             <div class="menu-title">Sent Mails</div>
                         </a>
                     </li>
-                    
+
                     <li>
                         <a href="/">
                             <div class="parent-icon"><i class='lni lni-slack' style="color: crimson"></i>
@@ -399,8 +427,8 @@
 
 
                             <li class="nav-item dropdown-large">
-                                <a id="sidebarsetting" class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"
-                                    role="button"> <i class='bx bx-shape-polygon'></i>
+                                <a id="sidebarsetting" class="nav-link dropdown-toggle dropdown-toggle-nocaret"
+                                    href="#" role="button"> <i class='bx bx-shape-polygon'></i>
                                 </a>
 
                             </li>
@@ -483,7 +511,8 @@
                                                         class="bx bx-cart-alt"></i>
                                                 </div>
                                                 <div class="flex-grow-1">
-                                                    <h6 class="msg-name">New Orders <span class="msg-time float-end">2
+                                                    <h6 class="msg-name">New Orders <span
+                                                            class="msg-time float-end">2
                                                             min
                                                             ago</span></h6>
                                                     <p class="msg-info">You have recived new orders</p>
@@ -496,7 +525,8 @@
                                                         class="bx bx-file"></i>
                                                 </div>
                                                 <div class="flex-grow-1">
-                                                    <h6 class="msg-name">24 PDF File<span class="msg-time float-end">19
+                                                    <h6 class="msg-name">24 PDF File<span
+                                                            class="msg-time float-end">19
                                                             min
                                                             ago</span></h6>
                                                     <p class="msg-info">The pdf files generated</p>
@@ -534,7 +564,8 @@
                                                         class="bx bx-message-detail"></i>
                                                 </div>
                                                 <div class="flex-grow-1">
-                                                    <h6 class="msg-name">New Comments <span class="msg-time float-end">4
+                                                    <h6 class="msg-name">New Comments <span
+                                                            class="msg-time float-end">4
                                                             hrs
                                                             ago</span></h6>
                                                     <p class="msg-info">New customer comments recived</p>
@@ -623,7 +654,8 @@
                                     {{ __('Logout') }}
                                 </a>
 
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                    class="d-none">
                                     @csrf
                                 </form>
                                 </a>

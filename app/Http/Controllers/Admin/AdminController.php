@@ -46,8 +46,6 @@ class AdminController extends Controller
     }
 
 
-
-
     function getAllMRF()
     {
         $mrf = DB::table('manpowerrequisition as mr')
@@ -188,31 +186,7 @@ class AdminController extends Controller
         }
     }
 
-    public function getDepartmentMRFAdmin(Request $request)
-    {
-        $Department = DB::table("master_department")->orderBy('DepartmentName', 'asc')
-            ->where("CompanyId", $request->CompanyId)
-            ->pluck("DepartmentId", "DepartmentName");
-        return response()->json($Department);
-    }
 
-    public function getDesignationMRFAdmin(Request $request)
-    {
-        $designation = DB::table("master_designation")->orderBy('DesigName', 'asc')
-            ->where("DepartmentId", $request->DepartmentId)
-            ->pluck("DesigId", "DesigName");
-        return response()->json($designation);
-    }
-
-    public function getRepMgrMRFAdmin(Request $request)
-    {
-        $employee = DB::table('master_employee')->orderBy('FullName', 'ASC')
-            ->where('DepartmentId', $request->DepartmentId)
-            ->where('EmpStatus', 'A')
-            ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
-            ->pluck("EmployeeID", "FullName");
-        return response()->json($employee);
-    }
 
     function getMRFDetails(Request $request)
     {
@@ -249,40 +223,7 @@ class AdminController extends Controller
         return response()->json(['details' => $result]);
     }
 
-    public function getStateAdmin()
-    {
-        $State = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateId", "StateName");
-        return response()->json($State);
-    }
-
-
-
-
-    public function getCityAdmin()
-    {
-        $State = DB::table("master_district")->orderBy('DistrictName', 'asc')->pluck("DistrictId", "DistrictName");
-        return response()->json($State);
-    }
-
-
-    public function getEducationAdmin()
-    {
-        $Education = DB::table("master_education")->orderBy('EducationName', 'asc')->pluck("EducationId", "EducationCode");
-        return response()->json($Education);
-    }
-    public function getSpecializationAdmin(Request $request)
-    {
-        $Specialization = DB::table("master_specialization")->orderBy('Specialization', 'asc')
-            ->where("EducationId", $request->EducationId)
-            ->pluck("EducationId", "Specialization");
-        return response()->json($Specialization);
-    }
-    public function getAllSP()
-    {
-        $Sp = DB::table("master_specialization")->orderBy('Specialization', 'asc')->pluck("SpId", "Specialization");
-        return response()->json($Sp);
-    }
-
+ 
     function setTheme(Request $request)
     {
         $ThemeStyle = $request->ThemeStyle;
@@ -345,13 +286,5 @@ class AdminController extends Controller
         }
     }
 
-    function eduinstitute()
-    {
-        return view('admin.eduinstitute');
-    }
 
-    function resumesource()
-    {
-        return view('admin.resumesource');
-    }
 }

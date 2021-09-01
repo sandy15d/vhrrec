@@ -30,10 +30,18 @@ if (!function_exists('getFullName')) {
 		$DepartmentCode = Db::table('master_department')->select('DepartmentCode')->where('DepartmentId',$DeptId)->first();
 		return $DepartmentCode->DepartmentCode;
 	}
+	function getDepartment($DeptId){
+		$Department = Db::table('master_department')->select('DepartmentName')->where('DepartmentId',$DeptId)->first();
+		return $Department->DepartmentName;
+	}
 
 	function getDesignationCode($DesigId){
 		$DesigCode = Db::table('master_designation')->select('DesigCode')->where('DesigId',$DesigId)->first();
 		return $DesigCode->DesigCode;
+	}
+	function getDesignation($DesigId){
+		$DesigName = Db::table('master_designation')->select('DesigName')->where('DesigId',$DesigId)->first();
+		return $DesigName->DesigName;
 	}
 
 	function getGradeValue($GradeId){

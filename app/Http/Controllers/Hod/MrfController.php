@@ -136,6 +136,8 @@ class MrfController extends Controller
             }
         }
     }
+
+    
     public function addRepMrf(Request $request)
     {
         $sql = DB::table('master_employee')->select('CompanyId', 'GradeId', 'DepartmentId', 'DesigId')->where('EmployeeID', $request->ReplacementFor)->first();
@@ -235,62 +237,6 @@ class MrfController extends Controller
             Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
             return response()->json(['status' => 200, 'msg' => 'New MRF has been successfully created.']);
         }
-    }
-
-    public function getState()
-    {
-        $State = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateId", "StateName");
-        return response()->json($State);
-    }
-
-    public function getDistrict(Request $request)
-    {
-        $District = DB::table("master_district")->orderBy('DistrictName', 'asc')
-            ->where("StateId", $request->StateId)
-            ->pluck("DistrictId", "DistrictName");
-        return response()->json($District);
-    }
-
-
-    public function getEducation()
-    {
-        $Education = DB::table("master_education")->orderBy('EducationName', 'asc')->pluck("EducationId", "EducationCode");
-        return response()->json($Education);
-    }
-
-    public function getSpecialization(Request $request)
-    {
-        $Specialization = DB::table("master_specialization")->orderBy('Specialization', 'asc')
-            ->where("EducationId", $request->EducationId)
-            ->pluck("EducationId", "Specialization");
-        return response()->json($Specialization);
-    }
-
-
-    public function getDepartment(Request $request)
-    {
-        $Department = DB::table("master_department")->orderBy('DepartmentName', 'asc')
-            ->where("CompanyId", $request->CompanyId)
-            ->pluck("DepartmentId", "DepartmentName");
-        return response()->json($Department);
-    }
-
-    public function getDesignation(Request $request)
-    {
-        $designation = DB::table("master_designation")->orderBy('DesigName', 'asc')
-            ->where("DepartmentId", $request->DepartmentId)
-            ->pluck("DesigId", "DesigName");
-        return response()->json($designation);
-    }
-
-    public function getReportingManager(Request $request)
-    {
-        $employee = DB::table('master_employee')->orderBy('FullName', 'ASC')
-            ->where('DepartmentId', $request->DepartmentId)
-            ->where('EmpStatus', 'A')
-            ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
-            ->pluck("EmployeeID", "FullName");
-        return response()->json($employee);
     }
 
 

@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'MRF Details')
+@section('title', 'Active MRF Details')
 @section('PageContent')
     <style>
         .table>:not(caption)>*>* {
@@ -424,7 +424,7 @@
             $.post('<?= route('getMRFDetails') ?>', {
                 MRFId: MRFId
             }, function(data) {
-             //   console.log(data.EducationDetails);
+                console.log(data.EducationDetails);
                 $('#editMRFModal').find('input[name="MRFId"]').val(data.MRFDetails.MRFId);
                 $('#editReason').val(data.MRFDetails.Reason);
                 $('#editCompany').val(data.MRFDetails.CompanyId);
@@ -478,7 +478,7 @@
             if (CompanyId) {
                 $.ajax({
                     type: "GET",
-                    url: "{{ route('getDepartment') }}?CompanyId=" + CompanyId,
+                    url: "{{ route('getDept') }}?CompanyId=" + CompanyId,
                     beforeSend: function() {
                         $('#DeptLoader').removeClass('d-none');
                         $('#editDepartment').addClass('d-none');
@@ -517,7 +517,7 @@
             if (DepartmentId) {
                 $.ajax({
                     type: "GET",
-                    url: "{{ route('getDesignation') }}?DepartmentId=" + DepartmentId,
+                    url: "{{ route('getDesignationMRFAdmin') }}?DepartmentId=" + DepartmentId,
                     beforeSend: function() {
                         $('#DesigLoader').removeClass('d-none');
                         $('#editDesignation').addClass('d-none');
@@ -553,7 +553,7 @@
             if (DepartmentId) {
                 $.ajax({
                     type: "GET",
-                    url: "{{ route('getReportingManager') }}?DepartmentId=" + DepartmentId,
+                    url: "{{ route('getRepMgrMRFAdmin') }}?DepartmentId=" + DepartmentId,
                     beforeSend: function() {
                         $('#RepLoader').removeClass('d-none');
                         $('#editReportingManager').addClass('d-none');
@@ -590,7 +590,7 @@
         function getState() {
             $.ajax({
                 type: "GET",
-                url: "{{ route('getState') }}",
+                url: "{{ route('getStateAdmin') }}",
                 async: false,
                 success: function(res) {
                     if (res) {
@@ -607,7 +607,7 @@
         function getCity() {
             $.ajax({
                 type: "GET",
-                url: "{{ route('getAllDistrict') }}",
+                url: "{{ route('getCityAdmin') }}",
                 async: false,
                 success: function(res) {
                     if (res) {
@@ -625,7 +625,7 @@
         function getEducation() {
             $.ajax({
                 type: "GET",
-                url: "{{ route('getEducation') }}",
+                url: "{{ route('getEducationAdmin') }}",
                 async: false,
                 success: function(res) {
                     if (res) {
@@ -660,7 +660,7 @@
             var No = No;
             $.ajax({
                 type: "GET",
-                url: "{{ route('getSpecialization') }}?EducationId=" + EducationId,
+                url: "{{ route('getSpecializationAdmin') }}?EducationId=" + EducationId,
                 async: false,
                 beforeSend: function() {
                     $('#SpeLoader' + No).removeClass('d-none');

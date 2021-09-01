@@ -153,7 +153,7 @@
         $('#DistrictTable').DataTable({
             processing: true,
             info: true,
-            ajax: "{{ route('getAllDistrict') }}",
+            ajax: "{{ route('getDistrictList') }}",
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex'

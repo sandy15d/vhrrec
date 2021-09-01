@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Education')
+@section('title', 'Dashboard')
 @section('PageContent')
     <div class="page-content">
         <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
@@ -10,7 +10,7 @@
                             <div class="d-flex align-items-center">
                                 <div>
                                     <p class="mb-0 text-secondary">MRF Allocated</p>
-                                    <h4 class="my-1 text-success">7</h4>
+                                    <h4 class="my-1 text-success">{{$allocatedmrf}}</h4>
 
                                 </div>
                                 <div class="widgets-icons-2 rounded-circle bg-gradient-ohhappiness text-white ms-auto"><i
@@ -27,7 +27,7 @@
                         <div class="d-flex align-items-center">
                             <div>
                                 <p class="mb-0 text-secondary">Job Openings</p>
-                                <h4 class="my-1 text-danger">7</h4>
+                                <h4 class="my-1 text-danger">{{$JobPosting}}</h4>
 
                             </div>
                             <div class="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto"><i

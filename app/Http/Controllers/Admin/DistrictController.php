@@ -50,7 +50,7 @@ class DistrictController extends Controller
 
     // ?====================Get All Company Data From Datatabse=====================
 
-    public function getAllDistrict()
+    public function getDistrictList()
     {
         $district = DB::table('master_district')->join('states', 'states.StateId', '=', 'master_district.StateId')
             ->select(['master_district.*', 'states.StateName']);

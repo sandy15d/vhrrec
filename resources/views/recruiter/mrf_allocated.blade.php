@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Education')
+@section('title', 'MRF Allocated')
 @section('PageContent')
     @php
     $company_list = DB::table('master_company')
@@ -29,7 +29,7 @@
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">Allocated MRF Details</div>
+            <div class="breadcrumb-title pe-3 download_label">Allocated MRF Details</div>
         </div>
         <!--end breadcrumb-->
         <hr />
@@ -40,8 +40,8 @@
                         <button type="button" class="btn btn-primary btn-sm" id="openMrf" data-status='Open'>Open MRF <span
                                 class="badge bg-warning text-dark" style="font-size: 10px;">{{ $OpenMRF }}</span>
                         </button>
-                        <button class="btn btn-outline-primary btn-sm pull-right" data-status='Close' id="closedMrf">Closed MRF <span
-                                class="badge bg-warning text-dark"
+                        <button class="btn btn-outline-primary btn-sm pull-right" data-status='Close' id="closedMrf">Closed
+                            MRF <span class="badge bg-warning text-dark"
                                 style="font-size: 10px;">{{ $CloseMRF }}</span></button>
                     </div>
 
@@ -79,12 +79,13 @@
                         </select>
                     </div>
                     <div class="col-1">
-                        <button type="reset" class="btn btn-danger btn-sm" id="reset"><i class="bx bx-refresh"></i></button>
+                        <button type="reset" class="btn btn-danger btn-sm" id="reset"><i
+                                class="bx bx-refresh"></i></button>
                     </div>
                 </div>
                 <hr />
-                <div class="">
-                    <table class="table  table-hover table-striped table-condensed align-middle table-bordered text-center" id="MRFTable"
+                <div>
+                    <table class="table  table-hover table-striped table-condensed align-middle text-center" id="MRFTable"
                         style="width: 100%">
                         <thead class="text-center">
                             <tr class="text-center">
@@ -108,25 +109,159 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="createpostmodal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-info bg-gradient">
+                    <h5 class="modal-title text-white">Create Job Post</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{route('createJobPost')}}" method="POST" id="createJobPostForm">
+                    @csrf
+                    <div class="modal-body">
+                        <table class="table borderless">
+                            <tbody>
+                                <tr>
+                                    <th style="width:250px;">Designation<font class="text-danger">*
+                                        </font>
+                                    </th>
+                                    <td>
+                                        <input type="hidden" name="MRFId" id="MRFId">
+                                        <input type="text" name="Designation" id="Designation"
+                                            class="form-control form-control-sm" readonly>
+                                        <span class="text-danger error-text Designation_error"></span>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Job Code <font class="text-danger">*</font>
+                                    </th>
+                                    <td>
+                                        <input type="text" name="JobCode" id="JobCode" class="form-control form-control-sm"
+                                            readonly>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Job Description</th>
+                                    <td>
+                                        <textarea name="JobInfo" id="JobInfo" class="JobInfo"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Mandatory Requirements</th>
+                                    <td>
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tbody id="MulKP">
+                                            </tbody>
+                                        </table>
+                                        <button type="button" name="add" id="addKP"
+                                            class="btn btn-warning btn-xs mb-2 mt-2"><i class="bx bx-plus"></i></button>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="CreateJobPost">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('scriptsection')
     <script>
+        CKEDITOR.replace('JobInfo');
+
         var MrfStatus = 'Open';
-       var table = $('#MRFTable').DataTable({
+        $('#MRFTable').DataTable({
             processing: true,
             serverSide: true,
             info: true,
-            //searching: false,
+            searching: false,
+            dom: 'Bfrtip',
             lengthChange: false,
-            buttons: [ 'copy', 'excel', 'pdf', 'print'],
+            buttons: [
+
+                {
+                    extend: 'copyHtml5',
+                    text: '<i class="fa fa-files-o"></i>',
+                    titleAttr: 'Copy',
+                    title: $('.download_label').html(),
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i>',
+                    titleAttr: 'Excel',
+                    title: $('.download_label').html(),
+                    exportOptions: {
+                        columns: ':visible'
+
+                    }
+                },
+
+                {
+                    extend: 'csvHtml5',
+                    text: '<i class="fa fa-file-text-o"></i>',
+                    titleAttr: 'CSV',
+                    title: $('.download_label').html(),
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i>',
+                    titleAttr: 'PDF',
+                    title: $('.download_label').html(),
+                    exportOptions: {
+                        columns: ':visible'
+
+                    }
+                },
+
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i>',
+                    titleAttr: 'Print',
+                    title: $('.download_label').html(),
+                    customize: function(win) {
+                        $(win.document.body)
+                            .css('font-size', '10pt');
+
+                        $(win.document.body).find('table')
+                            .addClass('compact')
+                            .css('font-size', 'inherit');
+                    },
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+
+                {
+                    extend: 'colvis',
+                    text: '<i class="fa fa-columns"></i>',
+                    titleAttr: 'Columns',
+                    title: $('.download_label').html(),
+                    postfixButtons: ['colvisRestore']
+                },
+            ],
             ajax: {
                 url: "{{ route('getAllAllocatedMRF') }}",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 data: function(d) {
-                    d.Company = $('#Company').val(),
-                        d.Department = $('#Department').val()
+                    d.Company = $('#Company').val();
+                    d.Department = $('#Department').val();
                     d.Year = $('#Year').val();
                     d.Month = $('#Month').val();
                     d.MrfStatus = MrfStatus;
@@ -170,8 +305,8 @@
                 },
 
                 {
-                    data: 'DepartmentCode',
-                    name: 'DepartmentCode'
+                    data: 'JobPost',
+                    name: 'JobPost'
                 },
                 {
                     data: 'JobShow',
@@ -186,7 +321,6 @@
 
         });
 
-        table.buttons().container().appendTo('#MRFTable_wrapper .col-md-6:eq(0)');
         function GetAllocatedMrf() {
             $('#MRFTable').DataTable().draw(true);
             //$('#MRFTable').DataTable().ajax.reload(null, false);
@@ -216,7 +350,7 @@
             var CompanyId = $('#Company').val();
             $.ajax({
                 type: "GET",
-                url: "{{ route('getDepartmentForRec') }}?CompanyId=" + CompanyId,
+                url: "{{ route('getDepartment') }}?CompanyId=" + CompanyId,
                 beforeSend: function() {
 
                 },
@@ -252,5 +386,96 @@
         $(document).on('click', '#closedMrf', function() {
             GetAllocatedMrf();
         });
+
+        var KPCount = 1;
+
+
+        mulKP();
+
+        function mulKP(n) {
+            x = '<tr>';
+            x += '<td >' +
+                '<input type="text" class="form-control form-control-sm" id="KeyPosition' + n + '" name="KeyPosition[]">' +
+                '</td>';
+
+            if (n > 1) {
+                x +=
+                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-xs  removeKP"><i class="bx bx-x"></td></tr>';
+                $('#MulKP').append(x);
+            } else {
+                x +=
+                    '';
+                $('#MulKP').html(x);
+            }
+        }
+        $(document).on('click', '#addKP', function() {
+            KPCount++;
+            mulKP(KPCount);
+        });
+
+        $(document).on('click', '.removeKP', function() {
+            KPCount--;
+            $(this).closest("tr").remove();
+        });
+
+        function getDetailForJobPost(MRFId) {
+            var MRFId = MRFId;
+            $.post('<?= route('getDetailForJobPost') ?>', {
+                MRFId: MRFId
+            }, function(data) {
+
+                $('#MRFId').val(data.MRFDetails.MRFId);
+                $('#Designation').val(data.Designation);
+                $('#JobCode').val(data.MRFDetails.JobCode);
+
+                CKEDITOR.instances['JobInfo'].setData(data.MRFDetails.Info);
+
+                KPCount = (data.KPDetails).length;
+                var KPValue = data.KPDetails.toString().split(",");
+                for (i = 1; i <= KPCount; i++) {
+                    mulKP(i);
+                    $('#KeyPosition' + i).val(KPValue[i - 1]);
+                }
+
+            }, 'json');
+        }
+
+        $('#createJobPostForm').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            for (instance in CKEDITOR.instances) {
+                CKEDITOR.instances[instance].updateElement();
+            }
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                beforeSend: function() {
+                    $(form).find('span.error-text').text('');
+                    $("#loader").modal('show');
+                },
+
+                success: function(data) {
+                    if (data.status == 400) {
+                        $.each(data.error, function(prefix, val) {
+                            $(form).find('span.' + prefix + '_error').text(val[0]);
+                        });
+                    } else {
+                        $(form)[0].reset();
+                        $('#loader').modal('hide');
+                        $('#createpostmodal').modal('hide');
+                        $('#MRFTable').DataTable().ajax.reload(null, false);
+                        toastr.success(data.msg);
+                    }
+                }
+            });
+        });
+
+        function editmrf(id) {
+            $('#postStatus' + id).prop("disabled", false);
+        }
     </script>
 @endsection
