@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Active MRF Details')
+@section('title', 'MRF Details')
 @section('PageContent')
     <style>
         .table>:not(caption)>*>* {
@@ -10,7 +10,7 @@
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">MRF Details</div>
+            <div class="breadcrumb-title pe-3">Active MRF Details</div>
         </div>
         <!--end breadcrumb-->
         <hr />
@@ -262,7 +262,7 @@
             $('#MRFTable').DataTable({
                 processing: true,
                 info: true,
-                ajax: "{{ route('getAllMRF') }}",
+                ajax: "{{ route('getActiveMrf') }}",
                 columns: [
 
                     {
@@ -424,7 +424,7 @@
             $.post('<?= route('getMRFDetails') ?>', {
                 MRFId: MRFId
             }, function(data) {
-                console.log(data.EducationDetails);
+             //   console.log(data.EducationDetails);
                 $('#editMRFModal').find('input[name="MRFId"]').val(data.MRFDetails.MRFId);
                 $('#editReason').val(data.MRFDetails.Reason);
                 $('#editCompany').val(data.MRFDetails.CompanyId);
@@ -478,7 +478,7 @@
             if (CompanyId) {
                 $.ajax({
                     type: "GET",
-                    url: "{{ route('getDept') }}?CompanyId=" + CompanyId,
+                    url: "{{ route('getDepartment') }}?CompanyId=" + CompanyId,
                     beforeSend: function() {
                         $('#DeptLoader').removeClass('d-none');
                         $('#editDepartment').addClass('d-none');
@@ -517,7 +517,7 @@
             if (DepartmentId) {
                 $.ajax({
                     type: "GET",
-                    url: "{{ route('getDesignationMRFAdmin') }}?DepartmentId=" + DepartmentId,
+                    url: "{{ route('getDesignation') }}?DepartmentId=" + DepartmentId,
                     beforeSend: function() {
                         $('#DesigLoader').removeClass('d-none');
                         $('#editDesignation').addClass('d-none');
@@ -553,7 +553,7 @@
             if (DepartmentId) {
                 $.ajax({
                     type: "GET",
-                    url: "{{ route('getRepMgrMRFAdmin') }}?DepartmentId=" + DepartmentId,
+                    url: "{{ route('getReportingManager') }}?DepartmentId=" + DepartmentId,
                     beforeSend: function() {
                         $('#RepLoader').removeClass('d-none');
                         $('#editReportingManager').addClass('d-none');
@@ -590,7 +590,7 @@
         function getState() {
             $.ajax({
                 type: "GET",
-                url: "{{ route('getStateAdmin') }}",
+                url: "{{ route('getState') }}",
                 async: false,
                 success: function(res) {
                     if (res) {
@@ -607,7 +607,7 @@
         function getCity() {
             $.ajax({
                 type: "GET",
-                url: "{{ route('getCityAdmin') }}",
+                url: "{{ route('getAllDistrict') }}",
                 async: false,
                 success: function(res) {
                     if (res) {
@@ -625,7 +625,7 @@
         function getEducation() {
             $.ajax({
                 type: "GET",
-                url: "{{ route('getEducationAdmin') }}",
+                url: "{{ route('getEducation') }}",
                 async: false,
                 success: function(res) {
                     if (res) {
@@ -660,7 +660,7 @@
             var No = No;
             $.ajax({
                 type: "GET",
-                url: "{{ route('getSpecializationAdmin') }}?EducationId=" + EducationId,
+                url: "{{ route('getSpecialization') }}?EducationId=" + EducationId,
                 async: false,
                 beforeSend: function() {
                     $('#SpeLoader' + No).removeClass('d-none');
@@ -812,9 +812,9 @@
 
         $(document).on('click', '.select_all', function() {
             if ($(this).prop("checked") == true) {
-                $(this).closest("tr").addClass("bg-secondary bg-gradient");
+                $(this).closest("tr").addClass("bg-secondary bg-gradient text-light");
             } else {
-                $(this).closest("tr").removeClass("bg-secondary bg-gradient");
+                $(this).closest("tr").removeClass("bg-secondary bg-gradient text-light");
             }
         });
     </script>

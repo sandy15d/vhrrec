@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'MRF Details')
+@section('title', 'Closed MRF Details')
 @section('PageContent')
     <style>
         .table>:not(caption)>*>* {
@@ -10,7 +10,8 @@
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">New MRF Details</div>
+            <div class="breadcrumb-title pe-3">Closed MRF Details</div>
+            <p class="download_label d-none">Closed MRF Details</p>
         </div>
         <!--end breadcrumb-->
         <hr />
@@ -40,7 +41,8 @@
                         </select>
                     </div>
                     <div class="col-2">
-                        <button type="reset" class="btn btn-danger btn-sm" id="reset"><i class="bx bx-refresh"></i></button>
+                        <button type="reset" class="btn btn-danger btn-sm" id="reset"><i
+                                class="bx bx-refresh"></i></button>
                     </div>
                 </div>
                 <hr />
@@ -59,8 +61,9 @@
                                 <td>Location</td>
                                 <td>MRF Date</td>
                                 <td>Created By</td>
-                                <td>Status</td>
-                                <td style="width: 200px;">Allocated Task to</td>
+                               
+                                <td>Allocated Date</td>
+                                <td>Close Date</td>
                                 <td>Details</td>
                             </tr>
                         </thead>
@@ -77,10 +80,10 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-info bg-gradient">
-                    <h5 class="modal-title text-white">View/Update MRF</h5>
+                    <h5 class="modal-title text-white">View MRF Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('editMRFAdmin') }}" method="POST" id="editMRFAdminForm">
+                <form method="POST" id="editMRFAdminForm">
                     @csrf
                     <div class="modal-body">
                         <table class="table borderless">
@@ -114,9 +117,7 @@
                                     <th>Deartment<font class="text-danger">*</font>
                                     </th>
                                     <td>
-                                        <div class="spinner-border text-primary d-none" role="status" id="DeptLoader"> <span
-                                                class="visually-hidden">Loading...</span>
-                                        </div>
+
                                         <select id="editDepartment" name="editDepartment" id="editDepartment"
                                             class="form-control form-select form-select-sm">
                                             <option value="" selected disabled>Select Department</option>
@@ -131,9 +132,7 @@
                                     <th>Designation<font class="text-danger">*</font>
                                     </th>
                                     <td>
-                                        <div class="spinner-border text-primary d-none" role="status" id="DesigLoader">
-                                            <span class="visually-hidden">Loading...</span>
-                                        </div>
+
                                         <select id="editDesignation" name="editDesignation"
                                             class="form-control form-select form-select-sm">
                                             <option value="" selected disabled>Select Designation</option>
@@ -148,9 +147,7 @@
                                     <th>Reporting Manager<font class="text-danger">*</font>
                                     </th>
                                     <td>
-                                        <div class="spinner-border text-primary d-none" role="status" id="RepLoader"> <span
-                                                class="visually-hidden">Loading...</span>
-                                        </div>
+
                                         <select id="editReportingManager" name="editReportingManager"
                                             class="form-control form-select form-select-sm">
                                             <option value="" selected disabled>Select Reporting Manager</option>
@@ -230,8 +227,7 @@
                                             <tbody id="MulKP">
                                             </tbody>
                                         </table>
-                                        <button type="button" name="add" id="addKP"
-                                            class="btn btn-warning btn-xs mb-2 mt-2"><i class="bx bx-plus"></i></button>
+
                                     </td>
                                 </tr>
                                 <tr>
@@ -243,11 +239,12 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="UpdateMRF">Save changes</button>
-                    </div>
+
                 </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+
+                </div>
             </div>
         </div>
     </div>
@@ -261,8 +258,84 @@
         $(document).ready(function() {
             $('#MRFTable').DataTable({
                 processing: true,
+                serverSide: true,
                 info: true,
-                ajax: "{{ route('getNewMrf') }}",
+                searching: false,
+                dom: 'Bfrtip',
+                lengthChange: false,
+                buttons: [
+
+                    {
+                        extend: 'copyHtml5',
+                        text: '<i class="fa fa-files-o"></i>',
+                        titleAttr: 'Copy',
+                        title: $('.download_label').html(),
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o"></i>',
+                        titleAttr: 'Excel',
+                        title: $('.download_label').html(),
+                        exportOptions: {
+                            columns: ':visible'
+
+                        }
+                    },
+
+                    {
+                        extend: 'csvHtml5',
+                        text: '<i class="fa fa-file-text-o"></i>',
+                        titleAttr: 'CSV',
+                        title: $('.download_label').html(),
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf-o"></i>',
+                        titleAttr: 'PDF',
+                        orientation: 'landscape',
+                        title: $('.download_label').html(),
+                        exportOptions: {
+                            columns: ':visible',
+                           
+
+                        }
+                    },
+
+                    {
+                        extend: 'print',
+                        text: '<i class="fa fa-print"></i>',
+                        titleAttr: 'Print',
+                        title: $('.download_label').html(),
+                        customize: function(win) {
+                            $(win.document.body)
+                                .css('font-size', '10pt');
+
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        },
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+
+                    {
+                        extend: 'colvis',
+                        text: '<i class="fa fa-columns"></i>',
+                        titleAttr: 'Columns',
+                        title: $('.download_label').html(),
+                        postfixButtons: ['colvisRestore']
+                    },
+                ],
+                ajax: "{{ route('getCloseMrf') }}",
                 columns: [
 
                     {
@@ -305,13 +378,15 @@
                         data: 'CreatedBy',
                         name: 'CreatedBy'
                     },
+
+                    
                     {
-                        data: 'Status',
-                        name: 'Status'
+                        data: 'AllocatedDt',
+                        name: 'AllocatedDt'
                     },
                     {
-                        data: 'Allocated',
-                        name: 'Allocated'
+                        data: 'CloseDt',
+                        name: 'CloseDt'
                     },
                     {
                         data: 'Details',
@@ -321,76 +396,6 @@
             });
         });
 
-        function editmstst(MRFId, th) {
-            $('#mrfstatus' + MRFId).prop('disabled', false);
-        }
-
-        function editmrf(id) {
-            $('#allocate' + id).prop("disabled", false);
-        }
-
-
-
-        function chngmrfsts(MRFId, va) {
-            if (va == 'Hold' || va == 'Rejected') {
-                var RemarkHr = prompt("Please Enter Remark");
-                if (RemarkHr != null) {
-                    $.ajax({
-                        url: "{{ route('updateMRFStatus') }}",
-                        type: 'POST',
-                        data: {
-                            MRFId: MRFId,
-                            va: va,
-                            RemarkHr: RemarkHr
-                        },
-                        dataType: 'json',
-                        beforeSend: function() {
-                            $("#loader").modal('show');
-                        },
-                        success: function(data) {
-                            if (data.status == 200) {
-                                $("#loader").modal('hide');
-                                $('#MRFTable').DataTable().ajax.reload(null, false);
-                                toastr.success(data.msg);
-                            } else {
-                                toastr.error(data.msg);
-                            }
-                        }
-                    });
-                } else {
-                    alert('Please Enter Remark');
-                }
-            } else {
-                var RemarkHr = '';
-                $.ajax({
-                    url: "{{ route('updateMRFStatus') }}",
-                    type: 'POST',
-                    data: {
-                        MRFId: MRFId,
-                        va: va,
-                        RemarkHr: RemarkHr
-                    },
-                    dataType: 'json',
-                    beforeSend: function() {
-                        $("#loader").modal('show');
-                    },
-                    success: function(data) {
-                        if (data.status == 200) {
-                            $("#loader").modal('hide');
-                            $('#MRFTable').DataTable().ajax.reload(null, false);
-                            toastr.success(data.msg);
-                        } else {
-                            toastr.error(data.msg);
-                        }
-                    }
-                });
-            }
-        }
-
-        function allocatemrf(MRFId, va) {
-        
-        }
-
         $(document).on('click', '#reset', function() {
             location.reload();
         });
@@ -399,7 +404,7 @@
             $.post('<?= route('getMRFDetails') ?>', {
                 MRFId: MRFId
             }, function(data) {
-             //   console.log(data.EducationDetails);
+                //   console.log(data.EducationDetails);
                 $('#editMRFModal').find('input[name="MRFId"]').val(data.MRFDetails.MRFId);
                 $('#editReason').val(data.MRFDetails.Reason);
                 $('#editCompany').val(data.MRFDetails.CompanyId);
@@ -425,137 +430,25 @@
                     mulKP(i);
                     $('#KeyPosition' + i).val(KPValue[i - 1]);
                 }
-
-
                 LocCount = (data.LocationDetails).length;
                 for (j = 1; j <= LocCount; j++) {
                     mulLocation(j);
                     $('#State' + j).val(data.LocationDetails[j - 1].state);
                     $('#City' + j).val(data.LocationDetails[j - 1].city);
                     $('#ManPower' + j).val(data.LocationDetails[j - 1].nop);
-
                 }
-
                 EduCount = (data.EducationDetails).length;
-
                 for (a = 1; a <= EduCount; a++) {
                     mulEducation(a);
                     $('#Education' + a).val(data.EducationDetails[a - 1].e);
                     $("#Specialization" + a).val(data.EducationDetails[a - 1].s);
                 }
-
+                $("#editMRFAdminForm :input").prop('disabled', true);
+                CKEDITOR.instances['JobInfo'].setReadOnly(true);
                 $('#editMRFModal').modal('show');
             }, 'json');
         });
-        //==================================Get Department List on Change Company========================//
-        $('#editCompany').change(function() {
-            var CompanyId = $(this).val();
-            if (CompanyId) {
-                $.ajax({
-                    type: "GET",
-                    url: "{{ route('getDepartment') }}?CompanyId=" + CompanyId,
-                    beforeSend: function() {
-                        $('#DeptLoader').removeClass('d-none');
-                        $('#editDepartment').addClass('d-none');
-                    },
-                    success: function(res) {
-                        if (res) {
-                            $('#DeptLoader').addClass('d-none');
-                            $('#editDepartment').removeClass('d-none');
-                            $("#editDepartment").empty();
-                            $("#editDesignation").empty();
-                            $("#editReportingManager").empty();
-                            $("#editDepartment").append(
-                                '<option value="" selected disabled >Select Department</option>');
-                            $("#editDesignation").append(
-                                '<option value="" selected disabled >Select Designation</option>');
-                            $("#editReportingManager").append(
-                                '<option value="" selected disabled >Select Reporting Manager</option>'
-                            );
-                            $.each(res, function(key, value) {
-                                $("#editDepartment").append('<option value="' + value + '">' +
-                                    key +
-                                    '</option>');
-                            });
-                        } else {
-                            $("#editDepartment").empty();
-                        }
-                    }
-                });
-            } else {
-                $("#editDepartment").empty();
-            }
-        });
-        //===============================Ge Designation on Change of Department====================//
-        $('#editDepartment').change(function() {
-            var DepartmentId = $(this).val();
-            if (DepartmentId) {
-                $.ajax({
-                    type: "GET",
-                    url: "{{ route('getDesignation') }}?DepartmentId=" + DepartmentId,
-                    beforeSend: function() {
-                        $('#DesigLoader').removeClass('d-none');
-                        $('#editDesignation').addClass('d-none');
-                    },
-                    success: function(res) {
-                        if (res) {
-                            $('#DesigLoader').addClass('d-none');
-                            $('#editDesignation').removeClass('d-none');
-                            $("#editDesignation").empty();
-                            $("#editReportingManager").empty();
-                            $("#editDesignation").append(
-                                '<option value="" selected disabled >Select Designation</option>');
-                            $("#editReportingManager").append(
-                                '<option value="" selected disabled >Select Reporting Manager</option>'
-                            );
-                            $.each(res, function(key, value) {
-                                $("#editDesignation").append('<option value="' + value + '">' +
-                                    key +
-                                    '</option>');
-                            });
-                        } else {
-                            $("#editDesignation").empty();
-                        }
-                    }
-                });
-            } else {
-                $("#editDesignation").empty();
-            }
-        });
-        //===============================Ge Reporting Manager on Change of Department====================//
-        $('#editDepartment').change(function() {
-            var DepartmentId = $(this).val();
-            if (DepartmentId) {
-                $.ajax({
-                    type: "GET",
-                    url: "{{ route('getReportingManager') }}?DepartmentId=" + DepartmentId,
-                    beforeSend: function() {
-                        $('#RepLoader').removeClass('d-none');
-                        $('#editReportingManager').addClass('d-none');
-                    },
-                    success: function(res) {
-                        if (res) {
-                            $('#RepLoader').addClass('d-none');
-                            $('#editReportingManager').removeClass('d-none');
-                            $("#editReportingManager").empty();
-                            $("#editReportingManager").append(
-                                '<option value="" selected disabled >Select Reporting Manager</option>'
-                            );
-                            $.each(res, function(key, value) {
-                                $("#editReportingManager").append('<option value="' + value +
-                                    '">' +
-                                    key +
-                                    '</option>');
-                            });
-                        } else {
-                            $("#editReportingManager").empty();
-                        }
-                    }
-                });
-            } else {
-                $("#editReportingManager").empty();
-            }
-        });
+
         var StateList = '';
         var CityList = '';
         var EducationList = '';
@@ -630,42 +523,6 @@
             });
         }
 
-        function getSpecialization(EducationId, No) {
-            var EducationId = EducationId;
-            var No = No;
-            $.ajax({
-                type: "GET",
-                url: "{{ route('getSpecialization') }}?EducationId=" + EducationId,
-                async: false,
-                beforeSend: function() {
-                    $('#SpeLoader' + No).removeClass('d-none');
-                    $('#Specialization' + No).addClass('d-none');
-                },
-
-                success: function(res) {
-
-                    if (res) {
-                        $('#SpeLoader' + No).addClass('d-none');
-                        $('#Specialization' + No).removeClass('d-none');
-                        $("#Specialization" + No).empty();
-                        $("#Specialization" + No).append(
-                            '<option value="" selected disabled >Select Specialization</option>');
-
-                        $.each(res, function(key, value) {
-                            $("#Specialization" + No).append('<option value="' + value + '">' + key +
-                                '</option>');
-                        });
-                        $("#Specialization" + No).append('<option value="0">Other</option>');
-
-
-                    } else {
-                        $("#Specialization" + No).empty();
-                    }
-                }
-            });
-        }
-
-
         var LocCount = 1;
         mulLocation(LocCount);
 
@@ -692,24 +549,10 @@
                 '" class="form-control form-control-sm" style="width:130px" placeholder="No. of Manpower">' +
                 '<span class="text-danger error-text ManPower' + number + '_error"></span>' +
                 '</td>';
-            if (number > 1) {
-                x +=
-                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-xs  removeLocation">Remove</td></tr>';
-                $('#MulLocation').append(x);
-            } else {
-                x +=
-                    '<td><button type="button" name="add" id="addLocation" class="btn btn-warning btn-sm ">Add</button></td></tr>';
-                $('#MulLocation').html(x);
-            }
+            $('#MulLocation').html(x);
+
         }
-        $(document).on('click', '#addLocation', function() {
-            LocCount++;
-            mulLocation(LocCount);
-        });
-        $(document).on('click', '.removeLocation', function() {
-            LocCount--;
-            $(this).closest("tr").remove();
-        });
+
         mulKP();
 
         function mulKP(n) {
@@ -717,24 +560,10 @@
             x += '<td >' +
                 '<input type="text" class="form-control form-control-sm" id="KeyPosition' + n + '" name="KeyPosition[]">' +
                 '</td>';
-            if (n > 1) {
-                x +=
-                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-xs  removeKP"><i class="bx bx-x"></td></tr>';
-                $('#MulKP').append(x);
-            } else {
-                x +=
-                    '';
-                $('#MulKP').html(x);
-            }
+
+            $('#MulKP').html(x);
+
         }
-        $(document).on('click', '#addKP', function() {
-            KPCount++;
-            mulKP(KPCount);
-        });
-        $(document).on('click', '.removeKP', function() {
-            KPCount--;
-            $(this).closest("tr").remove();
-        });
 
         //-------------------------------Start Multiple Education===========================//
 
@@ -762,34 +591,18 @@
                 '<span class="text-danger error-text Specialization' + num + '_error"></span>' +
                 '</td>';
 
+            $('#MulEducation').html(x);
 
-            if (num > 1) {
-                x +=
-                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-xs  removeEducation">Remove</td></tr>';
-                $('#MulEducation').append(x);
-            } else {
-                x +=
-                    '<td><button type="button" name="add" id="addEducation" class="btn btn-warning btn-sm ">Add</button></td></tr>';
-                $('#MulEducation').html(x);
-            }
         }
 
-        $(document).on('click', '#addEducation', function() {
-            EduCount++;
-            mulEducation(EduCount);
-        });
 
-        $(document).on('click', '.removeEducation', function() {
-            EduCount--;
-            $(this).closest("tr").remove();
-        });
 
 
         $(document).on('click', '.select_all', function() {
             if ($(this).prop("checked") == true) {
-                $(this).closest("tr").addClass("bg-secondary bg-gradient");
+                $(this).closest("tr").addClass("bg-secondary bg-gradient text-light");
             } else {
-                $(this).closest("tr").removeClass("bg-secondary bg-gradient");
+                $(this).closest("tr").removeClass("bg-secondary bg-gradient text-light");
             }
         });
     </script>

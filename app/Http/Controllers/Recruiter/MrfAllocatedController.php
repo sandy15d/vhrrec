@@ -23,7 +23,17 @@ class MrfAllocatedController extends Controller
 {
     function mrf_allocated()
     {
-        return view('recruiter.mrf_allocated');
+        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
+        $department_list = DB::table("master_department")->where('DeptStatus', 'A')->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
+        $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
+        $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+        $designation_list = DB::table("master_designation")->where('DesigName', '!=', '')->orderBy('DesigName', 'asc')->pluck("DesigName", "DesigId");
+        $employee_list = DB::table('master_employee')->orderBy('FullName', 'ASC')
+            ->where('EmpStatus', 'A')
+            ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
+            ->pluck("FullName", "EmployeeID");
+        return view('recruiter.mrf_allocated', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list'));
+       
     }
 
     function getAllAllocatedMRF(Request $request)
@@ -108,10 +118,10 @@ class MrfAllocatedController extends Controller
             ->addColumn('JobShow', function ($mrf) {
                 $check = CheckJobPostCreated($mrf->MRFId);
                 if ($check == 1) {
-                    $sql = Db::table('jobpost')->select('PostingView')->where('MRFId', $mrf->MRFId)->first();
+                    $sql = Db::table('jobpost')->select('PostingView','JPId')->where('MRFId', $mrf->MRFId)->first();
                     $PostView = $sql->PostingView;
 
-                    $x = '<select name="PostingView" id="postStatus' . $mrf->MRFId . '" class="form-control form-select form-select-sm  d-inline" disabled style="width: 100px;" onchange="ChngPostingView(' . $mrf->MRFId . ',this.value)">' ;
+                    $x = '<select name="PostingView" id="postStatus' . $mrf->MRFId . '" class="form-control form-select form-select-sm  d-inline" disabled style="width: 100px;" onchange="ChngPostingView(' . $sql->JPId . ',this.value)">' ;
                     
                     if($PostView == 'Show'){
                         $x .= '<option value="Show" selected>Show</option><option value="Hidden">Hidden</option>';
@@ -127,16 +137,13 @@ class MrfAllocatedController extends Controller
             })
             ->addColumn('details', function ($mrf) {
 
-                return '<i id="viewBtn" class="fadeIn animated lni lni-eye  text-primary view" aria-hidden="true" data-id="' . $mrf->MRFId . '"  style="font-size: 18px;cursor: pointer;"></i>';
+                return '<i  class="fadeIn animated lni lni-eye  text-primary view" aria-hidden="true" data-id="' . $mrf->MRFId . '" id="viewMRF"  style="font-size: 18px;cursor: pointer;"></i>';
             })
 
 
             ->rawColumns(['chk', 'details', 'JobShow', 'JobPost'])
             ->make(true);
     }
-
-
-
 
     public function getDetailForJobPost(Request $request)
     {
@@ -186,12 +193,37 @@ class MrfAllocatedController extends Controller
         $SQL->Status = $Status;
         $SQL->CreatedBy =  Auth::user()->id;
         $query = $SQL->save();
+
+
+       $sql1 = master_mrf::find($MRFId);
+       $sql1->info = convertData($request->JobInfo);
+       $sql1->KeyPositionCriteria =$KpArray_str;
+       $sql1->UpdatedBy = Auth::user()->id;
+       $sql1->LastUpdated = now();
+       $query =$sql1->save();
+
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
             LogActivity::addToLog('New JobPost ' . $JobCode . ' is created by ' . getFullName(Auth::user()->id), 'Create');
 
             return response()->json(['status' => 200, 'msg' => 'New JobPost has been successfully created.']);
+        }
+    }
+
+    public function ChngPostingView(Request $request)
+    {
+        $SQL = master_post::find($request->JPId);
+        $SQL->PostingView = $request->va;
+        $SQL->UpdatedBy = Auth::user()->id;
+        $SQL->LastUpdated = now();
+        $query = $SQL->save();
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            $jobCode = $SQL->JobCode;
+            LogActivity::addToLog('Job Posting ' . $jobCode . ' is now ' . $request->va .' in Ess/Site', 'Update');
+            return response()->json(['status' => 200, 'msg' => 'Job Posting Viewing Status has been changed successfully.']);
         }
     }
 }

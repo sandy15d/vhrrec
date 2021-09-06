@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\master_mrf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -78,5 +79,16 @@ class CommonController extends Controller
     {
         $Sp = DB::table("master_specialization")->orderBy('Specialization', 'asc')->pluck("SpId", "Specialization");
         return response()->json($Sp);
+    }
+
+    function getMRFDetails(Request $request)
+    {
+        $MRFId = $request->MRFId;
+        $MRFDetails = master_mrf::find($MRFId);
+        $LocationDetail = unserialize($MRFDetails->LocationIds);
+        $UniversityDetail = unserialize($MRFDetails->EducationInsId);
+        $KPDetail = unserialize($MRFDetails->KeyPositionCriteria);
+        $EducationDetail = unserialize($MRFDetails->EducationId);
+        return response()->json(['MRFDetails' => $MRFDetails, 'LocationDetails' => $LocationDetail, 'UniversityDetails' => $UniversityDetail, 'KPDetails' => $KPDetail, 'EducationDetails' => $EducationDetail]);
     }
 }

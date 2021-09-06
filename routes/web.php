@@ -50,14 +50,22 @@ Route::get('getEducation', [CommonController::class, 'getEducation'])->name('get
 Route::get('getSpecialization', [CommonController::class, 'getSpecialization'])->name('getSpecialization');
 Route::get('getAllDistrict', [CommonController::class, 'getAllDistrict'])->name('getAllDistrict');
 Route::get('getAllSP', [CommonController::class, 'getAllSP'])->name('getAllSP');
+Route::post('getMRFDetails', [CommonController::class, 'getMRFDetails'])->name('getMRFDetails');
+
 
 Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('mrf', [AdminController::class, 'mrf'])->name('admin.mrf');
-    Route::get('getAllMRF', [AdminController::class, 'getAllMRF'])->name('getAllMRF');
+    Route::get('active_mrf', [AdminController::class, 'active_mrf'])->name('admin.active_mrf');
+    Route::get('closedmrf', [AdminController::class, 'closedmrf'])->name('admin.closedmrf');
+
+    Route::get('getNewMrf', [AdminController::class, 'getNewMrf'])->name('getNewMrf');
+    Route::get('getActiveMrf', [AdminController::class, 'getActiveMrf'])->name('getActiveMrf');
+    Route::get('getCloseMrf', [AdminController::class, 'getCloseMrf'])->name('getCloseMrf');
+
     Route::post('updateMRFStatus', [AdminController::class, 'updateMRFStatus'])->name('updateMRFStatus');
     Route::post('allocateMRF', [AdminController::class, 'allocateMRF'])->name('allocateMRF');
-    Route::post('getMRFDetails', [AdminController::class, 'getMRFDetails'])->name('getMRFDetails');
+   
     Route::post('editMRFAdmin', [AdminController::class, 'editMRFAdmin'])->name('editMRFAdmin');
     Route::post('getTaskList', [AdminController::class, 'getTaskList'])->name('getTaskList');
     Route::post('getRecruiterName', [AdminController::class, 'getRecruiterName'])->name('getRecruiterName');
@@ -191,6 +199,7 @@ Route::group(['prefix' => 'recruiter', 'middleware' => ['isRecruiter', 'auth', '
     Route::post('getAllAllocatedMRF', [MrfAllocatedController::class, 'getAllAllocatedMRF'])->name('getAllAllocatedMRF');
     Route::post('getDetailForJobPost', [MrfAllocatedController::class, 'getDetailForJobPost'])->name('getDetailForJobPost');
     Route::post('createJobPost', [MrfAllocatedController::class, 'createJobPost'])->name('createJobPost');
+    Route::post('ChngPostingView', [MrfAllocatedController::class, 'ChngPostingView'])->name('ChngPostingView');
     Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');
     Route::post('setTheme', [RecruiterController::class, 'setTheme'])->name('setTheme');
 });

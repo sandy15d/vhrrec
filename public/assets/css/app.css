@@ -1805,8 +1805,8 @@ a {
 
 .login-separater span {
 	position: relative;
-	top: 26px;
-	margin-top: -10px;
+/* 	top: 26px;
+	margin-top: -10px; */
 	background: #fff;
 	padding: 5px;
 	font-size: 12px;

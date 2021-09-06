@@ -45,15 +45,42 @@ class AdminController extends Controller
         return view('admin.mrf', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list'));
     }
 
+    function active_mrf()
+    {
+        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
+        $department_list = DB::table("master_department")->where('DeptStatus', 'A')->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
+        $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
+        $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+        $designation_list = DB::table("master_designation")->where('DesigName', '!=', '')->orderBy('DesigName', 'asc')->pluck("DesigName", "DesigId");
+        $employee_list = DB::table('master_employee')->orderBy('FullName', 'ASC')
+            ->where('EmpStatus', 'A')
+            ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
+            ->pluck("FullName", "EmployeeID");
+        return view('admin.activemrf', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list'));
+    }
 
-    function getAllMRF()
+    function closedmrf()
+    {
+        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
+        $department_list = DB::table("master_department")->where('DeptStatus', 'A')->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
+        $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
+        $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+        $designation_list = DB::table("master_designation")->where('DesigName', '!=', '')->orderBy('DesigName', 'asc')->pluck("DesigName", "DesigId");
+        $employee_list = DB::table('master_employee')->orderBy('FullName', 'ASC')
+            ->where('EmpStatus', 'A')
+            ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
+            ->pluck("FullName", "EmployeeID");
+        return view('admin.closedmrf', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list'));
+    }
+
+    function getNewMrf()
     {
         $mrf = DB::table('manpowerrequisition as mr')
-            ->where('MRFId', '!=', 0)
-            ->where('Status', '!=', 'Close')
+            ->where('Status', 'Approved')
+            ->whereNull('Allocated')
+            ->orWhere('Status', 'New')
             ->orderBy('CreatedTime', 'DESC')
             ->select(['mr.*']);
-
         return datatables()->of($mrf)
             ->addIndexColumn()
             ->addColumn('chk', function () {
@@ -136,6 +163,157 @@ class AdminController extends Controller
             ->make(true);
     }
 
+    function getActiveMrf()
+    {
+        $mrf = DB::table('manpowerrequisition as mr')
+            ->where('Status', 'Approved')
+            ->where('Allocated','!=',null)
+            ->orderBy('CreatedTime', 'DESC')
+            ->select(['mr.*']);
+        return datatables()->of($mrf)
+            ->addIndexColumn()
+            ->addColumn('chk', function () {
+                return '<input type="checkbox" class="select_all">';
+            })
+            ->editColumn('Type', function ($mrf) {
+                if ($mrf->Type == 'N' || $mrf->Type == 'N_HrManual') {
+                    return 'New';
+                } else {
+                    return 'Replacement';
+                }
+            })
+            ->editColumn('DepartmentId', function ($mrf) {
+                return getDepartmentCode($mrf->DepartmentId);
+            })
+            ->editColumn('DesigId', function ($mrf) {
+                return getDesignationCode($mrf->DesigId);
+            })
+            ->editColumn('LocationIds', function ($mrf) {
+                $location = unserialize($mrf->LocationIds);
+                $loc = '';
+                foreach ($location as $key => $value) {
+                    $loc .= getDistrictName($value['city']) . ' ';
+                    $loc .= getStateCode($value['state']) . ' - ';
+                    $loc .= $value['nop'];
+                    $loc . '<br>';
+                }
+                return $loc;
+            })
+            ->addColumn('MRFDate', function ($mrf) {
+                return date('d-m-Y', strtotime($mrf->CreatedTime));
+            })
+
+            ->addColumn('CreatedBy', function ($mrf) {
+
+                return getFullName($mrf->CreatedBy);
+            })
+
+            ->addColumn('Status', function ($mrf) {
+                $list = array('New' => 'New', 'Approved' => 'Approved', 'Hold' => 'On Hold', 'Rejected' => 'Rejected');
+
+                $x = '<select name="mrfstatus" id="mrfstatus' . $mrf->MRFId . '" class="form-control form-select form-select-sm  d-inline" disabled onchange="chngmrfsts(' . $mrf->MRFId . ',this.value)" style="width: 100px; ">';
+                foreach ($list as $key => $value) {
+                    if ($mrf->Status == $key) {
+                        $x .= '<option value=' . $key . ' selected>' . $value . '</option>';
+                    } else {
+                        $x .= '<option value=' . $key . '>' . $value . '</option>';
+                    }
+                }
+                $x .= '</select>  <i class="fa fa-pencil-square-o text-primary d-inline" aria-hidden="true" id="msedit' . $mrf->MRFId . '" onclick="editmstst(' . $mrf->MRFId . ',this)" style="font-size: 16px;cursor: pointer;"></i>';
+                return $x;
+            })
+
+            ->addColumn('Allocated', function ($mrf) {
+                if ($mrf->Status == 'Approved') {
+                    $user_list = DB::table('users')
+                        ->where('role', 'R')
+                        ->where('Status', 'A')
+                        ->orderBy('name', 'ASC')
+                        ->get();
+
+                    $x = '<select name="allocate" id="allocate' . $mrf->MRFId . '" class="form-control form-select form-select-sm  d-inline" disabled style="width: 100px;" onchange="allocatemrf(' . $mrf->MRFId . ',this.value)"><option value="">Select</option>';
+                    foreach ($user_list as $list) {
+                        if ($mrf->Allocated == $list->id) {
+                            $x .= '<option value=' . $list->id . ' selected>' . substr($list->name, 0, strrpos($list->name, ' ')) . '</option>';
+                        } else {
+                            $x .= '<option value=' . $list->id . '>' . substr($list->name, 0, strrpos($list->name, ' ')) . '</option>';
+                        }
+                    }
+                    $x .= '</select> <i class="fa fa-pencil-square-o text-primary d-inline" aria-hidden="true" id="mrfedit' . $mrf->MRFId . '" onclick="editmrf(' . $mrf->MRFId . ')" style="font-size: 16px;cursor: pointer;"></i>';
+                    return $x;
+                } else {
+                    return '';
+                }
+            })
+            ->addColumn('Details', function ($mrf) {
+                return '<i class="fa fa-eye text-info" style="font-size: 16px;cursor: pointer;" id="viewMRF" data-id=' . $mrf->MRFId . '></i>';
+            })
+            ->rawColumns(['chk', 'Status', 'Allocated', 'Details'])
+            ->make(true);
+    }
+
+    function getCloseMrf()
+    {
+        $mrf = DB::table('manpowerrequisition as mr')
+            ->where('Status', 'Close')
+            ->orderBy('CreatedTime', 'DESC')
+            ->select(['mr.*']);
+        return datatables()->of($mrf)
+            ->addIndexColumn()
+            ->addColumn('chk', function () {
+                return '<input type="checkbox" class="select_all">';
+            })
+            ->editColumn('Type', function ($mrf) {
+                if ($mrf->Type == 'N' || $mrf->Type == 'N_HrManual') {
+                    return 'New';
+                } else {
+                    return 'Replacement';
+                }
+            })
+            ->editColumn('DepartmentId', function ($mrf) {
+                return getDepartmentCode($mrf->DepartmentId);
+            })
+            ->editColumn('DesigId', function ($mrf) {
+                return getDesignationCode($mrf->DesigId);
+            })
+            ->editColumn('LocationIds', function ($mrf) {
+                $location = unserialize($mrf->LocationIds);
+                $loc = '';
+                foreach ($location as $key => $value) {
+                    $loc .= getDistrictName($value['city']) . ' ';
+                    $loc .= getStateCode($value['state']) . ' - ';
+                    $loc .= $value['nop'];
+                    $loc . '<br>';
+                }
+                return $loc;
+            })
+            ->addColumn('MRFDate', function ($mrf) {
+                return date('d-m-Y', strtotime($mrf->CreatedTime));
+            })
+            ->addColumn('AllocatedDt', function ($mrf) {
+                return date('d-m-Y', strtotime($mrf->AllocatedDt));
+            })
+            ->addColumn('CloseDt', function ($mrf) {
+                return date('d-m-Y', strtotime($mrf->CloseDt));
+            })
+            ->addColumn('CreatedBy', function ($mrf) {
+
+                return getFullName($mrf->CreatedBy);
+            })
+
+
+
+            ->addColumn('Allocated', function ($mrf) {
+                return getFullName($mrf->Allocated);
+            })
+            ->addColumn('Details', function ($mrf) {
+                return '<i class="fa fa-eye text-info" style="font-size: 16px;cursor: pointer;" id="viewMRF" data-id=' . $mrf->MRFId . '></i>';
+            })
+            ->rawColumns(['chk', 'Allocated', 'Details'])
+            ->make(true);
+    }
+
+
     function updateMRFStatus(Request $request)
     {
         $MRF = master_mrf::find($request->MRFId);
@@ -188,16 +366,7 @@ class AdminController extends Controller
 
 
 
-    function getMRFDetails(Request $request)
-    {
-        $MRFId = $request->MRFId;
-        $MRFDetails = master_mrf::find($MRFId);
-        $LocationDetail = unserialize($MRFDetails->LocationIds);
-        $UniversityDetail = unserialize($MRFDetails->EducationInsId);
-        $KPDetail = unserialize($MRFDetails->KeyPositionCriteria);
-        $EducationDetail = unserialize($MRFDetails->EducationId);
-        return response()->json(['MRFDetails' => $MRFDetails, 'LocationDetails' => $LocationDetail, 'UniversityDetails' => $UniversityDetail, 'KPDetails' => $KPDetail, 'EducationDetails' => $EducationDetail]);
-    }
+
 
     function getTaskList(Request $request)
     {
@@ -223,7 +392,7 @@ class AdminController extends Controller
         return response()->json(['details' => $result]);
     }
 
- 
+
     function setTheme(Request $request)
     {
         $ThemeStyle = $request->ThemeStyle;
@@ -285,6 +454,4 @@ class AdminController extends Controller
             }
         }
     }
-
-
 }

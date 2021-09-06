@@ -1,13 +1,15 @@
 @php
 use function App\Helpers\ActiveMRFCount;
 $NewMRFSQL = DB::table('manpowerrequisition')
-    ->where('Status', 'New')
+    ->where('Status', 'Approved')
+    ->whereNull('Allocated')
+    ->orWhere('Status', 'New')
     ->get();
 $NewMRF = $NewMRFSQL->count();
 
 $ActiveSQL = DB::table('manpowerrequisition')
     ->where('MRFId', '!=', 0)
-    ->where('Status', '!=', 'Close')
+    ->where('Allocated', '!=', null)
     ->where('Status', 'Approved')
     ->get();
 $ActiveMRF = $ActiveSQL->count();
@@ -64,6 +66,7 @@ $CloseMRF = $CloseActive->count();
                 </div>
             </div>
             <div class="col">
+                <a href="/admin/active_mrf">
                 <div class="card radius-10 border-start border-0 border-3 border-info">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
@@ -78,6 +81,7 @@ $CloseMRF = $CloseActive->count();
                         </div>
                     </div>
                 </div>
+                </a>
             </div>
             <div class="col">
                 <div class="card radius-10 border-start border-0 border-3 border-warning">
@@ -212,7 +216,7 @@ $CloseMRF = $CloseActive->count();
             <div class="col-12">
                 <div class="card d-none" id="TaskDetailDiv">
                     <div class="card-body">
-                        <div class="">
+                        <div class="___class_+?73___">
                             <h6 class="mb-0 text-primary">Task Allocation List (<i id="RecruiterName"></i>)</h6>
                             <table class="table table-striped table-hover table-condensed " id="taskTable"
                                 style="width: 100%">
@@ -231,7 +235,7 @@ $CloseMRF = $CloseActive->count();
             </div>
         </div>
 
-        
+
     </div>
 @endsection
 @section('scriptsection')
