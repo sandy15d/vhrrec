@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\UserNotification;
 use App\Models\master_mrf;
+use App\Models\Notification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CommonController extends Controller
@@ -71,8 +74,6 @@ class CommonController extends Controller
     {
         $AllDistrict = DB::table("master_district")->orderBy('DistrictName', 'asc')->pluck("DistrictId", "DistrictName");
         return response()->json($AllDistrict);
-
-      
     }
 
     public function getAllSP()
@@ -90,5 +91,28 @@ class CommonController extends Controller
         $KPDetail = unserialize($MRFDetails->KeyPositionCriteria);
         $EducationDetail = unserialize($MRFDetails->EducationId);
         return response()->json(['MRFDetails' => $MRFDetails, 'LocationDetails' => $LocationDetail, 'UniversityDetails' => $UniversityDetail, 'KPDetails' => $KPDetail, 'EducationDetails' => $EducationDetail]);
+    }
+
+    public function notificationMarkRead(Request $request)
+    {
+        $notification = Notification::find($request->id);
+        $notification->notification_read = 1;
+        $query = $notification->save();
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'Task has been allocated to recruiter successfully.']);
+        }
+    }
+
+
+    public function markAllRead()
+    {
+        $query = DB::table('notification')->where('userid', '=', Auth::user()->id)->update(array('notification_read' => 1));
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200]);
+        }
     }
 }

@@ -388,7 +388,27 @@
         }
 
         function allocatemrf(MRFId, va) {
-        
+            $.ajax({
+                url: "{{ route('allocateMRF') }}",
+                type: 'POST',
+                data: {
+                    MRFId: MRFId,
+                    va: va
+                },
+                dataType: 'json',
+                beforeSend: function() {
+                    $("#loader").modal('show');
+                },
+                success: function(data) {
+                    if (data.status == 200) {
+                        $("#loader").modal('hide');
+                        $('#MRFTable').DataTable().ajax.reload(null, false);
+                        toastr.success(data.msg);
+                    } else {
+                        toastr.error(data.msg);
+                    }
+                }
+            });
         }
 
         $(document).on('click', '#reset', function() {

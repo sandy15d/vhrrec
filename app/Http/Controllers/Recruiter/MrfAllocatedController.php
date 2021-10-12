@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\recruiter;
 
 use App\Helpers\LogActivity;
+use App\Helpers\UserNotification;
 use App\Http\Controllers\Controller;
 use App\Models\master_mrf;
 use App\Models\Recruiter\master_post;
@@ -33,7 +34,6 @@ class MrfAllocatedController extends Controller
             ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
             ->pluck("FullName", "EmployeeID");
         return view('recruiter.mrf_allocated', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list'));
-       
     }
 
     function getAllAllocatedMRF(Request $request)
@@ -118,17 +118,17 @@ class MrfAllocatedController extends Controller
             ->addColumn('JobShow', function ($mrf) {
                 $check = CheckJobPostCreated($mrf->MRFId);
                 if ($check == 1) {
-                    $sql = Db::table('jobpost')->select('PostingView','JPId')->where('MRFId', $mrf->MRFId)->first();
+                    $sql = Db::table('jobpost')->select('PostingView', 'JPId')->where('MRFId', $mrf->MRFId)->first();
                     $PostView = $sql->PostingView;
 
-                    $x = '<select name="PostingView" id="postStatus' . $mrf->MRFId . '" class="form-control form-select form-select-sm  d-inline" disabled style="width: 100px;" onchange="ChngPostingView(' . $sql->JPId . ',this.value)">' ;
-                    
-                    if($PostView == 'Show'){
+                    $x = '<select name="PostingView" id="postStatus' . $mrf->MRFId . '" class="form-control form-select form-select-sm  d-inline" disabled style="width: 100px;" onchange="ChngPostingView(' . $sql->JPId . ',this.value)">';
+
+                    if ($PostView == 'Show') {
                         $x .= '<option value="Show" selected>Show</option><option value="Hidden">Hidden</option>';
-                    } else {   
+                    } else {
                         $x .= '<option value="Show">Show</option><option value="Hidden" selected>Hidden</option>';
                     }
-                        
+
                     $x .= '</select> <i class="fa fa-pencil-square-o text-primary d-inline" aria-hidden="true" id="mrfedit' . $mrf->MRFId . '" onclick="editmrf(' . $mrf->MRFId . ')" style="font-size: 16px;cursor: pointer;"></i>';
                     return $x;
                 } else {
@@ -195,18 +195,18 @@ class MrfAllocatedController extends Controller
         $query = $SQL->save();
 
 
-       $sql1 = master_mrf::find($MRFId);
-       $sql1->info = convertData($request->JobInfo);
-       $sql1->KeyPositionCriteria =$KpArray_str;
-       $sql1->UpdatedBy = Auth::user()->id;
-       $sql1->LastUpdated = now();
-       $query =$sql1->save();
+        $sql1 = master_mrf::find($MRFId);
+        $sql1->info = convertData($request->JobInfo);
+        $sql1->KeyPositionCriteria = $KpArray_str;
+        $sql1->UpdatedBy = Auth::user()->id;
+        $sql1->LastUpdated = now();
+        $query = $sql1->save();
 
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
             LogActivity::addToLog('New JobPost ' . $JobCode . ' is created by ' . getFullName(Auth::user()->id), 'Create');
-
+            UserNotification::notifyUser(1,'Job Post Create', $JobCode);
             return response()->json(['status' => 200, 'msg' => 'New JobPost has been successfully created.']);
         }
     }
@@ -222,7 +222,7 @@ class MrfAllocatedController extends Controller
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
             $jobCode = $SQL->JobCode;
-            LogActivity::addToLog('Job Posting ' . $jobCode . ' is now ' . $request->va .' in Ess/Site', 'Update');
+            LogActivity::addToLog('Job Posting ' . $jobCode . ' is now ' . $request->va . ' in Ess/Site', 'Update');
             return response()->json(['status' => 200, 'msg' => 'Job Posting Viewing Status has been changed successfully.']);
         }
     }

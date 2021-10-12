@@ -1,3 +1,19 @@
+@php
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+$Notification = DB::table('notification')
+    ->where('userid', Auth::user()->id)
+    ->where('status', 0)
+    ->where('notification_read', 0)
+    ->orderBy('id', 'DESC')
+    ->get();
+$NotificationCount = $Notification->count();
+
+
+$CompanyQry = DB::table('master_company')
+                ->where('CompanyId',session('Set_Company'))
+                ->get();
+@endphp
 <!doctype html>
 <html lang="en" class="{{ session('ThemeStyle') }} {{ session('SidebarColor') }}">
 
@@ -30,10 +46,12 @@
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/header-colors.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/sweetalert2.min.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/toastr.min.css" />
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTablesButtons.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
+ 
 
     {{-- <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script> --}}
 
@@ -56,10 +74,18 @@
         .btn--edit {
             color: #fff;
             background: #8360c3;
-            background: -webkit-linear-gradient(to right, #2ebf91, #8360c3);
-            background: linear-gradient(to right, #2ebf91, #8360c3);
+            background: -webkit-linear-gradient(to right, #00416A, #E4E5E6);
+            background: linear-gradient(to right, #00416A, #E4E5E6);
 
         }
+        .btn--green {
+            color: #fff;
+            background: #d7e428;
+            background: -webkit-linear-gradient(to right, #56ab2f , #a8e063);
+            background: linear-gradient(to right, #56ab2f, #a8e063);
+
+        }
+
 
 
         .btn-xs {
@@ -84,20 +110,20 @@
 
         .btn-outline-secondary {
             position: relative;
-         
+
             display: inline-block;
             box-sizing: border-box;
             margin-right: 0.333em;
             padding: 2px 6.2px;
-         
+
             border-radius: 0px;
             cursor: pointer;
             font-size: 14px;
-          
+
             white-space: nowrap;
             overflow: hidden;
             background-color: #fff;
-          
+
             outline: none;
             border-top: 0;
             border-left: 0;
@@ -121,7 +147,6 @@
             overflow: hidden;
         }
 
-
         body.loading .overlay {
             display: block;
         }
@@ -130,10 +155,7 @@
 </head>
 
 <body>
-
-
     <div class="wrapper">
-
         <div class="sidebar-wrapper" data-simplebar="true">
             <div class="sidebar-header">
                 <div>
@@ -177,6 +199,7 @@
                             <li> <a href="/admin/resumesource"><i class="bx bx-right-arrow-alt"></i>Resume Source</a>
                             </li>
                             <li> <a href="/admin/employee"><i class="bx bx-right-arrow-alt"></i>Employee</a></li>
+                            <li> <a href="/admin/communication_control"><i class="bx bx-right-arrow-alt"></i>Communication Control</a></li>
                         </ul>
                     </li>
                     <li>
@@ -199,7 +222,7 @@
                         </a>
                         <ul>
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job & Response</a></li>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job Application</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job Application (Resume Databank)</a></li>
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job Application Form (Manual
                                     Entry)</a></li>
                         </ul>
@@ -211,7 +234,7 @@
                             <div class="menu-title">Campus Hirings</div>
                         </a>
                         <ul>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Registration Form (Create)</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Registration Form</a></li>
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Campus Application</a></li>
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Campus Hiring Costing</a></li>
                         </ul>
@@ -223,8 +246,8 @@
                             <div class="menu-title">Recruitment Tracker</div>
                         </a>
                         <ul>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>HR Screening Tracker</a></li>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Technical Screening Tracker</a></li>
+                          
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Screening Tracker</a></li>
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Interview Tracker</a></li>
                         </ul>
                     </li>
@@ -307,10 +330,10 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/hod/newmrf">
+                        <a href="/hod/mrf">
                             <div class="parent-icon"><i class="fas fa-feather-alt text-success"></i>
                             </div>
-                            <div class="menu-title">New MRF</div>
+                            <div class="menu-title">MRF</div>
                         </a>
                     </li>
                     <li>
@@ -420,197 +443,59 @@
             <div class="topbar d-flex align-items-center">
                 <nav class="navbar navbar-expand">
                     <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
+                      
                     </div>
-
+                    <div class="search-bar flex-grow-1">
+						<div class="position-relative search-bar-box">
+                            <h4 class="logo-text">{{$CompanyQry[0]->CompanyName}}</h4>
+						</div>
+					</div>
                     <div class="top-menu ms-auto">
                         <ul class="navbar-nav align-items-center">
-
-
+                          
                             <li class="nav-item dropdown-large">
                                 <a id="sidebarsetting" class="nav-link dropdown-toggle dropdown-toggle-nocaret"
                                     href="#" role="button"> <i class='bx bx-shape-polygon'></i>
                                 </a>
-
-                            </li>
-
-                            <li class="nav-item dropdown dropdown-large">
-                                <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false"> <i class='bx bx-category'></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <div class="row row-cols-3 g-3 p-3">
-                                        <div class="col text-center">
-                                            <div class="app-box mx-auto bg-gradient-cosmic text-white"><i
-                                                    class='bx bx-group'></i>
-                                            </div>
-                                            <div class="app-title">Teams</div>
-                                        </div>
-                                        <div class="col text-center">
-                                            <div class="app-box mx-auto bg-gradient-burning text-white"><i
-                                                    class='bx bx-atom'></i>
-                                            </div>
-                                            <div class="app-title">Projects</div>
-                                        </div>
-                                        <div class="col text-center">
-                                            <div class="app-box mx-auto bg-gradient-lush text-white"><i
-                                                    class='bx bx-shield'></i>
-                                            </div>
-                                            <div class="app-title">Tasks</div>
-                                        </div>
-                                        <div class="col text-center">
-                                            <div class="app-box mx-auto bg-gradient-kyoto text-dark"><i
-                                                    class='bx bx-notification'></i>
-                                            </div>
-                                            <div class="app-title">Feeds</div>
-                                        </div>
-                                        <div class="col text-center">
-                                            <div class="app-box mx-auto bg-gradient-blues text-dark"><i
-                                                    class='bx bx-file'></i>
-                                            </div>
-                                            <div class="app-title">Files</div>
-                                        </div>
-                                        <div class="col text-center">
-                                            <div class="app-box mx-auto bg-gradient-moonlit text-white"><i
-                                                    class='bx bx-filter-alt'></i>
-                                            </div>
-                                            <div class="app-title">Alerts</div>
-                                        </div>
-                                    </div>
-                                </div>
                             </li>
                             <li class="nav-item dropdown dropdown-large">
                                 <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#"
-                                    role="button" data-bs-toggle="dropdown" aria-expanded="false"> <span
-                                        class="alert-count">7</span>
+                                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @if ($NotificationCount > 0)
+                                        <span class="alert-count">
+                                            {{ $NotificationCount }}
+                                        </span>
+                                    @endif
                                     <i class='bx bx-bell'></i>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end">
                                     <a href="javascript:;">
                                         <div class="msg-header">
                                             <p class="msg-header-title">Notifications</p>
-                                            <p class="msg-header-clear ms-auto">Marks all as read</p>
+                                            <p class="msg-header-clear ms-auto" onclick="markAllRead()">Marks all as
+                                                read</p>
                                         </div>
                                     </a>
                                     <div class="header-notifications-list">
-                                        <a class="dropdown-item" href="javascript:;">
-                                            <div class="d-flex align-items-center">
-                                                <div class="notify bg-light-primary text-primary"><i
-                                                        class="bx bx-group"></i>
+                                        @foreach ($Notification as $item)
+                                            <a class="dropdown-item" href="javascript:;"
+                                                onclick="readNotification({{ $item->id }})">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="notify bg-light-primary text-primary">
+                                                        <i class="bx bx-group"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="msg-name">{{ $item->title }}
+                                                            <span
+                                                                class="msg-time float-end">{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</span>
+                                                        </h6>
+                                                        <p class="msg-info">{{ $item->description }}
+                                                            <span class="user-online float-end mt-3"></span>
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                                <div class="flex-grow-1">
-                                                    <h6 class="msg-name">New Customers<span
-                                                            class="msg-time float-end">14 Sec
-                                                            ago</span></h6>
-                                                    <p class="msg-info">5 new user registered</p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                        <a class="dropdown-item" href="javascript:;">
-                                            <div class="d-flex align-items-center">
-                                                <div class="notify bg-light-danger text-danger"><i
-                                                        class="bx bx-cart-alt"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <h6 class="msg-name">New Orders <span
-                                                            class="msg-time float-end">2
-                                                            min
-                                                            ago</span></h6>
-                                                    <p class="msg-info">You have recived new orders</p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                        <a class="dropdown-item" href="javascript:;">
-                                            <div class="d-flex align-items-center">
-                                                <div class="notify bg-light-success text-success"><i
-                                                        class="bx bx-file"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <h6 class="msg-name">24 PDF File<span
-                                                            class="msg-time float-end">19
-                                                            min
-                                                            ago</span></h6>
-                                                    <p class="msg-info">The pdf files generated</p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                        <a class="dropdown-item" href="javascript:;">
-                                            <div class="d-flex align-items-center">
-                                                <div class="notify bg-light-warning text-warning"><i
-                                                        class="bx bx-send"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <h6 class="msg-name">Time Response <span
-                                                            class="msg-time float-end">28 min
-                                                            ago</span></h6>
-                                                    <p class="msg-info">5.1 min avarage time response</p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                        <a class="dropdown-item" href="javascript:;">
-                                            <div class="d-flex align-items-center">
-                                                <div class="notify bg-light-info text-info"><i
-                                                        class="bx bx-home-circle"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <h6 class="msg-name">New Product Approved <span
-                                                            class="msg-time float-end">2 hrs ago</span></h6>
-                                                    <p class="msg-info">Your new product has approved</p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                        <a class="dropdown-item" href="javascript:;">
-                                            <div class="d-flex align-items-center">
-                                                <div class="notify bg-light-danger text-danger"><i
-                                                        class="bx bx-message-detail"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <h6 class="msg-name">New Comments <span
-                                                            class="msg-time float-end">4
-                                                            hrs
-                                                            ago</span></h6>
-                                                    <p class="msg-info">New customer comments recived</p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                        <a class="dropdown-item" href="javascript:;">
-                                            <div class="d-flex align-items-center">
-                                                <div class="notify bg-light-success text-success"><i
-                                                        class='bx bx-check-square'></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <h6 class="msg-name">Your item is shipped <span
-                                                            class="msg-time float-end">5 hrs
-                                                            ago</span></h6>
-                                                    <p class="msg-info">Successfully shipped your item</p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                        <a class="dropdown-item" href="javascript:;">
-                                            <div class="d-flex align-items-center">
-                                                <div class="notify bg-light-primary text-primary"><i
-                                                        class='bx bx-user-pin'></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <h6 class="msg-name">New 24 authors<span
-                                                            class="msg-time float-end">1 day
-                                                            ago</span></h6>
-                                                    <p class="msg-info">24 new authors joined last week</p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                        <a class="dropdown-item" href="javascript:;">
-                                            <div class="d-flex align-items-center">
-                                                <div class="notify bg-light-warning text-warning"><i
-                                                        class='bx bx-door-open'></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <h6 class="msg-name">Defense Alerts <span
-                                                            class="msg-time float-end">2 weeks
-                                                            ago</span></h6>
-                                                    <p class="msg-info">45% less alerts last 4 weeks</p>
-                                                </div>
-                                            </div>
-                                        </a>
+                                            </a>
+                                        @endforeach
                                     </div>
                                     <a href="javascript:;">
                                         <div class="text-center msg-footer">View All Notifications</div>
@@ -658,7 +543,7 @@
                                     class="d-none">
                                     @csrf
                                 </form>
-                                </a>
+                                
                             </li>
                         </ul>
                     </div>
@@ -771,6 +656,7 @@
     <script src="{{ URL::to('/') }}/assets/plugins/datatable/js/dataTables.bootstrap5.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
     <!--app JS-->
     <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
 
@@ -1028,6 +914,39 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
+        function readNotification(id) {
+            var id = id;
+            $.ajax({
+                url: "{{ route('notificationMarkRead') }}?id=" + id,
+                method: 'POST',
+
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 200) {
+                        location.reload();
+                        // console.log($('.alert-count').text());
+                    } else {
+                        alert('failed');
+                    }
+                }
+            });
+        }
+
+        function markAllRead() {
+            $.ajax({
+                url: "{{ route('markAllRead') }}",
+                method: 'POST',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 200) {
+                        location.reload();
+                    } else {
+                        alert('failed');
+                    }
+                }
+            });
+        }
     </script>
 
     {{-- @livewireScripts --}}

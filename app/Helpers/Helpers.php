@@ -59,6 +59,10 @@ if (!function_exists('getFullName')) {
 		$StateCode = Db::table('states')->select('StateCode')->where('StateId',$StateId)->first();
 		return $StateCode->StateCode;
 	}
+	function getStateName($StateId){
+		$StateName = Db::table('states')->select('StateName')->where('StateId',$StateId)->first();
+		return $StateName->StateName;
+	}
 
 	function getDistrictName($DistrictId){
 		$DistrictName = Db::table('master_district')->select('DistrictName')->where('DistrictId',$DistrictId)->first();
@@ -67,13 +71,12 @@ if (!function_exists('getFullName')) {
 		}else{
 			return $DistrictName->DistrictName;
 		}
-	
 	}
 
 	function convertData($body_content) {
 	
 		$body_content = stripslashes($body_content);
-	//	$body_content = htmlspecialchars($body_content);
+	   //$body_content = htmlspecialchars($body_content);
 		$body_content = addslashes($body_content);
 		return $body_content;
 	 } 
@@ -108,5 +111,17 @@ if (!function_exists('getFullName')) {
 		}
 		
 	 }
+
+	 function getEducationById($eid){
+		 $EducationCode = DB::table('master_education')->select('EducationCode')->where('EducationId',$eid)->first();
+		 return $EducationCode->EducationCode;
+	 }
+
+	 function getSpecializationbyId($sid){
+		$Specialization = DB::table('master_specialization')->select('Specialization')->where('SpId',$sid)->first();
+		return $Specialization->Specialization;
+	 }
+
+
 
 }

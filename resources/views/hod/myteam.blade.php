@@ -126,7 +126,8 @@
         ],
         "createdRow": function(row, data, name) {
             if (data['Status'] == 'Resigned') {
-                $(row).addClass('table-danger');
+                $(row).addClass('bg-danger text-light');
+            
             }
         }
 
@@ -134,7 +135,6 @@
 
     $(document).on('click', '.addRepMRF', function() {
         var EmployeeID = $(this).data('id');
-        
         window.location.href ="{{route('repmrf')}}?ei="+EmployeeID;
     });
 
@@ -210,6 +210,12 @@
                 name: 'MStatus'
             }
             ],
+            "createdRow": function(row, data, name) {
+            if (data['Status'] == 'Resigned') {
+                $(row).addClass('bg-danger text-light');
+            
+            }
+        }
         });
     }
 </script>

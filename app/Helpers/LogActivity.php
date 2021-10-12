@@ -22,6 +22,4 @@ class LogActivity{
     	return LogBookActivity::latest()->get();
     }
 }
-
-
 ?>

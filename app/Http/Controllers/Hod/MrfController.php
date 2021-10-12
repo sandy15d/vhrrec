@@ -21,13 +21,52 @@ use function App\Helpers\getFullName;
 
 class MrfController extends Controller
 {
-    function newmrf()
+    public $company_list;
+    public $department_list;
+    public $state_list;
+    public $institute_list;
+
+    function mrf()
     {
-        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
-        $department_list = DB::table("master_department")->where('DeptStatus', 'A')->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
-        $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
-        $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
-        return view('hod.newmrf', compact('company_list', 'department_list', 'state_list', 'institute_list'));
+        return view('hod.mrf');
+    }
+
+
+    public function __construct()
+    {
+        $this->company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
+        $this->department_list = DB::table("master_department")->where('DeptStatus', 'A')->where('CompanyId', session('Set_Company'))->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
+        $this->state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
+        $this->institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+    }
+
+
+    function new_mrf()
+    {
+        
+        $params = array(
+            'company_list'=>$this->company_list,
+            'department_list'=>$this->department_list,
+            'state_list' => $this->state_list,
+            "institute_list" => $this->institute_list
+            );
+        return view('hod.hod_new_mrf', compact('params'));
+    }
+    function sip_mrf()
+    {
+        $company_list = $this->company_list;
+        $department_list = $this->department_list;
+        $state_list = $this->state_list;
+        $institute_list = $this->institute_list;
+        return view('hod.hod_sip_mrf', compact('company_list', 'department_list', 'state_list', 'institute_list'));
+    }
+    function campus_mrf()
+    {
+        $company_list = $this->company_list;
+        $department_list = $this->department_list;
+        $state_list = $this->state_list;
+        $institute_list = $this->institute_list;
+        return view('hod.hod_campus_mrf', compact('company_list', 'department_list', 'state_list', 'institute_list'));
     }
 
 
@@ -38,9 +77,6 @@ class MrfController extends Controller
             'Company' => 'required',
             'Department' => 'required',
             'Designation' => 'required',
-            'ReportingManager' => 'required',
-
-
         ]);
         if ($validator->fails()) {
             return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
@@ -102,7 +138,6 @@ class MrfController extends Controller
             $MRF->DesigId = $request->Designation;
             $MRF->Positions = array_sum($ManPower);
             $MRF->LocationIds = $locArray_str;
-            $MRF->Reporting = $request->ReportingManager;
             $MRF->MinCTC = $request->MinCTC;
             $MRF->MaxCTC = $request->MaxCTC;
             $MRF->WorkExp = $request->WorkExp;
@@ -137,7 +172,110 @@ class MrfController extends Controller
         }
     }
 
-    
+
+    public function addSipMrf(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'Reason' => 'required',
+            'Company' => 'required',
+            'Department' => 'required',
+          
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
+        } else {
+
+            $State = $request->State;
+            $City = $request->City;
+            $ManPower = $request->ManPower;
+            $Education = $request->Education;
+            $Specialization = $request->Specialization;
+            $KeyPosition = $request->KeyPosition;
+
+            $locArray = array();
+            if ($State != '') {
+                for ($lc = 0; $lc < Count($State); $lc++) {
+                    $location = array(
+                        "state" => $State[$lc],
+                        "city" => $City[$lc],
+                        "nop" => $ManPower[$lc],
+                    );
+                    array_push($locArray, $location);
+                }
+            }
+            $locArray_str = serialize($locArray);
+
+            $Eduarray = array();
+            if ($Education != '') {
+                for ($count = 0; $count < Count($Education); $count++) {
+
+                    $e = array(
+                        "e" => $Education[$count],
+                        "s" => $Specialization[$count]
+                    );
+                    array_push($Eduarray, $e);
+                }
+            }
+            $EduArray_str = serialize($Eduarray);
+
+            $KpArray = array();
+            if ($KeyPosition != '') {
+                for ($i = 0; $i < Count($KeyPosition); $i++) {
+                    $KP = addslashes($KeyPosition[$i]);
+                    array_push($KpArray, $KP);
+                }
+            }
+
+            $KpArray_str = serialize($KpArray);
+
+
+            $UniversityArray = array();
+            if ($request->University != '') {
+                $UniversityArray = serialize($request->University);
+            }
+            $MRF = new master_mrf;
+            $MRF->Type = 'SIP';
+            $MRF->Reason = $request->Reason;
+            $MRF->CompanyId = $request->Company;
+            $MRF->DepartmentId = $request->Department;
+            $MRF->Positions = array_sum($ManPower);
+            $MRF->LocationIds = $locArray_str;
+            $MRF->LocationIds = $request->stipend;
+            $MRF->TwoWheeler = $request->two_wheeler;
+            $MRF->DA = $request->da;
+            $MRF->MinCTC = $request->MinCTC;
+            $MRF->MaxCTC = $request->MaxCTC;
+            $MRF->Remarks = $request->Remark;
+            $MRF->Info = convertData($request->JobInfo);
+            $MRF->EducationId = $EduArray_str;
+            $MRF->EducationInsId = $UniversityArray;
+            $MRF->KeyPositionCriteria = $KpArray_str;
+            $MRF->CreatedBy =  Auth::user()->id;
+            $MRF->Status = 'New';
+
+            $MRF->save();
+
+            $InsertId = $MRF->MRFId;
+
+            $jobCode = getCompanyCode($request->Company) . '/' . getDepartmentCode($request->Department) . '/SIP/' . $InsertId . '-' . date('Y');
+            $query1 = DB::table('manpowerrequisition')
+                ->where('MRFId', $InsertId)
+                ->update(['JobCode' => $jobCode]);
+
+            if (!$query1) {
+                return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+            } else {
+                LogActivity::addToLog('SIP MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id), 'Create');
+                $details = [
+                    "subject" => 'SIP MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id),
+                    "Employee" => getFullName(Auth::user()->id),
+                ];
+                Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+                return response()->json(['status' => 200, 'msg' => 'SIP/Internship MRF has been successfully created.']);
+            }
+        }
+    }
+
     public function addRepMrf(Request $request)
     {
         $sql = DB::table('master_employee')->select('CompanyId', 'GradeId', 'DepartmentId', 'DesigId')->where('EmployeeID', $request->ReplacementFor)->first();
@@ -187,11 +325,11 @@ class MrfController extends Controller
 
         $KpArray_str = serialize($KpArray);
 
-        $UniversityArray =Array();
-        if($request->University!=''){
+        $UniversityArray = array();
+        if ($request->University != '') {
             $UniversityArray = serialize($request->University);
         }
-      
+
 
         $MRF = new master_mrf;
         $MRF->Type = 'R';
@@ -261,9 +399,9 @@ class MrfController extends Controller
 
             ->editColumn('Type', function ($mrf) {
                 if ($mrf->Type == 'N' || $mrf->Type == 'N_HrManual') {
-                    return 'New';
-                } else {
-                    return 'Replacement';
+                    return 'New MRF';
+                } elseif ($mrf->Type == 'SIP' || $mrf->Type == 'SIP_HrManual') {
+                    return 'SIP/Internship MRF';
                 }
             })
 

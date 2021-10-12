@@ -45,7 +45,7 @@ class MyTeamController extends Controller
         return datatables()::of($employee)
             ->addIndexColumn()
             ->addColumn('fullname', function ($employee) {
-                return '<a href="javascript:void(0)" data-id="' . $employee->EmployeeID . '" class="getMyTeam">' . $employee->Fname . ' ' . $employee->Sname . ' ' . $employee->Lname . '</a>';
+                return '<a href="javascript:void(0)" data-id="' . $employee->EmployeeID . '" class=" getMyTeam">' . $employee->Fname . ' ' . $employee->Sname . ' ' . $employee->Lname . '</a>';
             })
 
             ->addColumn('Reporting', function ($employee) {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Helpers\LogActivity;
+use App\Helpers\UserNotification;
 use App\Http\Controllers\Controller;
 use App\Mail\MrfStatusChangeMail;
 use App\Models\master_mrf;
@@ -360,6 +361,7 @@ class AdminController extends Controller
         } else {
             $jobCode = $MRF->JobCode;
             LogActivity::addToLog('MRF ' . $jobCode . ' is allocated to ' . $request->va, 'Update');
+            UserNotification::notifyUser($request->va,'MRF Allocated','MRF '.$jobCode.' is Allocated to You.');
             return response()->json(['status' => 200, 'msg' => 'Task has been allocated to recruiter successfully.']);
         }
     }

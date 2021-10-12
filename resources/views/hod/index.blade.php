@@ -66,7 +66,6 @@ $ActiveMember = $sql->count();
                                     <th>MRF Date</th>
                                     <th>MRF By</th>
                                     <th>Action</th>
-
                                 </tr>
                             </thead>
                             <tbody>
@@ -134,9 +133,9 @@ $ActiveMember = $sql->count();
         });
         $(document).on('click', '.select_all', function() {
             if ($(this).prop("checked") == true) {
-                $(this).closest("tr").addClass("bg-secondary bg-gradient");
+                $(this).closest("tr").addClass("bg-secondary bg-gradient text-light");
             } else {
-                $(this).closest("tr").removeClass("bg-secondary bg-gradient");
+                $(this).closest("tr").removeClass("bg-secondary bg-gradient text-light");
             }
         });
     </script>

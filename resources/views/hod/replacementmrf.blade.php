@@ -124,7 +124,7 @@ $institute_list = DB::table('master_institute')
                                         <tbody id="MulEducation">
                                         </tbody>
                                     </table>
-                                    <button id="addEducation" type="button" class="btn btn-xs btn-warning mb-2 mt-2"><i
+                                    <button id="addEducation" type="button" class="btn btn-sm btn-warning mb-2 mt-2"><i
                                             class="bx bx-plus"></i>Education</button>
 
                                 </td>
@@ -155,7 +155,7 @@ $institute_list = DB::table('master_institute')
                                         <tbody id="MulKP">
                                         </tbody>
                                     </table>
-                                    <button type="button" name="add" id="addKP" class="btn btn-warning btn-xs mb-2 mt-2"><i
+                                    <button type="button" name="add" id="addKP" class="btn btn-warning btn-sm mb-2 mt-2"><i
                                             class="bx bx-plus"></i></button>
                                 </td>
                             </tr>
@@ -242,7 +242,7 @@ $institute_list = DB::table('master_institute')
 
             if (num > 1) {
                 x +=
-                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-xs  removeEducation"><i class="bx bx-x"></i></td></tr>';
+                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-sm  removeEducation"><i class="bx bx-x"></i></td></tr>';
                 $('#MulEducation').append(x);
             } else {
                 x +=

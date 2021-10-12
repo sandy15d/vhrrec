@@ -14,8 +14,6 @@
         "laravel/framework": "^8.40",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.3",
-        "livewire-ui/spotlight": "^1.0",
-        "livewire/livewire": "^2.5",
         "snowfire/beautymail": "^1.1",
         "yajra/laravel-datatables-oracle": "~9.0"
     },
@@ -34,7 +32,7 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         },
-        "files": ["app/Helpers/LogActivity.php","app/Helpers/Helpers.php"]
+        "files": ["app/Helpers/LogActivity.php","app/Helpers/Helpers.php","app/Helpers/UserNotification.php"]
     },
     "autoload-dev": {
         "psr-4": {

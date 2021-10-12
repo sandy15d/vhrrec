@@ -16,13 +16,17 @@
     <script src="{{ URL::to('/') }}/assets/js/pace.min.js"></script>
     <!-- Bootstrap CSS -->
     <link href="{{ URL::to('/') }}/assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ URL::to('/') }}/https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&amp;display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&amp;display=swap"
         rel="stylesheet">
     <link href="{{ URL::to('/') }}/assets/css/app.css" rel="stylesheet">
     <link href="{{ URL::to('/') }}/assets/css/icons.css" rel="stylesheet">
     <title>HR Recruitment V2.0</title>
 </head>
-
+@php
+    $company_list = DB::table('master_company')
+    ->orderBy('CompanyId', 'asc')
+    ->pluck('CompanyName', 'CompanyId');
+@endphp
 <body class="bg-login">
     <!--wrapper-->
     <div class="wrapper">
@@ -39,64 +43,80 @@
                                     <div class="text-center">
                                         <h3 class="">Sign in</h3>
                                     </div>
-                                    <div class="form-body">
-                                        <form class="row g-3" method="POST" action="{{ route('login') }}">
-                                            @if (Session::get('success'))
-                                                <div class="alert alert-success">
-                                                    {{ Session::get('success') }}
-                                                </div>
-                                            @endif
-                                            @if (Session::get('error'))
-                                                <div class="alert alert-danger">
-                                                    {{ Session::get('error') }}
-                                                </div>
+                                    <div class="
+                                            form-body">
+                                            <form class="row g-3" method="POST" action="{{ route('login') }}">
+                                                @if (Session::get('success'))
+                                                    <div class="alert alert-success">
+                                                        {{ Session::get('success') }}
+                                                    </div>
+                                                @endif
+                                                @if (Session::get('error'))
+                                                    <div class="alert alert-danger">
+                                                        {{ Session::get('error') }}
+                                                    </div>
 
-                                            @endif
-                                            @csrf
-                                            <div class="col-12">
-                                                <label for="email" class="form-label">Username</label>
-                                                <input id="email" type="text"
-                                                    class="form-control @error('email') is-invalid @enderror"
-                                                    name="email" value="{{ old('email') }}"
-                                                    placeholder="Enter Username" required autocomplete="email"
-                                                    autofocus>
-                                                @error('email')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-                                            <div class="col-12">
-                                                <label for="inputChoosePassword" class="form-label">Enter
-                                                    Password</label>
-                                                <div class="input-group" id="show_hide_password">
-                                                    <input type="password"
-                                                        class="form-control border-end-0 @error('password') is-invalid @enderror"
-                                                        id="password" name="password" placeholder="Enter Password"
-                                                        required autocomplete="current-password"> <a href="javascript:;"
-                                                        class="input-group-text bg-transparent"><i
-                                                            class='bx bx-hide'></i></a>
-                                                    @error('password')
+                                                @endif
+                                                @csrf
+                                                <div class="col-12">
+                                                    <label for="company" class="form-label">Company</label>
+                                                    <select name="company" id="company"
+                                                        class="form-control form-select @error('company') is-invalid @enderror"
+                                                        value="{{ old('company') }}" required autofocus>
+                                                        @foreach ($company_list as $key => $value)
+                                                        <option value="{{ $key }}">{{ $value }}</option>
+                                                    @endforeach
+                                                    </select>
+                                                    @error('company')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
                                                         </span>
                                                     @enderror
                                                 </div>
-                                            </div>
-                                            {{-- <div class="col-md-6">
+                                                <div class="col-12">
+                                                    <label for="email" class="form-label">Username</label>
+                                                    <input id="email" type="text"
+                                                        class="form-control @error('email') is-invalid @enderror"
+                                                        name="email" value="{{ old('email') }}"
+                                                        placeholder="Enter Username" required autocomplete="email">
+                                                    @error('email')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12">
+                                                    <label for="inputChoosePassword" class="form-label">Enter
+                                                        Password</label>
+                                                    <div class="input-group" id="show_hide_password">
+                                                        <input type="password"
+                                                            class="form-control border-end-0 @error('password') is-invalid @enderror"
+                                                            id="password" name="password" placeholder="Enter Password"
+                                                            required autocomplete="current-password"> <a
+                                                            href="javascript:;"
+                                                            class="input-group-text bg-transparent"><i
+                                                                class='bx bx-hide'></i></a>
+                                                        @error('password')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                                {{-- <div class="col-md-6">
 												<div class="form-check form-switch">
 													<input class="form-check-input" type="checkbox" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
 													<label class="form-check-label" for="remember"> {{ __('Remember Me') }}</label>
 												</div>
 											</div> --}}
 
-                                            <div class="col-12">
-                                                <div class="d-grid">
-                                                    <button type="submit" class="btn btn-primary"><i
-                                                            class="bx bxs-lock-open"></i>Sign in</button>
+                                                <div class="col-12">
+                                                    <div class="d-grid">
+                                                        <button type="submit" class="btn btn-primary"><i
+                                                                class="bx bxs-lock-open"></i>Sign in</button>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </form>
+                                            </form>
                                     </div>
                                 </div>
                             </div>
