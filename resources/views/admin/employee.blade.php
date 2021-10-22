@@ -16,21 +16,21 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-striped table-hover table-condensed" id="employeetable" style="width: 100%">
-                        <thead>
+                        <thead class="bg-primary text-light text-center">
                             <tr>
-                                <th></th>
-                                <th class="th-sm">S.No</th>
-                                <th>Employee Name</th>
-                                <th>EmpCode</th>
-                                <th>Company</th>
-                                <th>Department</th>
-                                <th>Designation</th>
-                                <th>Grade</th>
-                                <th>CTC</th>
-                                <th>Reporting To</th>
-                                <th>Status</th>
-                                <th>DOJ</th>
-                                <th>Date of Sepration</th>
+                                <td></td>
+                                <td class="td-sm">S.No</td>
+                                <td>Employee Name</td>
+                                <td>EmpCode</td>
+                                <td>Company</td>
+                                <td>Department</td>
+                                <td>Designation</td>
+                                <td>Grade</td>
+                                <td>CTC</td>
+                                <td>Reporting To</td>
+                                <td>Status</td>
+                                <td>DOJ</td>
+                                <td>Date of Sepration</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -141,9 +141,9 @@
         });
         $(document).on('click', '.select_all', function() {
             if ($(this).prop("checked") == true) {
-                $(this).closest("tr").addClass("bg-secondary bg-gradient");
+                $(this).closest("tr").addClass("bg-secondary bg-gradient text-light");
             } else {
-                $(this).closest("tr").removeClass("bg-secondary bg-gradient");
+                $(this).closest("tr").removeClass("bg-secondary bg-gradient text-light");
             }
         });
     </script>

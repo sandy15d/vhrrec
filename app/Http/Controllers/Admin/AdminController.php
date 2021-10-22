@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\MrfStatusChangeMail;
 use App\Models\master_mrf;
 use App\Models\ThemeDetail;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -89,16 +90,24 @@ class AdminController extends Controller
             })
             ->editColumn('Type', function ($mrf) {
                 if ($mrf->Type == 'N' || $mrf->Type == 'N_HrManual') {
-                    return 'New';
-                } else {
-                    return 'Replacement';
+                    return 'New MRF';
+                } elseif ($mrf->Type == 'SIP' || $mrf->Type == 'SIP_HrManual') {
+                    return 'SIP/Internship MRF';
+                } elseif ($mrf->Type == 'Campus' || $mrf->Type == 'Campus_HrManual') {
+                    return 'Campus MRF';
+                } elseif ($mrf->Type == 'R' || $mrf->Type == 'R_HrManual') {
+                    return 'Replacement MRF';
                 }
             })
             ->editColumn('DepartmentId', function ($mrf) {
                 return getDepartmentCode($mrf->DepartmentId);
             })
             ->editColumn('DesigId', function ($mrf) {
-                return getDesignationCode($mrf->DesigId);
+                if ($mrf->DesigId == '' or $mrf->DesigId == null) {
+                    return '';
+                } else {
+                    return getDesignationCode($mrf->DesigId);
+                }
             })
             ->editColumn('LocationIds', function ($mrf) {
                 $location = unserialize($mrf->LocationIds);
@@ -168,7 +177,7 @@ class AdminController extends Controller
     {
         $mrf = DB::table('manpowerrequisition as mr')
             ->where('Status', 'Approved')
-            ->where('Allocated','!=',null)
+            ->where('Allocated', '!=', null)
             ->orderBy('CreatedTime', 'DESC')
             ->select(['mr.*']);
         return datatables()->of($mrf)
@@ -266,9 +275,13 @@ class AdminController extends Controller
             })
             ->editColumn('Type', function ($mrf) {
                 if ($mrf->Type == 'N' || $mrf->Type == 'N_HrManual') {
-                    return 'New';
-                } else {
-                    return 'Replacement';
+                    return 'New MRF';
+                } elseif ($mrf->Type == 'SIP' || $mrf->Type == 'SIP_HrManual') {
+                    return 'SIP/Internship MRF';
+                } elseif ($mrf->Type == 'Campus' || $mrf->Type == 'Campus_HrManual') {
+                    return 'Campus MRF';
+                } elseif ($mrf->Type == 'R' || $mrf->Type == 'R_HrManual') {
+                    return 'Replacement MRF';
                 }
             })
             ->editColumn('DepartmentId', function ($mrf) {
@@ -277,7 +290,7 @@ class AdminController extends Controller
             ->editColumn('DesigId', function ($mrf) {
                 return getDesignationCode($mrf->DesigId);
             })
-            ->editColumn('LocationIds', function ($mrf) {
+            /* ->editColumn('LocationIds', function ($mrf) {
                 $location = unserialize($mrf->LocationIds);
                 $loc = '';
                 foreach ($location as $key => $value) {
@@ -287,7 +300,7 @@ class AdminController extends Controller
                     $loc . '<br>';
                 }
                 return $loc;
-            })
+            }) */
             ->addColumn('MRFDate', function ($mrf) {
                 return date('d-m-Y', strtotime($mrf->CreatedTime));
             })
@@ -302,10 +315,11 @@ class AdminController extends Controller
                 return getFullName($mrf->CreatedBy);
             })
 
-
-
             ->addColumn('Allocated', function ($mrf) {
                 return getFullName($mrf->Allocated);
+            })
+            ->addColumn('Position_Filled', function ($mrf) {
+                return '1';
             })
             ->addColumn('Details', function ($mrf) {
                 return '<i class="fa fa-eye text-info" style="font-size: 16px;cursor: pointer;" id="viewMRF" data-id=' . $mrf->MRFId . '></i>';
@@ -330,11 +344,18 @@ class AdminController extends Controller
             LogActivity::addToLog('MRF ' . $jobCode . ' is ' . $request->va, 'Update');
             $CreatedBy = $MRF->CreatedBy;
 
-            if ($MRF->Type == 'N') {
+            if ($MRF->Type == 'N' || $MRF->Type == 'N_HrManual') {
                 $type = 'New';
-            } else {
+            } elseif ($MRF->Type == 'SIP' || $MRF->Type == 'SIP_HrManual') {
+                $type = 'SIP/Internship';
+            } elseif ($MRF->Type == 'Campus' || $MRF->Type == 'Campus_HrManual') {
+                $type = 'Campus';
+            } elseif ($MRF->Type == 'R' || $MRF->Type == 'R_HrManual') {
                 $type = 'Replacement';
             }
+
+
+
             $details = [
                 "subject" => 'MRF (' . $type . ') - ' . $jobCode . ', Status - ' . $request->va,
                 "Status" => $request->va,
@@ -361,7 +382,7 @@ class AdminController extends Controller
         } else {
             $jobCode = $MRF->JobCode;
             LogActivity::addToLog('MRF ' . $jobCode . ' is allocated to ' . $request->va, 'Update');
-            UserNotification::notifyUser($request->va,'MRF Allocated','MRF '.$jobCode.' is Allocated to You.');
+            UserNotification::notifyUser($request->va, 'MRF Allocated',  $jobCode);
             return response()->json(['status' => 200, 'msg' => 'Task has been allocated to recruiter successfully.']);
         }
     }
@@ -373,15 +394,34 @@ class AdminController extends Controller
     function getTaskList(Request $request)
     {
         $sql = DB::table('manpowerrequisition')
-            ->where('Status', 'Approved')
-            ->where('Status', '!=', 'Close')
             ->where('Allocated', $request->Uid)
+            ->where('Status','!=','New')
             ->get();
 
         return datatables()->of($sql)
             ->addIndexColumn()
             ->addColumn('actions', function ($sql) {
                 return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $sql->MRFId . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>';
+            })
+            ->addColumn('status', function ($sql) {
+                if ($sql->Status != 'Close') {
+                    return 'Active';
+                } else {
+                    return 'Closed';
+                }
+            })
+            ->addColumn('days_to_fill', function ($sql) {
+                if ($sql->Status == 'Close') {
+                    $fdate = $sql->AllocatedDt;
+                    $tdate = $sql->CloseDt;
+                    $datetime1 = new DateTime($fdate);
+                    $datetime2 = new DateTime($tdate);
+                    $interval = $datetime1->diff($datetime2);
+                    $days = $interval->format('%a');
+                    return $days;
+                } else {
+                    return '';
+                }
             })
             ->rawColumns(['actions'])
             ->make(true);

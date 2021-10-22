@@ -15,14 +15,14 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-striped table-hover table-condensed" id="designationtable" style="width: 100%">
-                        <thead>
+                        <thead class="bg-primary text-light text-center">
                             <tr>
-                                <th class="th-sm">S.No</th>
-                                <th>Designation Name</th>
-                                <th>Designation Code</th>
-                                <th>Department</th>
-                                <th>Company</th>
-                                <th>Status</th>
+                                <td class="td-sm">S.No</td>
+                                <td>Designation Name</td>
+                                <td>Designation Code</td>
+                                <td>Department</td>
+                                <td>Company</td>
+                                <td>Status</td>
                             </tr>
                         </thead>
                         <tbody>

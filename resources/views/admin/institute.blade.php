@@ -16,18 +16,18 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-striped table-hover table-condensed" id="EducationTable" style="width: 100%">
-                        <thead>
+                        <thead class="bg-primary text-light text-center">
                             <tr>
-                                <th></th>
-                                <th class="th-sm">S.No</th>
-                                <th>Education Institute</th>
-                                <th>Code</th>
-                                <th>Category</th>
-                                <th>Type</th>
-                                <th>State</th>
-                                <th>District</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                                <td></td>
+                                <td class="td-sm">S.No</td>
+                                <td>Education Institute</td>
+                                <td>Code</td>
+                                <td>Category</td>
+                                <td>Type</td>
+                                <td>State</td>
+                                <td>District</td>
+                                <td>Status</td>
+                                <td>Action</td>
                             </tr>
                         </thead>
                         <tbody>

@@ -18,7 +18,7 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-striped table-hover display compact" id="myteamtable" style="width: 100%">
-                    <thead>
+                    <thead class="text-light bg-primary">
                         <tr>
                             <th class="th-sm">S.No</th>
                             <th class="th-sm">EmpCode</th>
@@ -36,15 +36,15 @@
                     <tbody>
                     </tbody>
                 </table>
-            </div>
+            </div> 
         </div>
     </div>
 
     <div class="card d-none" id="teamdiv">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-striped table-hover display compact" id="myteamtable1" style="width: 100%">
-                    <thead>
+                <table class="table table-striped table-hover display compact table-bordered text-center" id="myteamtable1" style="width: 100%">
+                    <thead class="text-center">
                         <tr>
                             <th class="th-sm">S.No</th>
                             <th class="th-sm">EmpCode</th>
@@ -74,6 +74,7 @@
 <script>
     $('#myteamtable').DataTable({
         processing: true,
+        ordering:false,
         info: true,
         ajax: "{{ route('getAllMyTeamMember') }}",
         columns: [{

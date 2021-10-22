@@ -17,13 +17,13 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-striped table-hover table-condensed" id="EduSpeTable" style="width: 100%">
-                        <thead>
+                        <thead class="bg-primary text-light text-center">
                             <tr>
-                                <th class="th-sm">S.No</th>
-                                <th>Education</th>
-                                <th>Specialization</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                                <td class="td-sm">S.No</td>
+                                <td>Education</td>
+                                <td>Specialization</td>
+                                <td>Status</td>
+                                <td>Action</td>
                             </tr>
                         </thead>
                         <tbody>

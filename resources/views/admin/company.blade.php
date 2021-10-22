@@ -19,15 +19,15 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-striped table-hover table-condensed" id="companytable" style="width: 100%">
-                        <thead>
+                        <thead class="bg-primary text-light text-center">
                             <tr>
-                                <th class="th-sm">S.No</th>
-                                <th>Company Name</th>
-                                <th>Company Code</th>
-                                <th>Address</th>
-                                <th>Phone</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                                <td class="td-sm">S.No</td>
+                                <td>Company Name</td>
+                                <td>Company Code</td>
+                                <td>Address</td>
+                                <td>Phone</td>
+                                <td>Status</td>
+                                <td>Action</td>
                             </tr>
                         </thead>
                         <tbody>

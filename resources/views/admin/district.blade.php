@@ -16,13 +16,13 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-striped table-hover table-condensed" id="DistrictTable" style="width: 100%">
-                        <thead>
+                        <thead class="bg-primary text-light text-center">
                             <tr>
-                                <th class="th-sm">S.No</th>
-                                <th>District Name</th>
-                                <th>State</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                                <td class="td-sm">S.No</td>
+                                <td>District Name</td>
+                                <td>State</td>
+                                <td>Status</td>
+                                <td>Action</td>
                             </tr>
                         </thead>
                         <tbody>

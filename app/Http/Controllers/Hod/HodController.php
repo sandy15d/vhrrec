@@ -15,7 +15,17 @@ class HodController extends Controller
 {
     function index()
     {
-        return view('hod.index');
+        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
+        $department_list = DB::table("master_department")->where('DeptStatus', 'A')->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
+        $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
+        $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+        $designation_list = DB::table("master_designation")->where('DesigName', '!=', '')->orderBy('DesigName', 'asc')->pluck("DesigName", "DesigId");
+        $employee_list = DB::table('master_employee')->orderBy('FullName', 'ASC')
+            ->where('EmpStatus', 'A')
+            ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
+            ->pluck("FullName", "EmployeeID");
+        return view('hod.index', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list'));
+       
     }
 
 

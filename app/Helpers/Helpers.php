@@ -22,106 +22,121 @@ if (!function_exists('getFullName')) {
 
 	function getCompanyCode($companyId)
 	{
-		$CompanyCode = Db::table('master_company')->select('CompanyCode')->where('CompanyId',$companyId)->first();
+		$CompanyCode = Db::table('master_company')->select('CompanyCode')->where('CompanyId', $companyId)->first();
 		return $CompanyCode->CompanyCode;
 	}
 
-	function getDepartmentCode($DeptId){
-		$DepartmentCode = Db::table('master_department')->select('DepartmentCode')->where('DepartmentId',$DeptId)->first();
+	function getDepartmentCode($DeptId)
+	{
+		$DepartmentCode = Db::table('master_department')->select('DepartmentCode')->where('DepartmentId', $DeptId)->first();
 		return $DepartmentCode->DepartmentCode;
 	}
-	function getDepartment($DeptId){
-		$Department = Db::table('master_department')->select('DepartmentName')->where('DepartmentId',$DeptId)->first();
+	function getDepartment($DeptId)
+	{
+		$Department = Db::table('master_department')->select('DepartmentName')->where('DepartmentId', $DeptId)->first();
 		return $Department->DepartmentName;
 	}
 
-	function getDesignationCode($DesigId){
-		$DesigCode = Db::table('master_designation')->select('DesigCode')->where('DesigId',$DesigId)->first();
+	function getDesignationCode($DesigId)
+	{
+		$DesigCode = Db::table('master_designation')->select('DesigCode')->where('DesigId', $DesigId)->first();
 		return $DesigCode->DesigCode;
 	}
-	function getDesignation($DesigId){
-		$DesigName = Db::table('master_designation')->select('DesigName')->where('DesigId',$DesigId)->first();
+	function getDesignation($DesigId)
+	{
+		$DesigName = Db::table('master_designation')->select('DesigName')->where('DesigId', $DesigId)->first();
 		return $DesigName->DesigName;
 	}
 
-	function getGradeValue($GradeId){
-		$GradeValue = Db::table('master_grade')->select('GradeValue')->where('GradeId',$GradeId)->first();
+	function getGradeValue($GradeId)
+	{
+		$GradeValue = Db::table('master_grade')->select('GradeValue')->where('GradeId', $GradeId)->first();
 		return $GradeValue->GradeValue;
 	}
 
-	function getHQ($HqId){
-		$HqName = Db::table('master_headquater')->select('HqName')->where('HqId',$HqId)->first();
+	function getHQ($HqId)
+	{
+		$HqName = Db::table('master_headquater')->select('HqName')->where('HqId', $HqId)->first();
 		return $HqName->HqName;
 	}
 
 
-	function getStateCode($StateId){
-		$StateCode = Db::table('states')->select('StateCode')->where('StateId',$StateId)->first();
+	function getStateCode($StateId)
+	{
+		$StateCode = Db::table('states')->select('StateCode')->where('StateId', $StateId)->first();
 		return $StateCode->StateCode;
 	}
-	function getStateName($StateId){
-		$StateName = Db::table('states')->select('StateName')->where('StateId',$StateId)->first();
+	function getStateName($StateId)
+	{
+		$StateName = Db::table('states')->select('StateName')->where('StateId', $StateId)->first();
 		return $StateName->StateName;
 	}
 
-	function getDistrictName($DistrictId){
-		$DistrictName = Db::table('master_district')->select('DistrictName')->where('DistrictId',$DistrictId)->first();
-		if(is_null($DistrictName)){
+	function getDistrictName($DistrictId)
+	{
+		$DistrictName = Db::table('master_district')->select('DistrictName')->where('DistrictId', $DistrictId)->first();
+		if (is_null($DistrictName)) {
 			return '';
-		}else{
+		} else {
 			return $DistrictName->DistrictName;
 		}
 	}
 
-	function convertData($body_content) {
-	
+	function convertData($body_content)
+	{
+
 		$body_content = stripslashes($body_content);
-	   //$body_content = htmlspecialchars($body_content);
+		//$body_content = htmlspecialchars($body_content);
 		$body_content = addslashes($body_content);
 		return $body_content;
-	 } 
+	}
 
-	 function ActiveMRFCount($Uid){
-		 $sql =DB::table('manpowerrequisition')
-		 ->where('Status','Approved')
-		 ->where('Status','!=','Close')
-		 ->where('Allocated',$Uid)
-		 ->get();
+	function ActiveMRFCount($Uid)
+	{
+		$sql = DB::table('manpowerrequisition')
+			->where('Status', 'Approved')
+			->where('Status', '!=', 'Close')
+			->where('Allocated', $Uid)
+			->get();
 		return $sql->count();
-	 }
+	}
 
-	 function CheckReplacementMRF($empid){
-		$sql = Db::table('manpowerrequisition')->select('MRFId')->where('RepEmployeeID',$empid)->first();
-		
-		if(is_null($sql)){
+	function CheckReplacementMRF($empid)
+	{
+		$sql = Db::table('manpowerrequisition')->select('MRFId')->where('RepEmployeeID', $empid)->first();
+
+		if (is_null($sql)) {
 			return '0';
-		}else{
+		} else {
 			return '1';
 		}
-		
-	 }
+	}
 
-	 function CheckJobPostCreated($mrfid){
-		$sql = Db::table('jobpost')->select('JPId')->where('MRFId',$mrfid)->first();
-		
-		if(is_null($sql)){
+	function CheckJobPostCreated($mrfid)
+	{
+		$sql = Db::table('jobpost')->select('JPId')->where('MRFId', $mrfid)->first();
+
+		if (is_null($sql)) {
 			return '0';
-		}else{
+		} else {
 			return '1';
 		}
-		
-	 }
+	}
 
-	 function getEducationById($eid){
-		 $EducationCode = DB::table('master_education')->select('EducationCode')->where('EducationId',$eid)->first();
-		 return $EducationCode->EducationCode;
-	 }
+	function getEducationById($eid)
+	{
+		$EducationCode = DB::table('master_education')->select('EducationCode')->where('EducationId', $eid)->first();
+		return $EducationCode->EducationCode;
+	}
 
-	 function getSpecializationbyId($sid){
-		$Specialization = DB::table('master_specialization')->select('Specialization')->where('SpId',$sid)->first();
+	function getSpecializationbyId($sid)
+	{
+		$Specialization = DB::table('master_specialization')->select('Specialization')->where('SpId', $sid)->first();
 		return $Specialization->Specialization;
-	 }
-
-
-
+	}
+	function getCollegeById($id)
+	{
+		$institute = DB::table('master_institute')->select('InstituteName')->where('InstituteId', $id)->first();
+		return $institute->InstituteName;
+	}
 }

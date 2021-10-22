@@ -33,7 +33,20 @@ class MrfAllocatedController extends Controller
             ->where('EmpStatus', 'A')
             ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
             ->pluck("FullName", "EmployeeID");
-        return view('recruiter.mrf_allocated', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list'));
+        $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
+
+        $CloseActive = DB::table('manpowerrequisition')
+            ->where('Allocated', Auth::user()->id)
+            ->where('Status', 'Close')
+            ->get();
+        $CloseMRF = $CloseActive->count();
+
+        $OpenMRFSQL = DB::table('manpowerrequisition')
+            ->where('Allocated', Auth::user()->id)
+            ->where('Status', '!=', 'Close')
+            ->get();
+        $OpenMRF = $OpenMRFSQL->count();
+        return view('recruiter.mrf_allocated', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list','months','CloseMRF','OpenMRF'));
     }
 
     function getAllAllocatedMRF(Request $request)
@@ -78,9 +91,13 @@ class MrfAllocatedController extends Controller
             })
             ->editColumn('Type', function ($mrf) {
                 if ($mrf->Type == 'N' || $mrf->Type == 'N_HrManual') {
-                    return 'New';
-                } else {
-                    return 'Replacement';
+                    return 'New MRF';
+                } elseif ($mrf->Type == 'SIP' || $mrf->Type == 'SIP_HrManual') {
+                    return 'SIP/Internship MRF';
+                } elseif ($mrf->Type == 'Campus' || $mrf->Type == 'Campus_HrManual') {
+                    return 'Campus MRF';
+                } elseif ($mrf->Type == 'R' || $mrf->Type == 'R_HrManual') {
+                    return 'Replacement MRF';
                 }
             })
             ->editColumn('LocationIds', function ($mrf) {
@@ -109,9 +126,9 @@ class MrfAllocatedController extends Controller
             ->addColumn('JobPost', function ($mrf) {
                 $check = CheckJobPostCreated($mrf->MRFId);
                 if ($check == 1) {
-                    return '<b class="text-success">Created</b>';
+                    return 'Created';
                 } else {
-                    return '<a class="btn btn-warning btn-xs"  href="javascript:void(0);" data-bs-toggle="modal"
+                    return '<a  href="javascript:void(0);" data-bs-toggle="modal"
                     data-bs-target="#createpostmodal" onclick="getDetailForJobPost(' . $mrf->MRFId . ')"><i class="fa fa-plus-square-o"></i>Create</a>';
                 }
             })
@@ -206,7 +223,7 @@ class MrfAllocatedController extends Controller
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
             LogActivity::addToLog('New JobPost ' . $JobCode . ' is created by ' . getFullName(Auth::user()->id), 'Create');
-            UserNotification::notifyUser(1,'Job Post Create', $JobCode);
+            UserNotification::notifyUser(1, 'Job Post Create', $JobCode);
             return response()->json(['status' => 200, 'msg' => 'New JobPost has been successfully created.']);
         }
     }

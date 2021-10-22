@@ -15,12 +15,12 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-striped table-hover table-condensed" id="headquartertable" style="width: 100%">
-                        <thead>
+                        <thead class="bg-primary text-light text-center">
                             <tr>
-                                <th class="th-sm">S.No</th>
-                                <th>Headquarter</th>
-                                <th>State</th>
-                                <th>Company</th>
+                                <td class="td-sm">S.No</td>
+                                <td>Headquarter</td>
+                                <td>State</td>
+                                <td>Company</td>
                             </tr>
                         </thead>
                         <tbody>

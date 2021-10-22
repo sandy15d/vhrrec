@@ -9,10 +9,9 @@ $Notification = DB::table('notification')
     ->get();
 $NotificationCount = $Notification->count();
 
-
 $CompanyQry = DB::table('master_company')
-                ->where('CompanyId',session('Set_Company'))
-                ->get();
+    ->where('CompanyId', session('Set_Company'))
+    ->get();
 @endphp
 <!doctype html>
 <html lang="en" class="{{ session('ThemeStyle') }} {{ session('SidebarColor') }}">
@@ -46,12 +45,13 @@ $CompanyQry = DB::table('master_company')
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/header-colors.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/sweetalert2.min.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/toastr.min.css" />
-    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
+        rel="stylesheet">
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTablesButtons.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
- 
+
 
     {{-- <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script> --}}
 
@@ -78,10 +78,11 @@ $CompanyQry = DB::table('master_company')
             background: linear-gradient(to right, #00416A, #E4E5E6);
 
         }
+
         .btn--green {
             color: #fff;
             background: #d7e428;
-            background: -webkit-linear-gradient(to right, #56ab2f , #a8e063);
+            background: -webkit-linear-gradient(to right, #56ab2f, #a8e063);
             background: linear-gradient(to right, #56ab2f, #a8e063);
 
         }
@@ -110,25 +111,22 @@ $CompanyQry = DB::table('master_company')
 
         .btn-outline-secondary {
             position: relative;
-
             display: inline-block;
-            box-sizing: border-box;
+          /*   box-sizing: border-box; */
             margin-right: 0.333em;
             padding: 2px 6.2px;
-
             border-radius: 0px;
             cursor: pointer;
             font-size: 14px;
-
             white-space: nowrap;
             overflow: hidden;
-            background-color: #fff;
-
+           /*  background-color: #fff; */
             outline: none;
             border-top: 0;
             border-left: 0;
             border-right: 0;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 0;
+           /*  border-bottom: 1px solid #ddd; */
         }
 
         .overlay {
@@ -199,7 +197,8 @@ $CompanyQry = DB::table('master_company')
                             <li> <a href="/admin/resumesource"><i class="bx bx-right-arrow-alt"></i>Resume Source</a>
                             </li>
                             <li> <a href="/admin/employee"><i class="bx bx-right-arrow-alt"></i>Employee</a></li>
-                            <li> <a href="/admin/communication_control"><i class="bx bx-right-arrow-alt"></i>Communication Control</a></li>
+                            <li> <a href="/admin/communication_control"><i
+                                        class="bx bx-right-arrow-alt"></i>Communication Control</a></li>
                         </ul>
                     </li>
                     <li>
@@ -209,7 +208,9 @@ $CompanyQry = DB::table('master_company')
                             <div class="menu-title">MRF</div>
                         </a>
                         <ul>
-                            <li> <a href="/admin/mrf"><i class="bx bx-right-arrow-alt"></i>MRF Details</a></li>
+                            <li> <a href="/admin/mrf"><i class="bx bx-right-arrow-alt"></i>New MRF</a></li>
+                            <li> <a href="/admin/active_mrf"><i class="bx bx-right-arrow-alt"></i>Active MRF</a></li>
+                            <li> <a href="/admin/closedmrf"><i class="bx bx-right-arrow-alt"></i>Closed MRF</a></li>
                             <li> <a href="/admin/mrfentry"><i class="bx bx-right-arrow-alt"></i>Manual Entry</a></li>
 
                         </ul>
@@ -222,7 +223,8 @@ $CompanyQry = DB::table('master_company')
                         </a>
                         <ul>
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job & Response</a></li>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job Application (Resume Databank)</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job Application (Resume Databank)</a>
+                            </li>
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job Application Form (Manual
                                     Entry)</a></li>
                         </ul>
@@ -246,7 +248,7 @@ $CompanyQry = DB::table('master_company')
                             <div class="menu-title">Recruitment Tracker</div>
                         </a>
                         <ul>
-                          
+
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Screening Tracker</a></li>
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Interview Tracker</a></li>
                         </ul>
@@ -443,16 +445,16 @@ $CompanyQry = DB::table('master_company')
             <div class="topbar d-flex align-items-center">
                 <nav class="navbar navbar-expand">
                     <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
-                      
+
                     </div>
                     <div class="search-bar flex-grow-1">
-						<div class="position-relative search-bar-box">
-                            <h4 class="logo-text">{{$CompanyQry[0]->CompanyName}}</h4>
-						</div>
-					</div>
+                        <div class="position-relative search-bar-box">
+                            <h4 class="logo-text">{{ $CompanyQry[0]->CompanyName }}</h4>
+                        </div>
+                    </div>
                     <div class="top-menu ms-auto">
                         <ul class="navbar-nav align-items-center">
-                          
+
                             <li class="nav-item dropdown-large">
                                 <a id="sidebarsetting" class="nav-link dropdown-toggle dropdown-toggle-nocaret"
                                     href="#" role="button"> <i class='bx bx-shape-polygon'></i>
@@ -477,12 +479,20 @@ $CompanyQry = DB::table('master_company')
                                         </div>
                                     </a>
                                     <div class="header-notifications-list">
+
                                         @foreach ($Notification as $item)
                                             <a class="dropdown-item" href="javascript:;"
                                                 onclick="readNotification({{ $item->id }})">
                                                 <div class="d-flex align-items-center">
-                                                    <div class="notify bg-light-primary text-primary">
-                                                        <i class="bx bx-group"></i>
+                                                    <div class="notify bg-light-primary">
+                                                        @if ($item->title == 'MRF Allocated')
+                                                            <i class="bx bx-file  text-primary"></i>
+                                                        @elseif($item->title =='Offer Letter')
+                                                            <i class="bx bx-user text-danger"></i>
+                                                        @elseif($item->title =='Job Post Create')
+                                                            <i class="bx bx-send text-success"></i>
+                                                        @endif
+
                                                     </div>
                                                     <div class="flex-grow-1">
                                                         <h6 class="msg-name">{{ $item->title }}
@@ -497,21 +507,15 @@ $CompanyQry = DB::table('master_company')
                                             </a>
                                         @endforeach
                                     </div>
-                                    <a href="javascript:;">
-                                        <div class="text-center msg-footer">View All Notifications</div>
-                                    </a>
+
                                 </div>
                             </li>
                             <li class="nav-item dropdown dropdown-large d-none">
-
                                 <div class="dropdown-menu dropdown-menu-end">
-
                                     <div class="header-message-list">
                                     </div>
-
                                 </div>
                             </li>
-
                         </ul>
                     </div>
                     <div class="user-box dropdown">
@@ -521,15 +525,10 @@ $CompanyQry = DB::table('master_company')
                                 alt="user avatar">
                             <div class="user-info ps-3">
                                 <p class="user-name mb-0"> {{ Auth::user()->name }}</p>
-
                             </div>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="javascript:;"><i
-                                        class="bx bx-user"></i><span>Profile</span></a>
-                            </li>
-
-
+                            <li><a class="dropdown-item" href="javascript:;"><i class="bx bx-user"></i><span>Profile</span></a> </li>
                             <li>
                                 <div class="dropdown-divider mb-0"></div>
                             </li>
@@ -543,7 +542,7 @@ $CompanyQry = DB::table('master_company')
                                     class="d-none">
                                     @csrf
                                 </form>
-                                
+
                             </li>
                         </ul>
                     </div>
@@ -552,9 +551,8 @@ $CompanyQry = DB::table('master_company')
         </header>
 
         <div class="page-wrapper">
+
             @yield('PageContent')
-
-
             <div class="modal" id="loader" data-bs-backdrop="static" data-bs-keyboard="false">
                 <div class="modal-dialog modal-dialog-centered" style="width:220px;">
                     <div class="modal-content" style="border-radius:10px;">
@@ -565,7 +563,6 @@ $CompanyQry = DB::table('master_company')
                     </div>
                 </div>
             </div>
-
         </div>
 
 
@@ -574,7 +571,7 @@ $CompanyQry = DB::table('master_company')
         <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
 
         <footer class="page-footer">
-            <p class="mb-0">Developed and Managed By: VNR Seeds Pvt. Ltd.</p>
+            <p class="mb-0">Developed and Managed By: IT Department,VNR Seeds Pvt. Ltd.</p>
         </footer>
     </div>
 
@@ -663,6 +660,7 @@ $CompanyQry = DB::table('master_company')
     @yield('scriptsection')
     <script>
         $(document).ready(function() {
+
             $('.multiple-select').select2({
                 theme: 'bootstrap4',
                 width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' :

@@ -19,7 +19,7 @@
 
                     </div>
                     <hr>
-                    <form action="{{ route('addSipMrf') }}" method="POST" id="addSipMrfForm">
+                    <form action="{{ route('addCampusMrf') }}" method="POST" id="addCampusForm">
                         @csrf
                         <div class="modal-body">
                             <table class="table borderless">
@@ -539,12 +539,13 @@
 
 
         //====================================== Add New MRF to the Database==========================//
-        $('#addSipMrfForm').on('submit', function(e) {
+        $('#addCampusForm').on('submit', function(e) {
             e.preventDefault();
             var form = this;
             for (instance in CKEDITOR.instances) {
                 CKEDITOR.instances[instance].updateElement();
             }
+            $('#Company').removeAttr('disabled');
             $.ajax({
                 url: $(form).attr('action'),
                 method: $(form).attr('method'),
@@ -559,6 +560,7 @@
 
                 success: function(data) {
                     if (data.status == 400) {
+                        $('#Company').attr('disabled',true);
                         $("#loader").modal('hide');
                         $.each(data.error, function(prefix, val) {
                             $(form).find('span.' + prefix + '_error').text(val[0]);

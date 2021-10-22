@@ -18,14 +18,14 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover table-condensed" id="Countrytable" style="width: 100%">
-                        <thead>
+                    <table class="table table-striped table-hover table-condensed text-center" id="Countrytable" style="width: 100%">
+                        <thead class="bg-primary text-light text-center">
                             <tr>
-                                <th class="th-sm">S.No</th>
-                                <th>Country Name</th>
-                                <th>Country Code</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                                <td class="td-sm">S.No</td>
+                                <td>Country Name</td>
+                                <td>Country Code</td>
+                                <td>Status</td>
+                                <td>Action</td>
                             </tr>
                         </thead>
                         <tbody>

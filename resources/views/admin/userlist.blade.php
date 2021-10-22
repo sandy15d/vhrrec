@@ -16,7 +16,7 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-striped table-hover table-condensed" id="UserTable" style="width: 100%">
-                        <thead>
+                        <thead class="bg-primary text-light">
                             <tr>
                                 <th class="th-sm">S.No</th>
                                 <th>Name</th>
@@ -26,7 +26,6 @@
                                 <th>Email</th>
                                 <th>Status</th>
                                 <th>Action</th>
-                              
                             </tr>
                         </thead>
                         <tbody>
@@ -243,6 +242,8 @@
         $('#UserTable').DataTable({
             processing: true,
             info: true,
+            searching:false,
+            
             ajax: "{{ route('getAllUser') }}",
             columns: [{
                     data: 'DT_RowIndex',

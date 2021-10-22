@@ -8,8 +8,8 @@ use function App\Helpers\getStateName;
 $sql = DB::table('jobpost')
     ->Join('manpowerrequisition', 'manpowerrequisition.MRFId', '=', 'jobpost.MRFId')
     ->where('manpowerrequisition.CompanyId', 1)
-    ->orWhere('jobpost.Status', 'Open')
-    ->orWhere('jobpost.PostingView', 'Show')
+    ->Where('jobpost.Status', 'Open')
+    ->Where('jobpost.PostingView', 'Show')
     ->orderBy('JPId', 'desc')
     ->get();
 

@@ -1,25 +1,6 @@
 @extends('layouts.master')
 @section('title', 'MRF Allocated')
 @section('PageContent')
-    @php
-    $company_list = DB::table('master_company')
-        ->where('Status', 'A')
-        ->orderBy('CompanyCode', 'desc')
-        ->pluck('CompanyCode', 'CompanyId');
-    $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
-
-    $CloseActive = DB::table('manpowerrequisition')
-        ->where('Allocated', Auth::user()->id)
-        ->where('Status', 'Close')
-        ->get();
-    $CloseMRF = $CloseActive->count();
-
-    $OpenMRFSQL = DB::table('manpowerrequisition')
-        ->where('Allocated', Auth::user()->id)
-        ->where('Status', '!=', 'Close')
-        ->get();
-    $OpenMRF = $OpenMRFSQL->count();
-    @endphp
     <style>
         .table>:not(caption)>*>* {
             padding: 2px 1px;
@@ -46,7 +27,7 @@
                     </div>
 
                     <div class="col-2">
-                        <select name="Company" id="Company" class="form-select form-select-sm"
+                        <select name="Fill_Company" id="Fill_Company" class="form-select form-select-sm"
                             onchange="GetAllocatedMrf(); GetDepartment();">
                             <option value="">Select Company</option>
                             @foreach ($company_list as $key => $value)
@@ -56,7 +37,7 @@
                     </div>
                     <div class="col-2">
 
-                        <select name="Department" id="Department" class="form-select form-select-sm"
+                        <select name="Fill_Department" id="Fill_Department" class="form-select form-select-sm"
                             onchange="GetAllocatedMrf();">
                             <option value="">Select Department</option>
 
@@ -85,9 +66,9 @@
                 </div>
                 <hr />
                 <div>
-                    <table class="table  table-hover table-striped table-condensed align-middle text-center" id="MRFTable"
-                        style="width: 100%">
-                        <thead class="text-center">
+                    <table class="table  table-hover table-striped table-condensed align-middle text-center table-bordered"
+                        id="MRFTable" style="width: 100%">
+                        <thead class="text-center bg-primary text-light">
                             <tr class="text-center">
                                 <td></td>
                                 <td class="th-sm">S.No</td>
@@ -156,7 +137,7 @@
                                             </tbody>
                                         </table>
                                         <button type="button" name="add" id="addKP"
-                                            class="btn btn-warning btn-xs mb-2 mt-2"><i class="bx bx-plus"></i></button>
+                                            class="btn btn-warning btn-sm mb-2 mt-2"><i class="bx bx-plus"></i></button>
                                     </td>
                                 </tr>
 
@@ -171,64 +152,69 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="editMRFModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
         data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-info bg-gradient">
-                    <h5 class="modal-title text-white">View MRF Details</h5>
+                    <h5 class="modal-title text-white">MRF Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form method="POST" id="editMRFAdminForm">
+                <form action="{{ route('updateMRF') }}" method="POST" id="update_mrf_form">
                     @csrf
                     <div class="modal-body">
                         <table class="table borderless">
                             <tbody>
                                 <tr>
                                     <input type="hidden" name="MRFId" id="MRFId">
+                                    <input type="hidden" name="MRF_Type" id="MRF_Type">
                                     <th style="width:250px;">Reason for Creating New Position<font class="text-danger">*
                                         </font>
                                     </th>
                                     <td>
-                                        <textarea class="form-control" rows="1" name="editReason" id="editReason"
-                                            tabindex="1" autofocus></textarea>
-                                        <span class="text-danger error-text editReason_error"></span>
+                                        <textarea class="form-control" rows="1" name="Reason" id="Reason" tabindex="1"
+                                            autofocus></textarea>
+                                        <span class="text-danger error-text Reason_error"></span>
 
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Company<font class="text-danger">*</font>
                                     </th>
-                                    <td><select id="editCompany" name="editCompany"
-                                            class="form-control form-select form-select-sm">
+                                    <td><select id="Company" name="Company" class="form-control form-select form-select-sm">
                                             <option value="" selected disabled>Select Company</option>
                                             @foreach ($company_list as $key => $value)
                                                 <option value="{{ $key }}">{{ $value }}</option>
                                             @endforeach
                                         </select>
-                                        <span class="text-danger error-text editCompany_error"></span>
+                                        <span class="text-danger error-text Company_error"></span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Deartment<font class="text-danger">*</font>
                                     </th>
                                     <td>
-
-                                        <select id="editDepartment" name="editDepartment" id="editDepartment"
+                                        <div class="spinner-border text-primary d-none" role="status" id="DeptLoader"> <span
+                                                class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <select id="Department" name="Department" id="Department"
                                             class="form-control form-select form-select-sm">
                                             <option value="" selected disabled>Select Department</option>
                                             @foreach ($department_list as $key => $value)
                                                 <option value="{{ $key }}">{{ $value }}</option>
                                             @endforeach
                                         </select>
-                                        <span class="text-danger error-text editDepartment_error"></span>
+                                        <span class="text-danger error-text Department_error"></span>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="deisgnation_tr" class="d-none">
                                     <th>Designation<font class="text-danger">*</font>
                                     </th>
                                     <td>
-
+                                        <div class="spinner-border text-primary d-none" role="status" id="DesigLoader">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
                                         <select id="editDesignation" name="editDesignation"
                                             class="form-control form-select form-select-sm">
                                             <option value="" selected disabled>Select Designation</option>
@@ -236,24 +222,10 @@
                                                 <option value="{{ $key }}">{{ $value }}</option>
                                             @endforeach
                                         </select>
-                                        <span class="text-danger error-text editDesignation_error"></span>
+                                        <span class="text-danger error-text Designation_error"></span>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <th>Reporting Manager<font class="text-danger">*</font>
-                                    </th>
-                                    <td>
 
-                                        <select id="editReportingManager" name="editReportingManager"
-                                            class="form-control form-select form-select-sm">
-                                            <option value="" selected disabled>Select Reporting Manager</option>
-                                            @foreach ($employee_list as $key => $value)
-                                                <option value="{{ $key }}">{{ $value }}</option>
-                                            @endforeach
-                                        </select>
-                                        <span class="text-danger error-text editReportingManager_error"></span>
-                                    </td>
-                                </tr>
                                 <tr>
                                     <th>Location & Man Power <font class="text-danger">*</font>
                                     </th>
@@ -264,8 +236,8 @@
                                         </table>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <th>Expected CTC (in Lacs) <font class="text-danger">*</font>
+                                <tr id="ctc_tr">
+                                    <th>Desired CTC (in Rs.) <font class="text-danger">*</font>
                                     </th>
                                     <td>
                                         <table class="table borderless" style="margin-bottom: 0px;">
@@ -278,20 +250,59 @@
                                         </table>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <th>Work Experience <font class="text-danger">*</font>
+                                <tr id="stipend_tr">
+                                    <th>Desired Stipend (in Rs. Per Month) <font class="text-danger">*</font>
                                     </th>
                                     <td>
-                                        <input type="text" name="WorkExp" id="WorkExp" class="form-control form-control-sm">
+                                        <input type="text" name="Stipend" id="Stipend" class="form-control form-control-sm">
                                     </td>
                                 </tr>
-                                <tr>
-                                    <th>Any Other Job-related information</th>
+                                <tr id="other_benifit_tr">
+                                    <th>Other Benefits</th>
                                     <td>
-                                        <textarea name="JobDescription" id="JobDescription"
-                                            class="form-control"></textarea>
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input " type="checkbox"
+                                                                id="two_wheeler_check">
+                                                            <label class="form-check-label" for="two_wheeler_check">2
+                                                                Wheeler reimbursement Rs.
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline d-none"
+                                                            id="two_wheeler_div">
+                                                            <input type="text" name="two_wheeler" id="two_wheeler"
+                                                                style="border-radius: .2rem; border:1px solid #ced4da; padding:.25rem">
+                                                            per
+                                                            km
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-check form-check-inline" style="width: 200px;">
+                                                            <input class="form-check-input " type="checkbox" id="da_check">
+                                                            <label class="form-check-label" for="da_check">DA
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline d-none" id="da_div">
+                                                            <input type="text" name="da" id="da"
+                                                                style="border-radius: .2rem; border:1px solid #ced4da; padding:.25rem">
+                                                            Rs. per
+                                                            Day
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+
                                     </td>
                                 </tr>
+
+
                                 <tr>
                                     <th>Desired Eductaion
                                     </th>
@@ -316,19 +327,33 @@
                                         </select>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <th>Key Position Criteria</th>
+                                <tr id="work_exp_tr">
+                                    <th>Work Experience <font class="text-danger">*</font>
+                                    </th>
                                     <td>
-
-                                        <table class="table borderless" style="margin-bottom: 0px;">
-                                            <tbody id="KeyPositionCriteria">
-                                            </tbody>
-                                        </table>
-
+                                        <input type="text" name="WorkExp" id="WorkExp" class="form-control form-control-sm">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Remarks for HR</th>
+                                    <th>Job Description</th>
+                                    <td>
+                                        <textarea name="editJobInfo" id="editJobInfo" class="form-control"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Mandatory Requirement</th>
+                                    <td>
+
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tbody id="editMulKP">
+                                            </tbody>
+                                        </table>
+                                        <button type="button" name="editadd" id="editaddKP"
+                                            class="btn btn-warning btn-sm mb-2 mt-2"><i class="bx bx-plus"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Any Other Remark</th>
                                     <td>
                                         <textarea name="Remark" id="Remark" class="form-control"></textarea>
                                     </td>
@@ -336,12 +361,11 @@
                             </tbody>
                         </table>
                     </div>
-
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="UpdateMRF">Save changes</button>
+                    </div>
                 </form>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-
-                </div>
             </div>
         </div>
     </div>
@@ -349,7 +373,7 @@
 @section('scriptsection')
     <script>
         CKEDITOR.replace('JobInfo');
-        CKEDITOR.replace('JobDescription');
+        CKEDITOR.replace('editJobInfo');
 
         var MrfStatus = 'Open';
         $('#MRFTable').DataTable({
@@ -357,8 +381,9 @@
             serverSide: true,
             info: true,
             searching: false,
-            dom: 'Bfrtip',
+            //    dom: 'Bfrtip',
             lengthChange: false,
+            ordering: false,
             buttons: [
 
                 {
@@ -435,8 +460,8 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 data: function(d) {
-                    d.Company = $('#Company').val();
-                    d.Department = $('#Department').val();
+                    d.Company = $('#Fill_Company').val();
+                    d.Department = $('#Fill_Department').val();
                     d.Year = $('#Year').val();
                     d.Month = $('#Month').val();
                     d.MrfStatus = MrfStatus;
@@ -522,7 +547,7 @@
         });
 
         function GetDepartment() {
-            var CompanyId = $('#Company').val();
+            var CompanyId = $('#Fill_Company').val();
             $.ajax({
                 type: "GET",
                 url: "{{ route('getDepartment') }}?CompanyId=" + CompanyId,
@@ -532,15 +557,15 @@
                 success: function(res) {
 
                     if (res) {
-                        $("#Department").empty();
-                        $("#Department").append(
+                        $("#Fill_Department").empty();
+                        $("#Fill_Department").append(
                             '<option value="" selected disabled >Select Department</option>');
                         $.each(res, function(key, value) {
-                            $("#Department").append('<option value="' + value + '">' + key +
+                            $("#Fill_Department").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
                     } else {
-                        $("#Department").empty();
+                        $("#Fill_Department").empty();
                     }
                 }
             });
@@ -559,7 +584,6 @@
             window.location.reload();
         });
 
-        var KPCount = 1;
 
 
         mulKP();
@@ -572,7 +596,7 @@
 
             if (n > 1) {
                 x +=
-                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-xs  removeKP"><i class="bx bx-x"></td></tr>';
+                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-sm  removeKP"><i class="bx bx-x"></td></tr>';
                 $('#MulKP').append(x);
             } else {
                 x +=
@@ -676,23 +700,50 @@
         }
 
 
+
+        $(document).on('click', '.select_all', function() {
+            if ($(this).prop("checked") == true) {
+                $(this).closest("tr").addClass("bg-secondary bg-gradient");
+            } else {
+                $(this).closest("tr").removeClass("bg-secondary bg-gradient");
+            }
+        });
+
+        $("#two_wheeler_check").change(function() {
+            if (!this.checked) {
+                $("#two_wheeler_div").addClass("d-none");
+            } else {
+                $("#two_wheeler_div").removeClass("d-none");
+            }
+        });
+        $("#da_check").change(function() {
+            if (!this.checked) {
+                $("#da_div").addClass("d-none");
+            } else {
+                $("#da_div").removeClass("d-none");
+            }
+        });
         $(document).on('click', '#viewMRF', function() {
             var MRFId = $(this).data('id');
             $.post('<?= route('getMRFDetails') ?>', {
                 MRFId: MRFId
             }, function(data) {
-                //   console.log(data.EducationDetails);
+                if (data.MRFDetails.status != 'New') {
+                    $('#edit_mrf_btn').addClass('d-none');
+                }
                 $('#editMRFModal').find('input[name="MRFId"]').val(data.MRFDetails.MRFId);
-                $('#editReason').val(data.MRFDetails.Reason);
-                $('#editCompany').val(data.MRFDetails.CompanyId);
-                $('#editDepartment').val(data.MRFDetails.DepartmentId);
+                $('#MRF_Type').val(data.MRFDetails.Type);
+                $('#Reason').val(data.MRFDetails.Reason);
+                $('#Company').val(data.MRFDetails.CompanyId);
+                $('#Department').val(data.MRFDetails.DepartmentId);
                 $('#editDesignation').val(data.MRFDetails.DesigId);
-                $('#editReportingManager').val(data.MRFDetails.Reporting);
                 $('#MinCTC').val(data.MRFDetails.MinCTC);
                 $('#MaxCTC').val(data.MRFDetails.MaxCTC);
-                $('#WorkExp').val(data.MRFDetails.WorkExp);
-                CKEDITOR.instances['JobDescription'].setData(data.MRFDetails.Info);
+                $('#MaxCTC').val(data.MRFDetails.MaxCTC);
+                $('#Stipend').val(data.MRFDetails.Stipend);
+                CKEDITOR.instances['editJobInfo'].setData(data.MRFDetails.Info);
                 $('#Remark').val(data.MRFDetails.Remarks);
+                $('#WorkExp').val(data.MRFDetails.WorkExp);
                 var UniversityValue = data.UniversityDetails;
                 var selectedOptions = UniversityValue.toString().split(",");
 
@@ -701,11 +752,11 @@
                 });
                 $('#University').val(selectedOptions).trigger('change');
 
-                KPCount = (data.KPDetails).length;
-                var KPValue = data.KPDetails.toString().split(",");
-                for (i = 1; i <= KPCount; i++) {
-                    KeyPosition(i);
-                    $('#KP' + i).val(KPValue[i - 1]);
+                editKPCount = (data.KPDetails).length;
+                var editKPValue = data.KPDetails.toString().split(",");
+                for (i = 1; i <= editKPCount; i++) {
+                    editmulKP(i);
+                    $('#editKeyPosition' + i).val(editKPValue[i - 1]);
                 }
 
 
@@ -725,12 +776,48 @@
                     $('#Education' + a).val(data.EducationDetails[a - 1].e);
                     $("#Specialization" + a).val(data.EducationDetails[a - 1].s);
                 }
-                $("#editMRFAdminForm :input").prop('disabled', true);
-                CKEDITOR.instances['JobDescription'].setReadOnly(true);
+
+                var form = document.getElementById("update_mrf_form");
+                var elements = form.elements;
+                for (var i = 0, len = elements.length; i < len; ++i) {
+                    elements[i].disabled = true;
+                }
+                CKEDITOR.instances['editJobInfo'].setReadOnly(true);
+
+                if (data.MRFDetails.Type == 'SIP' || data.MRFDetails.Type == 'SIP_Hr_Manual') {
+                    $('#deisgnation_tr').addClass('d-none');
+                    $('#stipend_tr').removeClass('d-none');
+                    $('#ctc_tr').addClass('d-none');
+                    $('#other_benifit_tr').removeClass('d-none');
+                    if (data.MRFDetails.TwoWheeler != null) {
+                        $('#two_wheeler_check').prop('checked', true);
+                        $("#two_wheeler_div").removeClass("d-none");
+                        $('#two_wheeler').val(data.MRFDetails.TwoWheeler);
+                    }
+                    if (data.MRFDetails.DA != null) {
+                        $('#da_check').prop('checked', true);
+                        $("#da_div").removeClass("d-none");
+                        $('#da').val(data.MRFDetails.DA);
+                    }
+                } else {
+                    $('#deisgnation_tr').removeClass('d-none');
+                    $('#stipend_tr').addClass('d-none');
+                    $('#ctc_tr').removeClass('d-none');
+                    $('#other_benifit_tr').addClass('d-none');
+                }
+
+
+
+                $('.modal-footer').addClass('d-none');
                 $('#editMRFModal').modal('show');
             }, 'json');
         });
 
+
+
+
+        var KPCount = 1;
+        var editKPCount = 1;
         var StateList = '';
         var CityList = '';
         var EducationList = '';
@@ -840,7 +927,6 @@
             });
         }
 
-
         var LocCount = 1;
         mulLocation(LocCount);
 
@@ -858,7 +944,7 @@
                 '<div class="spinner-border text-primary d-none" role="status" id="LocLoader' + number +
                 '"> <span class="visually-hidden">Loading...</span></div>' +
                 '       <select  id="City' + number + '" name="City[]" class="form-control form-select form-select-sm">' +
-                '    <option value="" selected disabled>Select City</option>' + CityList +
+                '    <option value="0" selected>Select City</option>' + CityList +
                 '</select>' +
                 '<span class="text-danger error-text City' + number + '_error"></span>' +
                 '</td>';
@@ -867,30 +953,26 @@
                 '" class="form-control form-control-sm" style="width:130px" placeholder="No. of Manpower">' +
                 '<span class="text-danger error-text ManPower' + number + '_error"></span>' +
                 '</td>';
-
-            $('#MulLocation').html(x);
-
-        }
-
-        KeyPosition();
-
-        function KeyPosition(n) {
-            x = '<tr>';
-            x += '<td >' +
-                '<input type="text" class="form-control form-control-sm" id="KP' + n + '" name="KP[]">' +
-                '</td>';
-            if (n > 1) {
+            if (number > 1) {
                 x +=
-                    '';
-                $('#KeyPositionCriteria').append(x);
+                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-sm  removeLocation">Remove</td></tr>';
+                $('#MulLocation').append(x);
             } else {
                 x +=
-                    '';
-                $('#KeyPositionCriteria').html(x);
+                    '<td><button type="button" name="add" id="addLocation" class="btn btn-warning btn-sm ">Add</button></td></tr>';
+                $('#MulLocation').html(x);
             }
         }
+        $(document).on('click', '#addLocation', function() {
+            LocCount++;
+            mulLocation(LocCount);
+        });
+        $(document).on('click', '.removeLocation', function() {
+            LocCount--;
+            $(this).closest("tr").remove();
+        });
 
-
+       
         //-------------------------------Start Multiple Education===========================//
 
         var EduCount = 1;
@@ -916,16 +998,87 @@
                 '</select>' +
                 '<span class="text-danger error-text Specialization' + num + '_error"></span>' +
                 '</td>';
-            $('#MulEducation').html(x);
 
+
+            if (num > 1) {
+                x +=
+                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-sm  removeEducation">Remove</td></tr>';
+                $('#MulEducation').append(x);
+            } else {
+                x +=
+                    '<td><button type="button" name="add" id="addEducation" class="btn btn-warning btn-sm ">Add</button></td></tr>';
+                $('#MulEducation').html(x);
+            }
         }
 
-        $(document).on('click', '.select_all', function() {
-            if ($(this).prop("checked") == true) {
-                $(this).closest("tr").addClass("bg-secondary bg-gradient");
+        $(document).on('click', '#addEducation', function() {
+            EduCount++;
+            mulEducation(EduCount);
+        });
+
+        $(document).on('click', '.removeEducation', function() {
+            EduCount--;
+            $(this).closest("tr").remove();
+        });
+
+
+        function getLocation(StateId, No) {
+            var StateId = StateId;
+            var No = No;
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getDistrict') }}?StateId=" + StateId,
+                async: false,
+                beforeSend: function() {
+                    $('#LocLoader' + No).removeClass('d-none');
+                    $('#City' + No).addClass('d-none');
+                },
+
+                success: function(res) {
+
+                    if (res) {
+                        $('#LocLoader' + No).addClass('d-none');
+                        $('#City' + No).removeClass('d-none');
+                        $("#City" + No).empty();
+                        $("#City" + No).append(
+                            '<option value="0" selected>Select City</option>');
+
+                        $.each(res, function(key, value) {
+                            $("#City" + No).append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+
+                    } else {
+                        $("#City" + No).empty();
+                    }
+                }
+            });
+        }
+
+        editmulKP();
+        function editmulKP(n) {
+            x = '<tr>';
+            x += '<td >' +
+                '<input type="text" class="form-control form-control-sm" id="editKeyPosition' + n + '" name="editKeyPosition[]">' +
+                '</td>';
+            if (n > 1) {
+                x +=
+                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-sm  editremoveKP"><i class="bx bx-x"></td></tr>';
+                $('#editMulKP').append(x);
             } else {
-                $(this).closest("tr").removeClass("bg-secondary bg-gradient");
+                x +=
+                    '';
+                $('#editMulKP').html(x);
             }
+        }
+        $(document).on('click', '#editaddKP', function() {
+            editKPCount++;
+            editmulKP(editKPCount);
+        });
+        
+        $(document).on('click', '.editremoveKP', function() {
+            editKPCount--;
+            $(this).closest("tr").remove();
         });
     </script>
 @endsection

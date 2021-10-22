@@ -57,6 +57,8 @@ Route::get('getSpecialization', [CommonController::class, 'getSpecialization'])-
 Route::get('getAllDistrict', [CommonController::class, 'getAllDistrict'])->name('getAllDistrict');
 Route::get('getAllSP', [CommonController::class, 'getAllSP'])->name('getAllSP');
 Route::post('getMRFDetails', [CommonController::class, 'getMRFDetails'])->name('getMRFDetails');
+Route::post('updateMRF', [CommonController::class, 'updateMRF'])->name('updateMRF');
+Route::post('deleteMRF', [CommonController::class, 'deleteMRF'])->name('deleteMRF');
 Route::post('notificationMarkRead', [CommonController::class, 'notificationMarkRead'])->name('notificationMarkRead');
 Route::post('markAllRead', [CommonController::class, 'markAllRead'])->name('markAllRead');
 
@@ -66,15 +68,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::get('mrf', [AdminController::class, 'mrf'])->name('admin.mrf');
     Route::get('active_mrf', [AdminController::class, 'active_mrf'])->name('admin.active_mrf');
     Route::get('closedmrf', [AdminController::class, 'closedmrf'])->name('admin.closedmrf');
-
     Route::get('getNewMrf', [AdminController::class, 'getNewMrf'])->name('getNewMrf');
     Route::get('getActiveMrf', [AdminController::class, 'getActiveMrf'])->name('getActiveMrf');
     Route::get('getCloseMrf', [AdminController::class, 'getCloseMrf'])->name('getCloseMrf');
-
     Route::post('updateMRFStatus', [AdminController::class, 'updateMRFStatus'])->name('updateMRFStatus');
     Route::post('allocateMRF', [AdminController::class, 'allocateMRF'])->name('allocateMRF');
-
-    Route::post('editMRFAdmin', [AdminController::class, 'editMRFAdmin'])->name('editMRFAdmin');
     Route::post('getTaskList', [AdminController::class, 'getTaskList'])->name('getTaskList');
     Route::post('getRecruiterName', [AdminController::class, 'getRecruiterName'])->name('getRecruiterName');
     Route::get('setting', [AdminController::class, 'setting'])->name('admin.setting');
@@ -196,7 +194,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::get('getEmployeeDetail', [UserController::class, 'getEmployeeDetail'])->name('getEmployeeDetail');
 
     //?====================================================================== */
-
     Route::get('communication_control', [CommunicationController::class, 'communication_control'])->name('admin.communication_control');
     Route::get('getCommunicationTopic', [CommunicationController::class, 'getCommunicationTopic'])->name('getCommunicationTopic');
     Route::post('setCommunication', [CommunicationController::class, 'setCommunication'])->name('setCommunication');
@@ -228,11 +225,9 @@ Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackH
     Route::get('new_mrf', [MrfController::class, 'new_mrf'])->name('new_mrf');
     Route::get('sip_mrf', [MrfController::class, 'sip_mrf'])->name('sip_mrf');
     Route::get('campus_mrf', [MrfController::class, 'campus_mrf'])->name('campus_mrf');
-
     Route::post('addNewMrf', [MrfController::class, 'addNewMrf'])->name('addNewMrf');
-
     Route::post('addSipMrf', [MrfController::class, 'addSipMrf'])->name('addSipMrf');
-
+    Route::post('addCampusMrf', [MrfController::class, 'addCampusMrf'])->name('addCampusMrf');
     Route::post('addRepMrf', [MrfController::class, 'addRepMrf'])->name('addRepMrf');
     Route::get('getAllMRFCreatedByMe', [MrfController::class, 'getAllMRFCreatedByMe'])->name('getAllMRFCreatedByMe');
     //!==============================================================================//

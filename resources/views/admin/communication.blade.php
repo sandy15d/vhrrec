@@ -17,23 +17,23 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-striped table-hover table-condensed" id="myTable" style="width: 100%">
-                        <thead>
+                        <thead class="bg-primary text-light text-center">
                             <tr>
-                                <th class="th-sm">S.No</th>
-                                <th>Communication Topic</th>
-                                <th>Sender</th>
-                                <th>Receiver</th>
-                                <th>Action</th>
+                                <td class="td-sm">S.No</td>
+                                <td>Communication Topic</td>
+                                <td>Sender</td>
+                                <td>Receiver</td>
+                                <td>Action</td>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($query as $item)
-                                <tr>
-                                    <td>{{ $item->id }}</td>
-                                    <td>{{ $item->title }}</td>
-                                    <td>{{ $item->sender }}</td>
-                                    <td>{{ $item->receiver }}</td>
-                                    <td><input class="commCtrl" type="checkbox" data-toggle="toggle" data-on="Active"
+                                <tr >
+                                    <td class="text-center">{{ $item->id }}</td>
+                                    <td class="text-left">{{ $item->title }}</td>
+                                    <td class="text-center">{{ $item->sender }}</td>
+                                    <td class="text-center">{{ $item->receiver }}</td>
+                                    <td class="text-center"><input class="commCtrl" type="checkbox" data-toggle="toggle" data-on="Active"
                                             data-off="Deactive" data-onstyle="success" data-offstyle="danger" data-size="sm"
                                             data-id="{{ $item->id }}" <?= $item->is_active == '1' ? 'checked' : '' ?>>
                                     </td>
