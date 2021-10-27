@@ -7,7 +7,7 @@ use App\Helpers\UserNotification;
 use App\Http\Controllers\Controller;
 use App\Mail\MrfStatusChangeMail;
 use App\Models\master_mrf;
-use App\Models\ThemeDetail;
+
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Mail;
 use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getDesignationCode;
 use function App\Helpers\getDistrictName;
-use function App\Helpers\getEmailID;
+
 use function App\Helpers\getFullName;
 use function App\Helpers\getStateCode;
 
@@ -521,65 +521,4 @@ class AdminController extends Controller
     }
 
 
-    function setTheme(Request $request)
-    {
-        $ThemeStyle = $request->ThemeStyle;
-        if ($ThemeStyle != '') {
-            if ($ThemeStyle == 'lightmode') {
-                $Style = 'light-theme';
-                $SidebarColor = '';
-            } elseif ($ThemeStyle == 'darkmode') {
-                $Style = 'dark-theme';
-                $SidebarColor = '';
-            } elseif ($ThemeStyle == 'semidark') {
-                $Style = 'semi-dark';
-                $SidebarColor = '';
-            } elseif ($ThemeStyle == 'minimaltheme') {
-                $Style = 'minimal-theme';
-                $SidebarColor = '';
-            } elseif ($ThemeStyle == 'sidebarcolor1') {
-                $Style = '';
-                $SidebarColor = 'color-sidebar sidebarcolor1';
-            } elseif ($ThemeStyle == 'sidebarcolor2') {
-                $Style = '';
-                $SidebarColor = 'color-sidebar sidebarcolor2';
-            } elseif ($ThemeStyle == 'sidebarcolor3') {
-                $Style = '';
-                $SidebarColor = 'color-sidebar sidebarcolor3';
-            } elseif ($ThemeStyle == 'sidebarcolor4') {
-                $Style = '';
-                $SidebarColor = 'color-sidebar sidebarcolor4';
-            } elseif ($ThemeStyle == 'sidebarcolor5') {
-                $Style = '';
-                $SidebarColor = 'color-sidebar sidebarcolor5';
-            } elseif ($ThemeStyle == 'sidebarcolor6') {
-                $Style = '';
-                $SidebarColor = 'color-sidebar sidebarcolor6';
-            } elseif ($ThemeStyle == 'sidebarcolor7') {
-                $Style = '';
-                $SidebarColor = 'color-sidebar sidebarcolor7';
-            } elseif ($ThemeStyle == 'sidebarcolor8') {
-                $Style = '';
-                $SidebarColor = 'color-sidebar sidebarcolor8';
-            }
-
-
-            $data = array(
-                'ThemeStyle' => $Style,
-                'SidebarColor' => $SidebarColor,
-                'UserId' => Auth::user()->id,
-            );
-            $query =  ThemeDetail::updateOrCreate(['UserId' => Auth::user()->id], $data);
-
-            if (!$query) {
-                return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
-            } else {
-                $request->session()->forget('ThemeStyle');
-                $request->session()->forget('SidebarColor');
-                $request->session()->put('ThemeStyle', $Style);
-                $request->session()->put('SidebarColor', $SidebarColor);
-                return response()->json(['status' => 200, 'msg' => 'New Theme has been successfully Applied.']);
-            }
-        }
-    }
 }

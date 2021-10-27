@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Hod;
 
 use App\Http\Controllers\Controller;
-use App\Models\ThemeDetail;
-use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use DataTables;
+
 
 use function App\Helpers\getFullName;
 
@@ -25,7 +24,6 @@ class HodController extends Controller
             ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
             ->pluck("FullName", "EmployeeID");
         return view('hod.index', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list'));
-       
     }
 
 
@@ -34,11 +32,11 @@ class HodController extends Controller
     {
         $mrf = DB::table('manpowerrequisition')
             ->Join('master_designation', 'manpowerrequisition.DesigId', '=', 'master_designation.DesigId')
-            ->where('manpowerrequisition.CreatedBy',Auth::user()->id)
-            ->orWhere('manpowerrequisition.OnBehalf',Auth::user()->id)
+            ->where('manpowerrequisition.CreatedBy', Auth::user()->id)
+            ->orWhere('manpowerrequisition.OnBehalf', Auth::user()->id)
             ->select('manpowerrequisition.MRFId', 'manpowerrequisition.Type', 'manpowerrequisition.JobCode', 'manpowerrequisition.CreatedBy', 'master_designation.DesigName', 'manpowerrequisition.Status', 'manpowerrequisition.CreatedTime');
-       
-            return datatables()::of($mrf)
+
+        return datatables()::of($mrf)
             ->addIndexColumn()
             ->addColumn('MRFDate', function ($mrf) {
                 return date('d-m-Y', strtotime($mrf->CreatedTime));
@@ -67,72 +65,10 @@ class HodController extends Controller
                     return '<button class="btn btn-xs  btn-outline-primary font-13 view" data-id="' . $mrf->MRFId . '" id="viewBtn"><i class="fadeIn animated lni lni-eye"></i></button>';
                 }
             })
-            ->addColumn('chk',function(){
+            ->addColumn('chk', function () {
                 return '<input type="checkbox" class="select_all">';
             })
-            ->rawColumns(['actions','chk'])
+            ->rawColumns(['actions', 'chk'])
             ->make(true);
-    }
-
-    function setTheme(Request $request)
-    {
-        $ThemeStyle = $request->ThemeStyle;
-        if ($ThemeStyle != '') {
-            if ($ThemeStyle == 'lightmode') {
-                $Style = 'light-theme';
-                $SidebarColor = '';
-            } elseif ($ThemeStyle == 'darkmode') {
-                $Style = 'dark-theme';
-                $SidebarColor = '';
-            } elseif ($ThemeStyle == 'semidark') {
-                $Style = 'semi-dark';
-                $SidebarColor = '';
-            } elseif ($ThemeStyle == 'minimaltheme') {
-                $Style = 'minimal-theme';
-                $SidebarColor = '';
-            } elseif ($ThemeStyle == 'sidebarcolor1') {
-                $Style = '';
-                $SidebarColor = 'color-sidebar sidebarcolor1';
-            } elseif ($ThemeStyle == 'sidebarcolor2') {
-                $Style = '';
-                $SidebarColor = 'color-sidebar sidebarcolor2';
-            } elseif ($ThemeStyle == 'sidebarcolor3') {
-                $Style = '';
-                $SidebarColor = 'color-sidebar sidebarcolor3';
-            } elseif ($ThemeStyle == 'sidebarcolor4') {
-                $Style = '';
-                $SidebarColor = 'color-sidebar sidebarcolor4';
-            } elseif ($ThemeStyle == 'sidebarcolor5') {
-                $Style = '';
-                $SidebarColor = 'color-sidebar sidebarcolor5';
-            } elseif ($ThemeStyle == 'sidebarcolor6') {
-                $Style = '';
-                $SidebarColor = 'color-sidebar sidebarcolor6';
-            } elseif ($ThemeStyle == 'sidebarcolor7') {
-                $Style = '';
-                $SidebarColor = 'color-sidebar sidebarcolor7';
-            } elseif ($ThemeStyle == 'sidebarcolor8') {
-                $Style = '';
-                $SidebarColor = 'color-sidebar sidebarcolor8';
-            }
-
-
-            $data = array(
-                'ThemeStyle' => $Style,
-                'SidebarColor' => $SidebarColor,
-                'UserId' => Auth::user()->id,
-            );
-            $query =  ThemeDetail::updateOrCreate(['UserId' => Auth::user()->id], $data);
-
-            if (!$query) {
-                return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
-            } else {
-                $request->session()->forget('ThemeStyle');
-                $request->session()->forget('SidebarColor');
-                $request->session()->put('ThemeStyle', $Style);
-                $request->session()->put('SidebarColor', $SidebarColor);
-                return response()->json(['status' => 200, 'msg' => 'New Theme has been successfully Applied.']);
-            }
-        }
     }
 }
