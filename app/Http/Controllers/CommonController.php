@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\UserNotification;
+use App\Models\Admin\master_employee;
 use App\Models\master_mrf;
 use App\Models\Notification;
 use Illuminate\Http\Request;
@@ -73,6 +74,30 @@ class CommonController extends Controller
             ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
             ->pluck("EmployeeID", "FullName");
         return response()->json($employee);
+    }
+
+    public function getResignedEmployee(Request $request)
+    {
+        $employee = DB::table('master_employee')->orderBy('FullName', 'ASC')
+            ->where('DepartmentId', $request->DepartmentId)
+            ->where('EmpStatus', 'D')
+            ->where('DateOfSepration', '>=', '2021-01-01')
+            ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
+            ->pluck("EmployeeID", "FullName");
+        return response()->json($employee);
+    }
+
+    public function getResignedEmpDetail(Request $request)
+    {
+        $EmpId = $request->EmpId;
+        $empDetails = DB::table('master_employee')
+            ->Join('master_designation', 'master_employee.DesigId', '=', 'master_designation.DesigId')
+            ->Join('master_headquater', 'master_employee.Location', '=', 'master_headquater.HqId')
+            ->Join('master_grade', 'master_employee.GradeId', '=', 'master_grade.GradeId')
+            ->where('EmployeeID', $EmpId)
+            ->select('master_designation.DesigName', 'master_headquater.HqName', 'master_grade.GradeValue', 'master_employee.CTC')
+            ->get();
+        return response()->json(['empDetails' => $empDetails]);
     }
 
     public function getAllDistrict()
@@ -187,17 +212,19 @@ class CommonController extends Controller
         $MRF->Stipend = $request->Stipend == '' ? NULL : $request->Stipend;
         $MRF->DA = $request->da == '' ? NULL : $request->da;
         $MRF->TwoWheeler = $request->two_wheeler == '' ? NULL : $request->two_wheeler;
-        $MRF->WorkExp = $request->WorkExp;
+        $MRF->WorkExp = $request->WorkExp == '' ? NULL : $request->WorkExp;
         $MRF->Remarks = $request->Remark;
         $MRF->Info = convertData($request->JobInfo);
         $MRF->EducationId = $EduArray_str;
         $MRF->EducationInsId = $UniversityArray;
         $MRF->KeyPositionCriteria = $KpArray_str;
+        $MRF->Tr_Frm_Date = $request->Tr_Frm_Date == '' ? NULL : $request->Tr_Frm_Date;
+        $MRF->Tr_To_Date = $request->Tr_To_Date == '' ? NULL : $request->Tr_To_Date;
         $MRF->UpdatedBy = Auth::user()->id;
         $MRF->LastUpdated = now();
         $query = $MRF->save();
         $InsertId = $MRF->MRFId;
-        if ($request->MRF_Type == 'SIP' || $request->MRF_Type =='SIP_HrManual') {
+        if ($request->MRF_Type == 'SIP' || $request->MRF_Type == 'SIP_HrManual') {
             $jobCode = getCompanyCode($request->Company) . '/' . getDepartmentCode($request->Department) . '/SIP/' . $InsertId . '-' . date('Y');
         } else {
             $jobCode = getCompanyCode($request->Company) . '/' . getDepartmentCode($request->Department) . '/' . getDesignationCode($request->Designation) . '/' . $InsertId . '-' . date('Y');

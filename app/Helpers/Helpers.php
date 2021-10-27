@@ -31,6 +31,7 @@ if (!function_exists('getFullName')) {
 		$DepartmentCode = Db::table('master_department')->select('DepartmentCode')->where('DepartmentId', $DeptId)->first();
 		return $DepartmentCode->DepartmentCode;
 	}
+
 	function getDepartment($DeptId)
 	{
 		$Department = Db::table('master_department')->select('DepartmentName')->where('DepartmentId', $DeptId)->first();
@@ -42,6 +43,7 @@ if (!function_exists('getFullName')) {
 		$DesigCode = Db::table('master_designation')->select('DesigCode')->where('DesigId', $DesigId)->first();
 		return $DesigCode->DesigCode;
 	}
+
 	function getDesignation($DesigId)
 	{
 		$DesigName = Db::table('master_designation')->select('DesigName')->where('DesigId', $DesigId)->first();
@@ -60,12 +62,12 @@ if (!function_exists('getFullName')) {
 		return $HqName->HqName;
 	}
 
-
 	function getStateCode($StateId)
 	{
 		$StateCode = Db::table('states')->select('StateCode')->where('StateId', $StateId)->first();
 		return $StateCode->StateCode;
 	}
+
 	function getStateName($StateId)
 	{
 		$StateName = Db::table('states')->select('StateName')->where('StateId', $StateId)->first();
@@ -122,6 +124,17 @@ if (!function_exists('getFullName')) {
 			return '1';
 		}
 	}
+	
+	function GetJobPostId($mrfid)
+	{
+		$sql = Db::table('jobpost')->select('JPId')->where('MRFId', $mrfid)->first();
+
+		if (is_null($sql)) {
+			return '0';
+		} else {
+			return $sql->JPId;
+		}
+	}
 
 	function getEducationById($eid)
 	{
@@ -134,6 +147,7 @@ if (!function_exists('getFullName')) {
 		$Specialization = DB::table('master_specialization')->select('Specialization')->where('SpId', $sid)->first();
 		return $Specialization->Specialization;
 	}
+
 	function getCollegeById($id)
 	{
 		$institute = DB::table('master_institute')->select('InstituteName')->where('InstituteId', $id)->first();

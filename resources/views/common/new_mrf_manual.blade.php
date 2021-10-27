@@ -10,20 +10,34 @@
     <div class="page-content">
 
         <div class="col-xl-10 mx-auto">
-            <div class="card border-top border-0 border-4 border-success">
+            <div class="card border-top border-0 border-4 border-primary">
                 <div class="card-body p-3">
                     <div class="card-title d-flex align-items-center">
-                        <div><i class="bx bxs-user me-1 font-22 text-success"></i>
+                        <div><i class="bx bxs-user me-1 font-22 text-primary"></i>
                         </div>
-                        <h5 class="mb-0 text-success">SIP / Internship Manpower Requisition Form</h5>
+                        <h5 class="mb-0 text-primary">New Manpower Requisition Form</h5>
 
                     </div>
                     <hr>
-                    <form action="{{ route('addSipMrf') }}" method="POST" id="addSipMrfForm">
+                    <form action="{{ route('add_new_mrf_manual') }}" method="POST" id="addNewMrfForm" name="addNewMrfForm">
                         @csrf
                         <div class="modal-body">
                             <table class="table borderless">
                                 <tbody>
+                                    <tr>
+                                        <th>On Behalf of HOD<font class="text-danger">*</font>
+                                        </th>
+                                        <td><select id="OnBehalf" name="OnBehalf"
+                                                class="form-control form-select form-select-sm" >
+                                                <option value="" selected >Select HOD</option>
+                                                @foreach ($params['userlist'] as $key => $value)
+                                                    <option value="{{ $key }}" >{{ $value }}</option>
+                                                @endforeach
+                                            </select>
+
+                                            <span class="text-danger error-text OnBehalf_error"></span>
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <th style="width:250px;">Reason for Creating New Position<font
                                                 class="text-danger">*
@@ -42,7 +56,7 @@
                                         <td><select id="Company" name="Company"
                                                 class="form-control form-select form-select-sm" disabled>
                                                 <option value="" selected disabled>Select Company</option>
-                                                @foreach ($company_list as $key => $value)
+                                                @foreach ($params['company_list'] as $key => $value)
                                                     <option value="{{ $key }}" @if ($key == session('Set_Company'))
                                                         {{ 'selected' }}
                                                 @endif>{{ $value }}</option>
@@ -62,14 +76,27 @@
                                             <select id="Department" name="Department"
                                                 class="form-control form-select form-select-sm">
                                                 <option value="" selected disabled>Select Department</option>
-                                                @foreach ($department_list as $key => $value)
+                                                @foreach ($params['department_list'] as $key => $value)
                                                     <option value="{{ $key }}">{{ $value }}</option>
                                                 @endforeach
                                             </select>
                                             <span class="text-danger error-text Department_error"></span>
                                         </td>
                                     </tr>
-
+                                    <tr>
+                                        <th>Designation<font class="text-danger">*</font>
+                                        </th>
+                                        <td>
+                                            <div class="spinner-border text-primary d-none" role="status" id="DesigLoader">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                            <select id="Designation" name="Designation"
+                                                class="form-control form-select form-select-sm">
+                                                <option value="" selected disabled>Select Designation</option>
+                                            </select>
+                                            <span class="text-danger error-text Designation_error"></span>
+                                        </td>
+                                    </tr>
 
                                     <tr>
                                         <th>Location & Man Power <font class="text-danger">*</font>
@@ -85,57 +112,17 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Desired Stipend (in Rs. Per Month) <font class="text-danger">*</font>
+                                        <th>Desired CTC (in Rs.) <font class="text-danger">*</font>
                                         </th>
                                         <td>
-                                            <input type="text" name="Stipend" id="Stipend"
-                                                class="form-control form-control-sm">
-                                            <span class="text-danger error-text Stipend_error"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Other Benefits</th>
-                                        <td>
                                             <table class="table borderless" style="margin-bottom: 0px;">
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="form-check form-check-inline">
-                                                                <input class="form-check-input " type="checkbox"
-                                                                    id="two_wheeler_check">
-                                                                <label class="form-check-label" for="two_wheeler_check">2
-                                                                    Wheeler reimbursement Rs.
-                                                                </label>
-                                                            </div>
-                                                            <div class="form-check form-check-inline d-none"
-                                                                id="two_wheeler_div">
-                                                                <input type="text" name="two_wheeler" id="two_wheeler"
-                                                                    style="border-radius: .2rem; border:1px solid #ced4da; padding:.25rem">
-                                                                per
-                                                                km
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="form-check form-check-inline" style="width: 218px;">
-                                                                <input class="form-check-input " type="checkbox"
-                                                                    id="da_check">
-                                                                <label class="form-check-label" for="da_check">DA
-                                                                </label>
-                                                            </div>
-                                                            <div class="form-check form-check-inline d-none" id="da_div">
-                                                                <input type="text" name="da" id="da"
-                                                                    style="border-radius: .2rem; border:1px solid #ced4da; padding:.25rem">
-                                                                Rs. per
-                                                                Day
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-
-                                                </tbody>
+                                                <tr>
+                                                    <td><input type="text" name="MinCTC" id="MinCTC"
+                                                            class="form-control form-control-sm" placeholder="Min"></td>
+                                                    <td><input type="text" name="MaxCTC" id="MaxCTC"
+                                                            class="form-control form-control-sm" placeholder="Max"> </td>
+                                                </tr>
                                             </table>
-
                                         </td>
                                     </tr>
                                     <tr>
@@ -158,13 +145,20 @@
                                                 class="form-control form-select form-select-sm multiple-select"
                                                 multiple="multiple">
 
-                                                @foreach ($institute_list as $key => $value)
+                                                @foreach ($params['institute_list'] as $key => $value)
                                                     <option value="{{ $key }}">{{ $value }}</option>
                                                 @endforeach
                                             </select>
                                         </td>
                                     </tr>
-
+                                    <tr>
+                                        <th>Work Experience <font class="text-danger">*</font>
+                                        </th>
+                                        <td>
+                                            <input type="text" name="WorkExp" id="WorkExp"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <th>Job Description</th>
                                         <td>
@@ -172,29 +166,7 @@
                                         </td>
                                     </tr>
 
-                                    <tr>
-                                        <th>Training Duration</th>
-                                        <td>
-                                            <table class="table borderless" style="margin-bottom: 0px;">
-                                                <tbody>
-                                                    <tr>
-                                                        <td valign="middle">From</td>
-                                                        <td>
-                                                            <input type="date" name="Tr_Frm_Date" id="Tr_Frm_Date"
-                                                                class="form-control form-control-sm">
-                                                            <span class="text-danger error-text Tr_Frm_Date_error"></span>
-                                                        </td>
-                                                        <td valign="middle">To</td>
-                                                        <td>
-                                                            <input type="date" name="Tr_To_Date" id="Tr_To_Date"
-                                                                class="form-control form-control-sm">
-                                                            <span class="text-danger error-text Tr_To_Date_error"></span>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>
+
 
                                     <tr>
                                         <th>Mandatory Requirements</th>
@@ -224,7 +196,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" id="Cancle">Cancle</button>
-                            <button type="submit" class="btn btn-success" id="SaveSipMrf">Save changes</button>
+                            <button type="submit" class="btn btn-primary" id="SaveNewMrf">Save changes</button>
                         </div>
                     </form>
                 </div>
@@ -243,7 +215,6 @@
         $(document).on('click', '#Cancle', function() {
             location.reload();
         });
-
         $("#KpChk").change(function() {
             if (!this.checked) {
                 $("#tblkp").addClass("d-none");
@@ -253,24 +224,6 @@
                 $("#addKP").removeClass("d-none");
             }
         });
-
-        $("#two_wheeler_check").change(function() {
-            if (!this.checked) {
-                $("#two_wheeler_div").addClass("d-none");
-            } else {
-                $("#two_wheeler_div").removeClass("d-none");
-            }
-        });
-        $("#da_check").change(function() {
-            if (!this.checked) {
-                $("#da_div").addClass("d-none");
-            } else {
-                $("#da_div").removeClass("d-none");
-            }
-        });
-
-
-
         $(document).ready(function() {
             CKEDITOR.replace('JobInfo');
         });
@@ -558,11 +511,49 @@
             }
         });
 
+        //===============================Ge Designation on Change of Department====================//
+        $('#Department').change(function() {
+            var DepartmentId = $(this).val();
+            if (DepartmentId) {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('getDesignation') }}?DepartmentId=" + DepartmentId,
+                    beforeSend: function() {
+                        $('#DesigLoader').removeClass('d-none');
+                        $('#Designation').addClass('d-none');
+                    },
+                    success: function(res) {
 
+                        if (res) {
+                            $('#DesigLoader').addClass('d-none');
+                            $('#Designation').removeClass('d-none');
+                            $("#Designation").empty();
+                            $("#ReportingManager").empty();
+                            $("#Designation").append(
+                                '<option value="" selected disabled >Select Designation</option>');
+                            $("#ReportingManager").append(
+                                '<option value="" selected disabled >Select Reporting Manager</option>'
+                            );
+                            $.each(res, function(key, value) {
+                                $("#Designation").append('<option value="' + value + '">' +
+                                    key +
+                                    '</option>');
+                            });
+
+                        } else {
+                            $("#Designation").empty();
+                        }
+                    }
+                });
+            } else {
+                $("#Designation").empty();
+
+            }
+        });
 
 
         //====================================== Add New MRF to the Database==========================//
-        $('#addSipMrfForm').on('submit', function(e) {
+        $('#addNewMrfForm').on('submit', function(e) {
             e.preventDefault();
             var form = this;
             for (instance in CKEDITOR.instances) {
@@ -577,13 +568,14 @@
                 dataType: 'json',
                 contentType: false,
                 beforeSend: function() {
+
                     $(form).find('span.error-text').text('');
                     $("#loader").modal('show');
                 },
 
                 success: function(data) {
                     if (data.status == 400) {
-                        $('#Company').attr('disabled',true);
+                        $('#Company').attr('disabled', true);
                         $("#loader").modal('hide');
                         $.each(data.error, function(prefix, val) {
                             $(form).find('span.' + prefix + '_error').text(val[0]);

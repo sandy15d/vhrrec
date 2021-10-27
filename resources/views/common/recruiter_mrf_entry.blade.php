@@ -1,154 +1,57 @@
 @extends('layouts.master')
-@section('title', 'MRF Allocated')
+
+@section('title', 'New MRF')
 @section('PageContent')
+
     <style>
         .table>:not(caption)>*>* {
-            padding: 2px 1px;
+            padding: 2px 2px;
         }
 
     </style>
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3 download_label">Allocated MRF Details</div>
+            <div class="breadcrumb-title pe-3">MRF - Manual Entry</div>
+
+            <div class="ms-auto">
+                <a class="btn btn-primary btn-sm" href="{{ route('new_mrf_manual') }}"><i class="bx bx-plus"></i>
+                    New</a>
+                <a class="btn btn-warning btn-sm" href="{{ route('replacement_mrf_manual') }}"><i
+                        class="bx bx-plus"></i> Replacement</a>
+                <a class="btn btn-success btn-sm" href="{{ route('sip_mrf_manual') }}"><i class="bx bx-plus"></i>
+                    SIP/Internship</a>
+                <a class="btn btn-danger btn-sm" href="{{ route('campus_mrf_manual') }}"><i
+                        class="bx bx-plus"></i>Campus
+                    Hiring</a>
+            </div>
         </div>
         <!--end breadcrumb-->
-        <hr />
-        <div class="card">
+
+        <div class="card border-top border-0 border-4 border-primary">
             <div class="card-body">
-                <div class="row mb-1">
-                    <div class="col-3">
-                        <button type="button" class="btn btn-primary btn-sm" id="openMrf" data-status='Open'>Open MRF <span
-                                class="badge bg-warning text-dark" style="font-size: 10px;">{{ $OpenMRF }}</span>
-                        </button>
-                        <button class="btn btn-outline-primary btn-sm pull-right" data-status='Close' id="closedMrf">Closed
-                            MRF <span class="badge bg-warning text-dark"
-                                style="font-size: 10px;">{{ $CloseMRF }}</span></button>
-                    </div>
 
-                    <div class="col-2">
-                        <select name="Fill_Company" id="Fill_Company" class="form-select form-select-sm"
-                            onchange="GetAllocatedMrf(); GetDepartment();">
-                            <option value="">Select Company</option>
-                            @foreach ($company_list as $key => $value)
-                                <option value="{{ $key }}">{{ $value }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-2">
-
-                        <select name="Fill_Department" id="Fill_Department" class="form-select form-select-sm"
-                            onchange="GetAllocatedMrf();">
-                            <option value="">Select Department</option>
-
-                        </select>
-                    </div>
-                    <div class="col-2">
-                        <select name="Year" id="Year" class="form-select form-select-sm" onchange="GetAllocatedMrf();">
-                            <option value="">Select Year</option>
-                            @for ($i = 2021; $i <= date('Y'); $i++)
-                                <option value="{{ $i }}">{{ $i }}</option>
-                            @endfor
-                        </select>
-                    </div>
-                    <div class="col-2">
-                        <select name="Month" id="Month" class="form-select form-select-sm" onchange="GetAllocatedMrf();">
-                            <option value="">Select Month</option>
-                            @foreach ($months as $key => $value)
-                                <option value="{{ $key }}">{{ $value }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-1">
-                        <button type="reset" class="btn btn-danger btn-sm" id="reset"><i
-                                class="bx bx-refresh"></i></button>
-                    </div>
-                </div>
-                <hr />
-                <div>
-                    <table class="table  table-hover table-striped table-condensed align-middle text-center table-bordered"
-                        id="MRFTable" style="width: 100%">
-                        <thead class="text-center bg-primary text-light">
-                            <tr class="text-center">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover display compact text-center table-bordered"
+                        id="mrfsummarytable" style="width: 100%">
+                        <thead class="bg-primary text-light">
+                            <tr>
                                 <td></td>
-                                <td class="th-sm">S.No</td>
-                                <td>Type</td>
-                                <td>JobCode</td>
-                                <td>Department</td>
+                                <td class="td-sm">S.No</td>
+                                <td class="td-sm">Type</td>
+                                <td>Job Code</td>
                                 <td>Designation</td>
-                                <td>Position</td>
-                                <td>Location</td>
-                                <td>Job Posting</td>
-                                <td>View on Site</td>
+                                <td>Status</td>
+                                <td>MRF Date</td>
                                 <td>Details</td>
+                                <td style="text-align: center;">Delete</td>
                             </tr>
                         </thead>
                         <tbody>
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="createpostmodal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
-        data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-info bg-gradient">
-                    <h5 class="modal-title text-white">Create Job Post</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="{{ route('createJobPost') }}" method="POST" id="createJobPostForm">
-                    @csrf
-                    <div class="modal-body">
-                        <table class="table borderless">
-                            <tbody>
-                                <tr>
-                                    <th style="width:250px;">Designation<font class="text-danger">*
-                                        </font>
-                                    </th>
-                                    <td>
-                                        <input type="hidden" name="MRFId" id="MRFId">
-                                        <input type="text" name="Designation" id="Designation"
-                                            class="form-control form-control-sm" readonly>
-                                        <span class="text-danger error-text Designation_error"></span>
 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Job Code <font class="text-danger">*</font>
-                                    </th>
-                                    <td>
-                                        <input type="text" name="JobCode" id="JobCode" class="form-control form-control-sm"
-                                            readonly>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Job Description</th>
-                                    <td>
-                                        <textarea name="JobInfo" id="JobInfo" class="JobInfo"></textarea>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Mandatory Requirements</th>
-                                    <td>
-                                        <table class="table borderless" style="margin-bottom: 0px;">
-                                            <tbody id="MulKP">
-                                            </tbody>
-                                        </table>
-                                        <button type="button" name="add" id="addKP"
-                                            class="btn btn-warning btn-sm mb-2 mt-2"><i class="bx bx-plus"></i></button>
-                                    </td>
-                                </tr>
-
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="CreateJobPost">Save changes</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
@@ -159,6 +62,9 @@
             <div class="modal-content">
                 <div class="modal-header bg-info bg-gradient">
                     <h5 class="modal-title text-white">MRF Details</h5>
+
+                    <button type="button" class="btn btn-info" style="margin-left: 510px; opacity:1" id="edit_mrf_btn"><i
+                            class="fa fa-pencil"></i>Edit</button>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('updateMRF') }}" method="POST" id="update_mrf_form">
@@ -166,6 +72,20 @@
                     <div class="modal-body">
                         <table class="table borderless">
                             <tbody>
+                                <tr>
+                                    <th>On Behalf of HOD<font class="text-danger">*</font>
+                                    </th>
+                                    <td><select id="OnBehalf" name="OnBehalf"
+                                            class="form-control form-select form-select-sm">
+                                            <option value="" selected>Select HOD</option>
+                                            @foreach ($userlist as $key => $value)
+                                                <option value="{{ $key }}">{{ $value }}</option>
+                                            @endforeach
+                                        </select>
+
+                                        <span class="text-danger error-text OnBehalf_error"></span>
+                                    </td>
+                                </tr>
                                 <tr>
                                     <input type="hidden" name="MRFId" id="MRFId">
                                     <input type="hidden" name="MRF_Type" id="MRF_Type">
@@ -215,7 +135,7 @@
                                         <div class="spinner-border text-primary d-none" role="status" id="DesigLoader">
                                             <span class="visually-hidden">Loading...</span>
                                         </div>
-                                        <select id="editDesignation" name="editDesignation"
+                                        <select id="Designation" name="Designation"
                                             class="form-control form-select form-select-sm">
                                             <option value="" selected disabled>Select Designation</option>
                                             @foreach ($designation_list as $key => $value)
@@ -337,7 +257,7 @@
                                 <tr>
                                     <th>Job Description</th>
                                     <td>
-                                        <textarea name="editJobInfo" id="editJobInfo" class="form-control"></textarea>
+                                        <textarea name="JobInfo" id="JobInfo" class="form-control"></textarea>
                                     </td>
                                 </tr>
                                 <tr id="duration_tr">
@@ -368,10 +288,10 @@
                                     <td>
 
                                         <table class="table borderless" style="margin-bottom: 0px;">
-                                            <tbody id="editMulKP">
+                                            <tbody id="MulKP">
                                             </tbody>
                                         </table>
-                                        <button type="button" name="editadd" id="editaddKP"
+                                        <button type="button" name="add" id="addKP"
                                             class="btn btn-warning btn-sm mb-2 mt-2"><i class="bx bx-plus"></i></button>
                                     </td>
                                 </tr>
@@ -393,345 +313,13 @@
         </div>
     </div>
 @endsection
+
 @section('scriptsection')
+
     <script>
-        CKEDITOR.replace('JobInfo');
-        CKEDITOR.replace('editJobInfo');
-
-        var MrfStatus = 'Open';
-        $('#MRFTable').DataTable({
-            processing: true,
-            serverSide: true,
-            info: true,
-            searching: false,
-            //    dom: 'Bfrtip',
-            lengthChange: false,
-            ordering: false,
-            buttons: [
-
-                {
-                    extend: 'copyHtml5',
-                    text: '<i class="fa fa-files-o"></i>',
-                    titleAttr: 'Copy',
-                    title: $('.download_label').html(),
-                    exportOptions: {
-                        columns: ':visible'
-                    }
-                },
-
-                {
-                    extend: 'excelHtml5',
-                    text: '<i class="fa fa-file-excel-o"></i>',
-                    titleAttr: 'Excel',
-                    title: $('.download_label').html(),
-                    exportOptions: {
-                        columns: ':visible'
-
-                    }
-                },
-
-                {
-                    extend: 'csvHtml5',
-                    text: '<i class="fa fa-file-text-o"></i>',
-                    titleAttr: 'CSV',
-                    title: $('.download_label').html(),
-                    exportOptions: {
-                        columns: ':visible'
-                    }
-                },
-
-                {
-                    extend: 'pdfHtml5',
-                    text: '<i class="fa fa-file-pdf-o"></i>',
-                    titleAttr: 'PDF',
-                    title: $('.download_label').html(),
-                    exportOptions: {
-                        columns: ':visible'
-
-                    }
-                },
-
-                {
-                    extend: 'print',
-                    text: '<i class="fa fa-print"></i>',
-                    titleAttr: 'Print',
-                    title: $('.download_label').html(),
-                    customize: function(win) {
-                        $(win.document.body)
-                            .css('font-size', '10pt');
-
-                        $(win.document.body).find('table')
-                            .addClass('compact')
-                            .css('font-size', 'inherit');
-                    },
-                    exportOptions: {
-                        columns: ':visible'
-                    }
-                },
-
-                {
-                    extend: 'colvis',
-                    text: '<i class="fa fa-columns"></i>',
-                    titleAttr: 'Columns',
-                    title: $('.download_label').html(),
-                    postfixButtons: ['colvisRestore']
-                },
-            ],
-            ajax: {
-                url: "{{ route('getAllAllocatedMRF') }}",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: function(d) {
-                    d.Company = $('#Fill_Company').val();
-                    d.Department = $('#Fill_Department').val();
-                    d.Year = $('#Year').val();
-                    d.Month = $('#Month').val();
-                    d.MrfStatus = MrfStatus;
-                },
-                type: 'POST',
-                dataType: "JSON",
-            },
-            columns: [
-
-                {
-                    data: 'chk',
-                    name: 'chk'
-                },
-                {
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex'
-                },
-                {
-                    data: 'Type',
-                    name: 'Type'
-                },
-                {
-                    data: 'JobCode',
-                    name: 'JobCode'
-                },
-                {
-                    data: 'DepartmentCode',
-                    name: 'DepartmentCode'
-                },
-                {
-                    data: 'DesigCode',
-                    name: 'DesigCode'
-                },
-                {
-                    data: 'Positions',
-                    name: 'Positions'
-                },
-                {
-                    data: 'LocationIds',
-                    name: 'LocationIds'
-                },
-
-                {
-                    data: 'JobPost',
-                    name: 'JobPost'
-                },
-                {
-                    data: 'JobShow',
-                    name: 'JobShow'
-                },
-
-                {
-                    data: 'details',
-                    name: 'details'
-                }
-            ],
-
+        CKEDITOR.replace('JobInfo', {
+            height: 100
         });
-
-        function GetAllocatedMrf() {
-            $('#MRFTable').DataTable().draw(true);
-            //$('#MRFTable').DataTable().ajax.reload(null, false);
-        }
-
-
-        $(document).on('click', '#openMrf', function() {
-            MrfStatus = 'Open';
-            $('#openMrf').removeClass('btn-outline-primary');
-            $('#closedMrf').removeClass('btn-primary');
-            $('#closedMrf').addClass('btn-outline-primary');
-            $('#openMrf').addClass('btn-primary');
-            GetAllocatedMrf();
-        });
-
-        $(document).on('click', '#closedMrf', function() {
-
-            MrfStatus = 'Close';
-            $('#closedMrf').removeClass('btn-outline-primary');
-            $('#openMrf').removeClass('btn-primary');
-            $('#openMrf').addClass('btn-outline-primary');
-            $('#closedMrf').addClass('btn-primary');
-            GetAllocatedMrf();
-        });
-
-        function GetDepartment() {
-            var CompanyId = $('#Fill_Company').val();
-            $.ajax({
-                type: "GET",
-                url: "{{ route('getDepartment') }}?CompanyId=" + CompanyId,
-                beforeSend: function() {
-
-                },
-                success: function(res) {
-
-                    if (res) {
-                        $("#Fill_Department").empty();
-                        $("#Fill_Department").append(
-                            '<option value="" selected disabled >Select Department</option>');
-                        $.each(res, function(key, value) {
-                            $("#Fill_Department").append('<option value="' + value + '">' + key +
-                                '</option>');
-                        });
-                    } else {
-                        $("#Fill_Department").empty();
-                    }
-                }
-            });
-        }
-
-
-        $(document).on('click', '.select_all', function() {
-            if ($(this).prop("checked") == true) {
-                $(this).closest("tr").addClass("bg-secondary bg-gradient text-light");
-            } else {
-                $(this).closest("tr").removeClass("bg-secondary bg-gradient text-light");
-            }
-        });
-
-        $(document).on('click', '#reset', function() {
-            window.location.reload();
-        });
-
-
-
-        mulKP();
-
-        function mulKP(n) {
-            x = '<tr>';
-            x += '<td >' +
-                '<input type="text" class="form-control form-control-sm" id="KeyPosition' + n + '" name="KeyPosition[]">' +
-                '</td>';
-
-            if (n > 1) {
-                x +=
-                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-sm  removeKP"><i class="bx bx-x"></td></tr>';
-                $('#MulKP').append(x);
-            } else {
-                x +=
-                    '';
-                $('#MulKP').html(x);
-            }
-        }
-        $(document).on('click', '#addKP', function() {
-            KPCount++;
-            mulKP(KPCount);
-        });
-
-        $(document).on('click', '.removeKP', function() {
-            KPCount--;
-            $(this).closest("tr").remove();
-        });
-
-        function getDetailForJobPost(MRFId) {
-            var MRFId = MRFId;
-            $.post('<?= route('getDetailForJobPost') ?>', {
-                MRFId: MRFId
-            }, function(data) {
-
-                $('#MRFId').val(data.MRFDetails.MRFId);
-                $('#Designation').val(data.Designation);
-                $('#JobCode').val(data.MRFDetails.JobCode);
-
-                CKEDITOR.instances['JobInfo'].setData(data.MRFDetails.Info);
-
-                KPCount = (data.KPDetails).length;
-                var KPValue = data.KPDetails.toString().split(",");
-                for (i = 1; i <= KPCount; i++) {
-                    mulKP(i);
-                    $('#KeyPosition' + i).val(KPValue[i - 1]);
-                }
-
-            }, 'json');
-        }
-
-        $('#createJobPostForm').on('submit', function(e) {
-            e.preventDefault();
-            var form = this;
-            for (instance in CKEDITOR.instances) {
-                CKEDITOR.instances[instance].updateElement();
-            }
-            $.ajax({
-                url: $(form).attr('action'),
-                method: $(form).attr('method'),
-                data: new FormData(form),
-                processData: false,
-                dataType: 'json',
-                contentType: false,
-                beforeSend: function() {
-                    $(form).find('span.error-text').text('');
-                    $("#loader").modal('show');
-                },
-
-                success: function(data) {
-                    if (data.status == 400) {
-                        $.each(data.error, function(prefix, val) {
-                            $(form).find('span.' + prefix + '_error').text(val[0]);
-                        });
-                    } else {
-                        $(form)[0].reset();
-                        $('#loader').modal('hide');
-                        $('#createpostmodal').modal('hide');
-                        $('#MRFTable').DataTable().ajax.reload(null, false);
-                        toastr.success(data.msg);
-                    }
-                }
-            });
-        });
-
-        function editmrf(id) {
-            $('#postStatus' + id).prop("disabled", false);
-        }
-
-        function ChngPostingView(JPId, va) {
-
-            $.ajax({
-                url: "{{ route('ChngPostingView') }}",
-                type: 'POST',
-                data: {
-                    JPId: JPId,
-                    va: va
-                },
-                dataType: 'json',
-                beforeSend: function() {
-                    $("#loader").modal('show');
-                },
-                success: function(data) {
-                    if (data.status == 200) {
-                        $("#loader").modal('hide');
-                        $('#MRFTable').DataTable().ajax.reload(null, false);
-                        toastr.success(data.msg);
-                    } else {
-                        toastr.error(data.msg);
-                    }
-                }
-            });
-        }
-
-
-
-        $(document).on('click', '.select_all', function() {
-            if ($(this).prop("checked") == true) {
-                $(this).closest("tr").addClass("bg-secondary bg-gradient");
-            } else {
-                $(this).closest("tr").removeClass("bg-secondary bg-gradient");
-            }
-        });
-
         $("#two_wheeler_check").change(function() {
             if (!this.checked) {
                 $("#two_wheeler_div").addClass("d-none");
@@ -746,12 +334,95 @@
                 $("#da_div").removeClass("d-none");
             }
         });
+        var KPCount;
+        $('#mrfsummarytable').DataTable({
+            processing: true,
+            ordering: false,
+            info: true,
+            ajax: "{{ route('get_all_manual_mrf_created_by_me') }}",
+            columns: [
+
+                {
+                    data: 'chk',
+                    name: 'chk'
+                },
+                {
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex'
+                },
+                {
+                    data: 'Type',
+                    name: 'Type'
+
+                },
+                {
+                    data: 'JobCode',
+                    name: 'JobCode'
+                },
+
+                {
+                    data: 'DesigName',
+                    name: 'DesigName'
+                },
+
+
+                {
+                    data: 'Status',
+                    name: 'Status'
+                },
+
+                {
+                    data: 'MRFDate',
+                    name: 'MRFDate'
+                },
+
+                {
+                    data: 'actions',
+                    name: 'actions'
+                },
+                {
+                    data: 'delete',
+                    name: 'delete'
+                }
+            ],
+
+        });
+
+        $(document).on('click', '#edit_mrf_btn', function() {
+            var form = document.getElementById("update_mrf_form");
+            var elements = form.elements;
+            for (var i = 0, len = elements.length; i < len; ++i) {
+                elements[i].disabled = false;
+            }
+            CKEDITOR.instances['JobInfo'].setReadOnly(false);
+            $('.modal-footer').removeClass('d-none');
+        });
+
+        function editmstst(MRFId, th) {
+            $('#mrfstatus' + MRFId).prop('disabled', false);
+        }
+
+        function editmrf(id) {
+            $('#allocate' + id).prop("disabled", false);
+        }
+
+
+
+
+
+
+        $(document).on('click', '#reset', function() {
+            location.reload();
+        });
+
         $(document).on('click', '#viewMRF', function() {
             var MRFId = $(this).data('id');
             $.post('<?= route('getMRFDetails') ?>', {
                 MRFId: MRFId
             }, function(data) {
-                if (data.MRFDetails.status != 'New') {
+                if (data.MRFDetails.Status == 'New') {
+                    $('#edit_mrf_btn').removeClass('d-none');
+                } else {
                     $('#edit_mrf_btn').addClass('d-none');
                 }
                 $('#editMRFModal').find('input[name="MRFId"]').val(data.MRFDetails.MRFId);
@@ -759,14 +430,15 @@
                 $('#Reason').val(data.MRFDetails.Reason);
                 $('#Company').val(data.MRFDetails.CompanyId);
                 $('#Department').val(data.MRFDetails.DepartmentId);
-                $('#editDesignation').val(data.MRFDetails.DesigId);
+                $('#Designation').val(data.MRFDetails.DesigId);
                 $('#MinCTC').val(data.MRFDetails.MinCTC);
                 $('#MaxCTC').val(data.MRFDetails.MaxCTC);
                 $('#MaxCTC').val(data.MRFDetails.MaxCTC);
                 $('#Stipend').val(data.MRFDetails.Stipend);
-                CKEDITOR.instances['editJobInfo'].setData(data.MRFDetails.Info);
-                $('#Remark').val(data.MRFDetails.Remarks);
                 $('#WorkExp').val(data.MRFDetails.WorkExp);
+                CKEDITOR.instances['JobInfo'].setData(data.MRFDetails.Info);
+                $('#Remark').val(data.MRFDetails.Remarks);
+                $('#OnBehalf').val(data.MRFDetails.OnBehalf);
                 var UniversityValue = data.UniversityDetails;
                 var selectedOptions = UniversityValue.toString().split(",");
 
@@ -775,11 +447,11 @@
                 });
                 $('#University').val(selectedOptions).trigger('change');
 
-                editKPCount = (data.KPDetails).length;
-                var editKPValue = data.KPDetails.toString().split(",");
-                for (i = 1; i <= editKPCount; i++) {
-                    editmulKP(i);
-                    $('#editKeyPosition' + i).val(editKPValue[i - 1]);
+                KPCount = (data.KPDetails).length;
+                var KPValue = data.KPDetails.toString().split(",");
+                for (i = 1; i <= KPCount; i++) {
+                    mulKP(i);
+                    $('#KeyPosition' + i).val(KPValue[i - 1]);
                 }
 
 
@@ -805,7 +477,7 @@
                 for (var i = 0, len = elements.length; i < len; ++i) {
                     elements[i].disabled = true;
                 }
-                CKEDITOR.instances['editJobInfo'].setReadOnly(true);
+                CKEDITOR.instances['JobInfo'].setReadOnly(true);
 
                 if (data.MRFDetails.Type == 'SIP' || data.MRFDetails.Type == 'SIP_HrManual') {
                     $('#deisgnation_tr').addClass('d-none');
@@ -845,12 +517,77 @@
                 $('#editMRFModal').modal('show');
             }, 'json');
         });
+        //==================================Get Department List on Change Company========================//
+        $('#Company').change(function() {
+            var CompanyId = $(this).val();
+            if (CompanyId) {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('getDepartment') }}?CompanyId=" + CompanyId,
+                    beforeSend: function() {
+                        $('#DeptLoader').removeClass('d-none');
+                        $('#Department').addClass('d-none');
+                    },
+                    success: function(res) {
+                        if (res) {
+                            $('#DeptLoader').addClass('d-none');
+                            $('#Department').removeClass('d-none');
+                            $("#Department").empty();
+                            $("#Designation").empty();
+                            $("#ReportingManager").empty();
+                            $("#Department").append(
+                                '<option value="" selected disabled >Select Department</option>');
+                            $("#Designation").append(
+                                '<option value="" selected disabled >Select Designation</option>');
 
+                            $.each(res, function(key, value) {
+                                $("#Department").append('<option value="' + value + '">' +
+                                    key +
+                                    '</option>');
+                            });
+                        } else {
+                            $("#Department").empty();
+                        }
+                    }
+                });
+            } else {
+                $("#Department").empty();
+            }
+        });
+        //===============================Ge Designation on Change of Department====================//
+        $('#Department').change(function() {
+            var DepartmentId = $(this).val();
+            if (DepartmentId) {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('getDesignation') }}?DepartmentId=" + DepartmentId,
+                    beforeSend: function() {
+                        $('#DesigLoader').removeClass('d-none');
+                        $('#Designation').addClass('d-none');
+                    },
+                    success: function(res) {
+                        if (res) {
+                            $('#DesigLoader').addClass('d-none');
+                            $('#Designation').removeClass('d-none');
+                            $("#Designation").empty();
+                            $("#ReportingManager").empty();
+                            $("#Designation").append(
+                                '<option value="" selected disabled >Select Designation</option>');
+                            $.each(res, function(key, value) {
+                                $("#Designation").append('<option value="' + value + '">' +
+                                    key +
+                                    '</option>');
+                            });
+                        } else {
+                            $("#Designation").empty();
+                        }
+                    }
+                });
+            } else {
+                $("#Designation").empty();
+            }
+        });
 
-
-
-        var KPCount = 1;
-        var editKPCount = 1;
         var StateList = '';
         var CityList = '';
         var EducationList = '';
@@ -960,6 +697,7 @@
             });
         }
 
+
         var LocCount = 1;
         mulLocation(LocCount);
 
@@ -988,7 +726,7 @@
                 '</td>';
             if (number > 1) {
                 x +=
-                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-sm  removeLocation">Remove</td></tr>';
+                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-xs  removeLocation">Remove</td></tr>';
                 $('#MulLocation').append(x);
             } else {
                 x +=
@@ -1004,8 +742,32 @@
             LocCount--;
             $(this).closest("tr").remove();
         });
+        mulKP();
 
-       
+        function mulKP(n) {
+            x = '<tr>';
+            x += '<td >' +
+                '<input type="text" class="form-control form-control-sm" id="KeyPosition' + n + '" name="KeyPosition[]">' +
+                '</td>';
+            if (n > 1) {
+                x +=
+                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-sm  removeKP"><i class="bx bx-x"></td></tr>';
+                $('#MulKP').append(x);
+            } else {
+                x +=
+                    '';
+                $('#MulKP').html(x);
+            }
+        }
+        $(document).on('click', '#addKP', function() {
+            KPCount++;
+            mulKP(KPCount);
+        });
+        $(document).on('click', '.removeKP', function() {
+            KPCount--;
+            $(this).closest("tr").remove();
+        });
+
         //-------------------------------Start Multiple Education===========================//
 
         var EduCount = 1;
@@ -1055,6 +817,14 @@
         });
 
 
+        $(document).on('click', '.select_all', function() {
+            if ($(this).prop("checked") == true) {
+                $(this).closest("tr").addClass("bg-secondary bg-gradient text-light");
+            } else {
+                $(this).closest("tr").removeClass("bg-secondary bg-gradient text-light");
+            }
+        });
+
         function getLocation(StateId, No) {
             var StateId = StateId;
             var No = No;
@@ -1088,30 +858,72 @@
             });
         }
 
-        editmulKP();
-        function editmulKP(n) {
-            x = '<tr>';
-            x += '<td >' +
-                '<input type="text" class="form-control form-control-sm" id="editKeyPosition' + n + '" name="editKeyPosition[]">' +
-                '</td>';
-            if (n > 1) {
-                x +=
-                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-sm  editremoveKP"><i class="bx bx-x"></td></tr>';
-                $('#editMulKP').append(x);
-            } else {
-                x +=
-                    '';
-                $('#editMulKP').html(x);
+        $('#update_mrf_form').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            for (instance in CKEDITOR.instances) {
+                CKEDITOR.instances[instance].updateElement();
             }
-        }
-        $(document).on('click', '#editaddKP', function() {
-            editKPCount++;
-            editmulKP(editKPCount);
+            $('#Company').removeAttr('disabled');
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                beforeSend: function() {
+
+                    $(form).find('span.error-text').text('');
+                    $("#loader").modal('show');
+                },
+
+                success: function(data) {
+                    if (data.status == 400) {
+                        $("#loader").modal('hide');
+                        $.each(data.error, function(prefix, val) {
+                            $(form).find('span.' + prefix + '_error').text(val[0]);
+                        });
+                    } else {
+                        $(form)[0].reset();
+                        $('#loader').modal('hide');
+                        toastr.success(data.msg);
+                        window.location.href = "{{ route('mrf') }}";
+                    }
+                }
+            });
         });
-        
-        $(document).on('click', '.editremoveKP', function() {
-            editKPCount--;
-            $(this).closest("tr").remove();
+
+        $(document).on('click', '#deleteMrf', function() {
+            var MRFId = $(this).data('id');
+            var url = '<?= route('deleteMRF') ?>';
+            swal.fire({
+                title: 'Are you sure?',
+                html: 'You want to <b>Delete</b> this MRF',
+                showCancelButton: true,
+                showCloseButton: true,
+                cancelButtonText: 'Cancel',
+                confirmButtonText: 'Yes, Delete',
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#556ee6',
+                width: 400,
+                allowOutsideClick: false
+
+            }).then(function(result) {
+                if (result.value) {
+                    $.post(url, {
+                        MRFId: MRFId
+                    }, function(data) {
+                        if (data.status == 200) {
+                            $('#mrfsummarytable').DataTable().ajax.reload(null, false);
+                            toastr.success(data.msg);
+
+                        } else {
+                            toastr.error(data.msg);
+                        }
+                    }, 'json');
+                }
+            });
         });
     </script>
 @endsection

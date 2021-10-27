@@ -241,7 +241,7 @@ $sql = DB::table('jobpost')
                                                                                     <ul>
                                                                                         @foreach ($data as $item1)
                                                                                             <li>{{ getEducationById($item1['e']) }}
-                                                                                                @if ($item1['s'] != '')
+                                                                                                @if ($item1['s'] != 0)
                                                                                                     {{ ' - ' . getSpecializationbyId($item1['s']) }}
                                                                                                 @endif
                                                                                             </li>

@@ -211,7 +211,7 @@ $CompanyQry = DB::table('master_company')
                             <li> <a href="/admin/mrf"><i class="bx bx-right-arrow-alt"></i>New MRF</a></li>
                             <li> <a href="/admin/active_mrf"><i class="bx bx-right-arrow-alt"></i>Active MRF</a></li>
                             <li> <a href="/admin/closedmrf"><i class="bx bx-right-arrow-alt"></i>Closed MRF</a></li>
-                            <li> <a href="/admin/mrfentry"><i class="bx bx-right-arrow-alt"></i>Manual Entry</a></li>
+                            <li> <a href="/recruiter_mrf_entry"><i class="bx bx-right-arrow-alt"></i>Manual Entry</a></li>
 
                         </ul>
                     </li>
@@ -236,7 +236,7 @@ $CompanyQry = DB::table('master_company')
                             <div class="menu-title">Campus Hirings</div>
                         </a>
                         <ul>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Registration Form</a></li>
+                            <li> <a href="/recruiter/campus_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Campus MRF</a></li>
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Campus Application</a></li>
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Campus Hiring Costing</a></li>
                         </ul>
@@ -363,7 +363,7 @@ $CompanyQry = DB::table('master_company')
                         <ul>
                             <li> <a href="/recruiter/mrf_allocated"><i class="bx bx-right-arrow-alt"></i>MRF
                                     Allocated</a></li>
-                            <li> <a href="/recruiter/recruiter_mrf_entry"><i class="bx bx-right-arrow-alt"></i>Manual
+                            <li> <a href="/recruiter_mrf_entry"><i class="bx bx-right-arrow-alt"></i>Manual
                                     Entry</a></li>
 
                         </ul>
@@ -388,7 +388,7 @@ $CompanyQry = DB::table('master_company')
                             <div class="menu-title">Campus Hirings</div>
                         </a>
                         <ul>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Registration Form (Create)</a></li>
+                            <li> <a href="/recruiter/campus_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Campus MRF</a></li>
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Campus Application</a></li>
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Campus Hiring Costing</a></li>
                         </ul>
@@ -673,7 +673,12 @@ $CompanyQry = DB::table('master_company')
 
             $(document).on('click', '#sidebarsetting', function() {
                 $(".switcher-wrapper").toggleClass("switcher-toggled");
+               // $(".wrapper").removeClass("toggled");
             });
+
+            /* $( ".sidebar-wrapper" ).hover(function() {
+                $(".wrapper").toggleClass("toggled");
+            }); */
             //=====================Set Light Theme=====================
             $(document).on('click', '#lightmode', function() {
                 $.ajax({

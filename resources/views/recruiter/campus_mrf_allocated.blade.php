@@ -10,7 +10,7 @@
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3 download_label">Allocated MRF Details</div>
+            <div class="breadcrumb-title pe-3 download_label">Campus Hiring - Allocated MRF Details</div>
         </div>
         <!--end breadcrumb-->
         <hr />
@@ -79,8 +79,8 @@
                                 <td>Position</td>
                                 <td>Location</td>
                                 <td>Job Posting</td>
-                                <td>View on Site</td>
                                 <td>Details</td>
+                                <td>Link</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -98,7 +98,7 @@
                     <h5 class="modal-title text-white">Create Job Post</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('createJobPost') }}" method="POST" id="createJobPostForm">
+                <form action="{{ route('createJobPost_Campus') }}" method="POST" id="createJobPostForm">
                     @csrf
                     <div class="modal-body">
                         <table class="table borderless">
@@ -124,6 +124,34 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <th>Pay Package <font class="text-danger">*</font>
+                                    </th>
+                                    <td>
+                                        <input type="text" name="PayPackage" id="PayPackage"
+                                            class="form-control form-control-sm">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Location & Man Power <font class="text-danger">*</font>
+                                    </th>
+                                    <td>
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tbody id="MulLocation">
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Desired Eductaion
+                                    </th>
+                                    <td>
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tbody id="MulEducation">
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <th>Job Description</th>
                                     <td>
                                         <textarea name="JobInfo" id="JobInfo" class="JobInfo"></textarea>
@@ -136,8 +164,15 @@
                                             <tbody id="MulKP">
                                             </tbody>
                                         </table>
-                                        <button type="button" name="add" id="addKP"
+                                        <button type="button" name="addKP" id="addKP"
                                             class="btn btn-warning btn-sm mb-2 mt-2"><i class="bx bx-plus"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Last Date for Online Registration</th>
+                                    <td>
+                                        <input type="date" name="LastDate" id="LastDate"
+                                            class="form-control form-control-sm">
                                     </td>
                                 </tr>
 
@@ -231,7 +266,7 @@
                                     </th>
                                     <td>
                                         <table class="table borderless" style="margin-bottom: 0px;">
-                                            <tbody id="MulLocation">
+                                            <tbody id="editMulLocation">
                                             </tbody>
                                         </table>
                                     </td>
@@ -308,7 +343,7 @@
                                     </th>
                                     <td>
                                         <table class="table borderless" style="margin-bottom: 0px;">
-                                            <tbody id="MulEducation">
+                                            <tbody id="editMulEducation">
                                             </tbody>
                                         </table>
                                     </td>
@@ -340,29 +375,6 @@
                                         <textarea name="editJobInfo" id="editJobInfo" class="form-control"></textarea>
                                     </td>
                                 </tr>
-                                <tr id="duration_tr">
-                                    <th>Training Duration</th>
-                                    <td>
-                                        <table class="table borderless" style="margin-bottom: 0px;">
-                                            <tbody>
-                                                <tr>
-                                                    <td valign="middle">From</td>
-                                                    <td>
-                                                        <input type="date" name="Tr_Frm_Date" id="Tr_Frm_Date"
-                                                            class="form-control form-control-sm">
-                                                        <span class="text-danger error-text Tr_Frm_Date_error"></span>
-                                                    </td>
-                                                    <td valign="middle">To</td>
-                                                    <td>
-                                                        <input type="date" name="Tr_To_Date" id="Tr_To_Date"
-                                                            class="form-control form-control-sm">
-                                                        <span class="text-danger error-text Tr_To_Date_error"></span>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
                                 <tr>
                                     <th>Mandatory Requirement</th>
                                     <td>
@@ -372,7 +384,8 @@
                                             </tbody>
                                         </table>
                                         <button type="button" name="editadd" id="editaddKP"
-                                            class="btn btn-warning btn-sm mb-2 mt-2"><i class="bx bx-plus"></i></button>
+                                            class="btn btn-warning btn-sm mb-2 mt-2"><i
+                                                class="bx bx-plus"></i></button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -478,7 +491,7 @@
                 },
             ],
             ajax: {
-                url: "{{ route('getAllAllocatedMRF') }}",
+                url: "{{ route('getAllCampusAllocatedMrf') }}",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
@@ -531,14 +544,15 @@
                     data: 'JobPost',
                     name: 'JobPost'
                 },
-                {
-                    data: 'JobShow',
-                    name: 'JobShow'
-                },
+
 
                 {
                     data: 'details',
                     name: 'details'
+                },
+                {
+                    data: 'Link',
+                    name: 'Link'
                 }
             ],
 
@@ -569,30 +583,7 @@
             GetAllocatedMrf();
         });
 
-        function GetDepartment() {
-            var CompanyId = $('#Fill_Company').val();
-            $.ajax({
-                type: "GET",
-                url: "{{ route('getDepartment') }}?CompanyId=" + CompanyId,
-                beforeSend: function() {
 
-                },
-                success: function(res) {
-
-                    if (res) {
-                        $("#Fill_Department").empty();
-                        $("#Fill_Department").append(
-                            '<option value="" selected disabled >Select Department</option>');
-                        $.each(res, function(key, value) {
-                            $("#Fill_Department").append('<option value="' + value + '">' + key +
-                                '</option>');
-                        });
-                    } else {
-                        $("#Fill_Department").empty();
-                    }
-                }
-            });
-        }
 
 
         $(document).on('click', '.select_all', function() {
@@ -607,35 +598,6 @@
             window.location.reload();
         });
 
-
-
-        mulKP();
-
-        function mulKP(n) {
-            x = '<tr>';
-            x += '<td >' +
-                '<input type="text" class="form-control form-control-sm" id="KeyPosition' + n + '" name="KeyPosition[]">' +
-                '</td>';
-
-            if (n > 1) {
-                x +=
-                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-sm  removeKP"><i class="bx bx-x"></td></tr>';
-                $('#MulKP').append(x);
-            } else {
-                x +=
-                    '';
-                $('#MulKP').html(x);
-            }
-        }
-        $(document).on('click', '#addKP', function() {
-            KPCount++;
-            mulKP(KPCount);
-        });
-
-        $(document).on('click', '.removeKP', function() {
-            KPCount--;
-            $(this).closest("tr").remove();
-        });
 
         function getDetailForJobPost(MRFId) {
             var MRFId = MRFId;
@@ -654,6 +616,22 @@
                 for (i = 1; i <= KPCount; i++) {
                     mulKP(i);
                     $('#KeyPosition' + i).val(KPValue[i - 1]);
+                }
+                LocCount = (data.LocationDetails).length;
+                for (j = 1; j <= LocCount; j++) {
+                    editmulLocation(j);
+                    $('#State' + j).val(data.LocationDetails[j - 1].state);
+                    $('#City' + j).val(data.LocationDetails[j - 1].city);
+                    $('#ManPower' + j).val(data.LocationDetails[j - 1].nop);
+
+                }
+
+                EduCount = (data.EducationDetails).length;
+
+                for (a = 1; a <= EduCount; a++) {
+                    mulEducation(a);
+                    $('#Education' + a).val(data.EducationDetails[a - 1].e);
+                    $("#Specialization" + a).val(data.EducationDetails[a - 1].s);
                 }
 
             }, 'json');
@@ -697,55 +675,7 @@
             $('#postStatus' + id).prop("disabled", false);
         }
 
-        function ChngPostingView(JPId, va) {
 
-            $.ajax({
-                url: "{{ route('ChngPostingView') }}",
-                type: 'POST',
-                data: {
-                    JPId: JPId,
-                    va: va
-                },
-                dataType: 'json',
-                beforeSend: function() {
-                    $("#loader").modal('show');
-                },
-                success: function(data) {
-                    if (data.status == 200) {
-                        $("#loader").modal('hide');
-                        $('#MRFTable').DataTable().ajax.reload(null, false);
-                        toastr.success(data.msg);
-                    } else {
-                        toastr.error(data.msg);
-                    }
-                }
-            });
-        }
-
-
-
-        $(document).on('click', '.select_all', function() {
-            if ($(this).prop("checked") == true) {
-                $(this).closest("tr").addClass("bg-secondary bg-gradient");
-            } else {
-                $(this).closest("tr").removeClass("bg-secondary bg-gradient");
-            }
-        });
-
-        $("#two_wheeler_check").change(function() {
-            if (!this.checked) {
-                $("#two_wheeler_div").addClass("d-none");
-            } else {
-                $("#two_wheeler_div").removeClass("d-none");
-            }
-        });
-        $("#da_check").change(function() {
-            if (!this.checked) {
-                $("#da_div").addClass("d-none");
-            } else {
-                $("#da_div").removeClass("d-none");
-            }
-        });
         $(document).on('click', '#viewMRF', function() {
             var MRFId = $(this).data('id');
             $.post('<?= route('getMRFDetails') ?>', {
@@ -783,21 +713,21 @@
                 }
 
 
-                LocCount = (data.LocationDetails).length;
-                for (j = 1; j <= LocCount; j++) {
-                    mulLocation(j);
-                    $('#State' + j).val(data.LocationDetails[j - 1].state);
-                    $('#City' + j).val(data.LocationDetails[j - 1].city);
-                    $('#ManPower' + j).val(data.LocationDetails[j - 1].nop);
+                editLocCount = (data.LocationDetails).length;
+                for (j = 1; j <= editLocCount; j++) {
+                    editmulLocation(j);
+                    $('#editState' + j).val(data.LocationDetails[j - 1].state);
+                    $('#editCity' + j).val(data.LocationDetails[j - 1].city);
+                    $('#editManPower' + j).val(data.LocationDetails[j - 1].nop);
 
                 }
 
-                EduCount = (data.EducationDetails).length;
+                editEduCount = (data.EducationDetails).length;
 
-                for (a = 1; a <= EduCount; a++) {
+                for (a = 1; a <= editEduCount; a++) {
                     mulEducation(a);
-                    $('#Education' + a).val(data.EducationDetails[a - 1].e);
-                    $("#Specialization" + a).val(data.EducationDetails[a - 1].s);
+                    $('#editEducation' + a).val(data.EducationDetails[a - 1].e);
+                    $("#editSpecialization" + a).val(data.EducationDetails[a - 1].s);
                 }
 
                 var form = document.getElementById("update_mrf_form");
@@ -811,7 +741,6 @@
                     $('#deisgnation_tr').addClass('d-none');
                     $('#work_exp_tr').addClass('d-none');
                     $('#stipend_tr').removeClass('d-none');
-                    $('#duration_tr').removeClass('d-none');
                     $('#ctc_tr').addClass('d-none');
                     $('#other_benifit_tr').removeClass('d-none');
                     if (data.MRFDetails.TwoWheeler != null) {
@@ -824,22 +753,13 @@
                         $("#da_div").removeClass("d-none");
                         $('#da').val(data.MRFDetails.DA);
                     }
-                    if (data.MRFDetails.Tr_Frm_Date != null) {
-                        $('#Tr_Frm_Date').val(data.MRFDetails.Tr_Frm_Date);
-                    }
-                    if (data.MRFDetails.Tr_To_Date != null) {
-                        $('#Tr_To_Date').val(data.MRFDetails.Tr_To_Date);
-                    }
                 } else {
                     $('#deisgnation_tr').removeClass('d-none');
                     $('#work_exp_tr').removeClass('d-none');
                     $('#stipend_tr').addClass('d-none');
-                    $('#duration_tr').addClass('d-none');
                     $('#ctc_tr').removeClass('d-none');
                     $('#other_benifit_tr').addClass('d-none');
                 }
-
-
 
                 $('.modal-footer').addClass('d-none');
                 $('#editMRFModal').modal('show');
@@ -847,15 +767,53 @@
         });
 
 
-
-
         var KPCount = 1;
         var editKPCount = 1;
+        var editLocCount = 1;
         var StateList = '';
         var CityList = '';
         var EducationList = '';
         var SpecializationList = '';
+        var EduCount = 1;
+        var editEduCount = 1;
+        var LocCount = 1;
+        var editLocCount = 1;
+
+        mulKP();
+        editmulKP();
         getState();
+        getCity();
+        getAllSP();
+        getEducation();
+        mulLocation(LocCount);
+        mulEducation(EduCount);
+        editmulLocation(editLocCount);
+        editmulEducation(editEduCount);
+
+        function GetDepartment() {
+            var CompanyId = $('#Fill_Company').val();
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getDepartment') }}?CompanyId=" + CompanyId,
+                beforeSend: function() {
+
+                },
+                success: function(res) {
+
+                    if (res) {
+                        $("#Fill_Department").empty();
+                        $("#Fill_Department").append(
+                            '<option value="" selected disabled >Select Department</option>');
+                        $.each(res, function(key, value) {
+                            $("#Fill_Department").append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+                    } else {
+                        $("#Fill_Department").empty();
+                    }
+                }
+            });
+        }
 
         function getState() {
             $.ajax({
@@ -872,7 +830,6 @@
                 }
             });
         }
-        getCity();
 
         function getCity() {
             $.ajax({
@@ -889,8 +846,6 @@
                 }
             });
         }
-        getEducation();
-        getAllSP();
 
         function getEducation() {
             $.ajax({
@@ -960,8 +915,66 @@
             });
         }
 
-        var LocCount = 1;
-        mulLocation(LocCount);
+        function getLocation(StateId, No) {
+            var StateId = StateId;
+            var No = No;
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getDistrict') }}?StateId=" + StateId,
+                async: false,
+                beforeSend: function() {
+                    $('#LocLoader' + No).removeClass('d-none');
+                    $('#City' + No).addClass('d-none');
+                },
+
+                success: function(res) {
+
+                    if (res) {
+                        $('#LocLoader' + No).addClass('d-none');
+                        $('#City' + No).removeClass('d-none');
+                        $("#City" + No).empty();
+                        $("#City" + No).append(
+                            '<option value="0" selected>Select City</option>');
+
+                        $.each(res, function(key, value) {
+                            $("#City" + No).append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+
+                    } else {
+                        $("#City" + No).empty();
+                    }
+                }
+            });
+        }
+
+
+        function mulKP(n) {
+            x = '<tr>';
+            x += '<td >' +
+                '<input type="text" class="form-control form-control-sm" id="KeyPosition' + n + '" name="KeyPosition[]">' +
+                '</td>';
+
+            if (n > 1) {
+                x +=
+                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-sm  removeKP"><i class="bx bx-x"></td></tr>';
+                $('#MulKP').append(x);
+            } else {
+                x +=
+                    '';
+                $('#MulKP').html(x);
+            }
+        }
+
+        $(document).on('click', '#addKP', function() {
+            KPCount++;
+            mulKP(KPCount);
+        });
+
+        $(document).on('click', '.removeKP', function() {
+            KPCount--;
+            $(this).closest("tr").remove();
+        });
 
         function mulLocation(number) {
             x = '<tr>';
@@ -996,20 +1009,105 @@
                 $('#MulLocation').html(x);
             }
         }
+
         $(document).on('click', '#addLocation', function() {
             LocCount++;
             mulLocation(LocCount);
         });
+
         $(document).on('click', '.removeLocation', function() {
             LocCount--;
             $(this).closest("tr").remove();
         });
 
-       
-        //-------------------------------Start Multiple Education===========================//
+        function editmulLocation(number) {
+            x = '<tr>';
+            x += '<td >' +
+                ' <select  name="editState[]" id="editState' +
+                number +
+                '" class="form-control form-select form-select-sm" onchange="getLocation(this.value,' + number + ')">' +
+                '  <option value="" selected disabled>Select State</option>' + StateList +
+                '</select>' +
+                ' <span class="text-danger error-text State' + number + '_error"></span>' +
+                '</td>';
+            x += '<td>' +
+                '<div class="spinner-border text-primary d-none" role="status" id="LocLoader' + number +
+                '"> <span class="visually-hidden">Loading...</span></div>' +
+                '       <select  id="editCity' + number +
+                '" name="editCity[]" class="form-control form-select form-select-sm">' +
+                '    <option value="0" selected>Select City</option>' + CityList +
+                '</select>' +
+                '<span class="text-danger error-text City' + number + '_error"></span>' +
+                '</td>';
+            x += '<td>' +
+                '  <input type="text" name="editManPower[]" id="editManPower' + number +
+                '" class="form-control form-control-sm" style="width:130px" placeholder="No. of Manpower">' +
+                '<span class="text-danger error-text ManPower' + number + '_error"></span>' +
+                '</td>';
+            if (number > 1) {
+                x +=
+                    '<td><button type="button" name="remove" id="" class="btn btn-danger btn-sm  editremoveLocation">Remove</td></tr>';
+                $('#editMulLocation').append(x);
+            } else {
+                x +=
+                    '<td><button type="button" name="add" id="editaddLocation" class="btn btn-warning btn-sm ">Add</button></td></tr>';
+                $('#editMulLocation').html(x);
+            }
+        }
 
-        var EduCount = 1;
-        mulEducation(EduCount);
+        $(document).on('click', '#editaddLocation', function() {
+            editLocCount++;
+            editmulLocation(LocCount);
+        });
+
+        $(document).on('click', '.editremoveLocation', function() {
+            editLocCount--;
+            $(this).closest("tr").remove();
+        });
+
+
+        function editmulEducation(num) {
+            x = '<tr>';
+            x += '<td >' +
+                ' <select  name="editEducation[]" id="editEducation' +
+                num +
+                '" class="form-control form-select form-select-sm" onchange="getSpecialization(this.value,' + num + ')">' +
+                '  <option value="" selected disabled>Select Education</option>' + EducationList +
+                '</select>' +
+                ' <span class="text-danger error-text Education' + num + '_error"></span>' +
+                '</td>';
+            x += '<td>' +
+                '<div class="spinner-border text-primary d-none" role="status" id="SpeLoader' + num +
+                '"> <span class="visually-hidden">Loading...</span></div>' +
+                '       <select  id="editSpecialization' + num +
+                '" name="editSpecialization[]" class="form-control form-select form-select-sm">' +
+
+                '    <option value="0" >Other</option>' + SpecializationList +
+                '</select>' +
+                '<span class="text-danger error-text Specialization' + num + '_error"></span>' +
+                '</td>';
+
+
+            if (num > 1) {
+                x +=
+                    '<td><button type="button" name="editremove" id="" class="btn btn-danger btn-sm  editremoveEducation">Remove</td></tr>';
+                $('#editMulEducation').append(x);
+            } else {
+                x +=
+                    '<td><button type="button" name="add" id="editaddEducation" class="btn btn-warning btn-sm ">Add</button></td></tr>';
+                $('#editMulEducation').html(x);
+            }
+        }
+
+        $(document).on('click', '#addEducation', function() {
+            editEduCount++;
+            editmulEducation(editEduCount);
+        });
+
+        $(document).on('click', '.editremoveEducation', function() {
+            editEduCount--;
+            $(this).closest("tr").remove();
+        });
 
         function mulEducation(num) {
             x = '<tr>';
@@ -1055,44 +1153,12 @@
         });
 
 
-        function getLocation(StateId, No) {
-            var StateId = StateId;
-            var No = No;
-            $.ajax({
-                type: "GET",
-                url: "{{ route('getDistrict') }}?StateId=" + StateId,
-                async: false,
-                beforeSend: function() {
-                    $('#LocLoader' + No).removeClass('d-none');
-                    $('#City' + No).addClass('d-none');
-                },
 
-                success: function(res) {
-
-                    if (res) {
-                        $('#LocLoader' + No).addClass('d-none');
-                        $('#City' + No).removeClass('d-none');
-                        $("#City" + No).empty();
-                        $("#City" + No).append(
-                            '<option value="0" selected>Select City</option>');
-
-                        $.each(res, function(key, value) {
-                            $("#City" + No).append('<option value="' + value + '">' + key +
-                                '</option>');
-                        });
-
-                    } else {
-                        $("#City" + No).empty();
-                    }
-                }
-            });
-        }
-
-        editmulKP();
         function editmulKP(n) {
             x = '<tr>';
             x += '<td >' +
-                '<input type="text" class="form-control form-control-sm" id="editKeyPosition' + n + '" name="editKeyPosition[]">' +
+                '<input type="text" class="form-control form-control-sm" id="editKeyPosition' + n +
+                '" name="editKeyPosition[]">' +
                 '</td>';
             if (n > 1) {
                 x +=
@@ -1108,10 +1174,18 @@
             editKPCount++;
             editmulKP(editKPCount);
         });
-        
+
         $(document).on('click', '.editremoveKP', function() {
             editKPCount--;
             $(this).closest("tr").remove();
         });
+
+        function copylink(id) {
+            var copyText = document.getElementById("link" + id);
+            copyText.select();
+            copyText.setSelectionRange(0, 99999)
+            document.execCommand("copy");
+            alert("Copied Link: " + copyText.value);
+        }
     </script>
 @endsection

@@ -9,46 +9,58 @@
     </style>
     <div class="page-content">
         <!--breadcrumb-->
-        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">Active MRF Details</div>
+        <div class="page-breadcrumb  align-items-center mb-3">
+            <div class="row mb-1">
+                <div class="col-3 breadcrumb-title ">
+                   Active  MRF Details
+                </div>
+                <div class="col-2">
+                    <select name="Fill_Company" id="Fill_Company" class="form-select form-select-sm"
+                        onchange="GetActiveMRF(); GetDepartment();">
+                        <option value="">Select Company</option>
+                        @foreach ($company_list as $key => $value)
+                            <option value="{{ $key }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-2">
+
+                    <select name="Fill_Department" id="Fill_Department" class="form-select form-select-sm"
+                        onchange="GetActiveMRF();">
+                        <option value="">Select Department</option>
+
+                    </select>
+                </div>
+                <div class="col-2">
+                    <select name="Year" id="Year" class="form-select form-select-sm" onchange="GetActiveMRF();">
+                        <option value="">Select Year</option>
+                        @for ($i = 2021; $i <= date('Y'); $i++)
+                            <option value="{{ $i }}">{{ $i }}</option>
+                        @endfor
+                    </select>
+                </div>
+                <div class="col-2">
+                    <select name="Month" id="Month" class="form-select form-select-sm" onchange="GetActiveMRF();">
+                        <option value="">Select Month</option>
+                        @foreach ($months as $key => $value)
+                            <option value="{{ $key }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-1">
+                    <button type="reset" class="btn btn-danger btn-sm" id="reset"><i class="bx bx-refresh"></i></button>
+                </div>
+            </div>
+
         </div>
         <!--end breadcrumb-->
-        <hr />
+        <hr>
         <div class="card">
             <div class="card-body">
-                <div class="row mb-1">
-                    <div class="col-2"></div>
-                    <div class="col-2">
-                        <select name="Fil_Company" id="Fil_Company" class="form-select form-select-sm">
-                            <option value="">Select Company</option>
-                        </select>
-                    </div>
-                    <div class="col-2">
-
-                        <select name="Fil_Department" id="Fil_Department" class="form-select form-select-sm">
-                            <option value="">Select Department</option>
-                        </select>
-                    </div>
-                    <div class="col-2">
-                        <select name="Year" id="Year" class="form-select form-select-sm">
-                            <option value="">Select Year</option>
-                        </select>
-                    </div>
-                    <div class="col-2">
-                        <select name="Month" id="Month" class="form-select form-select-sm">
-                            <option value="">Select Month</option>
-                        </select>
-                    </div>
-                    <div class="col-2">
-                        <button type="reset" class="btn btn-danger btn-sm" id="reset"><i
-                                class="bx bx-refresh"></i></button>
-                    </div>
-                </div>
-                <hr />
                 <div class="table-responsive">
-                    <table class="table  table-hover table-condensed table-bordered text-center" id="MRFTable"
+                    <table class="table  table-hover table-condensed table-striped table-bordered text-center" id="MRFTable"
                         style="width: 100%">
-                        <thead>
+                        <thead class="bg-primary text-light">
                             <tr class="text-center">
                                 <td></td>
                                 <td class="th-sm">S.No</td>
@@ -80,8 +92,6 @@
                 <div class="modal-header bg-info bg-gradient">
                     <h5 class="modal-title text-white">MRF Details</h5>
 
-                    <button type="button" class="btn btn-info" style="margin-left: 510px; opacity:1" id="edit_mrf_btn"><i
-                            class="fa fa-pencil"></i>Edit</button>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('updateMRF') }}" method="POST" id="update_mrf_form">
@@ -263,6 +273,29 @@
                                         <textarea name="JobInfo" id="JobInfo" class="form-control"></textarea>
                                     </td>
                                 </tr>
+                                <tr id="duration_tr">
+                                    <th>Training Duration</th>
+                                    <td>
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tbody>
+                                                <tr>
+                                                    <td valign="middle">From</td>
+                                                    <td>
+                                                        <input type="date" name="Tr_Frm_Date" id="Tr_Frm_Date"
+                                                            class="form-control form-control-sm">
+                                                        <span class="text-danger error-text Tr_Frm_Date_error"></span>
+                                                    </td>
+                                                    <td valign="middle">To</td>
+                                                    <td>
+                                                        <input type="date" name="Tr_To_Date" id="Tr_To_Date"
+                                                            class="form-control form-control-sm">
+                                                        <span class="text-danger error-text Tr_To_Date_error"></span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
                                 <tr>
                                     <th>Mandatory Requirement</th>
                                     <td>
@@ -300,12 +333,29 @@
         });
 
         var KPCount;
-
+        
         $(document).ready(function() {
             $('#MRFTable').DataTable({
                 processing: true,
+                serverSide:true,
+                ordering:false,
+                searching:false,
+                lengthChange:false,
                 info: true,
-                ajax: "{{ route('getActiveMrf') }}",
+                ajax: {
+                    url: "{{ route('getActiveMrf') }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: function(d) {
+                        d.Company = $('#Fill_Company').val();
+                        d.Department = $('#Fill_Department').val();
+                        d.Year = $('#Year').val();
+                        d.Month = $('#Month').val();
+                    },
+                    type: 'POST',
+                    dataType: "JSON",
+                },
                 columns: [
 
                     {
@@ -364,15 +414,11 @@
             });
         });
 
-        function editmstst(MRFId, th) {
-            $('#mrfstatus' + MRFId).prop('disabled', false);
+
+
+        function GetActiveMRF() {
+            $('#MRFTable').DataTable().draw(true);
         }
-
-        function editmrf(id) {
-            $('#allocate' + id).prop("disabled", false);
-        }
-
-
 
         function chngmrfsts(MRFId, va) {
             if (va == 'Hold' || va == 'Rejected') {
@@ -576,24 +622,20 @@
             });
         }
 
-        $(document).on('click', '#reset', function() {
-            location.reload();
-        });
 
         $(document).on('click', '#viewMRF', function() {
             var MRFId = $(this).data('id');
             $.post('<?= route('getMRFDetails') ?>', {
                 MRFId: MRFId
             }, function(data) {
-                if(data.MRFDetails.status !='New'){
-                    $('#edit_mrf_btn').addClass('d-none');
-                }
+             
                 $('#editMRFModal').find('input[name="MRFId"]').val(data.MRFDetails.MRFId);
                 $('#MRF_Type').val(data.MRFDetails.Type);
                 $('#Reason').val(data.MRFDetails.Reason);
                 $('#Company').val(data.MRFDetails.CompanyId);
                 $('#Department').val(data.MRFDetails.DepartmentId);
                 $('#Designation').val(data.MRFDetails.DesigId);
+                $('#WorkExp').val(data.MRFDetails.WorkExp);
                 $('#MinCTC').val(data.MRFDetails.MinCTC);
                 $('#MaxCTC').val(data.MRFDetails.MaxCTC);
                 $('#MaxCTC').val(data.MRFDetails.MaxCTC);
@@ -640,9 +682,10 @@
                 }
                 CKEDITOR.instances['JobInfo'].setReadOnly(true);
 
-                if (data.MRFDetails.Type == 'SIP' || data.MRFDetails.Type == 'SIP_Hr_Manual') {
+                if (data.MRFDetails.Type == 'SIP' || data.MRFDetails.Type == 'SIP_HrManual') {
                     $('#deisgnation_tr').addClass('d-none');
                     $('#stipend_tr').removeClass('d-none');
+                    $('#duration_tr').removeClass('d-none');
                     $('#ctc_tr').addClass('d-none');
                     $('#other_benifit_tr').removeClass('d-none');
                     if (data.MRFDetails.TwoWheeler != null) {
@@ -655,9 +698,16 @@
                         $("#da_div").removeClass("d-none");
                         $('#da').val(data.MRFDetails.DA);
                     }
+                    if (data.MRFDetails.Tr_Frm_Date != null) {
+                        $('#Tr_Frm_Date').val(data.MRFDetails.Tr_Frm_Date);
+                    }
+                    if (data.MRFDetails.Tr_To_Date != null) {
+                        $('#Tr_To_Date').val(data.MRFDetails.Tr_To_Date);
+                    }
                 } else {
                     $('#deisgnation_tr').removeClass('d-none');
                     $('#stipend_tr').addClass('d-none');
+                    $('#duration_tr').addClass('d-none');
                     $('#ctc_tr').removeClass('d-none');
                     $('#other_benifit_tr').addClass('d-none');
                 }
@@ -1076,6 +1126,31 @@
                 }
             });
         });
+
+        function GetDepartment() {
+            var CompanyId = $('#Fill_Company').val();
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getDepartment') }}?CompanyId=" + CompanyId,
+                beforeSend: function() {
+
+                },
+                success: function(res) {
+
+                    if (res) {
+                        $("#Fill_Department").empty();
+                        $("#Fill_Department").append(
+                            '<option value="" selected disabled >Select Department</option>');
+                        $.each(res, function(key, value) {
+                            $("#Fill_Department").append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+                    } else {
+                        $("#Fill_Department").empty();
+                    }
+                }
+            });
+        }
     </script>
 
 @endsection

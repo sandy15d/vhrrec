@@ -19,18 +19,32 @@
 
                     </div>
                     <hr>
-                    <form action="{{ route('addSipMrf') }}" method="POST" id="addSipMrfForm">
+                    <form action="{{ route('add_sip_mrf_manual') }}" method="POST" id="addSipMrfForm">
                         @csrf
                         <div class="modal-body">
                             <table class="table borderless">
                                 <tbody>
+                                    <tr>
+                                        <th>On Behalf of HOD<font class="text-danger">*</font>
+                                        </th>
+                                        <td><select id="OnBehalf" name="OnBehalf"
+                                                class="form-control form-select form-select-sm" autofocus=true tabindex="1">
+                                                <option value="" selected>Select HOD</option>
+                                                @foreach ($userlist as $key => $value)
+                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                @endforeach
+                                            </select>
+
+                                            <span class="text-danger error-text OnBehalf_error"></span>
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <th style="width:250px;">Reason for Creating New Position<font
                                                 class="text-danger">*
                                             </font>
                                         </th>
                                         <td>
-                                            <textarea class="form-control" rows="1" name="Reason" tabindex="1"
+                                            <textarea class="form-control" rows="1" name="Reason" tabindex="2"
                                                 autofocus></textarea>
                                             <span class="text-danger error-text Reason_error"></span>
 
@@ -61,7 +75,7 @@
                                             </div>
                                             <select id="Department" name="Department"
                                                 class="form-control form-select form-select-sm">
-                                                <option value="" selected disabled>Select Department</option>
+                                                <option value="" selected disabled tabindex="2">Select Department</option>
                                                 @foreach ($department_list as $key => $value)
                                                     <option value="{{ $key }}">{{ $value }}</option>
                                                 @endforeach
@@ -195,7 +209,6 @@
                                             </table>
                                         </td>
                                     </tr>
-
                                     <tr>
                                         <th>Mandatory Requirements</th>
                                         <td>
@@ -583,7 +596,7 @@
 
                 success: function(data) {
                     if (data.status == 400) {
-                        $('#Company').attr('disabled',true);
+                        $('#Company').attr('disabled', true);
                         $("#loader").modal('hide');
                         $.each(data.error, function(prefix, val) {
                             $(form).find('span.' + prefix + '_error').text(val[0]);

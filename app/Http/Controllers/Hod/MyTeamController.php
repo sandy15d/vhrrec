@@ -48,6 +48,9 @@ class MyTeamController extends Controller
                 return '<a href="javascript:void(0)" data-id="' . $employee->EmployeeID . '" class=" getMyTeam">' . $employee->Fname . ' ' . $employee->Sname . ' ' . $employee->Lname . '</a>';
             })
 
+            ->addColumn('chk', function () {
+                return '<input type="checkbox" class="select_all">';
+            })
             ->addColumn('Reporting', function ($employee) {
                 return $employee->RFname . ' ' . $employee->RSname . ' ' . $employee->RLname;
             })
@@ -70,7 +73,7 @@ class MyTeamController extends Controller
                     }
                 }
             })
-            ->rawColumns(['fullname', 'MStatus'])
+            ->rawColumns(['chk', 'fullname', 'MStatus'])
             ->make(true);
     }
 
@@ -100,7 +103,9 @@ class MyTeamController extends Controller
             ->addColumn('fullname', function ($emp) {
                 return $emp->Fname . ' ' . $emp->Sname . ' ' . $emp->Lname;
             })
-
+            ->addColumn('chk1', function () {
+                return '<input type="checkbox" class="select_all">';
+            })
             ->addColumn('Reporting', function ($emp) {
                 return $emp->RFname . ' ' . $emp->RSname . ' ' . $emp->RLname;
             })
@@ -123,7 +128,7 @@ class MyTeamController extends Controller
                     }
                 }
             })
-            ->rawColumns(['fullname', 'MStatus'])
+            ->rawColumns(['chk1','fullname', 'MStatus'])
             ->make(true);
     }
 }

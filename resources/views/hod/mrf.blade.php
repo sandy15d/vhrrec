@@ -247,6 +247,29 @@
                                         <textarea name="JobInfo" id="JobInfo" class="form-control"></textarea>
                                     </td>
                                 </tr>
+                                <tr id="duration_tr">
+                                    <th>Training Duration</th>
+                                    <td>
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tbody>
+                                                <tr>
+                                                    <td valign="middle">From</td>
+                                                    <td>
+                                                        <input type="date" name="Tr_Frm_Date" id="Tr_Frm_Date"
+                                                            class="form-control form-control-sm">
+                                                        <span class="text-danger error-text Tr_Frm_Date_error"></span>
+                                                    </td>
+                                                    <td valign="middle">To</td>
+                                                    <td>
+                                                        <input type="date" name="Tr_To_Date" id="Tr_To_Date"
+                                                            class="form-control form-control-sm">
+                                                        <span class="text-danger error-text Tr_To_Date_error"></span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
                                 <tr>
                                     <th>Mandatory Requirement</th>
                                     <td>
@@ -299,6 +322,7 @@
             }
         });
         var KPCount;
+
         $('#mrfsummarytable').DataTable({
             processing: true,
             ordering: false,
@@ -362,95 +386,6 @@
             $('.modal-footer').removeClass('d-none');
         });
 
-        function editmstst(MRFId, th) {
-            $('#mrfstatus' + MRFId).prop('disabled', false);
-        }
-
-        function editmrf(id) {
-            $('#allocate' + id).prop("disabled", false);
-        }
-
-       
-
-        function chngmrfsts(MRFId, va) {
-            if (va == 'Hold' || va == 'Rejected') {
-                var RemarkHr = prompt("Please Enter Remark");
-                if (RemarkHr != null) {
-                    $.ajax({
-                        url: "{{ route('updateMRFStatus') }}",
-                        type: 'POST',
-                        data: {
-                            MRFId: MRFId,
-                            va: va,
-                            RemarkHr: RemarkHr
-                        },
-                        dataType: 'json',
-                        beforeSend: function() {
-                            $("#loader").modal('show');
-                        },
-                        success: function(data) {
-                            if (data.status == 200) {
-                                $("#loader").modal('hide');
-                                $('#MRFTable').DataTable().ajax.reload(null, false);
-                                toastr.success(data.msg);
-                            } else {
-                                toastr.error(data.msg);
-                            }
-                        }
-                    });
-                } else {
-                    alert('Please Enter Remark');
-                }
-            } else {
-                var RemarkHr = '';
-                $.ajax({
-                    url: "{{ route('updateMRFStatus') }}",
-                    type: 'POST',
-                    data: {
-                        MRFId: MRFId,
-                        va: va,
-                        RemarkHr: RemarkHr
-                    },
-                    dataType: 'json',
-                    beforeSend: function() {
-                        $("#loader").modal('show');
-                    },
-                    success: function(data) {
-                        if (data.status == 200) {
-                            $("#loader").modal('hide');
-                            $('#MRFTable').DataTable().ajax.reload(null, false);
-                            toastr.success(data.msg);
-                        } else {
-                            toastr.error(data.msg);
-                        }
-                    }
-                });
-            }
-        }
-
-        function allocatemrf(MRFId, va) {
-            $.ajax({
-                url: "{{ route('allocateMRF') }}",
-                type: 'POST',
-                data: {
-                    MRFId: MRFId,
-                    va: va
-                },
-                dataType: 'json',
-                beforeSend: function() {
-                    $("#loader").modal('show');
-                },
-                success: function(data) {
-                    if (data.status == 200) {
-                        $("#loader").modal('hide');
-                        $('#MRFTable').DataTable().ajax.reload(null, false);
-                        toastr.success(data.msg);
-                    } else {
-                        toastr.error(data.msg);
-                    }
-                }
-            });
-        }
 
         $(document).on('click', '#reset', function() {
             location.reload();
@@ -461,7 +396,9 @@
             $.post('<?= route('getMRFDetails') ?>', {
                 MRFId: MRFId
             }, function(data) {
-                if(data.MRFDetails.status !='New'){
+                if (data.MRFDetails.Status == 'New') {
+                    $('#edit_mrf_btn').removeClass('d-none');
+                } else {
                     $('#edit_mrf_btn').addClass('d-none');
                 }
                 $('#editMRFModal').find('input[name="MRFId"]').val(data.MRFDetails.MRFId);
@@ -474,6 +411,7 @@
                 $('#MaxCTC').val(data.MRFDetails.MaxCTC);
                 $('#MaxCTC').val(data.MRFDetails.MaxCTC);
                 $('#Stipend').val(data.MRFDetails.Stipend);
+                $('#WorkExp').val(data.MRFDetails.WorkExp);
                 CKEDITOR.instances['JobInfo'].setData(data.MRFDetails.Info);
                 $('#Remark').val(data.MRFDetails.Remarks);
                 var UniversityValue = data.UniversityDetails;
@@ -516,9 +454,11 @@
                 }
                 CKEDITOR.instances['JobInfo'].setReadOnly(true);
 
-                if (data.MRFDetails.Type == 'SIP' || data.MRFDetails.Type == 'SIP_Hr_Manual') {
+                if (data.MRFDetails.Type == 'SIP' || data.MRFDetails.Type == 'SIP_HrManual') {
                     $('#deisgnation_tr').addClass('d-none');
+                    $('#work_exp_tr').addClass('d-none');
                     $('#stipend_tr').removeClass('d-none');
+                    $('#duration_tr').removeClass('d-none');
                     $('#ctc_tr').addClass('d-none');
                     $('#other_benifit_tr').removeClass('d-none');
                     if (data.MRFDetails.TwoWheeler != null) {
@@ -531,9 +471,18 @@
                         $("#da_div").removeClass("d-none");
                         $('#da').val(data.MRFDetails.DA);
                     }
+
+                    if (data.MRFDetails.Tr_Frm_Date != null) {
+                        $('#Tr_Frm_Date').val(data.MRFDetails.Tr_Frm_Date);
+                    }
+                    if (data.MRFDetails.Tr_To_Date != null) {
+                        $('#Tr_To_Date').val(data.MRFDetails.Tr_To_Date);
+                    }
                 } else {
                     $('#deisgnation_tr').removeClass('d-none');
+                    $('#work_exp_tr').removeClass('d-none');
                     $('#stipend_tr').addClass('d-none');
+                    $('#duration_tr').addClass('d-none');
                     $('#ctc_tr').removeClass('d-none');
                     $('#other_benifit_tr').addClass('d-none');
                 }
@@ -742,7 +691,7 @@
                 '<div class="spinner-border text-primary d-none" role="status" id="LocLoader' + number +
                 '"> <span class="visually-hidden">Loading...</span></div>' +
                 '       <select  id="City' + number + '" name="City[]" class="form-control form-select form-select-sm">' +
-                    '    <option value="0" selected>Select City</option>'  + CityList +
+                '    <option value="0" selected>Select City</option>' + CityList +
                 '</select>' +
                 '<span class="text-danger error-text City' + number + '_error"></span>' +
                 '</td>';
@@ -941,7 +890,7 @@
                     $.post(url, {
                         MRFId: MRFId
                     }, function(data) {
-                        if (data.status==200) {
+                        if (data.status == 200) {
                             $('#mrfsummarytable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
 

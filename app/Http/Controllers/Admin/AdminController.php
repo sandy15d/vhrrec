@@ -44,7 +44,8 @@ class AdminController extends Controller
             ->where('EmpStatus', 'A')
             ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
             ->pluck("FullName", "EmployeeID");
-        return view('admin.mrf', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list'));
+        $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
+        return view('admin.mrf', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list', 'months'));
     }
 
     function active_mrf()
@@ -58,7 +59,8 @@ class AdminController extends Controller
             ->where('EmpStatus', 'A')
             ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
             ->pluck("FullName", "EmployeeID");
-        return view('admin.activemrf', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list'));
+            $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
+        return view('admin.activemrf', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list','months'));
     }
 
     function closedmrf()
@@ -72,17 +74,45 @@ class AdminController extends Controller
             ->where('EmpStatus', 'A')
             ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
             ->pluck("FullName", "EmployeeID");
-        return view('admin.closedmrf', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list'));
+            $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
+        return view('admin.closedmrf', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list','months'));
     }
 
-    function getNewMrf()
+    function getNewMrf(Request $request)
     {
-        $mrf = DB::table('manpowerrequisition as mr')
+
+        $usersQuery = master_mrf::query();
+        $Company = $request->Company;
+        $Department = $request->Department;
+        $Year = $request->Year;
+        $Month = $request->Month;
+
+        if ($Company != '') {
+
+            $usersQuery->where("manpowerrequisition.CompanyId", $Company);
+        }
+        if ($Department != '') {
+            $usersQuery->where("manpowerrequisition.DepartmentId", $Department);
+        }
+        if ($Year != '') {
+            $usersQuery->whereBetween('manpowerrequisition.CreatedTime', [$Year . '-01-01', $Year . '-12-31']);
+        }
+        if ($Month != '') {
+            if ($Year != '') {
+                $usersQuery->whereBetween('manpowerrequisition.CreatedTime', [$Year . '-' . $Month . '-01', $Year . '-' . $Month . '-31']);
+            } else {
+                $usersQuery->whereBetween('manpowerrequisition.CreatedTime', [date('Y') . '-' . $Month . '-01', date('Y') . '-' . $Month . '-31']);
+            }
+        }
+
+        $mrf = $usersQuery->select('*')
             ->where('Status', 'Approved')
             ->whereNull('Allocated')
             ->orWhere('Status', 'New')
             ->orderBy('CreatedTime', 'DESC')
-            ->select(['mr.*']);
+            ->select(['manpowerrequisition.*']);
+
+
         return datatables()->of($mrf)
             ->addIndexColumn()
             ->addColumn('chk', function () {
@@ -173,13 +203,36 @@ class AdminController extends Controller
             ->make(true);
     }
 
-    function getActiveMrf()
+    function getActiveMrf(Request $request)
     {
-        $mrf = DB::table('manpowerrequisition as mr')
+
+        $usersQuery = master_mrf::query();
+        $Company = $request->Company;
+        $Department = $request->Department;
+        $Year = $request->Year;
+        $Month = $request->Month;
+        if ($Company != '') {
+            $usersQuery->where("manpowerrequisition.CompanyId", $Company);
+        }
+        if ($Department != '') {
+            $usersQuery->where("manpowerrequisition.DepartmentId", $Department);
+        }
+        if ($Year != '') {
+            $usersQuery->whereBetween('manpowerrequisition.CreatedTime', [$Year . '-01-01', $Year . '-12-31']);
+        }
+        if ($Month != '') {
+            if ($Year != '') {
+                $usersQuery->whereBetween('manpowerrequisition.CreatedTime', [$Year . '-' . $Month . '-01', $Year . '-' . $Month . '-31']);
+            } else {
+                $usersQuery->whereBetween('manpowerrequisition.CreatedTime', [date('Y') . '-' . $Month . '-01', date('Y') . '-' . $Month . '-31']);
+            }
+        }
+
+        $mrf =  $usersQuery->select('*')
             ->where('Status', 'Approved')
             ->where('Allocated', '!=', null)
-            ->orderBy('CreatedTime', 'DESC')
-            ->select(['mr.*']);
+            ->orderBy('CreatedTime', 'DESC');
+
         return datatables()->of($mrf)
             ->addIndexColumn()
             ->addColumn('chk', function () {
@@ -187,16 +240,24 @@ class AdminController extends Controller
             })
             ->editColumn('Type', function ($mrf) {
                 if ($mrf->Type == 'N' || $mrf->Type == 'N_HrManual') {
-                    return 'New';
-                } else {
-                    return 'Replacement';
+                    return 'New MRF';
+                } elseif ($mrf->Type == 'SIP' || $mrf->Type == 'SIP_HrManual') {
+                    return 'SIP/Internship MRF';
+                } elseif ($mrf->Type == 'Campus' || $mrf->Type == 'Campus_HrManual') {
+                    return 'Campus MRF';
+                } elseif ($mrf->Type == 'R' || $mrf->Type == 'R_HrManual') {
+                    return 'Replacement MRF';
                 }
             })
             ->editColumn('DepartmentId', function ($mrf) {
                 return getDepartmentCode($mrf->DepartmentId);
             })
             ->editColumn('DesigId', function ($mrf) {
-                return getDesignationCode($mrf->DesigId);
+                if ($mrf->DesigId == '' or $mrf->DesigId == null) {
+                    return '';
+                } else {
+                    return getDesignationCode($mrf->DesigId);
+                }
             })
             ->editColumn('LocationIds', function ($mrf) {
                 $location = unserialize($mrf->LocationIds);
@@ -262,12 +323,37 @@ class AdminController extends Controller
             ->make(true);
     }
 
-    function getCloseMrf()
+    function getCloseMrf(Request $request)
     {
-        $mrf = DB::table('manpowerrequisition as mr')
+       
+        $usersQuery = master_mrf::query();
+        $Company = $request->Company;
+        $Department = $request->Department;
+        $Year = $request->Year;
+        $Month = $request->Month;
+
+        if ($Company != '') {
+
+            $usersQuery->where("manpowerrequisition.CompanyId", $Company);
+        }
+        if ($Department != '') {
+            $usersQuery->where("manpowerrequisition.DepartmentId", $Department);
+        }
+        if ($Year != '') {
+            $usersQuery->whereBetween('manpowerrequisition.CreatedTime', [$Year . '-01-01', $Year . '-12-31']);
+        }
+        if ($Month != '') {
+            if ($Year != '') {
+                $usersQuery->whereBetween('manpowerrequisition.CreatedTime', [$Year . '-' . $Month . '-01', $Year . '-' . $Month . '-31']);
+            } else {
+                $usersQuery->whereBetween('manpowerrequisition.CreatedTime', [date('Y') . '-' . $Month . '-01', date('Y') . '-' . $Month . '-31']);
+            }
+        }
+
+        $mrf = $usersQuery->select('*')
             ->where('Status', 'Close')
-            ->orderBy('CreatedTime', 'DESC')
-            ->select(['mr.*']);
+            ->orderBy('CreatedTime', 'DESC');
+            
         return datatables()->of($mrf)
             ->addIndexColumn()
             ->addColumn('chk', function () {
@@ -395,7 +481,7 @@ class AdminController extends Controller
     {
         $sql = DB::table('manpowerrequisition')
             ->where('Allocated', $request->Uid)
-            ->where('Status','!=','New')
+            ->where('Status', '!=', 'New')
             ->get();
 
         return datatables()->of($sql)
