@@ -682,7 +682,7 @@ $CompanyQry = DB::table('master_company')
             //=====================Set Light Theme=====================
             $(document).on('click', '#lightmode', function() {
                 $.ajax({
-                    url: 'setTheme',
+                    url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'lightmode'
@@ -702,7 +702,7 @@ $CompanyQry = DB::table('master_company')
 
             $(document).on('click', '#darkmode', function() {
                 $.ajax({
-                    url: 'setTheme',
+                    url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'darkmode'
@@ -723,7 +723,7 @@ $CompanyQry = DB::table('master_company')
 
             $(document).on('click', '#semidark', function() {
                 $.ajax({
-                    url: 'setTheme',
+                    url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'semidark'
@@ -744,7 +744,7 @@ $CompanyQry = DB::table('master_company')
 
             $(document).on('click', '#minimaltheme', function() {
                 $.ajax({
-                    url: 'setTheme',
+                    url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'minimaltheme'
@@ -764,7 +764,7 @@ $CompanyQry = DB::table('master_company')
 
             $(document).on('click', '#sidebarcolor1', function() {
                 $.ajax({
-                    url: 'setTheme',
+                      url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'sidebarcolor1'
@@ -783,7 +783,7 @@ $CompanyQry = DB::table('master_company')
 
             $(document).on('click', '#sidebarcolor2', function() {
                 $.ajax({
-                    url: 'setTheme',
+                      url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'sidebarcolor2'
@@ -801,7 +801,7 @@ $CompanyQry = DB::table('master_company')
             });
             $(document).on('click', '#sidebarcolor3', function() {
                 $.ajax({
-                    url: 'setTheme',
+                      url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'sidebarcolor3'
@@ -819,7 +819,7 @@ $CompanyQry = DB::table('master_company')
             });
             $(document).on('click', '#sidebarcolor4', function() {
                 $.ajax({
-                    url: 'setTheme',
+                      url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'sidebarcolor4'
@@ -837,7 +837,7 @@ $CompanyQry = DB::table('master_company')
             });
             $(document).on('click', '#sidebarcolor5', function() {
                 $.ajax({
-                    url: 'setTheme',
+                      url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'sidebarcolor5'
@@ -855,7 +855,7 @@ $CompanyQry = DB::table('master_company')
             });
             $(document).on('click', '#sidebarcolor6', function() {
                 $.ajax({
-                    url: 'setTheme',
+                      url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'sidebarcolor6'
@@ -873,7 +873,7 @@ $CompanyQry = DB::table('master_company')
             });
             $(document).on('click', '#sidebarcolor7', function() {
                 $.ajax({
-                    url: 'setTheme',
+                      url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'sidebarcolor7'
@@ -891,7 +891,7 @@ $CompanyQry = DB::table('master_company')
             });
             $(document).on('click', '#sidebarcolor8', function() {
                 $.ajax({
-                    url: 'setTheme',
+                      url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'sidebarcolor8'
