@@ -52,7 +52,7 @@ Route::group(['prefix' => 'jobportal'], function () {
     Route::get('campus_placement_registration', [JobController::class, 'campus_placement_registration'])->name('campus_placement_registration');
 });
 
-
+Route::post('setTheme', [CommonController::class, 'setTheme'])->name('setTheme');
 Route::get('getDepartment', [CommonController::class, 'getDepartment'])->name('getDepartment');
 Route::get('getDesignation', [CommonController::class, 'getDesignation'])->name('getDesignation');
 Route::get('getReportingManager', [CommonController::class, 'getReportingManager'])->name('getReportingManager');
@@ -94,7 +94,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('getTaskList', [AdminController::class, 'getTaskList'])->name('getTaskList');
     Route::post('getRecruiterName', [AdminController::class, 'getRecruiterName'])->name('getRecruiterName');
     Route::get('setting', [AdminController::class, 'setting'])->name('admin.setting');
-    Route::post('setTheme', [AdminController::class, 'setTheme'])->name('admin.setTheme');
+  
 
     // ! ======================Master Company ========================//
     Route::get('company', [CompanyController::class, 'company'])->name('admin.company');
@@ -228,12 +228,12 @@ Route::group(['prefix' => 'recruiter', 'middleware' => ['isRecruiter', 'auth', '
     Route::post('createJobPost', [MrfAllocatedController::class, 'createJobPost'])->name('createJobPost');
     Route::post('createJobPost_Campus', [MrfAllocatedController::class, 'createJobPost_Campus'])->name('createJobPost_Campus');
     Route::post('ChngPostingView', [MrfAllocatedController::class, 'ChngPostingView'])->name('ChngPostingView');
-    Route::post('setTheme', [RecruiterController::class, 'setTheme'])->name('setTheme');
+  
 });
 
 Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [HodController::class, 'index'])->name('hod.dashboard');
-    Route::post('setTheme', [HodController::class, 'setTheme'])->name('setTheme');
+   
     Route::get('mrfbyme', [HodController::class, 'mrfbyme'])->name('mrfbyme');
     //**========================My Team =========================================== */
     Route::get('myteam', [MyTeamController::class, 'myteam'])->name('myteam');
