@@ -327,7 +327,7 @@ $sql = DB::table('jobpost')
     function jobapply(JPId) {
         var JPId = btoa(JPId);
         // window.location.href = "{{ route('job_apply') }}?jpid=" + JPId;
-        //comment
+    
         window.open("{{ route('job_apply') }}?jpid=" + JPId, '_blank')
     }
 
