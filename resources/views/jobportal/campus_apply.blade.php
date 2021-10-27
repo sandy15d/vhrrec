@@ -300,7 +300,7 @@ $query = DB::table('jobpost')
                                                                 </table>
                                                             </td>
                                                         </tr>
-                                                        <tr>
+                                                        <tr id="work_exp" class="d-none">
                                                             <td></td>
                                                             <td>
                                                                 <table>
