@@ -30,6 +30,10 @@
             padding: 2px 1px;
         }
 
+        .errorfield {
+            border: 2px solid #E8290B;
+        }
+
     </style>
 </head>
 @php
@@ -78,13 +82,15 @@ $query = DB::table('jobpost')
                                                             </td>
                                                             <td style="width:800px !important">
                                                                 <label><input type="radio" name="Title" value="Mr."
-                                                                        class="reqinp"> Mr.</label>&emsp;
+                                                                        class="reqinp" checked>
+                                                                    Mr.</label>&emsp;
                                                                 <label><input type="radio" name="Title" value="Ms.">
                                                                     Ms.</label>&emsp;
                                                                 <label><input type="radio" name="Title" value="Mrs.">
                                                                     Mrs.</label>&emsp;
                                                                 <label><input type="radio" name="Title" value="Dr.">
                                                                     Dr.</label>
+
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -92,7 +98,8 @@ $query = DB::table('jobpost')
                                                                     color="#FF0000">*</font>
                                                             </td>
                                                             <td>
-                                                                <input type="text" class="form-control form-control-sm"
+                                                                <input type="text"
+                                                                    class="form-control form-control-sm reqinp"
                                                                     name="FName" value="">
                                                             </td>
                                                         </tr>
@@ -107,7 +114,8 @@ $query = DB::table('jobpost')
                                                             <td valign="middle">Last Name<font color="#FF0000">*</font>
                                                             </td>
                                                             <td>
-                                                                <input type="text" class="form-control form-control-sm"
+                                                                <input type="text"
+                                                                    class="form-control form-control-sm reqinp"
                                                                     name="LName" value="">
                                                             </td>
                                                         </tr>
@@ -116,7 +124,8 @@ $query = DB::table('jobpost')
                                                                 </font>
                                                             </td>
                                                             <td>
-                                                                <input type="date" class="form-control form-control-sm"
+                                                                <input type="date"
+                                                                    class="form-control form-control-sm reqinp"
                                                                     name="DOB" value="" id="DOB">
                                                             </td>
                                                         </tr>
@@ -126,7 +135,7 @@ $query = DB::table('jobpost')
                                                             </td>
                                                             <td>
                                                                 <select name="Gender" id="Gender"
-                                                                    class="form-select form-select-sm">
+                                                                    class="form-select form-select-sm reqinp">
                                                                     <option value="">Select</option>
                                                                     <option value="M">Male</option>
                                                                     <option value="F">Female</option>
@@ -139,7 +148,8 @@ $query = DB::table('jobpost')
                                                                 </font>
                                                             </td>
                                                             <td>
-                                                                <input type="text" class="form-control form-control-sm"
+                                                                <input type="text"
+                                                                    class="form-control form-control-sm reqinp"
                                                                     name="FatherName" value="" id="FatherName">
                                                             </td>
                                                         </tr>
@@ -148,7 +158,8 @@ $query = DB::table('jobpost')
                                                                 </font>
                                                             </td>
                                                             <td>
-                                                                <input type="text" class="form-control form-control-sm"
+                                                                <input type="text"
+                                                                    class="form-control form-control-sm reqinp"
                                                                     name="Email" value="" id="Email">
                                                             </td>
                                                         </tr>
@@ -157,8 +168,10 @@ $query = DB::table('jobpost')
                                                                 </font>
                                                             </td>
                                                             <td>
-                                                                <input type="text" class="form-control form-control-sm"
-                                                                    name="Phone" value="" id="Phone">
+                                                                <input type="text"
+                                                                    class="form-control form-control-sm reqinp"
+                                                                    name="Phone" value="" id="Phone"
+                                                                    onkeypress="return isNumberKey(event)">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -171,8 +184,8 @@ $query = DB::table('jobpost')
                                                                         <td colspan="3">
                                                                             <input type="text" name="AddLine1"
                                                                                 id="AddLine1"
-                                                                                class="form-control form-control-sm"
-                                                                                placeholder="Line 1">
+                                                                                class="form-control form-control-sm reqinp"
+                                                                                placeholder="Address Line 1">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -180,7 +193,7 @@ $query = DB::table('jobpost')
                                                                             <input type="text" name="AddLine2"
                                                                                 id="AddLine2"
                                                                                 class="form-control form-control-sm"
-                                                                                placeholder="Line 2">
+                                                                                placeholder="Address Line 2">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -188,19 +201,30 @@ $query = DB::table('jobpost')
                                                                             <input type="text" name="AddLine3"
                                                                                 id="AddLine3"
                                                                                 class="form-control form-control-sm"
-                                                                                placeholder="Line 3">
+                                                                                placeholder="Address Line 3">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td>
                                                                             <select name="State" id="State"
-                                                                                class="form-select form-select-sm">
+                                                                                class="form-select form-select-sm reqinp"
+                                                                                onchange="getLocation(this.value)">
                                                                                 <option value="">Select State</option>
+                                                                                @foreach ($state_list as $key => $value)
+                                                                                    <option
+                                                                                        value="{{ $key }}">
+                                                                                        {{ $value }}</option>
+
+                                                                                @endforeach
                                                                             </select>
                                                                         </td>
                                                                         <td>
+                                                                            <div class="spinner-border text-primary d-none"
+                                                                                role="status" id="LocLoader"><span
+                                                                                    class="visually-hidden">Loading...</span>
+                                                                            </div>
                                                                             <select name="District" id="District"
-                                                                                class="form-select form-select-sm">
+                                                                                class="form-select form-select-sm reqinp">
                                                                                 <option value="">Select District
                                                                                 </option>
                                                                             </select>
@@ -211,42 +235,60 @@ $query = DB::table('jobpost')
                                                                         <td>
                                                                             <input type="text" name="Village"
                                                                                 id="Village"
-                                                                                class="form-control form-control-sm"
+                                                                                class="form-control form-control-sm reqinp"
                                                                                 placeholder="Village">
                                                                         </td>
                                                                         <td colspan="2">
                                                                             <input type="text" name="PinCode"
                                                                                 id="PinCode"
-                                                                                class="form-control form-control-sm"
-                                                                                placeholder="Pin Code">
+                                                                                class="form-control form-control-sm reqinp"
+                                                                                placeholder="Pin Code" maxlength="6"
+                                                                                onkeypress="return isNumberKey(event)">
                                                                         </td>
                                                                     </tr>
                                                                 </table>
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td valign="middle">Aadhaar No.</td>
+                                                            <td valign="middle">Aadhaar No.<font color="#FF0000">*
+                                                                </font>
+                                                            </td>
                                                             <td>
                                                                 <input type="text" name="Aadhaar" id="Aadhaar"
-                                                                    class="form-control form-control-sm">
+                                                                    maxlength="12"
+                                                                    onkeypress="return isNumberKey(event)"
+                                                                    class="form-control form-control-sm reqinp">
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td valign="middle">Highest Qualification</td>
+                                                            <td valign="middle">Highest Qualification<font
+                                                                    color="#FF0000">*
+                                                                </font>
+                                                            </td>
                                                             <td>
                                                                 <table style="width: 100%">
                                                                     <tr>
                                                                         <td>
                                                                             <select name="Education" id="Education"
-                                                                                class="form-select form-select-sm">
+                                                                                class="form-select form-select-sm reqinp"
+                                                                                onchange="getSpecialization(this.value)">
                                                                                 <option value="">Select Education
                                                                                 </option>
+                                                                                @foreach ($education_list as $key => $value)
+                                                                                    <option
+                                                                                        value="{{ $key }}">
+                                                                                        {{ $value }}</option>
+                                                                                @endforeach
                                                                             </select>
                                                                         </td>
                                                                         <td>
+                                                                            <div class="spinner-border text-primary d-none"
+                                                                                role="status" id="SpeLoader"><span
+                                                                                    class="visually-hidden">Loading...</span>
+                                                                            </div>
                                                                             <select name="Specialization"
                                                                                 id="Specialization"
-                                                                                class="form-select form-select-sm">
+                                                                                class="form-select form-select-sm reqinp">
                                                                                 <option value="">Select Specialization
                                                                                 </option>
                                                                             </select>
@@ -256,44 +298,57 @@ $query = DB::table('jobpost')
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td valign="middle">Year of Passing</td>
+                                                            <td valign="middle">Year of Passing<font color="#FF0000">*
+                                                                </font>
+                                                            </td>
                                                             <td>
                                                                 <select name="PassingYear" id="PassingYear"
-                                                                    class="form-select form-select-sm">
+                                                                    class="form-select form-select-sm reqinp">
                                                                     <option value="">Select</option>
                                                                 </select>
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td valign="middle">University/College</td>
+                                                            <td valign="middle">University/College<font color="#FF0000">
+                                                                    *
+                                                                </font>
+                                                            </td>
                                                             <td>
                                                                 <select name="College" id="College"
-                                                                    class="form-select form-select-sm">
+                                                                    class="form-select form-select-sm reqinp">
                                                                     <option value="">Select</option>
+                                                                    @foreach ($institute_list as $key => $value)
+                                                                        <option value="{{ $key }}">
+                                                                            {{ $value }}</option>
+                                                                    @endforeach
                                                                 </select>
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td valign="middle">Work Experience</td>
+                                                            <td valign="middle">Work Experience<font color="#FF0000">*
+                                                                </font>
+                                                            </td>
                                                             <td>
                                                                 <table style="width: 100%">
                                                                     <tr>
                                                                         <td class="form-check form-check-inline">
 
-                                                                            <input class="form-check-input" type="radio"
-                                                                                name="inlineRadioOptions"
-                                                                                id="inlineRadio1" value="option1">
+                                                                            <input class="form-check-input reqinp"
+                                                                                type="radio" name="ProfCheck"
+                                                                                id="Professional" value="P"
+                                                                                onclick="showProFromOrNot()">
                                                                             <label class="form-check-label"
-                                                                                for="inlineRadio1">I am a working
+                                                                                for="Professional">I am a working
                                                                                 professional</label>
 
                                                                         </td>
                                                                         <td class="form-check form-check-inline">
-                                                                            <input class="form-check-input" type="radio"
-                                                                                name="inlineRadioOptions"
-                                                                                id="inlineRadio2" value="option2">
+                                                                            <input class="form-check-input reqinp"
+                                                                                type="radio" name="ProfCheck"
+                                                                                id="Fresher" value="F"
+                                                                                onclick="showProFromOrNot()" checked>
                                                                             <label class="form-check-label"
-                                                                                for="inlineRadio2">I am a
+                                                                                for="Fresher">I am a
                                                                                 Fresher</label>
                                                                         </td>
                                                                     </tr>
@@ -305,21 +360,27 @@ $query = DB::table('jobpost')
                                                             <td>
                                                                 <table>
                                                                     <tr>
-                                                                        <td>Present Company</td>
+                                                                        <td>Present Company<font color="#FF0000">*
+                                                                            </font>
+                                                                        </td>
                                                                         <td><input type="text" name="PresentCompany"
                                                                                 id="PresentCompany"
-                                                                                class="form-control-sm form-control">
+                                                                                class="form-control-sm form-control ">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td>Designation</td>
+                                                                        <td>Designation<font color="#FF0000">*
+                                                                            </font>
+                                                                        </td>
                                                                         <td><input type="text" name="Designation"
                                                                                 id="Designation"
                                                                                 class="form-control-sm form-control">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td>Job Start Date</td>
+                                                                        <td>Job Start Date<font color="#FF0000">*
+                                                                            </font>
+                                                                        </td>
                                                                         <td><input type="date" name="JobStartDate"
                                                                                 id="JobStartDate"
                                                                                 class="form-control-sm form-control">
@@ -349,12 +410,135 @@ $query = DB::table('jobpost')
                                                                             </div>
                                                                         </td>
                                                                     </tr>
+                                                                    <tr>
+                                                                        <td>Gross Salary(per nibth)<font
+                                                                                color="#FF0000">*
+                                                                            </font>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" name="GrossSalary"
+                                                                                id="GrossSalary"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>CTC(Annual)<font color="#FF0000">*
+                                                                            </font>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" name="CTC" id="CTC"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Notice period in current Compnay</td>
+                                                                        <td>
+                                                                            <input type="text" name="NoticePeriod"
+                                                                                id="NoticePeriod"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Reason for leaving</td>
+                                                                        <td>
+                                                                            <input type="text" name="ResignReason"
+                                                                                id="ResignReason"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
+                                                                    </tr>
                                                                 </table>
                                                             </td>
 
                                                         </tr>
+                                                        <tr>
+                                                            <td valign="middle">Reference<font color="#FF0000">*
+                                                                </font>
+                                                            </td>
+                                                            <td>
+                                                                <table style="width: 100%">
+                                                                    <tr>
+                                                                        <td class="form-check form-check-inline">
 
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="RefCheck" id="YesRef" value="Y"
+                                                                                onclick="showRefFormOrNot()">
+                                                                            <label class="form-check-label"
+                                                                                for="YesRef">Yes</label>
 
+                                                                        </td>
+                                                                        <td class="form-check form-check-inline">
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="RefCheck" id="NoRef" value="N"
+                                                                                onclick="showRefFormOrNot()" checked>
+                                                                            <label class="form-check-label"
+                                                                                for="NoRef">No</label>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                        <tr id="reference_tr" class="d-none">
+                                                            <td></td>
+                                                            <td>
+                                                                <table>
+                                                                    <tr>
+                                                                        <td>Person Name<font color="#FF0000">*
+                                                                            </font>
+                                                                        </td>
+                                                                        <td><input type="text" name="PersonName"
+                                                                                id="PersonName"
+                                                                                class="form-control-sm form-control">
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Company<font color="#FF0000">*
+                                                                            </font>
+                                                                        </td>
+                                                                        <td><input type="text" name="RefCompany"
+                                                                                id="RefCompany"
+                                                                                class="form-control-sm form-control">
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Designation<font color="#FF0000">*
+                                                                            </font>
+                                                                        </td>
+                                                                        <td><input type="text" name="RefDesignation"
+                                                                                id="RefDesignation"
+                                                                                class="form-control-sm form-control">
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Contact No</td>
+                                                                        <td>
+                                                                            <input type="text" name="RefContact"
+                                                                                id="RefContact"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Email ID<font color="#FF0000">*
+                                                                            </font>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" name="RefMail"
+                                                                                id="RefMail"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Upload Resume</td>
+                                                            <td><input type="file" name="Resume" id="Resume"
+                                                                    class="form-control form-control-sm reqinp"
+                                                                    accept=".pdf,.docx">
+                                                                <p class="text-primary">Plese upload PDF/Word Document
+                                                                    Only.</p>
+                                                            </td>
+                                                        </tr>
                                                     </table>
 
                                                 </div>
@@ -396,6 +580,16 @@ $query = DB::table('jobpost')
             </div>
         </div>
     </div>
+    <div class="modal" id="loader" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" style="width:220px;">
+            <div class="modal-content" style="border-radius:10px;">
+
+                <div class="modal-body">
+                    <img alt="" src="{{ URL::to('/') }}/assets/images/loader.gif">
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="{{ URL::to('/') }}/assets/js/bootstrap.bundle.min.js"></script>
     <!--plugins-->
@@ -408,6 +602,133 @@ $query = DB::table('jobpost')
     <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
 
     <script>
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+
+            return true;
+        }
+
+        function checkRequired() {
+            var res = 0;
+            $('.reqinp').each(function() {
+                if ($(this).val() == '' || $(this).val() == null) {
+                    $(this).addClass('errorfield');
+                    res = 1;
+                } else {
+                    $(this).removeClass('errorfield');
+                }
+            });
+            return res;
+        }
+
+        function showProFromOrNot() {
+            if ($('#Professional').prop("checked") == true) {
+                $('#work_exp').removeClass('d-none');
+                $('#PresentCompany').addClass('reqinp');
+                $('#Designation').addClass('reqinp');
+                $('#JobStartDate').addClass('reqinp');
+                $('#GrossSalary').addClass('reqinp');
+
+            } else if ($('#Professional').prop("checked") == false) {
+                $('#work_exp').addClass('d-none');
+                $('#PresentCompany').removeClass('reqinp');
+                $('#Designation').removeClass('reqinp');
+                $('#JobStartDate').removeClass('reqinp');
+                $('#GrossSalary').removeClass('reqinp');
+            }
+        }
+
+        function showRefFormOrNot() {
+            if ($('#YesRef').prop("checked") == true) {
+                $('#reference_tr').removeClass('d-none');
+                $('#PersonName').addClass('reqinp');
+                $('#RefDesignation').addClass('reqinp');
+                $('#RefCompany').addClass('reqinp');
+                $('#RefMail').addClass('reqinp');
+            } else if ($('#YesRef').prop("checked") == false) {
+                $('#reference_tr').addClass('d-none');
+                $('#PersonName').removeClass('reqinp');
+                $('#RefDesignation').removeClass('reqinp');
+                $('#RefCompany').removeClass('reqinp');
+                $('#RefMail').removeClass('reqinp');
+            }
+        }
+
+        function getLocation(StateId) {
+            var StateId = StateId;
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getDistrict') }}?StateId=" + StateId,
+                async: false,
+                beforeSend: function() {
+                    $('#LocLoader').removeClass('d-none');
+                    $('#District').addClass('d-none');
+                },
+
+                success: function(res) {
+
+                    if (res) {
+                        setTimeout(function() {
+                                $('#LocLoader').addClass('d-none');
+                                $('#District').removeClass('d-none');
+                                $("#District").empty();
+                                $("#District").append(
+                                    '<option value="" selected disabled >Select District</option>');
+
+                                $.each(res, function(key, value) {
+                                    $("#District").append('<option value="' + value + '">' + key +
+                                        '</option>');
+                                });
+                            },
+                            500);
+
+
+                    } else {
+                        $("#District").empty();
+                    }
+                }
+            });
+        }
+
+        function getSpecialization(EducationId) {
+            var EducationId = EducationId;
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getSpecialization') }}?EducationId=" + EducationId,
+                async: false,
+                beforeSend: function() {
+                    $('#SpeLoader').removeClass('d-none');
+                    $('#Specialization').addClass('d-none');
+                },
+
+                success: function(res) {
+
+                    if (res) {
+                        setTimeout(function() {
+                                $('#SpeLoader').addClass('d-none');
+                                $('#Specialization').removeClass('d-none');
+                                $("#Specialization").empty();
+                                $("#Specialization").append(
+                                    '<option value="" selected disabled >Select Specialization</option>'
+                                    );
+
+                                $.each(res, function(key, value) {
+                                    $("#Specialization").append('<option value="' + value + '">' +
+                                        key +
+                                        '</option>');
+                                });
+                                $("#Specialization").append('<option value="0">Other</option>');
+                            },
+                            500);
+
+                    } else {
+                        $("#Specialization").empty();
+                    }
+                }
+            });
+        }
         $(document).ready(function() {
             $(document).on('change', '#candphoto', function(e) {
                 const [file] = e.target.files;
@@ -428,6 +749,48 @@ $query = DB::table('jobpost')
                 var maxDate = year + '-' + month + '-' + day;
                 $('#DOB').attr('max', maxDate);
             });
+
+
+        });
+
+        $('#jobApplyForm').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+
+            var reqcond = checkRequired();
+            if (reqcond == 1) {
+                alert('Please fill required field...!');
+            } else {
+                $.ajax({
+                    url: $(form).attr('action'),
+                    method: $(form).attr('method'),
+                    data: new FormData(form),
+                    processData: false,
+                    dataType: 'json',
+                    contentType: false,
+                    beforeSend: function() {
+
+                        $(form).find('span.error-text').text('');
+                        $("#loader").modal('show');
+                    },
+
+                    success: function(data) {
+                        if (data.status == 400) {
+
+                            $("#loader").modal('hide');
+                            $.each(data.error, function(prefix, val) {
+                                $(form).find('span.' + prefix + '_error').text(val[0]);
+                            });
+                        } else {
+                            $(form)[0].reset();
+                            $('#loader').modal('hide');
+                            toastr.success(data.msg);
+                            window.location.href = "{{ route('mrf') }}";
+                        }
+                    }
+                });
+            }
+
         });
     </script>
 </body>
