@@ -100,14 +100,15 @@ $query = DB::table('jobpost')
                                                             <td>
                                                                 <input type="text"
                                                                     class="form-control form-control-sm reqinp"
-                                                                    name="FName" value="">
+                                                                    name="FName" id="FName"
+                                                                    onblur="return convertCase(this)">
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <td valign="middle">Middle Name</td>
                                                             <td>
                                                                 <input type="text" class="form-control form-control-sm"
-                                                                    name="MName" value="">
+                                                                    name="MName" onblur="return convertCase(this)">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -116,7 +117,7 @@ $query = DB::table('jobpost')
                                                             <td>
                                                                 <input type="text"
                                                                     class="form-control form-control-sm reqinp"
-                                                                    name="LName" value="">
+                                                                    name="LName" onblur="return convertCase(this)">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -148,9 +149,25 @@ $query = DB::table('jobpost')
                                                                 </font>
                                                             </td>
                                                             <td>
-                                                                <input type="text"
-                                                                    class="form-control form-control-sm reqinp"
-                                                                    name="FatherName" value="" id="FatherName">
+                                                                <table style="width: 100%">
+                                                                    <tr>
+                                                                        <td>
+                                                                            <select name="FatherTitle" id="FatherTitle"
+                                                                                class="form-select form-select-sm d-inline"
+                                                                                style="width: 80%;">
+                                                                                <option value="Mr.">Mr.</option>
+                                                                                <option value="Late">Late</option>
+                                                                            </select>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text"
+                                                                                class="form-control form-control-sm reqinp"
+                                                                                name="FatherName" value=""
+                                                                                id="FatherName"
+                                                                                onblur="return convertCase(this)">
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -185,7 +202,8 @@ $query = DB::table('jobpost')
                                                                             <input type="text" name="AddLine1"
                                                                                 id="AddLine1"
                                                                                 class="form-control form-control-sm reqinp"
-                                                                                placeholder="Address Line 1">
+                                                                                placeholder="Address Line 1"
+                                                                                onblur="return convertCase(this)">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -193,7 +211,8 @@ $query = DB::table('jobpost')
                                                                             <input type="text" name="AddLine2"
                                                                                 id="AddLine2"
                                                                                 class="form-control form-control-sm"
-                                                                                placeholder="Address Line 2">
+                                                                                placeholder="Address Line 2"
+                                                                                onblur="return convertCase(this)">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -201,7 +220,8 @@ $query = DB::table('jobpost')
                                                                             <input type="text" name="AddLine3"
                                                                                 id="AddLine3"
                                                                                 class="form-control form-control-sm"
-                                                                                placeholder="Address Line 3">
+                                                                                placeholder="Address Line 3"
+                                                                                onblur="return convertCase(this)">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -236,7 +256,8 @@ $query = DB::table('jobpost')
                                                                             <input type="text" name="Village"
                                                                                 id="Village"
                                                                                 class="form-control form-control-sm reqinp"
-                                                                                placeholder="Village">
+                                                                                placeholder="Village"
+                                                                                onblur="return convertCase(this)">
                                                                         </td>
                                                                         <td colspan="2">
                                                                             <input type="text" name="PinCode"
@@ -365,7 +386,8 @@ $query = DB::table('jobpost')
                                                                         </td>
                                                                         <td><input type="text" name="PresentCompany"
                                                                                 id="PresentCompany"
-                                                                                class="form-control-sm form-control ">
+                                                                                class="form-control-sm form-control"
+                                                                                onblur="return convertCase(this)">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -374,7 +396,8 @@ $query = DB::table('jobpost')
                                                                         </td>
                                                                         <td><input type="text" name="Designation"
                                                                                 id="Designation"
-                                                                                class="form-control-sm form-control">
+                                                                                class="form-control-sm form-control"
+                                                                                onblur="return convertCase(this)">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -411,14 +434,15 @@ $query = DB::table('jobpost')
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td>Gross Salary(per nibth)<font
+                                                                        <td>Gross Salary(per month)<font
                                                                                 color="#FF0000">*
                                                                             </font>
                                                                         </td>
                                                                         <td>
                                                                             <input type="text" name="GrossSalary"
                                                                                 id="GrossSalary"
-                                                                                class="form-control form-control-sm">
+                                                                                class="form-control form-control-sm"
+                                                                                onkeypress="return isNumberKey(event)">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -427,11 +451,12 @@ $query = DB::table('jobpost')
                                                                         </td>
                                                                         <td>
                                                                             <input type="text" name="CTC" id="CTC"
-                                                                                class="form-control form-control-sm">
+                                                                                class="form-control form-control-sm"
+                                                                                onkeypress="return isNumberKey(event)">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td>Notice period in current Compnay</td>
+                                                                        <td>Notice period in current Company</td>
                                                                         <td>
                                                                             <input type="text" name="NoticePeriod"
                                                                                 id="NoticePeriod"
@@ -487,7 +512,8 @@ $query = DB::table('jobpost')
                                                                         </td>
                                                                         <td><input type="text" name="PersonName"
                                                                                 id="PersonName"
-                                                                                class="form-control-sm form-control">
+                                                                                class="form-control-sm form-control"
+                                                                                onblur="return convertCase(this)">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -496,7 +522,8 @@ $query = DB::table('jobpost')
                                                                         </td>
                                                                         <td><input type="text" name="RefCompany"
                                                                                 id="RefCompany"
-                                                                                class="form-control-sm form-control">
+                                                                                class="form-control-sm form-control"
+                                                                                onblur="return convertCase(this)">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -505,7 +532,8 @@ $query = DB::table('jobpost')
                                                                         </td>
                                                                         <td><input type="text" name="RefDesignation"
                                                                                 id="RefDesignation"
-                                                                                class="form-control-sm form-control">
+                                                                                class="form-control-sm form-control"
+                                                                                onblur="return convertCase(this)">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -610,6 +638,18 @@ $query = DB::table('jobpost')
             return true;
         }
 
+        function convertCase(evt) {
+            var text = $(evt).val();
+            $(evt).val(camelCase(text));
+        }
+
+        function camelCase(str) {
+            return str.replace(/(?:^|\s)\w/g, function(match) {
+
+                return match.toUpperCase();
+            });
+        }
+
         function checkRequired() {
             var res = 0;
             $('.reqinp').each(function() {
@@ -712,7 +752,7 @@ $query = DB::table('jobpost')
                                 $("#Specialization").empty();
                                 $("#Specialization").append(
                                     '<option value="" selected disabled >Select Specialization</option>'
-                                    );
+                                );
 
                                 $.each(res, function(key, value) {
                                     $("#Specialization").append('<option value="' + value + '">' +
@@ -729,13 +769,16 @@ $query = DB::table('jobpost')
                 }
             });
         }
+
         $(document).ready(function() {
+
             $(document).on('change', '#candphoto', function(e) {
                 const [file] = e.target.files;
                 if (file) {
                     img1.src = URL.createObjectURL(file);
                 }
             });
+
             $(function() {
                 var dtToday = new Date();
                 var month = dtToday.getMonth() + 1; // jan=0; feb=1 .......
@@ -749,7 +792,6 @@ $query = DB::table('jobpost')
                 var maxDate = year + '-' + month + '-' + day;
                 $('#DOB').attr('max', maxDate);
             });
-
 
         });
 
