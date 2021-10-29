@@ -49,6 +49,9 @@ Route::group(['prefix' => 'jobportal'], function () {
     Route::get('job_apply', [JobController::class, 'job_apply'])->name('job_apply');
     Route::get('campus_apply_form', [JobController::class, 'campus_apply_form'])->name('campus_apply_form');
     Route::post('campus_apply', [JobController::class, 'campus_apply'])->name('campus_apply');
+    Route::get('verification', [JobController::class, 'verification'])->name('verification');
+    Route::post('otpverify', [JobController::class, 'otpverify'])->name('otpverify');
+    Route::get('confirmation', [JobController::class, 'confirmation'])->name('confirmation');
     Route::get('campus_placement_registration', [JobController::class, 'campus_placement_registration'])->name('campus_placement_registration');
 });
 

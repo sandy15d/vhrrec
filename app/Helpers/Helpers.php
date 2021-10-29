@@ -124,7 +124,7 @@ if (!function_exists('getFullName')) {
 			return '1';
 		}
 	}
-	
+
 	function GetJobPostId($mrfid)
 	{
 		$sql = Db::table('jobpost')->select('JPId')->where('MRFId', $mrfid)->first();
@@ -152,5 +152,28 @@ if (!function_exists('getFullName')) {
 	{
 		$institute = DB::table('master_institute')->select('InstituteName')->where('InstituteId', $id)->first();
 		return $institute->InstituteName;
+	}
+
+	function SendOTP($mobile, $otp)
+	{
+		$username = "developerinvnr@gmail.com";
+		$hash = "736397e8c20036f67d304d4d8ee316720a93c9d9d83046cbb453303194086efa";
+		$test = "0";
+		$sender = "RECVNR";
+
+		$message = "Your Verification Code is: $otp -vnr";
+		$data = "username=" . $username . "&hash=" . $hash . "&message=" . $message . "&sender=" . $sender . "&numbers=" . $mobile . "&test=" . $test;
+		$ch = curl_init('http://api.textlocal.in/send/?');
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$result = curl_exec($ch);
+
+		if (strpos($result, 'failure') !== false) {
+			return "failure";
+		} else {
+			return "success";
+		}
+		curl_close($ch);
 	}
 }

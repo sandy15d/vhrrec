@@ -42,6 +42,7 @@ $institute_list = DB::table('master_institute')
                     </div>
                     <hr>
                     <form action="{{ route('addRepMrf') }}" method="POST" id="addRepMrfForm">
+                       
                         <table class="table">
                             <tr>
                                 <th style="width: 25%;">Replacement For:</th>

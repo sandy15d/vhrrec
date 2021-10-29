@@ -16,6 +16,8 @@
     <script src="{{ URL::to('/') }}/assets/js/pace.min.js"></script>
     <!-- Bootstrap CSS -->
     <link href="{{ URL::to('/') }}/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/sweetalert2.min.css" />
+    <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/toastr.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&amp;display=swap" rel="stylesheet">
     <link href="{{ URL::to('/') }}/assets/css/app.css" rel="stylesheet">
     <link href="{{ URL::to('/') }}/assets/css/icons.css" rel="stylesheet">
@@ -71,6 +73,8 @@ $query = DB::table('jobpost')
                                     <hr style="margin: 10px 0px 10px 0px;">
                                     <form action="{{ route('campus_apply') }}" id="jobApplyForm" name="jobApplyForm"
                                         method="POST">
+                                        @csrf
+                                        <input type="hidden" name="JPId" value="{{ $jpid }}">
                                         <div class="form-body">
                                             <div class="row">
                                                 <div class="col-lg-9 col-sm-12 table-responsive">
@@ -127,7 +131,7 @@ $query = DB::table('jobpost')
                                                             <td>
                                                                 <input type="date"
                                                                     class="form-control form-control-sm reqinp"
-                                                                    name="DOB" value="" id="DOB">
+                                                                    name="DOB" id="DOB">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -162,8 +166,7 @@ $query = DB::table('jobpost')
                                                                         <td>
                                                                             <input type="text"
                                                                                 class="form-control form-control-sm reqinp"
-                                                                                name="FatherName" value=""
-                                                                                id="FatherName"
+                                                                                name="FatherName" id="FatherName"
                                                                                 onblur="return convertCase(this)">
                                                                         </td>
                                                                     </tr>
@@ -177,7 +180,7 @@ $query = DB::table('jobpost')
                                                             <td>
                                                                 <input type="text"
                                                                     class="form-control form-control-sm reqinp"
-                                                                    name="Email" value="" id="Email">
+                                                                    name="Email" id="Email">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -187,7 +190,7 @@ $query = DB::table('jobpost')
                                                             <td>
                                                                 <input type="text"
                                                                     class="form-control form-control-sm reqinp"
-                                                                    name="Phone" value="" id="Phone"
+                                                                    name="Phone" id="Phone"
                                                                     onkeypress="return isNumberKey(event)">
                                                             </td>
                                                         </tr>
@@ -199,8 +202,8 @@ $query = DB::table('jobpost')
                                                                 <table style="width: 100%">
                                                                     <tr>
                                                                         <td colspan="3">
-                                                                            <input type="text" name="AddLine1"
-                                                                                id="AddLine1"
+                                                                            <input type="text" name="AddressLine1"
+                                                                                id="AddressLine1"
                                                                                 class="form-control form-control-sm reqinp"
                                                                                 placeholder="Address Line 1"
                                                                                 onblur="return convertCase(this)">
@@ -208,8 +211,8 @@ $query = DB::table('jobpost')
                                                                     </tr>
                                                                     <tr>
                                                                         <td colspan="3">
-                                                                            <input type="text" name="AddLine2"
-                                                                                id="AddLine2"
+                                                                            <input type="text" name="AddressLine2"
+                                                                                id="AddressLine2"
                                                                                 class="form-control form-control-sm"
                                                                                 placeholder="Address Line 2"
                                                                                 onblur="return convertCase(this)">
@@ -217,8 +220,8 @@ $query = DB::table('jobpost')
                                                                     </tr>
                                                                     <tr>
                                                                         <td colspan="3">
-                                                                            <input type="text" name="AddLine3"
-                                                                                id="AddLine3"
+                                                                            <input type="text" name="AddressLine3"
+                                                                                id="AddressLine3"
                                                                                 class="form-control form-control-sm"
                                                                                 placeholder="Address Line 3"
                                                                                 onblur="return convertCase(this)">
@@ -253,10 +256,9 @@ $query = DB::table('jobpost')
                                                                     </tr>
                                                                     <tr>
                                                                         <td>
-                                                                            <input type="text" name="Village"
-                                                                                id="Village"
+                                                                            <input type="text" name="City" id="City"
                                                                                 class="form-control form-control-sm reqinp"
-                                                                                placeholder="Village"
+                                                                                placeholder="City / Village"
                                                                                 onblur="return convertCase(this)">
                                                                         </td>
                                                                         <td colspan="2">
@@ -326,6 +328,10 @@ $query = DB::table('jobpost')
                                                                 <select name="PassingYear" id="PassingYear"
                                                                     class="form-select form-select-sm reqinp">
                                                                     <option value="">Select</option>
+                                                                    @for ($i = 1980; $i <= date('Y'); $i++)
+                                                                        <option value={{ $i }}>
+                                                                            {{ $i }}</option>
+                                                                    @endfor
                                                                 </select>
                                                             </td>
                                                         </tr>
@@ -413,20 +419,19 @@ $query = DB::table('jobpost')
                                                                         <td>Job End Date</td>
                                                                         <td>
                                                                             <div class="row">
-                                                                                <div><input type="date"
-                                                                                        name="JobEndDate"
+                                                                                <div>
+                                                                                    <input type="date" name="JobEndDate"
                                                                                         id="JobEndDate"
                                                                                         class="form-control form-control-sm">
                                                                                 </div>
                                                                                 <div
                                                                                     class="form-check form-check-inline">
                                                                                     <input class="form-check-input"
-                                                                                        type="checkbox"
-                                                                                        id="inlineCheckbox1"
-                                                                                        value="option1"
+                                                                                        type="checkbox" id="StillEmp"
+                                                                                        name="StillEmp" value="Y"
                                                                                         style="margin-left:0px;">
                                                                                     <label class="form-check-label"
-                                                                                        for="inlineCheckbox1">If still
+                                                                                        for="StillEmp">If still
                                                                                         employed,
                                                                                         tick here</label>
                                                                                 </div>
@@ -434,9 +439,8 @@ $query = DB::table('jobpost')
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td>Gross Salary(per month)<font
-                                                                                color="#FF0000">*
-                                                                            </font>
+                                                                        <td>Gross Salary(per month)
+                                                                            <font color="#FF0000">* </font>
                                                                         </td>
                                                                         <td>
                                                                             <input type="text" name="GrossSalary"
@@ -446,8 +450,7 @@ $query = DB::table('jobpost')
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td>CTC(Annual)<font color="#FF0000">*
-                                                                            </font>
+                                                                        <td>CTC(Annual)<font color="#FF0000">* </font>
                                                                         </td>
                                                                         <td>
                                                                             <input type="text" name="CTC" id="CTC"
@@ -460,7 +463,8 @@ $query = DB::table('jobpost')
                                                                         <td>
                                                                             <input type="text" name="NoticePeriod"
                                                                                 id="NoticePeriod"
-                                                                                class="form-control form-control-sm">
+                                                                                class="form-control form-control-sm"
+                                                                                onblur="return convertCase(this)">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -468,7 +472,8 @@ $query = DB::table('jobpost')
                                                                         <td>
                                                                             <input type="text" name="ResignReason"
                                                                                 id="ResignReason"
-                                                                                class="form-control form-control-sm">
+                                                                                class="form-control form-control-sm"
+                                                                                onblur="return convertCase(this)">
                                                                         </td>
                                                                     </tr>
                                                                 </table>
@@ -476,8 +481,7 @@ $query = DB::table('jobpost')
 
                                                         </tr>
                                                         <tr>
-                                                            <td valign="middle">Reference<font color="#FF0000">*
-                                                                </font>
+                                                            <td valign="middle">Reference<font color="#FF0000">* </font>
                                                             </td>
                                                             <td>
                                                                 <table style="width: 100%">
@@ -510,8 +514,8 @@ $query = DB::table('jobpost')
                                                                         <td>Person Name<font color="#FF0000">*
                                                                             </font>
                                                                         </td>
-                                                                        <td><input type="text" name="PersonName"
-                                                                                id="PersonName"
+                                                                        <td><input type="text" name="RefPerson"
+                                                                                id="RefPerson"
                                                                                 class="form-control-sm form-control"
                                                                                 onblur="return convertCase(this)">
                                                                         </td>
@@ -540,8 +544,9 @@ $query = DB::table('jobpost')
                                                                         <td>Contact No</td>
                                                                         <td>
                                                                             <input type="text" name="RefContact"
-                                                                                id="RefContact"
-                                                                                class="form-control form-control-sm">
+                                                                                id="RefContact" maxlength="13"
+                                                                                class="form-control form-control-sm"
+                                                                                onkeypress="return isNumberKey(event)">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -549,7 +554,7 @@ $query = DB::table('jobpost')
                                                                             </font>
                                                                         </td>
                                                                         <td>
-                                                                            <input type="text" name="RefMail"
+                                                                            <input type="email" name="RefMail"
                                                                                 id="RefMail"
                                                                                 class="form-control form-control-sm">
                                                                         </td>
@@ -581,8 +586,8 @@ $query = DB::table('jobpost')
                                                         </span>
                                                         <center>
                                                             <label>
-                                                                <input type="file" name="candphoto" id="candphoto"
-                                                                    class="btn btn-sm mb-1 "
+                                                                <input type="file" name="CandidateImage"
+                                                                    id="CandidateImage" class="btn btn-sm mb-1 "
                                                                     style="width: 100px;display: none;"
                                                                     accept="image/png, image/gif, image/jpeg"><span
                                                                     class="btn btn-sm btn-light shadow-sm text-primary">Upload
@@ -625,7 +630,9 @@ $query = DB::table('jobpost')
     <script src="{{ URL::to('/') }}/assets/plugins/simplebar/js/simplebar.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/metismenu/js/metisMenu.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
-    <!--Password show & hide js -->
+    <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
+    <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
+
     <!--app JS-->
     <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
 
@@ -772,7 +779,7 @@ $query = DB::table('jobpost')
 
         $(document).ready(function() {
 
-            $(document).on('change', '#candphoto', function(e) {
+            $(document).on('change', '#CandidateImage', function(e) {
                 const [file] = e.target.files;
                 if (file) {
                     img1.src = URL.createObjectURL(file);
@@ -815,7 +822,6 @@ $query = DB::table('jobpost')
                         $(form).find('span.error-text').text('');
                         $("#loader").modal('show');
                     },
-
                     success: function(data) {
                         if (data.status == 400) {
 
@@ -827,7 +833,8 @@ $query = DB::table('jobpost')
                             $(form)[0].reset();
                             $('#loader').modal('hide');
                             toastr.success(data.msg);
-                            window.location.href = "{{ route('mrf') }}";
+                            var JCId = btoa(data.jcid);    //base64 Encode
+                            window.location.href = "{{ route('verification') }}?jcid=" + JCId;
                         }
                     }
                 });
