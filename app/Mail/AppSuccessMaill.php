@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class NewUserMail extends Mailable
+class AppSuccessMaill extends Mailable
 {
     use Queueable, SerializesModels;
     public $details;
@@ -28,6 +28,6 @@ class NewUserMail extends Mailable
      */
     public function build()
     {
-        return $this->from("recruitment@vnress.in", "VNR Recruitment")->subject($this->details['subject'])->markdown('emails.NewUserMail')->with("details", $this->details);
+        return $this->from("recruitment@vnress.in", "VNR Recruitment")->subject($this->details['subject'])->markdown('emails.AppSuccessMail')->with("details", $this->details);
     }
 }
