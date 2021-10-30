@@ -321,6 +321,14 @@ $query = DB::table('jobpost')
                                                             </td>
                                                         </tr>
                                                         <tr>
+                                                            <td valign="middle">CGPA / Percent<font color="#FF0000">*
+                                                                </font>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="CGPA" id="CGPA" class="form-control form-control-sm">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
                                                             <td valign="middle">Year of Passing<font color="#FF0000">*
                                                                 </font>
                                                             </td>
@@ -777,6 +785,7 @@ $query = DB::table('jobpost')
             });
         }
 
+
         $(document).ready(function() {
 
             $(document).on('change', '#CandidateImage', function(e) {
@@ -798,6 +807,25 @@ $query = DB::table('jobpost')
                 var minDate = year + '-' + month + '-' + day;
                 var maxDate = year + '-' + month + '-' + day;
                 $('#DOB').attr('max', maxDate);
+            });
+
+            $('#Phone').focusout(function() {
+                var count = $(this).val().length;
+                if (count != 10) {
+                    alert('Phone number should be of 10 digits');
+                    $(this).addClass('errorfield');
+                } else {
+                    $(this).removeClass('errorfield');
+                }
+            });
+            $('#Aadhaar').focusout(function() {
+                var count = $(this).val().length;
+                if (count != 12) {
+                    alert('Aadhaar Number should be of 12 digits');
+                    $(this).addClass('errorfield');
+                } else {
+                    $(this).removeClass('errorfield');
+                }
             });
 
         });
@@ -833,7 +861,7 @@ $query = DB::table('jobpost')
                             $(form)[0].reset();
                             $('#loader').modal('hide');
                             toastr.success(data.msg);
-                            var JCId = btoa(data.jcid);    //base64 Encode
+                            var JCId = btoa(data.jcid); //base64 Encode
                             window.location.href = "{{ route('verification') }}?jcid=" + JCId;
                         }
                     }

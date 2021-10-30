@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Common;
 
-use App\Helpers\UserNotification;
-use App\Models\Admin\master_employee;
+use App\Http\Controllers\Controller;
 use App\Models\master_mrf;
 use App\Models\Notification;
+
 use App\Models\ThemeDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\DB;
 use function App\Helpers\convertData;
 use function App\Helpers\getCompanyCode;
 use function App\Helpers\getDepartmentCode;
+
 use function App\Helpers\getDesignationCode;
+
 
 class CommonController extends Controller
 {
@@ -313,4 +315,6 @@ class CommonController extends Controller
             return response()->json(['status' => 200, 'msg' => 'MRF data has been Deleted.']);
         }
     }
+
+
 }

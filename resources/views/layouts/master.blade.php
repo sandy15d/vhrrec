@@ -17,29 +17,21 @@ $CompanyQry = DB::table('master_company')
 <html lang="en" class="{{ session('ThemeStyle') }} {{ session('SidebarColor') }}">
 
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <!--favicon-->
     <link rel="icon" href="{{ URL::to('/') }}/assets/images/favicon-32x32.png" type="image/png" />
-    <!--plugins-->
     <link href="{{ URL::to('/') }}/assets/plugins/simplebar/css/simplebar.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/select2/css/select2.min.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/select2/css/select2-bootstrap4.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/metismenu/css/metisMenu.min.css" rel="stylesheet" />
-    <!-- loader-->
     <link href="{{ URL::to('/') }}/assets/css/pace.min.css" rel="stylesheet" />
     <script src="{{ URL::to('/') }}/assets/js/pace.min.js"></script>
-    <!-- Bootstrap CSS -->
-
     <link href="{{ URL::to('/') }}/assets/css/bootstrap.min.css" rel="stylesheet">
-
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&amp;display=swap" rel="stylesheet">
     <link href="{{ URL::to('/') }}/assets/css/app.css" rel="stylesheet">
     <link href="{{ URL::to('/') }}/assets/css/icons.css" rel="stylesheet">
-    <!-- Theme Style CSS -->
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/dark-theme.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/semi-dark.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/header-colors.css" />
@@ -51,10 +43,6 @@ $CompanyQry = DB::table('master_company')
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTablesButtons.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
-
-
-    {{-- <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script> --}}
-
     <title>HR Recruitment | @yield('title')</title>
     <style>
         .btn--red {
@@ -112,7 +100,7 @@ $CompanyQry = DB::table('master_company')
         .btn-outline-secondary {
             position: relative;
             display: inline-block;
-          /*   box-sizing: border-box; */
+            /*   box-sizing: border-box; */
             margin-right: 0.333em;
             padding: 2px 6.2px;
             border-radius: 0px;
@@ -120,13 +108,13 @@ $CompanyQry = DB::table('master_company')
             font-size: 14px;
             white-space: nowrap;
             overflow: hidden;
-           /*  background-color: #fff; */
+            /*  background-color: #fff; */
             outline: none;
             border-top: 0;
             border-left: 0;
             border-right: 0;
             border-bottom: 0;
-           /*  border-bottom: 1px solid #ddd; */
+            /*  border-bottom: 1px solid #ddd; */
         }
 
         .overlay {
@@ -211,7 +199,8 @@ $CompanyQry = DB::table('master_company')
                             <li> <a href="/admin/mrf"><i class="bx bx-right-arrow-alt"></i>New MRF</a></li>
                             <li> <a href="/admin/active_mrf"><i class="bx bx-right-arrow-alt"></i>Active MRF</a></li>
                             <li> <a href="/admin/closedmrf"><i class="bx bx-right-arrow-alt"></i>Closed MRF</a></li>
-                            <li> <a href="/recruiter_mrf_entry"><i class="bx bx-right-arrow-alt"></i>Manual Entry</a></li>
+                            <li> <a href="/recruiter_mrf_entry"><i class="bx bx-right-arrow-alt"></i>Manual Entry</a>
+                            </li>
 
                         </ul>
                     </li>
@@ -236,8 +225,9 @@ $CompanyQry = DB::table('master_company')
                             <div class="menu-title">Campus Hirings</div>
                         </a>
                         <ul>
-                            <li> <a href="/recruiter/campus_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Campus MRF</a></li>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Campus Application</a></li>
+                            <li> <a href="/campus_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Campus MRF</a>
+                            </li>
+                            <li> <a href="/campus_applications"><i class="bx bx-right-arrow-alt"></i>Campus Application</a></li>
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Campus Hiring Costing</a></li>
                         </ul>
                     </li>
@@ -388,8 +378,9 @@ $CompanyQry = DB::table('master_company')
                             <div class="menu-title">Campus Hirings</div>
                         </a>
                         <ul>
-                            <li> <a href="/recruiter/campus_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Campus MRF</a></li>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Campus Application</a></li>
+                            <li> <a href="/campus_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Campus MRF</a>
+                            </li>
+                            <li> <a href="/campus_applications"><i class="bx bx-right-arrow-alt"></i>Campus Application</a></li>
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Campus Hiring Costing</a></li>
                         </ul>
                     </li>
@@ -528,7 +519,8 @@ $CompanyQry = DB::table('master_company')
                             </div>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="javascript:;"><i class="bx bx-user"></i><span>Profile</span></a> </li>
+                            <li><a class="dropdown-item" href="javascript:;"><i
+                                        class="bx bx-user"></i><span>Profile</span></a> </li>
                             <li>
                                 <div class="dropdown-divider mb-0"></div>
                             </li>
@@ -673,7 +665,7 @@ $CompanyQry = DB::table('master_company')
 
             $(document).on('click', '#sidebarsetting', function() {
                 $(".switcher-wrapper").toggleClass("switcher-toggled");
-               // $(".wrapper").removeClass("toggled");
+                // $(".wrapper").removeClass("toggled");
             });
 
             /* $( ".sidebar-wrapper" ).hover(function() {
@@ -764,7 +756,7 @@ $CompanyQry = DB::table('master_company')
 
             $(document).on('click', '#sidebarcolor1', function() {
                 $.ajax({
-                      url: "{{ route('setTheme') }}",
+                    url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'sidebarcolor1'
@@ -783,7 +775,7 @@ $CompanyQry = DB::table('master_company')
 
             $(document).on('click', '#sidebarcolor2', function() {
                 $.ajax({
-                      url: "{{ route('setTheme') }}",
+                    url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'sidebarcolor2'
@@ -801,7 +793,7 @@ $CompanyQry = DB::table('master_company')
             });
             $(document).on('click', '#sidebarcolor3', function() {
                 $.ajax({
-                      url: "{{ route('setTheme') }}",
+                    url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'sidebarcolor3'
@@ -819,7 +811,7 @@ $CompanyQry = DB::table('master_company')
             });
             $(document).on('click', '#sidebarcolor4', function() {
                 $.ajax({
-                      url: "{{ route('setTheme') }}",
+                    url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'sidebarcolor4'
@@ -837,7 +829,7 @@ $CompanyQry = DB::table('master_company')
             });
             $(document).on('click', '#sidebarcolor5', function() {
                 $.ajax({
-                      url: "{{ route('setTheme') }}",
+                    url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'sidebarcolor5'
@@ -855,7 +847,7 @@ $CompanyQry = DB::table('master_company')
             });
             $(document).on('click', '#sidebarcolor6', function() {
                 $.ajax({
-                      url: "{{ route('setTheme') }}",
+                    url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'sidebarcolor6'
@@ -873,7 +865,7 @@ $CompanyQry = DB::table('master_company')
             });
             $(document).on('click', '#sidebarcolor7', function() {
                 $.ajax({
-                      url: "{{ route('setTheme') }}",
+                    url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'sidebarcolor7'
@@ -891,7 +883,7 @@ $CompanyQry = DB::table('master_company')
             });
             $(document).on('click', '#sidebarcolor8', function() {
                 $.ajax({
-                      url: "{{ route('setTheme') }}",
+                    url: "{{ route('setTheme') }}",
                     method: 'POST',
                     data: {
                         ThemeStyle: 'sidebarcolor8'

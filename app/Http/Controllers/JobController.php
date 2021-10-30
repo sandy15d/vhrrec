@@ -73,6 +73,7 @@ class JobController extends Controller
         $query->PinCode = $request->PinCode;
         $query->Aadhaar = $request->Aadhaar;
         $query->Education = $request->Education;
+        $query->CGPA = $request->CGPA;
         $query->Specialization = $request->Specialization;
         $query->PassingYear = $request->PassingYear;
         $query->College = $request->College;

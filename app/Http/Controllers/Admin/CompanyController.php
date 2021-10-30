@@ -17,7 +17,6 @@ class CompanyController extends Controller
     // ?=====================Load Company Page===================
     function company()
     {
-
         return view('admin.company');
     }
 
