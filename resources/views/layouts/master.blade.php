@@ -227,8 +227,13 @@ $CompanyQry = DB::table('master_company')
                         <ul>
                             <li> <a href="/campus_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Campus MRF</a>
                             </li>
-                            <li> <a href="/campus_applications"><i class="bx bx-right-arrow-alt"></i>Campus Application</a></li>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Campus Hiring Costing</a></li>
+                            <li> <a href="/campus_applications"><i class="bx bx-right-arrow-alt"></i>Campus
+                                    Application</a></li>
+                            <li> <a href="/campus_screening_tracker"><i class="bx bx-right-arrow-alt"></i>Screening
+                                    Tracker</a></li>
+                            <li> <a href="/campus_hiring_tracker"><i class="bx bx-right-arrow-alt"></i>Hiring
+                                    Tracker</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Hiring Costing</a></li>
                         </ul>
                     </li>
                     <li>
@@ -380,8 +385,13 @@ $CompanyQry = DB::table('master_company')
                         <ul>
                             <li> <a href="/campus_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Campus MRF</a>
                             </li>
-                            <li> <a href="/campus_applications"><i class="bx bx-right-arrow-alt"></i>Campus Application</a></li>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Campus Hiring Costing</a></li>
+                            <li> <a href="/campus_applications"><i class="bx bx-right-arrow-alt"></i>Campus
+                                    Application</a></li>
+                                    <li> <a href="/campus_screening_tracker"><i class="bx bx-right-arrow-alt"></i>Screening
+                                        Tracker</a></li>
+                            <li> <a href="/campus_hiring_tracker"><i class="bx bx-right-arrow-alt"></i>Hiring
+                                    Tracker</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Hiring Costing</a></li>
                         </ul>
                     </li>
                     <li>

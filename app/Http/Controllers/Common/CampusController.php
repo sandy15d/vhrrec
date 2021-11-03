@@ -6,17 +6,24 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Helpers\LogActivity;
 use App\Helpers\UserNotification;
+use App\Models\jobapply;
+use App\Models\jobcandidate;
 use App\Models\jobpost;
 use App\Models\master_mrf;
 use App\Models\Recruiter\master_post;
+use App\Models\screen2ndround;
+use App\Models\screening;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use function App\Helpers\CheckJobPostCreated;
 use function App\Helpers\convertData;
 use function App\Helpers\getCollegeById;
 use function App\Helpers\getCollegeCode;
+use function App\Helpers\getCompanyCode;
 use function App\Helpers\getDepartment;
+use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getDesignation;
+use function App\Helpers\getDesignationCode;
 use function App\Helpers\getDistrictName;
 use function App\Helpers\getEducationById;
 use function App\Helpers\getFullName;
@@ -182,6 +189,7 @@ class CampusController extends Controller
             ->rawColumns(['chk', 'details', 'JobShow', 'JobPost', 'Link'])
             ->make(true);
     }
+
     public function createJobPost_Campus(Request $request)
     {
 
@@ -284,6 +292,13 @@ class CampusController extends Controller
         return view('Common.campus_applications', compact('company_list', 'months'));
     }
 
+    public function campus_hiring_tracker()
+    {
+        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
+        $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
+        return view('Common.campus_hiring_tracker', compact('company_list', 'months'));
+    }
+
     public  function getCampusSummary(Request $request)
     {
 
@@ -340,7 +355,7 @@ class CampusController extends Controller
             })
 
             ->editColumn('StudentApplied', function ($data) {
-                return '<a href="javascript:void(0);" class="btn btn-xs btn-warning" onclick="return getCandidate(' . $data->JPId . ')">' . $data->StudentApplied . '</a>';
+                return '<a href="javascript:void(0);" class="btn btn-xs btn-warning" onclick="return getCandidate(' . $data->JPId . ');">' . $data->StudentApplied . '</a>';
             })
 
             ->rawColumns(['chk', 'StudentApplied'])
@@ -352,18 +367,19 @@ class CampusController extends Controller
         $data =  DB::table('jobapply')
             ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
             ->where('jobapply.JPId', $request->JPId);
+
         return datatables()->of($data)
             ->addIndexColumn()
             ->addColumn('chk', function ($data) {
-                if ($data->PlacementDate == null || $data->PlacementDate == '') {
+                if ($data->PlacementDate == null || $data->PlacementDate == '' || $data->Status == 'Selected') {
                     return '';
                 } else {
-                    return "<input type='checkbox' class='select_all' data-id='$data->JCId' name='JCId' id='JCId'>";
+                    return "<input type='checkbox' class=' japchks' data-id='$data->JAId' name='selectCand' id='selectCand' value='$data->JAId'>";
                 }
             })
 
             ->addColumn('University', function ($data) {
-                return getCollegeCode($data->College);
+                return getCollegeById($data->College);
             })
             ->addColumn('StudentName', function ($data) {
                 return $data->FName . ' ' . $data->MName . ' ' . $data->LName;
@@ -377,18 +393,386 @@ class CampusController extends Controller
             })
 
             ->addColumn('PlacementDate', function ($data) {
-               
-                 
 
-                    $x = '<input type="date" class="form-control form-control-sm  d-inline" disabled style="width: 140px;">';
-                  
-                    $x .= '<i class="fa fa-pencil-square-o text-primary d-inline" aria-hidden="true" id="PlacementDate' . $data->JCId . '" onclick="SetPlacementDate(' . $data->JCId . ')" style="font-size: 16px;cursor: pointer;"></i>';
-                    return $x;
-               
+                $x = '<input type="date" class="frminp d-inline-block form-control form-control-sm" readonly style="width:130px;" id="PlacementDate' . $data->JCId . '" value="' . $data->PlacementDate . '"><i class="fa fa-pencil-square-o text-primary" aria-hidden="true" id="PDateEdit" onclick="PDateEnbl(' . $data->JCId . ',this)" style="font-size:16px; cursor:pointer;"></i><button class="btn btn-sm frmbtn btn-primary" style="display:none;" id="PDateSave' . $data->JCId . '" onclick="SavePlacementDate(' . $data->JCId . ',this)">Save</button><button class="btn btn-sm frmbtn btn-danger" style="display: none;" id="PDateCanc' . $data->JCId . '" onclick="window.location.reload();">Cancel</button>';
+                return $x;
             })
 
 
             ->rawColumns(['chk', 'PlacementDate'])
             ->make(true);
+    }
+
+    public function SavePlacementDate(Request $request)
+    {
+        $sql = jobcandidate::find($request->JCId);
+
+        $sql->PlacementDate = $request->PlacementDate;
+        $sql->UpdatedBy = Auth::user()->id;
+        $sql->LastUpdated = now();
+        $query = $sql->save();
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'Campus Placement Date has been changed successfully.']);
+        }
+    }
+
+    public function getPostTitle(Request $request)
+    {
+        $sql = jobpost::find($request->JPId);
+        return (getDesignation($sql->DesigId));
+    }
+
+    public function SendForScreening(Request $request)
+    {
+        $JAId = $request->JAId;
+        $sql = 0;
+        for ($i = 0; $i < Count($JAId); $i++) {
+            $query = jobapply::find($JAId[$i]);
+            $query->Status = 'Selected';
+            $query->SelectedBy = Auth::user()->id;
+            $query->save();
+
+
+            $res = new screening;
+            $res->JAId = $query->JAId;
+            $res->ScrCmp = $query->Company;
+            $res->ScrDpt = $query->Department;
+            $res->ScreeningBy = Auth::user()->id;
+            $res->CreatedBy = Auth::user()->id;
+            $res->ReSentForScreen = now();
+            $res->CreatedTime = now();
+            $res->save();
+
+
+            //Need to send mail for Firo B   , do it later after firo b is completed
+            $sql = 1;
+        }
+
+        if ($sql == 0) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'Candidate Successfully Forwaded for Technical Screening.']);
+        }
+    }
+
+    public function campus_screening_tracker()
+    {
+        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
+        $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
+        return view('Common.campus_screening_tracker', compact('company_list', 'months'));
+    }
+
+    public  function getCampusScreeningCandidates(Request $request)
+    {
+
+        $usersQuery = screening::query();
+        $Company = $request->Company;
+        $Department = $request->Department;
+        $Year = $request->Year;
+        $Month = $request->Month;
+
+        if (Auth::user()->role == 'R') {
+            $usersQuery->where('screening.ScreeningBy', Auth::user()->id);
+        }
+        if ($Company != '') {
+            $usersQuery->where("screening.ScrCmp", $Company);
+        }
+        if ($Department != '') {
+            $usersQuery->where("screening.ScrDpt", $Department);
+        }
+        if ($Year != '') {
+            $usersQuery->whereBetween('screening.ReSentForScreen', [$Year . '-01-01', $Year . '-12-31']);
+        }
+        if ($Month != '') {
+            if ($Year != '') {
+                $usersQuery->whereBetween('screening.ReSentForScreen', [$Year . '-' . $Month . '-01', $Year . '-' . $Month . '-31']);
+            } else {
+                $usersQuery->whereBetween('screening.ReSentForScreen', [date('Y') . '-' . $Month . '-01', date('Y') . '-' . $Month . '-31']);
+            }
+        }
+
+        $data = $usersQuery->select('screening.*', 'jc.ReferenceNo', 'jc.FName', 'jc.MName', 'jc.LName', 'jp.DesigId', 'jc.College')
+            ->Join('jobapply as ja', 'ja.JAId', '=', 'screening.JAId')
+            ->Join('jobcandidates as jc', 'ja.JCId', '=', 'jc.JCId')
+            ->Join('jobpost as jp', 'ja.JPId', '=', 'jp.JPId')
+            ->where('ja.Type', 'Campus')
+            ->where('jp.Status', 'Open')
+            ->where('ja.Status', 'Selected');
+
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('chk', function () {
+                return '<input type="checkbox" class="select_all">';
+            })
+            ->editColumn('Department', function ($data) {
+                return getDepartment($data->ScrDpt);
+            })
+            ->editColumn('Designation', function ($data) {
+                return getDesignationCode($data->DesigId);
+            })
+            ->editColumn('University', function ($data) {
+                return getCollegeCode($data->College);
+            })
+            ->addColumn('StudentName', function ($data) {
+                return $data->FName . ' ' . $data->MName . ' ' . $data->LName;
+            })
+            ->addColumn('GDResult', function ($data) {
+                $x = '<select id="GDResult' . $data->JAId . '" class="form-control form-select form-select-sm  d-inline" disabled style="width: 100px;" onchange="ChngGDResult(' . $data->JAId . ',this.value)">';
+
+                $x .= '<option value="" selected></option>';
+                $x .= '<option value="Selected"';
+                $x .= ($data->GDResult == 'Selected') ? 'selected' : '';
+                $x .= '>Selected</option>';
+
+                $x .= '<option value="Rejected"';
+                $x .= ($data->GDResult == 'Rejected') ? 'selected' : '';
+                $x .= '>Rejected</option>';
+
+
+                $x .= '</select> <i class="fa fa-pencil-square-o text-primary d-inline" aria-hidden="true" id="GDResEdit' . $data->JAId . '" onclick="editGDRes(' . $data->JAId . ')" style="font-size: 16px;cursor: pointer;"></i>';
+                return $x;
+            })
+            ->addColumn('TestScore', function ($data) {
+                $x = '<input type="text" name="TestScore' . $data->JAId . '" id="TestScore' . $data->JAId . '" value="' . $data->TestScore . '" class="frminp" style="width:80px;" disabled> <i class="fa fa-pencil-square-o text-primary d-inline" aria-hidden="true" id="TestScoreEdit' . $data->JAId . '" onclick="editTestScore(' . $data->JAId . ')" style="font-size: 16px;cursor: pointer;"></i><button class="btn btn-sm frmbtn btn-primary d-none" id="SaveScore' . $data->JAId . '" onclick="return SaveTestScore(' . $data->JAId . ')">Save</button>';
+                return $x;
+            })
+            ->editColumn('ScreenStatus', function ($data) {
+                $x = '<select id="ScreenStatus' . $data->JAId . '" class="form-control form-select form-select-sm  d-inline" disabled style="width: 100px;" onchange="ChngScreenStatus(' . $data->JAId . ',this.value)">';
+
+                $x .= '<option value="" selected></option>';
+                $x .= '<option value="Shortlist"';
+                $x .= ($data->ScreenStatus == 'Shortlist') ? 'selected' : '';
+                $x .= '>Shortlist</option>';
+
+                $x .= '<option value="Reject"';
+                $x .= ($data->ScreenStatus == 'Reject') ? 'selected' : '';
+                $x .= '>Reject</option>';
+
+
+                $x .= '</select> <i class="fa fa-pencil-square-o text-primary d-inline" aria-hidden="true" id="ScreenStatusEdit' . $data->JAId . '" onclick="editScreenStatus(' . $data->JAId . ')" style="font-size: 16px;cursor: pointer;"></i>';
+                return $x;
+            })
+
+            ->rawColumns(['chk', 'GDResult', 'TestScore', 'ScreenStatus'])
+            ->make(true);
+    }
+
+    public  function getCampusHiringCandidates(Request $request)
+    {
+
+        $usersQuery = screening::query();
+        $Company = $request->Company;
+        $Department = $request->Department;
+        $Year = $request->Year;
+        $Month = $request->Month;
+
+        if (Auth::user()->role == 'R') {
+            $usersQuery->where('screening.ScreeningBy', Auth::user()->id);
+        }
+        if ($Company != '') {
+            $usersQuery->where("screening.ScrCmp", $Company);
+        }
+        if ($Department != '') {
+            $usersQuery->where("screening.ScrDpt", $Department);
+        }
+        if ($Year != '') {
+            $usersQuery->whereBetween('screening.ReSentForScreen', [$Year . '-01-01', $Year . '-12-31']);
+        }
+        if ($Month != '') {
+            if ($Year != '') {
+                $usersQuery->whereBetween('screening.ReSentForScreen', [$Year . '-' . $Month . '-01', $Year . '-' . $Month . '-31']);
+            } else {
+                $usersQuery->whereBetween('screening.ReSentForScreen', [date('Y') . '-' . $Month . '-01', date('Y') . '-' . $Month . '-31']);
+            }
+        }
+
+        $data = $usersQuery->select('screening.*', 'jc.ReferenceNo', 'jc.FName', 'jc.MName', 'jc.LName', 'jp.DesigId', 'jc.College', 'sc.IntervDt2', 'sc.IntervLoc2', 'sc.IntervPanel2', 'sc.IntervStatus2')
+            ->Join('jobapply as ja', 'ja.JAId', '=', 'screening.JAId')
+            ->Join('jobcandidates as jc', 'ja.JCId', '=', 'jc.JCId')
+            ->Join('jobpost as jp', 'ja.JPId', '=', 'jp.JPId')
+            ->join('screen2ndround as sc', 'screening.ScId', '=', 'sc.ScId', 'left')
+            ->where('ja.Type', 'Campus')
+            ->where('jp.Status', 'Open')
+            ->where('screening.ScreenStatus', 'Shortlist');
+
+
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('chk', function () {
+                return '<input type="checkbox" class="select_all">';
+            })
+            ->editColumn('Department', function ($data) {
+                return getDepartment($data->ScrDpt);
+            })
+            ->editColumn('Designation', function ($data) {
+                return getDesignationCode($data->DesigId);
+            })
+            ->editColumn('University', function ($data) {
+                return getCollegeCode($data->College);
+            })
+            ->addColumn('StudentName', function ($data) {
+                return $data->FName . ' ' . $data->MName . ' ' . $data->LName;
+            })
+
+            ->editColumn('IntervEdit', function ($data) {
+                return '<i class="fa fa-pencil-square-o text-primary d-inline" aria-hidden="true" id="editInt' . $data->JAId . '" onclick="editInt(' . $data->JAId . ',' . $data->ScId . ')" style="font-size: 16px;cursor: pointer;"></i>';
+            })
+            ->editColumn('IntervDt2', function ($data) {
+                if ($data->IntervDt2 != null) {
+                    return $data->IntervDt2;
+                } else {
+                    return '';
+                }
+            })
+            ->editColumn('IntervLoc2', function ($data) {
+                if ($data->IntervLoc2 != null) {
+                    return $data->IntervLoc2;
+                } else {
+                    return '';
+                }
+            })
+            ->editColumn('IntervPanel2', function ($data) {
+                if ($data->IntervPanel2 != null) {
+                    return $data->IntervPanel2;
+                } else {
+                    return '';
+                }
+            })
+            ->editColumn('IntervStatus2', function ($data) {
+                if ($data->IntervStatus2 != null) {
+                    return $data->IntervStatus2;
+                } else {
+                    return '';
+                }
+            })
+            ->editColumn('IntervEdit2', function ($data) {
+                if ($data->IntervStatus == '2nd Round Interview') {
+                    return '<i class="fa fa-pencil-square-o text-primary d-inline" aria-hidden="true" id="editInt_2nd' . $data->JAId . '" onclick="editInt_2nd(' . $data->JAId . ',' . $data->ScId . ')" style="font-size: 16px;cursor: pointer;"></i>';
+                } else {
+                    return '';
+                }
+            })
+            ->editColumn('CompanyEdit', function ($data) {
+                if ($data->IntervStatus == 'Selected' || $data->IntervStatus2 == 'Selected') {
+                    return '<i class="fa fa-pencil-square-o text-primary d-inline" aria-hidden="true" id="companyedit' . $data->JAId . '" onclick="editCompany(' . $data->JAId . ',' . $data->ScId . ')" style="font-size: 16px;cursor: pointer;"></i>';
+                } else {
+                    return '';
+                }
+            })
+
+            ->editColumn('SelectedForC', function ($data) {
+                if ($data->SelectedForC != null) {
+                    return getCompanyCode($data->SelectedForC);
+                } else {
+                    return '';
+                }
+            })
+            ->editColumn('SelectedForD', function ($data) {
+                if ($data->SelectedForD != null) {
+                    return getDepartmentCode($data->SelectedForD);
+                } else {
+                    return '';
+                }
+            })
+
+
+
+            ->rawColumns(['chk',  'IntervEdit', 'IntervEdit2', 'CompanyEdit'])
+            ->make(true);
+    }
+
+    public function ChngGDResult(Request $request)
+    {
+        $query = screening::where('JAId', $request->JAId)
+            ->update(['GDResult' => $request->va]);
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'msg' => 'GD Result Status has been changed successfully.']);
+        }
+    }
+
+    public function SaveTestScore(Request $request)
+    {
+        $query = screening::where('JAId', $request->JAId)
+            ->update(['TestScore' => $request->Score]);
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'Test Score has been changed successfully.']);
+        }
+    }
+
+    public function ChngScreenStatus(Request $request)
+    {
+        $query = screening::where('JAId', $request->JAId)
+            ->update(['ScreenStatus' => $request->va, 'ResScreened' => now(), 'LastUpdated' => now(), 'UpdatedBy' => Auth::user()->id]);
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'msg' => 'Screening Status has been changed successfully.']);
+        }
+    }
+
+    public function getCandidateName(Request $request)
+    {
+        $sql = DB::table('jobapply')
+            ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+            ->where('jobapply.JAId', $request->JAId)
+            ->select('jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName')
+            ->get();
+
+        return $sql[0]->FName . ' ' . $sql[0]->MName . ' ' . $sql[0]->LName;
+    }
+
+    public function SaveFirstInterview_Campus(Request $request)
+    {
+        $sql = screening::find($request->ScId);
+        $sql->InterAtt = 'Yes';
+        $sql->IntervDt = $request->IntervDt;
+        $sql->IntervLoc = $request->IntervLoc;
+        $sql->IntervPanel = $request->IntervPanel;
+        $sql->IntervStatus = $request->IntervStatus;
+        $sql->save();
+        if (!$sql) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => '1st Interview Data has been changed successfully.']);
+        }
+    }
+    public function SaveSecondInterview_Campus(Request $request)
+    {
+        $sql = new screen2ndround;
+        $sql->InterAtt2 = 'Yes';
+        $sql->ScId = $request->ScId_2nd;
+        $sql->IntervDt2 = $request->IntervDt2;
+        $sql->IntervLoc2 = $request->IntervLoc2;
+        $sql->IntervPanel2 = $request->IntervPanel2;
+        $sql->IntervStatus2 = $request->IntervStatus2;
+        $sql->CreatedTime = now();
+        $sql->CreatedBy = Auth::user()->id;
+        $sql->save();
+        if (!$sql) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => '2nd Interview Data has been changed successfully.']);
+        }
+    }
+
+    public function Save_Cmp_Dpt_Campus(Request $request)
+    {
+        $sql = screening::find($request->ScId_cmp);
+        $sql->SelectedForC = $request->SelectedForC;
+        $sql->SelectedForD = $request->SelectedForD;
+        $sql->save();
+        if (!$sql) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully.']);
+        }
     }
 }

@@ -6,6 +6,20 @@
             padding: 2px 1px;
         }
 
+        .frminp {
+            padding: 4 px !important;
+            height: 25 px;
+            border-radius: 4 px;
+            font-size: 11px;
+            font-weight: 550;
+        }
+
+        .frmbtn {
+            padding: 2 px 4 px !important;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
     </style>
     <div class="page-content">
         <!--breadcrumb-->
@@ -55,9 +69,9 @@
         </div>
         <!--end breadcrumb-->
 
-        <div class="card">
+        <div class="card border-top border-0 border-4 border-primary">
             <div class="card-body">
-                <table class="table  table-hover table-striped table-condensed align-middle text-center table-bordered"
+                <table class="table table-hover table-striped table-condensed align-middle text-center table-bordered"
                     id="CampusApplication" style="width: 100%">
                     <thead class="text-center bg-primary text-light">
                         <tr class="text-center">
@@ -74,23 +88,34 @@
                 </table>
             </div>
         </div>
-        <div class="card">
+        <div class="card d-none border-top border-0 border-4 border-primary" id="CandidateDiv">
             <div class="card-body">
-                <table class="table  table-hover table-striped table-condensed align-middle text-center table-bordered"
+                <h5 class=" text-primary" id="PostTitle"></h5>
+                <div class=" bg-white  shadow-sm rounded stickThis " style="font-size: 14px;">
+                    &nbsp;<span style="font-weight: bold;">↱</span>&nbsp;
+                    <label class="text-primary"><input id="checkall" type="checkbox" name="">&nbsp;Check all</label>
+                    <i class="text-muted" style="font-size: 13px;">With selected:</i> 
+                    <span class="d-inline">
+                        <label class="text-primary" style="font-size: 13px; cursor: pointer;"
+                            onclick="SendForScreening()"><i class="fas fa-long-arrow-alt-right"></i> Fwd. to Screening
+                            Stage</label> &nbsp;
+                    </span>
+
+                </div>
+                <table class="table table-hover table-striped table-condensed align-middle text-center table-bordered"
                     id="CandidateRecords" style="width: 100%">
                     <thead class="text-center bg-primary text-light">
                         <tr class="text-center">
                             <td>#</td>
                             <td class="th-sm">S.No</td>
                             <td>ReferenceNo</td>
-                            <td class="th-sm">University/College</td>
+                            <td class="th-sm">University</td>
                             <td>Student Name</td>
                             <td>Qualification</td>
-                            <td>% or CGPA</td>
-                            <td>Mobile No</td>
-                            <td>Email ID</td>
+                            <td>CGPA</td>
+                            <td>Mobile</td>
+                            <td>Email</td>
                             <td>Campus Placement Date</td>
-                           
                         </tr>
                     </thead>
                     <tbody>
@@ -130,7 +155,9 @@
 
         function GetCampusRecords() {
             $('#CampusApplication').DataTable().draw(true);
+
         }
+
         $(document).on('click', '#reset', function() {
             location.reload();
         });
@@ -190,18 +217,32 @@
             });
         });
 
+        function getPostTitle(JPId) {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('getPostTitle') }}?JPId=" + JPId,
+                success: function(res) {
+                    if (res) {
+                        $("#PostTitle").html('Student Applied For: ' + res);
+                    }
+                }
+            });
+        }
 
         function getCandidate(JPId) {
-            var JPId = JPId
+
+            $('#CandidateDiv').removeClass('d-none');
+            var JPId = JPId;
+            getPostTitle(JPId);
             $('#CandidateRecords').DataTable({
                 processing: true,
                 serverSide: true,
                 info: true,
                 searching: false,
                 ordering: false,
-                dom: 'Bfrtip', //enable 
+                //  dom: 'Bfrtip', //enable 
                 lengthChange: false,
-                destroy:true,
+                destroy: true,
                 buttons: [
 
                     {
@@ -327,9 +368,15 @@
                         data: 'PlacementDate',
                         name: 'PlacementDate'
                     },
-                    
+
 
                 ],
+                "createdRow": function(row, data, name) {
+                    if (data['Status'] == 'Selected') {
+                        $(row).addClass('bg-success text-light');
+
+                    }
+                }
             });
         }
 
@@ -340,5 +387,88 @@
                 $(this).closest("tr").removeClass("bg-secondary bg-gradient text-light");
             }
         });
+
+        function PDateEnbl(JCId, th) {
+            $('#PlacementDate' + JCId).prop('readonly', false);
+            $(th).hide(500);
+            $('#PDateSave' + JCId).show(500);
+            $('#PDateCanc' + JCId).show(500);
+        }
+
+        function SavePlacementDate(JCId, th) {
+            var JCId = JCId;
+            var PlacementDate = $('#PlacementDate' + JCId).val();
+            $.ajax({
+                url: '{{ url('SavePlacementDate') }}',
+                method: 'POST',
+                data: {
+                    JCId: JCId,
+                    PlacementDate: PlacementDate
+                },
+                success: function(data) {
+                    if (data.status == 400) {
+                        alert('Something went wrong..!!');
+                    } else {
+                        toastr.success(data.msg);
+                        location.reload();
+                    }
+                }
+            });
+        }
+
+        $('#checkall').click(function() {
+            if ($(this).prop("checked") == true) {
+                $('.japchks').prop("checked", true);
+            } else if ($(this).prop("checked") == false) {
+                $('.japchks').prop("checked", false);
+            }
+        });
+
+        function checkAllorNot() {
+            var allchk = 1;
+            $('.japchks').each(function() {
+                if ($(this).prop("checked") == false) {
+                    allchk = 0;
+                }
+            });
+            if (allchk == 0) {
+                $('#checkall').prop("checked", false);
+            } else if (allchk == 1) {
+                $('#checkall').prop("checked", true);
+            }
+        }
+
+        function SendForScreening() {
+            var sc = [];
+            $("input[name='selectCand']").each(function() {
+                if ($(this).prop("checked") == true) {
+                    var value = $(this).val();
+                    sc.push(value);
+                }
+            });
+            if (sc.length > 0) {
+                if (confirm('Are you sure to Send Selected Candidates to Screening Stage?')) {
+                    $.ajax({
+                        url: '{{ url('SendForScreening') }}',
+                        method: 'POST',
+                        data: {
+                            JAId: sc,
+                        },
+                        success: function(data) {
+                            if (data.status == 400) {
+                                alert('Something went wrong..!!');
+                            } else {
+                                toastr.success(data.msg);
+                                $('#CandidateRecords').DataTable().ajax.reload(null, false);
+                            }
+                        }
+                    });
+                }
+
+            } else {
+                alert('No Candidate Selected!\nPlease select atleast one candidate to proceed.');
+            }
+
+        }
     </script>
 @endsection
