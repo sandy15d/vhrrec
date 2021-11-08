@@ -32,8 +32,7 @@ use App\Http\Controllers\Hod\MyTeamController;
 use App\Http\Controllers\Common\CampusController;
 use App\Http\Controllers\Common\ManualEntryController;
 use App\Http\Controllers\Common\CommonController;
-
-
+use App\Http\Controllers\Common\JobApplicationController;
 use App\Http\Controllers\JobController;
 
 Route::get('/', function () {
@@ -47,7 +46,8 @@ Route::middleware(['middleware' => 'PreventBackHistory'])->group(function () {
 
 Route::group(['prefix' => 'jobportal'], function () {
     Route::get('jobs', [JobController::class, 'jobs'])->name('jobs');
-    Route::get('job_apply', [JobController::class, 'job_apply'])->name('job_apply');
+    Route::get('job_apply_form', [JobController::class, 'job_apply_form'])->name('job_apply_form');
+    Route::post('job_apply', [JobController::class, 'job_apply'])->name('job_apply');
     Route::get('campus_apply_form', [JobController::class, 'campus_apply_form'])->name('campus_apply_form');
     Route::post('campus_apply', [JobController::class, 'campus_apply'])->name('campus_apply');
     Route::get('verification', [JobController::class, 'verification'])->name('verification');
@@ -73,6 +73,13 @@ Route::post('updateMRF', [CommonController::class, 'updateMRF'])->name('updateMR
 Route::post('deleteMRF', [CommonController::class, 'deleteMRF'])->name('deleteMRF');
 Route::post('notificationMarkRead', [CommonController::class, 'notificationMarkRead'])->name('notificationMarkRead');
 Route::post('markAllRead', [CommonController::class, 'markAllRead'])->name('markAllRead');
+
+Route::get('job_response', [JobApplicationController::class, 'job_response'])->name('job_response');
+Route::post('getJobResponseSummary', [JobApplicationController::class, 'getJobResponseSummary'])->name('getJobResponseSummary');
+Route::post('getCandidates', [JobApplicationController::class, 'getCandidates'])->name('getCandidates');
+
+
+
 
 Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');
 Route::get('get_all_manual_mrf_created_by_me', [ManualEntryController::class, 'get_all_manual_mrf_created_by_me'])->name('get_all_manual_mrf_created_by_me');

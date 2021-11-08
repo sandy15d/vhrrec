@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Campus Applications')
+@section('title', 'Jobs & Response')
 @section('PageContent')
     <style>
         .table>:not(caption)>*>* {
@@ -26,11 +26,11 @@
         <div class="page-breadcrumb  align-items-center mb-3">
             <div class="row mb-1">
                 <div class="col-3 breadcrumb-title ">
-                    Campus Applications
+                    jobs & Response
                 </div>
                 <div class="col-2">
                     <select name="Fill_Company" id="Fill_Company" class="form-select form-select-sm"
-                        onchange="GetCampusRecords(); GetDepartment();">
+                        onchange="GetJobResponse(); GetDepartment();">
                         <option value="">Select Company</option>
                         @foreach ($company_list as $key => $value)
                             <option value="{{ $key }}">{{ $value }}</option>
@@ -40,13 +40,13 @@
                 <div class="col-2">
 
                     <select name="Fill_Department" id="Fill_Department" class="form-select form-select-sm"
-                        onchange="GetCampusRecords();">
+                        onchange="GetJobResponse();">
                         <option value="">Select Department</option>
 
                     </select>
                 </div>
                 <div class="col-2">
-                    <select name="Year" id="Year" class="form-select form-select-sm" onchange="GetCampusRecords();">
+                    <select name="Year" id="Year" class="form-select form-select-sm" onchange="GetJobResponse();">
                         <option value="">Select Year</option>
                         @for ($i = 2021; $i <= date('Y'); $i++)
                             <option value="{{ $i }}">{{ $i }}</option>
@@ -54,7 +54,7 @@
                     </select>
                 </div>
                 <div class="col-2">
-                    <select name="Month" id="Month" class="form-select form-select-sm" onchange="GetCampusRecords();">
+                    <select name="Month" id="Month" class="form-select form-select-sm" onchange="GetJobResponse();">
                         <option value="">Select Month</option>
                         @foreach ($months as $key => $value)
                             <option value="{{ $key }}">{{ $value }}</option>
@@ -72,7 +72,7 @@
         <div class="card border-top border-0 border-4 border-primary">
             <div class="card-body">
                 <table class="table table-hover table-striped table-condensed align-middle text-center table-bordered"
-                    id="CampusApplication" style="width: 100%">
+                    id="JobApplications" style="width: 100%">
                     <thead class="text-center bg-primary text-light">
                         <tr class="text-center">
                             <td>#</td>
@@ -80,7 +80,8 @@
                             <td>JobCode</td>
                             <td>Department</td>
                             <td>Designation</td>
-                            <td>Student Applied</td>
+                            <td>Responses</td>
+                            <td>Sources</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -88,39 +89,21 @@
                 </table>
             </div>
         </div>
-        <div class="card d-none border-top border-0 border-4 border-primary" id="CandidateDiv">
+        <div class="card  border-top border-0 border-4 border-primary" id="CandidateDiv">
             <div class="card-body">
                 <h5 class=" text-primary" id="PostTitle"></h5>
-                <div class=" bg-white  shadow-sm rounded stickThis " style="font-size: 14px;">
+                <div class=" bg-white  rounded stickThis " style="font-size: 14px;">
                     &nbsp;<span style="font-weight: bold;">↱</span>&nbsp;
                     <label class="text-primary"><input id="checkall" type="checkbox" name="">&nbsp;Check all</label>
                     <i class="text-muted" style="font-size: 13px;">With selected:</i> 
                     <span class="d-inline">
-                        <label class="text-primary" style="font-size: 13px; cursor: pointer;"
-                            onclick="SendForScreening()"><i class="fas fa-long-arrow-alt-right"></i> Fwd. to Screening
+                        <label class="text-primary" style=" cursor: pointer;" onclick="SendForScreening()"><i
+                                class="fas fa-long-arrow-alt-right"></i> Fwd. to Screening
                             Stage</label> &nbsp;
                     </span>
 
                 </div>
-                <table class="table table-hover table-striped table-condensed align-middle text-center table-bordered"
-                    id="CandidateRecords" style="width: 100%">
-                    <thead class="text-center bg-primary text-light">
-                        <tr class="text-center">
-                            <td>#</td>
-                            <td class="th-sm">S.No</td>
-                            <td>ReferenceNo</td>
-                            <td class="th-sm">University</td>
-                            <td>Student Name</td>
-                            <td>Qualification</td>
-                            <td>CGPA</td>
-                            <td>Mobile</td>
-                            <td>Email</td>
-                            <td>Campus Placement Date</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+
             </div>
         </div>
     </div>
@@ -153,8 +136,8 @@
             });
         }
 
-        function GetCampusRecords() {
-            $('#CampusApplication').DataTable().draw(true);
+        function GetJobResponse() {
+            $('#JobApplications').DataTable().draw(true);
 
         }
 
@@ -163,7 +146,7 @@
         });
 
         $(document).ready(function() {
-            $('#CampusApplication').DataTable({
+            $('#JobApplications').DataTable({
                 processing: true,
                 serverSide: true,
                 ordering: false,
@@ -171,7 +154,7 @@
                 lengthChange: false,
                 info: true,
                 ajax: {
-                    url: "{{ route('getCampusSummary') }}",
+                    url: "{{ route('getJobResponseSummary') }}",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
@@ -209,8 +192,12 @@
                     },
 
                     {
-                        data: 'StudentApplied',
-                        name: 'StudentApplied'
+                        data: 'Response',
+                        name: 'Response'
+                    },
+                    {
+                        data: 'Source',
+                        name: 'Source'
                     },
 
                 ],
@@ -223,7 +210,7 @@
                 url: "{{ route('getPostTitle') }}?JPId=" + JPId,
                 success: function(res) {
                     if (res) {
-                        $("#PostTitle").html('Student Applied For: ' + res);
+                        $("#PostTitle").html('Candidates Applied For: ' + res);
                     }
                 }
             });
@@ -234,150 +221,17 @@
             $('#CandidateDiv').removeClass('d-none');
             var JPId = JPId;
             getPostTitle(JPId);
-            $('#CandidateRecords').DataTable({
-                processing: true,
-                serverSide: true,
-                info: true,
-                searching: false,
-                ordering: false,
-                //  dom: 'Bfrtip', //enable 
-                lengthChange: false,
-                destroy: true,
-                buttons: [
-
-                    {
-                        extend: 'copyHtml5',
-                        text: '<i class="fa fa-files-o"></i>',
-                        titleAttr: 'Copy',
-                        title: $('.download_label').html(),
-                        exportOptions: {
-                            columns: ':visible'
-                        }
-                    },
-
-                    {
-                        extend: 'excelHtml5',
-                        text: '<i class="fa fa-file-excel-o"></i>',
-                        titleAttr: 'Excel',
-                        title: $('.download_label').html(),
-                        exportOptions: {
-                            columns: ':visible'
-
-                        }
-                    },
-
-                    {
-                        extend: 'csvHtml5',
-                        text: '<i class="fa fa-file-text-o"></i>',
-                        titleAttr: 'CSV',
-                        title: $('.download_label').html(),
-                        exportOptions: {
-                            columns: ':visible'
-                        }
-                    },
-
-                    {
-                        extend: 'pdfHtml5',
-                        text: '<i class="fa fa-file-pdf-o"></i>',
-                        titleAttr: 'PDF',
-                        orientation: 'landscape',
-                        title: $('.download_label').html(),
-                        exportOptions: {
-                            columns: ':visible',
-
-
-                        }
-                    },
-
-                    {
-                        extend: 'print',
-                        text: '<i class="fa fa-print"></i>',
-                        titleAttr: 'Print',
-                        title: $('.download_label').html(),
-                        customize: function(win) {
-                            $(win.document.body)
-                                .css('font-size', '10pt');
-
-                            $(win.document.body).find('table')
-                                .addClass('compact')
-                                .css('font-size', 'inherit');
-                        },
-                        exportOptions: {
-                            columns: ':visible'
-                        }
-                    },
-
-                    {
-                        extend: 'colvis',
-                        text: '<i class="fa fa-columns"></i>',
-                        titleAttr: 'Columns',
-                        title: $('.download_label').html(),
-                        postfixButtons: ['colvisRestore']
-                    },
-                ],
-
-                ajax: {
-                    url: "{{ route('getCampusCandidates') }}?JPId=" + JPId,
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-
-                    type: 'POST',
-                    dataType: "JSON",
+            $.ajax({
+                url: '{{ url('getCandidates') }}',
+                method: 'POST',
+                data: {
+                    JPId: JPId,
                 },
-                columns: [
-
-                    {
-                        data: 'chk',
-                        name: 'chk'
-                    },
-                    {
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex'
-                    },
-                    {
-                        data: 'ReferenceNo',
-                        name: 'ReferenceNo'
-                    },
-                    {
-                        data: 'University',
-                        name: 'University'
-                    },
-                    {
-                        data: 'StudentName',
-                        name: 'StudentName'
-                    },
-                    {
-                        data: 'Qualification',
-                        name: 'Qualification'
-                    },
-                    {
-                        data: 'CGPA',
-                        name: 'CGPA'
-                    },
-                    {
-                        data: 'Phone',
-                        name: 'Phone'
-                    },
-
-                    {
-                        data: 'Email',
-                        name: 'Email'
-                    },
-                    {
-                        data: 'PlacementDate',
-                        name: 'PlacementDate'
-                    },
-
-
-                ],
-                "createdRow": function(row, data, name) {
-                    if (data['Status'] == 'Selected') {
-                        $(row).addClass('bg-success text-light');
-
-                    }
+                success: function(data) {
+                   $('#CandidateDiv').append(data);
                 }
             });
+
         }
 
         $(document).on('click', '.select_all', function() {

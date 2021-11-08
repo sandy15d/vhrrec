@@ -208,6 +208,13 @@ class MrfAllocatedController extends Controller
         $Location = $MRFDetails['Location'];
         $Status = 'Open';
 
+        if ($MRFDetails['Type'] == 'SIP_HrManual' || $MRFDetails['Type'] == 'SIP') {
+            $type = 'SIP';
+        } else {
+            $type = 'Regular';
+        }
+
+
         $SQL = new master_post;
         $SQL->MRFId = $MRFId;
         $SQL->CompanyId = $Company;
@@ -220,6 +227,7 @@ class MrfAllocatedController extends Controller
         $SQL->Location = $Location;
         $SQL->KeyPositionCriteria = $KpArray_str;
         $SQL->PostingView = 'Hidden';
+        $SQL->JobPostType = $type;
         $SQL->Status = $Status;
         $SQL->CreatedBy =  Auth::user()->id;
         $query = $SQL->save();

@@ -192,4 +192,20 @@ if (!function_exists('getFullName')) {
 			return 'notexpired';
 		}
 	}
+
+	function ResumeSourceCount($JPId)
+	{
+		$sql =	DB::table('jobapply')
+			->Join('master_resumesource', 'jobapply.ResumeSource', '=', 'master_resumesource.ResumeSouId')
+			->where('jobapply.JPId', $JPId)
+			->select(DB::raw('COUNT(jobapply.JAId) AS Applied'), 'master_resumesource.ResumeSource')
+			->groupBy('jobapply.ResumeSource')
+			->get();
+		$x = '';
+		foreach ($sql as $item) {
+			$x .= '<span class="badge rounded-pill bg-warning text-dark" style="font-size:12px;">' . $item->ResumeSource . ':' . $item->Applied . '</span> ';
+		}
+
+		return $x;
+	}
 }

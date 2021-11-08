@@ -4,12 +4,21 @@ use function App\Helpers\getEducationById;
 use function App\Helpers\getSpecializationbyId;
 use function App\Helpers\getDistrictName;
 use function App\Helpers\getStateName;
-
+//$queries = DB::enableQueryLog();
+$regular_job = DB::table('jobpost')
+    ->Join('manpowerrequisition', 'manpowerrequisition.MRFId', '=', 'jobpost.MRFId')
+    ->where('manpowerrequisition.CompanyId', 1)
+    ->Where('jobpost.Status', 'Open')
+    ->Where('jobpost.PostingView', 'Show')
+    ->Where('jobpost.JobPostType', 'Regular')
+    ->orderBy('JPId', 'desc')
+    ->get();
 $sql = DB::table('jobpost')
     ->Join('manpowerrequisition', 'manpowerrequisition.MRFId', '=', 'jobpost.MRFId')
     ->where('manpowerrequisition.CompanyId', 1)
     ->Where('jobpost.Status', 'Open')
     ->Where('jobpost.PostingView', 'Show')
+    ->Where('jobpost.JobPostType', 'SIP')
     ->orderBy('JPId', 'desc')
     ->get();
 
@@ -108,7 +117,8 @@ $sql = DB::table('jobpost')
                                                                         @endphp
                                                                         @foreach ($res as $item)
                                                                             <tr>
-                                                                                <th style="width: 250px;">Department</th>
+                                                                                <th style="width: 250px;">Department
+                                                                                </th>
                                                                                 <td></td>
                                                                             </tr>
                                                                             <tr>
@@ -171,19 +181,19 @@ $sql = DB::table('jobpost')
                                                     <th>Apply</th>
                                                 </thead>
                                                 <tbody>
-                                                    @for ($i = 0; $i < count($sql); $i++)
+                                                    @for ($i = 0; $i < count($regular_job); $i++)
                                                         <tr data-bs-toggle="collapse"
-                                                            data-bs-target="#detail{{ $sql[$i]->JPId }}"
+                                                            data-bs-target="#detail{{ $regular_job[$i]->JPId }}"
                                                             data-parent="#myTable" class="accordion-toggle"
                                                             style="cursor: pointer">
                                                             <td>{{ $i + 1 }}</td>
-                                                            <td>{{ $sql[$i]->JobCode }}</td>
-                                                            <td>{{ $sql[$i]->Title }}</td>
-                                                            <td>{{ getDepartment($sql[$i]->DepartmentId) }}</td>
+                                                            <td>{{ $regular_job[$i]->JobCode }}</td>
+                                                            <td>{{ $regular_job[$i]->Title }}</td>
+                                                            <td>{{ getDepartment($regular_job[$i]->DepartmentId) }}</td>
                                                             <td><a href="javascript:void(0);"
                                                                     style="color: #0008ff">View Details</a></td>
                                                         </tr>
-                                                        <tr id="detail{{ $sql[$i]->JPId }}"
+                                                        <tr id="detail{{ $regular_job[$i]->JPId }}"
                                                             class="collapse accordion-collapse">
                                                             <td colspan="6" class="hiddenRow">
                                                                 <div>
@@ -193,7 +203,7 @@ $sql = DB::table('jobpost')
                                                                             $res = DB::table('jobpost')
                                                                                 ->Join('manpowerrequisition', 'manpowerrequisition.MRFId', '=', 'jobpost.MRFId')
                                                                                 ->where('jobpost.Status', 'Open')
-                                                                                ->where('jobpost.JPId', $sql[$i]->JPId)
+                                                                                ->where('jobpost.JPId', $regular_job[$i]->JPId)
                                                                                 ->orderBy('JPId', 'desc')
                                                                                 ->get();
                                                                         @endphp
@@ -327,8 +337,8 @@ $sql = DB::table('jobpost')
     function jobapply(JPId) {
         var JPId = btoa(JPId);
         // window.location.href = "{{ route('job_apply') }}?jpid=" + JPId;
-    
-        window.open("{{ route('job_apply') }}?jpid=" + JPId, '_blank')
+
+        window.open("{{ route('job_apply_form') }}?jpid=" + JPId, '_blank')
     }
 
     function btnSip_Click() {
