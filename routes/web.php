@@ -21,7 +21,6 @@ use App\Http\Controllers\Admin\ResumeSourcController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CommunicationController;
 
-
 use App\Http\Controllers\Recruiter\RecruiterController;
 use App\Http\Controllers\Recruiter\MrfAllocatedController;
 
@@ -29,10 +28,11 @@ use App\Http\Controllers\Hod\HodController;
 use App\Http\Controllers\Hod\MrfController;
 use App\Http\Controllers\Hod\MyTeamController;
 
-use App\Http\Controllers\ManualEntryController;
-use App\Http\Controllers\CommonController;
 
-
+use App\Http\Controllers\Common\CampusController;
+use App\Http\Controllers\Common\ManualEntryController;
+use App\Http\Controllers\Common\CommonController;
+use App\Http\Controllers\Common\JobApplicationController;
 use App\Http\Controllers\JobController;
 
 Route::get('/', function () {
@@ -46,7 +46,8 @@ Route::middleware(['middleware' => 'PreventBackHistory'])->group(function () {
 
 Route::group(['prefix' => 'jobportal'], function () {
     Route::get('jobs', [JobController::class, 'jobs'])->name('jobs');
-    Route::get('job_apply', [JobController::class, 'job_apply'])->name('job_apply');
+    Route::get('job_apply_form', [JobController::class, 'job_apply_form'])->name('job_apply_form');
+    Route::post('job_apply', [JobController::class, 'job_apply'])->name('job_apply');
     Route::get('campus_apply_form', [JobController::class, 'campus_apply_form'])->name('campus_apply_form');
     Route::post('campus_apply', [JobController::class, 'campus_apply'])->name('campus_apply');
     Route::get('verification', [JobController::class, 'verification'])->name('verification');
@@ -72,6 +73,14 @@ Route::post('updateMRF', [CommonController::class, 'updateMRF'])->name('updateMR
 Route::post('deleteMRF', [CommonController::class, 'deleteMRF'])->name('deleteMRF');
 Route::post('notificationMarkRead', [CommonController::class, 'notificationMarkRead'])->name('notificationMarkRead');
 Route::post('markAllRead', [CommonController::class, 'markAllRead'])->name('markAllRead');
+
+Route::get('job_response', [JobApplicationController::class, 'job_response'])->name('job_response');
+Route::post('getJobResponseSummary', [JobApplicationController::class, 'getJobResponseSummary'])->name('getJobResponseSummary');
+Route::post('getCandidates', [JobApplicationController::class, 'getCandidates'])->name('getCandidates');
+
+
+
+
 Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');
 Route::get('get_all_manual_mrf_created_by_me', [ManualEntryController::class, 'get_all_manual_mrf_created_by_me'])->name('get_all_manual_mrf_created_by_me');
 Route::get('mrf', [ManualEntryController::class, 'mrf'])->name('mrf');
@@ -83,6 +92,27 @@ Route::post('add_new_mrf_manual', [ManualEntryController::class, 'add_new_mrf_ma
 Route::post('add_sip_mrf_manual', [ManualEntryController::class, 'add_sip_mrf_manual'])->name('add_sip_mrf_manual');
 Route::post('add_campus_mrf_manual', [ManualEntryController::class, 'add_campus_mrf_manual'])->name('add_campus_mrf_manual');
 Route::post('add_replacement_mrf_manual', [ManualEntryController::class, 'add_replacement_mrf_manual'])->name('add_replacement_mrf_manual');
+
+Route::post('createJobPost_Campus', [CampusController::class, 'createJobPost_Campus'])->name('createJobPost_Campus');
+Route::post('getAllCampusAllocatedMrf', [CampusController::class, 'getAllCampusAllocatedMrf'])->name('getAllCampusAllocatedMrf');
+Route::get('campus_mrf_allocated', [CampusController::class, 'campus_mrf_allocated'])->name('campus_mrf_allocated');
+Route::get('campus_applications', [CampusController::class, 'campus_applications'])->name('campus_applications');
+Route::get('campus_screening_tracker', [CampusController::class, 'campus_screening_tracker'])->name('campus_screening_tracker');
+Route::get('campus_hiring_tracker', [CampusController::class, 'campus_hiring_tracker'])->name('campus_hiring_tracker');
+Route::post('getCampusSummary', [CampusController::class, 'getCampusSummary'])->name('getCampusSummary');
+Route::post('getCampusHiringCandidates', [CampusController::class, 'getCampusHiringCandidates'])->name('getCampusHiringCandidates');
+Route::post('getCampusScreeningCandidates', [CampusController::class, 'getCampusScreeningCandidates'])->name('getCampusScreeningCandidates');
+Route::post('getPostTitle', [CampusController::class, 'getPostTitle'])->name('getPostTitle');
+Route::post('getCandidateName', [CampusController::class, 'getCandidateName'])->name('getCandidateName');
+Route::post('ChngGDResult', [CampusController::class, 'ChngGDResult'])->name('ChngGDResult');
+Route::post('ChngScreenStatus', [CampusController::class, 'ChngScreenStatus'])->name('ChngScreenStatus');
+Route::post('getCampusCandidates', [CampusController::class, 'getCampusCandidates'])->name('getCampusCandidates');
+Route::post('SavePlacementDate', [CampusController::class, 'SavePlacementDate'])->name('SavePlacementDate');
+Route::post('SaveTestScore', [CampusController::class, 'SaveTestScore'])->name('SaveTestScore');
+Route::post('SendForScreening', [CampusController::class, 'SendForScreening'])->name('SendForScreening');
+Route::post('SaveFirstInterview_Campus', [CampusController::class, 'SaveFirstInterview_Campus'])->name('SaveFirstInterview_Campus');
+Route::post('SaveSecondInterview_Campus', [CampusController::class, 'SaveSecondInterview_Campus'])->name('SaveSecondInterview_Campus');
+Route::post('Save_Cmp_Dpt_Campus', [CampusController::class, 'Save_Cmp_Dpt_Campus'])->name('Save_Cmp_Dpt_Campus');
 
 Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
@@ -97,7 +127,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('getTaskList', [AdminController::class, 'getTaskList'])->name('getTaskList');
     Route::post('getRecruiterName', [AdminController::class, 'getRecruiterName'])->name('getRecruiterName');
     Route::get('setting', [AdminController::class, 'setting'])->name('admin.setting');
-  
+
 
     // ! ======================Master Company ========================//
     Route::get('company', [CompanyController::class, 'company'])->name('admin.company');
@@ -224,19 +254,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
 Route::group(['prefix' => 'recruiter', 'middleware' => ['isRecruiter', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [RecruiterController::class, 'index'])->name('recruiter.dashboard');
     Route::get('mrf_allocated', [MrfAllocatedController::class, 'mrf_allocated'])->name('mrf_allocated');
-    Route::get('campus_mrf_allocated', [MrfAllocatedController::class, 'campus_mrf_allocated'])->name('campus_mrf_allocated');
     Route::post('getAllAllocatedMRF', [MrfAllocatedController::class, 'getAllAllocatedMRF'])->name('getAllAllocatedMRF');
-    Route::post('getAllCampusAllocatedMrf', [MrfAllocatedController::class, 'getAllCampusAllocatedMrf'])->name('getAllCampusAllocatedMrf');
     Route::post('getDetailForJobPost', [MrfAllocatedController::class, 'getDetailForJobPost'])->name('getDetailForJobPost');
     Route::post('createJobPost', [MrfAllocatedController::class, 'createJobPost'])->name('createJobPost');
-    Route::post('createJobPost_Campus', [MrfAllocatedController::class, 'createJobPost_Campus'])->name('createJobPost_Campus');
     Route::post('ChngPostingView', [MrfAllocatedController::class, 'ChngPostingView'])->name('ChngPostingView');
-  
 });
 
 Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [HodController::class, 'index'])->name('hod.dashboard');
-   
+
     Route::get('mrfbyme', [HodController::class, 'mrfbyme'])->name('mrfbyme');
     //**========================My Team =========================================== */
     Route::get('myteam', [MyTeamController::class, 'myteam'])->name('myteam');

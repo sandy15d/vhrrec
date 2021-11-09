@@ -88,7 +88,6 @@ if (!function_exists('getFullName')) {
 	{
 
 		$body_content = stripslashes($body_content);
-		//$body_content = htmlspecialchars($body_content);
 		$body_content = addslashes($body_content);
 		return $body_content;
 	}
@@ -153,6 +152,11 @@ if (!function_exists('getFullName')) {
 		$institute = DB::table('master_institute')->select('InstituteName')->where('InstituteId', $id)->first();
 		return $institute->InstituteName;
 	}
+	function getCollegeCode($id)
+	{
+		$institute = DB::table('master_institute')->select('InstituteCode')->where('InstituteId', $id)->first();
+		return $institute->InstituteCode;
+	}
 
 	function SendOTP($mobile, $otp)
 	{
@@ -175,5 +179,33 @@ if (!function_exists('getFullName')) {
 			return "success";
 		}
 		curl_close($ch);
+	}
+
+	function CheckJobPostExpiry($jpid)
+	{
+		$sql = Db::table('jobpost')->select('LastDate')->where('JobPostType', 'Campus')->where('JPId', $jpid)->first();
+
+		$LastDate = $sql->LastDate;
+		if ($LastDate < date('Y-m-d')) {
+			return 'expired';
+		} else {
+			return 'notexpired';
+		}
+	}
+
+	function ResumeSourceCount($JPId)
+	{
+		$sql =	DB::table('jobapply')
+			->Join('master_resumesource', 'jobapply.ResumeSource', '=', 'master_resumesource.ResumeSouId')
+			->where('jobapply.JPId', $JPId)
+			->select(DB::raw('COUNT(jobapply.JAId) AS Applied'), 'master_resumesource.ResumeSource')
+			->groupBy('jobapply.ResumeSource')
+			->get();
+		$x = '';
+		foreach ($sql as $item) {
+			$x .= '<span class="badge rounded-pill bg-warning text-dark" style="font-size:12px;">' . $item->ResumeSource . ':' . $item->Applied . '</span> ';
+		}
+
+		return $x;
 	}
 }

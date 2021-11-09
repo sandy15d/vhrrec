@@ -27,11 +27,13 @@ use function App\Helpers\getEducationById;
 use function App\Helpers\getSpecializationbyId;
 use function App\Helpers\getDistrictName;
 use function App\Helpers\getStateName;
+use function App\Helpers\CheckJobPostExpiry;
 $jpid = $_REQUEST['job'];
 $jpid = base64_decode($jpid);
 $query = DB::table('jobpost')
     ->Where('JPId', $jpid)
     ->get();
+$checkExpiry = CheckJobPostExpiry($jpid);
 
 @endphp
 
@@ -44,95 +46,110 @@ $query = DB::table('jobpost')
                     <div class="col mx-auto">
                         <div class="card">
                             <div class="card-body">
+                                @if ($checkExpiry == 'notexpired')
+                                    <div class="border p-4 rounded">
+                                        <div class="text-center">
+                                            <div class="mb-4 text-center">
+                                                <img src="{{ URL::to('/') }}/assets/images/vnrlogo.png" height="80"
+                                                    alt="" />
+                                            </div>
+                                            <h5 class="">Registration for Campus Placement:</h5>
+                                            <h6>{{ $query[0]->Title }}</h6>
+                                        </div>
+                                        <div class="form-body">
+                                            <table class="table table-bordered">
+                                                <tr>
+                                                    <th>Department</th>
+                                                    <td>{{ getDepartment($query[0]->DepartmentId) }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Designation</th>
+                                                    <td>{{ $query[0]->Title }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Required Qualification</th>
+                                                    <td>
+                                                        @php
+                                                            $data = unserialize($query[0]->ReqQualification);
+                                                        @endphp
+                                                        <ul style="margin-bottom: 0px;">
+                                                            @foreach ($data as $item1)
+                                                                <li>{{ getEducationById($item1['e']) }}
+                                                                    @if ($item1['s'] != 0)
+                                                                        {{ ' - ' . getSpecializationbyId($item1['s']) }}
+                                                                    @endif
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="2">Job Details</th>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2">
+                                                        @php
+                                                            echo $query[0]->Description;
+                                                        @endphp
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Pay Package</th>
+                                                    <td>{{ $query[0]->PayPackage }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Location Work</th>
+                                                    <td>
+                                                        @php
+                                                            $loc = unserialize($query[0]->Location);
+                                                        @endphp
+
+                                                        @foreach ($loc as $item1)
+                                                            @if ($item1['city'] != '' || $item1['city'] != 0)
+                                                                {{ getDistrictName($item1['city']) . ' (' }}
+                                                            @endif
+                                                            @if ($item1['state'] != '')
+                                                                {{ getStateName($item1['state']) }}
+                                                            @endif
+                                                            @if ($item1['city'] != '' || $item1['city'] != 0)
+                                                                {{ ')' }}
+                                                            @endif
+
+                                                        @endforeach
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Last Date for Online Registration</th>
+                                                    <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $query[0]->LastDate)->format('d-m-Y') }}
+                                                    </td>
+                                                </tr>
+                                            </table>
+
+
+
+                                            <div class="col-12">
+                                                <div class="d-grid">
+                                                    <button type="button" class="btn btn-primary"
+                                                        onclick="jobapply({{ $query[0]->JPId }})"><i
+                                                            class="bx bxs-user"></i>Register
+                                                        Now</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @else
                                 <div class="border p-4 rounded">
                                     <div class="text-center">
                                         <div class="mb-4 text-center">
                                             <img src="{{ URL::to('/') }}/assets/images/vnrlogo.png" height="80"
                                                 alt="" />
                                         </div>
-                                        <h5 class="">Registration for Campus Placement:</h5>
-                                        <h6>{{ $query[0]->Title }}</h6>
-                                    </div>
-                                    <div class="form-body">
-                                        <table class="table table-bordered">
-                                            <tr>
-                                                <th>Department</th>
-                                                <td>{{ getDepartment($query[0]->DepartmentId) }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Designation</th>
-                                                <td>{{ $query[0]->Title }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Required Qualification</th>
-                                                <td>
-                                                    @php
-                                                        $data = unserialize($query[0]->ReqQualification);
-                                                    @endphp
-                                                    <ul style="margin-bottom: 0px;">
-                                                        @foreach ($data as $item1)
-                                                            <li>{{ getEducationById($item1['e']) }}
-                                                                @if ($item1['s'] != 0)
-                                                                    {{ ' - ' . getSpecializationbyId($item1['s']) }}
-                                                                @endif
-                                                            </li>
-                                                        @endforeach
-                                                    </ul>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th colspan="2">Job Details</th>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="2">
-                                                    @php
-                                                        echo $query[0]->Description;
-                                                    @endphp
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Pay Package</th>
-                                                <td>{{ $query[0]->PayPackage }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Location Work</th>
-                                                <td>
-                                                    @php
-                                                        $loc = unserialize($query[0]->Location);
-                                                    @endphp
-
-                                                    @foreach ($loc as $item1)
-                                                        @if ($item1['city'] != '' || $item1['city'] != 0)
-                                                            {{ getDistrictName($item1['city']) . ' (' }}
-                                                        @endif
-                                                        @if ($item1['state'] != '')
-                                                            {{ getStateName($item1['state']) }}
-                                                        @endif
-                                                        @if ($item1['city'] != '' || $item1['city'] != 0)
-                                                            {{ ')' }}
-                                                        @endif
-
-                                                    @endforeach
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Last Date for Online Registration</th>
-                                                <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $query[0]->LastDate)->format('d-m-Y') }}
-                                                </td>
-                                            </tr>
-                                        </table>
-
-
-
-                                        <div class="col-12">
-                                            <div class="d-grid">
-                                                <button type="button" class="btn btn-primary" onclick="jobapply({{ $query[0]->JPId }})"><i class="bx bxs-user"
-                                                        ></i>Register
-                                                    Now</button>
-                                            </div>
-                                        </div>
+                                        <h5 class="text-danger">“The last date of registration has been expired. Contact your Placement Cell for more details.”</h5>
+                                       
                                     </div>
                                 </div>
+                                @endif
+
                             </div>
                         </div>
                     </div>
