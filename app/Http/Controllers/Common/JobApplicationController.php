@@ -67,7 +67,7 @@ class JobApplicationController extends Controller
 
 
 
-        $data = $usersQuery->select('jobpost.JPId', 'jobapply.Company', 'jobapply.Department', 'JobCode', 'jobpost.DesigId','jobapply.ResumeSource')
+        $data = $usersQuery->select('jobpost.JPId', 'jobapply.Company', 'jobapply.Department', 'JobCode', 'jobpost.DesigId','jobapply.ResumeSource',DB::raw('COUNT(jobapply.JAId) AS Response'))
             ->Join('jobapply', 'jobpost.JPId', '=', 'jobapply.JPId')
             ->where('jobapply.Type', '!=', 'Campus')
             ->groupBy('jobpost.JPId');
@@ -92,7 +92,7 @@ class JobApplicationController extends Controller
             })
 
             ->editColumn('Response', function ($data) {
-                return '<a href="javascript:void(0);" class="btn btn-sm btn-warning" onclick="return getCandidate(' . $data->JPId . ');">' . $data->JPId . '</a>';
+                return '<a href="javascript:void(0);" class="btn btn-sm btn-warning" onclick="return getCandidate(' . $data->JPId . ');">' . $data->Response . '</a>';
             })
             ->addColumn('Source', function ($data) {
                 return ResumeSourceCount($data->JPId,$data->ResumeSource);
