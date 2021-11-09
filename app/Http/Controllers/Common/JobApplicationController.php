@@ -28,6 +28,11 @@ use function App\Helpers\ResumeSourceCount;
 
 class JobApplicationController extends Controller
 {
+/*     public function __construct()
+    {
+        config()->set('database.connections.mysql.strict', false);
+    } */
+
     public function job_response()
     {
         $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
@@ -38,6 +43,7 @@ class JobApplicationController extends Controller
 
     public  function getJobResponseSummary(Request $request)
     {
+
 
         $usersQuery = jobpost::query();
         $Company = $request->Company;
@@ -65,9 +71,7 @@ class JobApplicationController extends Controller
             }
         }
 
-
-
-        $data = $usersQuery->select('jobpost.JPId', 'jobapply.Company', 'jobapply.Department', 'JobCode', 'jobpost.DesigId','jobapply.ResumeSource',DB::raw('COUNT(jobapply.JAId) AS Response'))
+        $data = $usersQuery->select('jobpost.JPId', 'jobapply.Company', 'jobapply.Department', 'JobCode', 'jobpost.DesigId', 'jobapply.ResumeSource', DB::raw('COUNT(jobapply.JAId) AS Response'))
             ->Join('jobapply', 'jobpost.JPId', '=', 'jobapply.JPId')
             ->where('jobapply.Type', '!=', 'Campus')
             ->groupBy('jobpost.JPId');
@@ -95,10 +99,10 @@ class JobApplicationController extends Controller
                 return '<a href="javascript:void(0);" class="btn btn-sm btn-warning" onclick="return getCandidate(' . $data->JPId . ');">' . $data->Response . '</a>';
             })
             ->addColumn('Source', function ($data) {
-                return ResumeSourceCount($data->JPId,$data->ResumeSource);
+                return ResumeSourceCount($data->JPId, $data->ResumeSource);
             })
 
-            ->rawColumns(['chk', 'Response','Source'])
+            ->rawColumns(['chk', 'Response', 'Source'])
             ->make(true);
     }
 
@@ -109,6 +113,5 @@ class JobApplicationController extends Controller
             ->where('jobapply.JPId', $request->JPId);
 
         return '';
-      
     }
 }
