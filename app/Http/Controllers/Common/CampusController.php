@@ -289,14 +289,14 @@ class CampusController extends Controller
     {
         $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
         $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
-        return view('Common.campus_applications', compact('company_list', 'months'));
+        return view('common.campus_applications', compact('company_list', 'months'));
     }
 
     public function campus_hiring_tracker()
     {
         $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
         $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
-        return view('Common.campus_hiring_tracker', compact('company_list', 'months'));
+        return view('common.campus_hiring_tracker', compact('company_list', 'months'));
     }
 
     public  function getCampusSummary(Request $request)
@@ -461,7 +461,7 @@ class CampusController extends Controller
     {
         $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
         $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
-        return view('Common.campus_screening_tracker', compact('company_list', 'months'));
+        return view('common.campus_screening_tracker', compact('company_list', 'months'));
     }
 
     public  function getCampusScreeningCandidates(Request $request)
