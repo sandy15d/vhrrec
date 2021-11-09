@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\recruiter;
+namespace App\Http\Controllers\Recruiter;
 
 use App\Helpers\LogActivity;
 use App\Helpers\UserNotification;
