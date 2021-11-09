@@ -32,7 +32,7 @@ class JobApplicationController extends Controller
     {
         $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
         $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
-        return view('Common.job_response', compact('company_list', 'months'));
+        return view('common.job_response', compact('company_list', 'months'));
     }
 
 
