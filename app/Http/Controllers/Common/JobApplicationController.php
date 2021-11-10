@@ -2,42 +2,29 @@
 
 namespace App\Http\Controllers\Common;
 
-use App\Helpers\LogActivity;
+
 use App\Http\Controllers\Controller;
-use App\Mail\MrfCreationMail;
+use App\Models\jobapply;
 use App\Models\jobpost;
-use App\Models\master_mrf;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
-
-use function App\Helpers\convertData;
-use function App\Helpers\getCollegeById;
-use function App\Helpers\getCompanyCode;
 use function App\Helpers\getDepartment;
-use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getDesignation;
-use function App\Helpers\getDesignationCode;
-use function App\Helpers\getEducationById;
-use function App\Helpers\getFullName;
-use function App\Helpers\getSpecializationbyId;
+use function App\Helpers\getResumeSourceById;
 use function App\Helpers\ResumeSourceCount;
 
 class JobApplicationController extends Controller
 {
-/*     public function __construct()
-    {
-        config()->set('database.connections.mysql.strict', false);
-    } */
+
 
     public function job_response()
     {
         $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
         $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
-        return view('common.job_response', compact('company_list', 'months'));
+        $source_list = DB::table("master_resumesource")->where('Status', 'A')->Where('ResumeSouId', '!=', '7')->pluck('ResumeSource', 'ResumeSouId');
+        return view('common.job_response', compact('company_list', 'months','source_list'));
     }
 
 
@@ -108,10 +95,69 @@ class JobApplicationController extends Controller
 
     public function getCandidates(Request $request)
     {
-        $data =  DB::table('jobapply')
+        $usersQuery = jobapply::query();
+        $Gender = $request->Gender;
+        $Source = $request->Source;
+        if ($Gender != '') {
+            $usersQuery->where("jobcandidates.Gender", $Gender);
+        }
+        if ($Source != '') {
+            $usersQuery->where("jobapply.ResumeSource", $Source);
+        }
+
+        $data =  $usersQuery->select('*')
             ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
             ->where('jobapply.JPId', $request->JPId);
 
-        return '';
+        return datatables()->of($data)
+            ->addIndexColumn()
+
+            ->addColumn('chk', function ($data) {
+                return '<input type="checkbox" class="japchks" data-id="'.$data->JAId.'" name="selectCand" id="selectCand" value="'.$data->JAId.'">';
+            })
+            ->addColumn('Name', function ($data) {
+                return $data->FName . ' ' . $data->MName . ' ' . $data->LName;
+            })
+            ->editColumn('Phone', function ($data) {
+                if ($data->Verified == 'Y') {
+                    return $data->Phone . '<i class="fa fa-check-circle text-success" aria-hidden="true"></i>';
+                } else {
+                    return $data->Phone;
+                }
+            })
+            ->editColumn('Email', function ($data) {
+                if ($data->Verified == 'Y') {
+                    return $data->Email . '<i class="fa fa-check-circle text-success" aria-hidden="true"></i>';
+                } else {
+                    return $data->Email;
+                }
+            })
+            ->editColumn('Professional', function ($data) {
+                if ($data->Professional == 'F') {
+                    return 'Fresher';
+                } else {
+                    return 'Experienced';
+                }
+            })
+            ->editColumn('Gender', function ($data) {
+                if ($data->Gender == 'F') {
+                    return 'Female';
+                } elseif ($data->Gender == 'M') {
+                    return 'Male';
+                } else {
+                    return 'Other';
+                }
+            })
+            ->editColumn('ApplyDate', function ($data) {
+                return Carbon::parse($data->ApplyDate)->format('d-m-Y');
+            })
+            ->addColumn('ScreenedBy', function ($data) {
+                return '';
+            })
+            ->addColumn('Source', function ($data) {
+                return getResumeSourceById($data->ResumeSource);
+            })
+            ->rawColumns(['chk', 'Phone', 'Email'])
+            ->make(true);
     }
 }

@@ -205,7 +205,11 @@ if (!function_exists('getFullName')) {
 		foreach ($sql as $item) {
 			$x .= '<span class="badge rounded-pill bg-warning text-dark" style="font-size:12px;">' . $item->ResumeSource . ':' . $item->Applied . '</span> ';
 		}
-
 		return $x;
+	}
+	function getResumeSourceById($id)
+	{
+		$ResumeSource = DB::table('master_resumesource')->select('ResumeSource')->where('ResumeSouId', $id)->first();
+		return $ResumeSource->ResumeSource;
 	}
 }

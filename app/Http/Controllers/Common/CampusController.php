@@ -374,7 +374,7 @@ class CampusController extends Controller
                 if ($data->PlacementDate == null || $data->PlacementDate == '' || $data->Status == 'Selected') {
                     return '';
                 } else {
-                    return "<input type='checkbox' class=' japchks' data-id='$data->JAId' name='selectCand' id='selectCand' value='$data->JAId'>";
+                    return "<input type='checkbox' class='japchks' data-id='$data->JAId' name='selectCand' id='selectCand' value='$data->JAId'>";
                 }
             })
 
@@ -398,7 +398,7 @@ class CampusController extends Controller
                 return $x;
             })
 
-
+            
             ->rawColumns(['chk', 'PlacementDate'])
             ->make(true);
     }

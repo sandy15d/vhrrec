@@ -20,6 +20,15 @@
             cursor: pointer;
         }
 
+        td.details-control {
+            background: url("{{ asset('assets/images/details_open.png') }}") no-repeat center center;
+            cursor: pointer;
+        }
+
+        tr.details td.details-control {
+            background: url("{{ asset('assets/images/details_close.png') }}") no-repeat center center;
+        }
+
     </style>
     <div class="page-content">
         <!--breadcrumb-->
@@ -89,7 +98,7 @@
                 </table>
             </div>
         </div>
-        <div class="card  border-top border-0 border-4 border-primary" id="CandidateDiv">
+        <div class="card d-none border-top border-0 border-4 border-primary" id="CandidateDiv">
             <div class="card-body">
                 <h5 class=" text-primary" id="PostTitle"></h5>
                 <div class=" bg-white  rounded stickThis " style="font-size: 14px;">
@@ -103,7 +112,23 @@
                     </span>
 
                 </div>
-
+                <table class="table table-hover table-striped table-condensed align-middle text-center table-bordered"
+                    id="candidate_table" style="width: 100%">
+                    <thead class="text-center bg-primary text-light">
+                        <tr class="text-center">
+                            <th style="width:30px;"></th>
+                            <td>#</td>
+                            <td class="th-sm">S.No</td>
+                            <td>Reference No</td>
+                            <td>Name</td>
+                            <td>Phone</td>
+                            <td>Email</td>
+                            <td>Sources</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -221,15 +246,65 @@
             $('#CandidateDiv').removeClass('d-none');
             var JPId = JPId;
             getPostTitle(JPId);
-            $.ajax({
-                url: '{{ url('getCandidates') }}',
-                method: 'POST',
-                data: {
-                    JPId: JPId,
+            var table = $('#candidate_table').DataTable({
+                processing: true,
+                serverSide: true,
+                ordering: false,
+                searching: false,
+                lengthChange: false,
+                info: true,
+                ajax: {
+                    url: "{{ route('getCandidates') }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: function(d) {
+                        d.Gender = $('#Gender').val();
+                        d.Source = $('#Source').val();
+                        d.JPId = JPId;
+                    },
+                    type: 'POST',
+                    dataType: "JSON",
                 },
-                success: function(data) {
-                   $('#CandidateDiv').append(data);
-                }
+                columns: [{
+                        "className": 'details-control',
+                        "orderable": false,
+                        "data": null,
+                        "defaultContent": ''
+                    },
+
+                    {
+                        data: 'chk',
+                        name: 'chk'
+                    },
+                    {
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex'
+                    },
+
+                    {
+                        data: 'ReferenceNo',
+                        name: 'ReferenceNo'
+                    },
+                    {
+                        data: 'Name',
+                        name: 'Name'
+                    },
+                    {
+                        data: 'Phone',
+                        name: 'Phone'
+                    },
+
+                    {
+                        data: 'Email',
+                        name: 'Email'
+                    },
+                    {
+                        data: 'Source',
+                        name: 'Source'
+                    },
+
+                ],
             });
 
         }
