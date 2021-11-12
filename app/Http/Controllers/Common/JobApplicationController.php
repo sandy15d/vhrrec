@@ -24,7 +24,7 @@ class JobApplicationController extends Controller
         $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
         $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
         $source_list = DB::table("master_resumesource")->where('Status', 'A')->Where('ResumeSouId', '!=', '7')->pluck('ResumeSource', 'ResumeSouId');
-        return view('common.job_response', compact('company_list', 'months','source_list'));
+        return view('common.job_response', compact('company_list', 'months', 'source_list'));
     }
 
 
@@ -113,7 +113,7 @@ class JobApplicationController extends Controller
             ->addIndexColumn()
 
             ->addColumn('chk', function ($data) {
-                return '<input type="checkbox" class="japchks" data-id="'.$data->JAId.'" name="selectCand" id="selectCand" value="'.$data->JAId.'">';
+                return '<input type="checkbox" class="japchks" data-id="' . $data->JAId . '" name="selectCand" id="selectCand" value="' . $data->JAId . '">';
             })
             ->addColumn('Name', function ($data) {
                 return $data->FName . ' ' . $data->MName . ' ' . $data->LName;
@@ -157,7 +157,79 @@ class JobApplicationController extends Controller
             ->addColumn('Source', function ($data) {
                 return getResumeSourceById($data->ResumeSource);
             })
-            ->rawColumns(['chk', 'Phone', 'Email'])
+            ->addColumn('Details', function ($data) {
+                return '<i class="fa fa-eye text-info" style="cursor:pointer" onclick="return ViewCandidate(' . $data->JCId . ');"></i>';
+            })
+            ->rawColumns(['chk', 'Phone', 'Email', 'Details'])
             ->make(true);
+    }
+
+    public function job_applications(Request $request)
+    {
+        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
+        $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
+        $source_list = DB::table("master_resumesource")->where('Status', 'A')->Where('ResumeSouId', '!=', '7')->pluck('ResumeSource', 'ResumeSouId');
+        $education_list = DB::table("master_education")->where('Status', 'A')->orderBy('EducationCode', 'asc')->pluck("EducationCode", "EducationId");
+
+        $Company = $request->Company;
+        $Department = $request->Department;
+        $Year = $request->Year;
+        $Month = $request->Month;
+        $Source = $request->Source;
+        $Gender = $request->Gender;
+        $Education = $request->Education;
+        $Name = $request->Name;
+
+        $usersQuery = jobapply::query();
+        if ($Company != '') {
+            $usersQuery->where("jobapply.Company", $Company);
+        }
+        if ($Department != '') {
+            $usersQuery->where("jobapply.Department", $Department);
+        }
+        if ($Year != '') {
+            $usersQuery->whereBetween('jobapply.ApplyDate', [$Year . '-01-01', $Year . '-12-31']);
+        }
+        if ($Month != '') {
+            if ($Year != '') {
+                $usersQuery->whereBetween('jobapply.ApplyDate', [$Year . '-' . $Month . '-01', $Year . '-' . $Month . '-31']);
+            } else {
+                $usersQuery->whereBetween('jobapply.ApplyDate', [date('Y') . '-' . $Month . '-01', date('Y') . '-' . $Month . '-31']);
+            }
+        }
+        if ($Source != '') {
+            $usersQuery->where("jobapply.ResumeSource", $Source);
+        }
+        if ($Gender != '') {
+            $usersQuery->where("jobcandidates.Gender", $Gender);
+        }
+        if ($Education != '') {
+            $usersQuery->where("jobcandidates.Education", $Education);
+        }
+        if ($Name != '') {
+            $usersQuery->where("jobcandidates.FName", 'like', "%$Name%");
+        }
+
+     
+       
+        $candidate_list = $usersQuery->select('jobapply.JAId', 'jobapply.ResumeSource', 'jobapply.ApplyDate', 'jobapply.Status', 'jobcandidates.JCId', 'jobcandidates.ReferenceNo', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.Phone', 'jobcandidates.Email', 'jobcandidates.City', 'jobcandidates.Education', 'jobcandidates.Specialization', 'jobcandidates.Professional', 'jobcandidates.JobStartDate', 'jobcandidates.JobEndDate', 'jobcandidates.PresentCompany', 'jobcandidates.Designation', 'jobcandidates.Verified', 'jobcandidates.CandidateImage', 'jobpost.DesigId')
+            ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+            ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
+            ->leftJoin('screening', 'jobapply.JAId', '=', 'screening.JAId')
+            ->where('jobapply.Type', '!=', 'Campus');
+          
+         $total_candidate = $candidate_list->count();
+         $candidate_list = $candidate_list->paginate(10);
+       
+         $total_available = DB::table('jobapply')
+                         ->where('Type','!=','Campus')
+                         ->where('Status',null);
+        $total_available = $total_available->count();
+
+         $total_hr_scr = DB::table('jobapply')
+                         ->where('Type','!=','Campus')
+                         ->where('Status','!=',null);
+        $total_hr_scr = $total_hr_scr->count();
+        return view('common.job_applications', compact('company_list', 'months', 'source_list', 'education_list', 'candidate_list','total_candidate','total_available','total_hr_scr'));
     }
 }

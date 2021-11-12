@@ -75,6 +75,7 @@ Route::post('notificationMarkRead', [CommonController::class, 'notificationMarkR
 Route::post('markAllRead', [CommonController::class, 'markAllRead'])->name('markAllRead');
 
 Route::get('job_response', [JobApplicationController::class, 'job_response'])->name('job_response');
+Route::get('job_applications', [JobApplicationController::class, 'job_applications'])->name('job_applications');
 Route::post('getJobResponseSummary', [JobApplicationController::class, 'getJobResponseSummary'])->name('getJobResponseSummary');
 Route::post('getCandidates', [JobApplicationController::class, 'getCandidates'])->name('getCandidates');
 

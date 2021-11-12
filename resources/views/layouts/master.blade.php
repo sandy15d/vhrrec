@@ -37,12 +37,14 @@ $CompanyQry = DB::table('master_company')
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/header-colors.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/sweetalert2.min.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/toastr.min.css" />
+
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
         rel="stylesheet">
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTablesButtons.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
+    <script src="{{ URL::to('/') }}/assets/js/jquery.min.js"></script>
     <title>HR Recruitment | @yield('title')</title>
     <style>
         .btn--red {
@@ -273,7 +275,7 @@ $CompanyQry = DB::table('master_company')
                         </a>
                         <ul>
                             <li> <a href="/job_response"><i class="bx bx-right-arrow-alt"></i>Job & Response</a></li>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job Application (Resume Databank)</a>
+                            <li> <a href="/job_applications"><i class="bx bx-right-arrow-alt"></i>Job Application (Resume Databank)</a>
                             </li>
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job Application Form (Manual
                                     Entry)</a></li>
@@ -582,7 +584,7 @@ $CompanyQry = DB::table('master_company')
     <!-- Bootstrap JS -->
     <script src="{{ URL::to('/') }}/assets/js/bootstrap.bundle.min.js"></script>
     <!--plugins-->
-    <script src="{{ URL::to('/') }}/assets/js/jquery.min.js"></script>
+  
     <script src="{{ URL::to('/') }}/assets/plugins/simplebar/js/simplebar.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/metismenu/js/metisMenu.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
@@ -591,10 +593,9 @@ $CompanyQry = DB::table('master_company')
     <script src="{{ URL::to('/') }}/assets/plugins/datatable/js/dataTables.bootstrap5.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+
     <!--app JS-->
     <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
-
     @yield('scriptsection')
     <script>
         $(document).ready(function() {
@@ -889,8 +890,6 @@ $CompanyQry = DB::table('master_company')
             });
         }
     </script>
-
-    {{-- @livewireScripts --}}
 </body>
 
 </html>

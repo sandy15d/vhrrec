@@ -25,7 +25,7 @@
             cursor: pointer;
         }
 
-        tr.details td.details-control {
+        tr.shown td.details-control {
             background: url("{{ asset('assets/images/details_close.png') }}") no-repeat center center;
         }
 
@@ -100,17 +100,47 @@
         </div>
         <div class="card d-none border-top border-0 border-4 border-primary" id="CandidateDiv">
             <div class="card-body">
-                <h5 class=" text-primary" id="PostTitle"></h5>
-                <div class=" bg-white  rounded stickThis " style="font-size: 14px;">
-                    &nbsp;<span style="font-weight: bold;">↱</span>&nbsp;
-                    <label class="text-primary"><input id="checkall" type="checkbox" name="">&nbsp;Check all</label>
-                    <i class="text-muted" style="font-size: 13px;">With selected:</i> 
-                    <span class="d-inline">
-                        <label class="text-primary" style=" cursor: pointer;" onclick="SendForScreening()"><i
-                                class="fas fa-long-arrow-alt-right"></i> Fwd. to Screening
-                            Stage</label> &nbsp;
-                    </span>
+                <div class="row mb-1">
+                    <div class="col-7">
+                        <h5 class=" text-primary" id="PostTitle"></h5>
+                    </div>
+                    <div class="col-2">
+                        <select name="Source" id="Source" class="form-select form-select-sm" onchange="GetCandidate();">
+                            <option value="">Select Source</option>
+                            @foreach ($source_list as $key => $value)
+                                <option value="{{ $key }}">{{ $value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-2">
 
+                        <select name="Gender" id="Gender" class="form-select form-select-sm" onchange="GetCandidate();">
+                            <option value="">Select Gender</option>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                            <option value="O">Others</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class=" bg-white rounded stickThis d-flex justify-content-between"
+                    style="font-size: 14px; padding-left:35px;">
+                    <span class="d-inline">
+                        <span style="font-weight: bold;">↱</span>
+                        <label class="text-primary"><input id="checkall" type="checkbox" name="">&nbsp;Check all</label>
+                        <i class="text-muted" style="font-size: 13px;">With selected:</i> 
+                        <label class="text-primary " style=" cursor: pointer;" onclick="SendForScreening()"><i
+                                class="fas fa-share text-primary"></i> Fwd. for Technical
+                            Screening
+                        </label>
+                    </span>
+                    
+                    <span class="d-inline">
+                        <label class="text-dark" style=" cursor: pointer;" onclick="MoveCandidate()"><i
+                                    class="fas fa-shekel-sign text-dark"></i> Move to Other Co.
+                        </label>
+                    </span>
                 </div>
                 <table class="table table-hover table-striped table-condensed align-middle text-center table-bordered"
                     id="candidate_table" style="width: 100%">
@@ -121,16 +151,21 @@
                             <td class="th-sm">S.No</td>
                             <td>Reference No</td>
                             <td>Name</td>
-                            <td>Phone</td>
-                            <td>Email</td>
+                            <td>Experience</td>
+                            <td>Apply Date</td>
                             <td>Sources</td>
+                            <td>Screened By</td>
+                            <td>View</td>
                         </tr>
                     </thead>
                     <tbody>
                     </tbody>
                 </table>
             </div>
+
+           
         </div>
+       
     </div>
 
 @endsection
@@ -166,9 +201,33 @@
 
         }
 
+        function GetCandidate() {
+            $('#candidate_table').DataTable().draw(true);
+
+        }
+
         $(document).on('click', '#reset', function() {
             location.reload();
         });
+
+
+        function format(d) {
+            // `d` is the original data object for the row
+            return '<table cellpadding="5" cellspacing="0"  style="padding-left:50px;" class="table text-center bg-secondary text-light">' +
+                '<tr>' +
+                '<td>Current Company:</td>' +
+                '<td>' + d.PresentCompany + '</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td>Designation:</td>' +
+                '<td>' + d.Designation + '</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td>Extra info:</td>' +
+                '<td>And any further details here (images etc)...</td>' +
+                '</tr>' +
+                '</table>';
+        }
 
         $(document).ready(function() {
             $('#JobApplications').DataTable({
@@ -227,6 +286,8 @@
 
                 ],
             });
+
+
         });
 
         function getPostTitle(JPId) {
@@ -242,26 +303,27 @@
         }
 
         function getCandidate(JPId) {
-
             $('#CandidateDiv').removeClass('d-none');
             var JPId = JPId;
             getPostTitle(JPId);
-            var table = $('#candidate_table').DataTable({
+            table = $('#candidate_table').DataTable({
                 processing: true,
                 serverSide: true,
                 ordering: false,
                 searching: false,
                 lengthChange: false,
                 info: true,
+                destroy: true,
                 ajax: {
                     url: "{{ route('getCandidates') }}",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     data: function(d) {
+                        d.JPId = JPId;
                         d.Gender = $('#Gender').val();
                         d.Source = $('#Source').val();
-                        d.JPId = JPId;
+
                     },
                     type: 'POST',
                     dataType: "JSON",
@@ -290,24 +352,47 @@
                         data: 'Name',
                         name: 'Name'
                     },
-                    {
-                        data: 'Phone',
-                        name: 'Phone'
-                    },
 
                     {
-                        data: 'Email',
-                        name: 'Email'
+                        data: 'Professional',
+                        name: 'Professional'
+                    },
+                    {
+                        data: 'ApplyDate',
+                        name: 'ApplyDate'
                     },
                     {
                         data: 'Source',
                         name: 'Source'
                     },
+                    {
+                        data: 'ScreenedBy',
+                        name: 'ScreenedBy'
+                    },
+                    {
+                        data: 'Details',
+                        name: 'Details'
+                    }
 
                 ],
             });
 
         }
+
+        $('#candidate_table tbody').on('click', 'td.details-control', function() {
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+
+            if (row.child.isShown()) {
+                row.child.hide();
+                tr.removeClass('shown');
+            } else {
+                // Open this row
+                row.child(format(row.data())).show();
+                tr.addClass('shown');
+            }
+        });
+
 
         $(document).on('click', '.select_all', function() {
             if ($(this).prop("checked") == true) {
