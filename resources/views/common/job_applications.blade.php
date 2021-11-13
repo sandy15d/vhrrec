@@ -13,58 +13,66 @@ use function App\Helpers\getStateName;
             padding: 2px 1px;
         }
 
+        .frminp {
+            padding: 4 px !important;
+            height: 25 px;
+            border-radius: 4 px;
+            font-size: 11px;
+            font-weight: 550;
+        }
+
     </style>
     <div class="page-content">
         <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
             <div class="col">
-                <div class="card radius-10 bg-primary bg-gradient">
+                <div class="card radius-10 ">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div>
-                                <p class="mb-0 text-white font-20">Total Applications:</p>
+                                <p class="mb-0">Total Applications:</p>
                             </div>
-                            <div class="text-light ms-auto font-20">{{ $total_candidate }}
+                            <div class="ms-auto font-20">{{ $total_candidate }}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col">
-                <div class="card radius-10 bg-info bg-gradient">
+                <div class="card radius-10">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div>
-                                <p class="mb-0 text-white font-20">Total Scr. by HR:</p>
+                                <hp class="mb-0">Total Screening by HR:</hp>
                             </div>
-                            <div class="text-light ms-auto font-20">{{ $total_hr_scr }}
+                            <div class="ms-auto font-20">{{ $total_hr_scr }}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col">
-                <div class="card radius-10 bg-warning bg-gradient">
+                <div class="card radius-10">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div>
-                                <p class="mb-0 text-light font-20">Fwd. for Tech. Scr.:</p>
+                                <p class="mb-0">Fwd. for Tech. Screening:</p>
 
                             </div>
-                            <div class="text-light ms-auto font-20">{{ $total_candidate }}
+                            <div class="ms-auto font-20">{{ $total_fwd }}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col">
-                <div class="card radius-10 bg-success bg-gradient">
+                <div class="card radius-10">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div>
-                                <p class="mb-0 text-white font-20">Total Available:</p>
+                                <p class="mb-0">Total Available:</p>
 
                             </div>
-                            <div class="text-light ms-auto font-20">{{ $total_available }}
+                            <div class="ms-auto font-20">{{ $total_available }}
                             </div>
                         </div>
                     </div>
@@ -85,57 +93,76 @@ use function App\Helpers\getStateName;
                                 Screening
                             </label>
                         </span>
-                        <span class="d-inline">
+                       {{--  <span class="d-inline">
                             <label class="text-primary" style=" cursor: pointer;" onclick="MoveCandidate()"><i
                                     class="fas fa-shekel-sign text-primary"></i> Move to Other Co.
                             </label>
-                        </span>
+                        </span> --}}
                     </div>
                 </div>
                 @foreach ($candidate_list as $row)
-                    <div class="card mb-1">
+                    @php
+                        $bg_color = '';
+                        if ($row->Status == 'Rejected') {
+                            $bg_color = '#fe36501f';
+                        } else {
+                            if ($row->FwdTechScr == 'Yes') {
+                                $bg_color = '#dbffdacc';
+                            }
+                        }
+                        
+                    @endphp
+                    <div class="card mb-3" style="background-color:<?= $bg_color ?>">
                         <div class="card-body" style="padding: 5px;">
                             <div class="row  p-2 py-2">
                                 <div style="width: 80%;float: left;">
                                     <table class="jatbl table borderless" style="margin-bottom: 0px !important;">
                                         <tbody>
                                             <tr>
-                                                <td colspan="2">
-                                                    <label style="margin-bottom: 12px;">
-                                                        <input type="checkbox" name="selectCand" class="japchks"
-                                                            onclick="checkAllorNot()" value="{{ $row->JCId }}">
+                                                <td colspan="3">
+                                                    <label>
+                                                        @if ($row->Status == 'Selected' && $row->FwdTechScr == 'No')
+                                                            <input type="checkbox" name="selectCand" class="japchks"
+                                                                onclick="checkAllorNot()" value="{{ $row->JAId }}">
+                                                        @endif
                                                         <span
                                                             style="color: #275A72;font-weight: bold;padding-bottom: 10px;">
-                                                            {{ $row->FName }} {{ $row->MName }} {{ $row->LName }} (
-                                                            Ref.No:{{ $row->ReferenceNo }}) </span>
+                                                            {{ $row->FName }} {{ $row->MName }} {{ $row->LName }} (Ref.No {{ $row->ReferenceNo }} ) </span>
                                                     </label>
                                                 </td>
-                                                <td style="text-align: left" colspan="2"><b>Applied
-                                                        For:</b>{{ getDesignation($row->DesigId) }}</td>
+                                               
                                             </tr>
-
+                                            <tr>
+                                                <td style="text-align: left">Applied For:</td>
+                                                <td  colspan="3"><?= $row->DesigId != null ? getDesignation($row->DesigId) : "<i class='fa fa-pencil-square-o text-primary' aria-hidden='true' style='cursor: pointer;' onclick='AddToJobPost($row->JAId)'></i>" ?></td>
+                                            </tr>
                                             <tr class="">
                                                 <td>Experience<span class="pull-right">:</span></td>
                                                 <td style="text-align: right">
-                                                    <?= $row->Professional == 'F' ? 'Fresher' : 'Experienced' ?>
                                                     @php
-                                                        if ($row->JobStartDate != null) {
-                                                            $fdate = $row->JobStartDate;
-                                                            if ($row->JobEndDate == null) {
-                                                                $tdate = Carbon\Carbon::now();
+                                                        if ($row->Professional == 'F') {
+                                                            echo 'Fresher';
+                                                        } else {
+                                                            if ($row->JobStartDate != null) {
+                                                                $fdate = $row->JobStartDate;
+                                                                if ($row->JobEndDate == null) {
+                                                                    $tdate = Carbon\Carbon::now();
+                                                                } else {
+                                                                    $tdate = $row->JobEndDate;
+                                                                }
+                                                                $datetime1 = new DateTime($fdate);
+                                                                $datetime2 = new DateTime($tdate);
+                                                                $interval = $datetime1->diff($datetime2);
+                                                                $days = $interval->format('%a');
+                                                                $years_remaining = intval($days / 365); //divide by 365 and throw away the remainder
+                                                                $days_remaining = $days % 365;
+                                                                $month_remaining = $days_remaining % 12;
+                                                                echo $years_remaining . ' Year ' . $month_remaining . ' Months';
                                                             } else {
-                                                                $tdate = $row->JobEndDate;
+                                                                echo 'Experienced';
                                                             }
-                                                            $datetime1 = new DateTime($fdate);
-                                                            $datetime2 = new DateTime($tdate);
-                                                            $interval = $datetime1->diff($datetime2);
-                                                            $days = $interval->format('%a');
-                                                            echo $days;
                                                         }
                                                     @endphp
-
-
-
                                                 </td>
                                                 <td style="text-align: right">Contact No<span
                                                         class="pull-right">:</span></td>
@@ -180,7 +207,7 @@ use function App\Helpers\getStateName;
                                                     {{ date('d-m-Y', strtotime($row->ApplyDate)) }}</td>
                                                 <td style="text-align: right">HR Screening Status:</td>
                                                 <td style="text-align: right">
-
+                                                    <?= $row->Status != null ? '<b>' . $row->Status . '</b>' : "<i class='fa fa-pencil-square-o text-primary' aria-hidden='true' style='font-size:14px;cursor: pointer;' id='HrScreening' data-id='$row->JAId'></i>" ?>
                                                 </td>
 
                                             </tr>
@@ -200,11 +227,11 @@ use function App\Helpers\getStateName;
                                 <div class="" style=" width: 20%;float: left;">
                                     <center>
                                         @if ($row->CandidateImage == null)
-                                            <img src="{{ URL::to('/') }}/assets/images/user.png"
-                                                style="width: 130px; height: 130px;" class="img-fluid rounded-circle" />
+                                            <img src="{{ URL::to('/') }}/assets/images/user1.png"
+                                                style="width: 130px; height: 130px;" class="img-fluid rounded" />
                                         @else
                                             <img src="{{ URL::to('/') }}/uploads/Picture/{{ $row->CandidateImage }}"
-                                                style="width: 130px; height: 130px;" class="img-fluid rounded-circle" />
+                                                style="width: 130px; height: 130px;" class="img-fluid rounded" />
                                         @endif
 
 
@@ -340,6 +367,51 @@ use function App\Helpers\getStateName;
         </div>
 
     </div>
+
+    <div class="modal fade" id="HrScreeningModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <form action="{{ route('update_hrscreening') }}" method="POST" id="ScreeningForm">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <input type="hidden" name="JAId" id="JAId">
+                        <label for="Status">HR Screening Status</label>
+                        <select name="Status" id="Status" class="form-select form-select-sm">
+                            <option value="" disabled selected></option>
+                            <option value="Selected">Selected</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="TechScreeningModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <form action="{{ route('SendForTechScreening') }}" method="POST" id="ScreeningForm">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <label for="Status">HR Screening Status</label>
+                        <select name="Status" id="Status" class="form-select form-select-sm">
+                            <option value="" disabled selected></option>
+                            <option value="Selected">Selected</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection
 
 @section('scriptsection')
@@ -412,6 +484,89 @@ use function App\Helpers\getStateName;
             $(document).on('click', '#reset', function() {
                 window.location.href = "{{ route('job_applications') }}";
             });
+
+            $(document).on('click', '#HrScreening', function() {
+                var JAId = $(this).data('id');
+                $('#JAId').val(JAId);
+                $('#HrScreeningModal').modal('show');
+            });
+
+            $('#ScreeningForm').on('submit', function(e) {
+                e.preventDefault();
+                var form = this;
+                $.ajax({
+                    url: $(form).attr('action'),
+                    method: $(form).attr('method'),
+                    data: new FormData(form),
+                    processData: false,
+                    dataType: 'json',
+                    contentType: false,
+                    success: function(data) {
+                        if (data.status == 400) {
+                            toastr.error(data.msg);
+                        } else {
+                            toastr.success(data.msg);
+                            window.location.reload();
+                        }
+                    }
+                });
+            });
         });
+
+
+        $('#checkall').click(function() {
+            if ($(this).prop("checked") == true) {
+                $('.japchks').prop("checked", true);
+            } else if ($(this).prop("checked") == false) {
+                $('.japchks').prop("checked", false);
+            }
+        });
+
+        function checkAllorNot() {
+            var allchk = 1;
+            $('.japchks').each(function() {
+                if ($(this).prop("checked") == false) {
+                    allchk = 0;
+                }
+            });
+            if (allchk == 0) {
+                $('#checkall').prop("checked", false);
+            } else if (allchk == 1) {
+                $('#checkall').prop("checked", true);
+            }
+        }
+
+        function SendForScreening() {
+            var JAId = [];
+            $("input[name='selectCand']").each(function() {
+                if ($(this).prop("checked") == true) {
+                    var value = $(this).val();
+                    JAId.push(value);
+                }
+            });
+            if (JAId.length > 0) {
+                if (confirm('Are you sure to Send Selected Candidates to Screening Stage?')) {
+                    $.ajax({
+                        url: '{{ url('SendForTechScreening') }}',
+                        method: 'POST',
+                        data: {
+                            JAId: JAId,
+                        },
+                        success: function(data) {
+                            if (data.status == 400) {
+                                alert('Something went wrong..!!');
+                            } else {
+                                toastr.success(data.msg);
+                                window.location.reload();
+                            }
+                        }
+                    });
+                }
+
+            } else {
+                alert('No Candidate Selected!\nPlease select atleast one candidate to proceed.');
+            }
+
+        }
     </script>
 @endsection

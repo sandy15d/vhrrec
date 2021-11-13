@@ -277,7 +277,7 @@ $CompanyQry = DB::table('master_company')
                             <li> <a href="/job_response"><i class="bx bx-right-arrow-alt"></i>Job & Response</a></li>
                             <li> <a href="/job_applications"><i class="bx bx-right-arrow-alt"></i>Job Application (Resume Databank)</a>
                             </li>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job Application Form (Manual
+                            <li> <a href="/job_application_manual_entry_form"><i class="bx bx-right-arrow-alt"></i>Job Application Form (Manual
                                     Entry)</a></li>
                         </ul>
                     </li>

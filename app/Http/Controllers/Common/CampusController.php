@@ -2,34 +2,34 @@
 
 namespace App\Http\Controllers\Common;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Helpers\LogActivity;
-use App\Helpers\UserNotification;
-use App\Models\jobapply;
-use App\Models\jobcandidate;
 use App\Models\jobpost;
-use App\Models\master_mrf;
-use App\Models\Recruiter\master_post;
-use App\Models\screen2ndround;
+use App\Models\jobapply;
 use App\Models\screening;
-use Illuminate\Support\Facades\Auth;
+use App\Models\master_mrf;
+use App\Helpers\LogActivity;
+use App\Models\jobcandidate;
+use Illuminate\Http\Request;
+use App\Models\screen2ndround;
+use App\Helpers\UserNotification;
 use Illuminate\Support\Facades\DB;
-use function App\Helpers\CheckJobPostCreated;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Recruiter\master_post;
 use function App\Helpers\convertData;
+use function App\Helpers\getFullName;
+use function App\Helpers\GetJobPostId;
+use function App\Helpers\getStateCode;
+use function App\Helpers\getDepartment;
 use function App\Helpers\getCollegeById;
 use function App\Helpers\getCollegeCode;
 use function App\Helpers\getCompanyCode;
-use function App\Helpers\getDepartment;
-use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getDesignation;
-use function App\Helpers\getDesignationCode;
 use function App\Helpers\getDistrictName;
 use function App\Helpers\getEducationById;
-use function App\Helpers\getFullName;
-use function App\Helpers\GetJobPostId;
+use function App\Helpers\getDepartmentCode;
+use function App\Helpers\getDesignationCode;
+use function App\Helpers\CheckJobPostCreated;
 use function App\Helpers\getSpecializationbyId;
-use function App\Helpers\getStateCode;
 
 
 class CampusController extends Controller
@@ -430,7 +430,8 @@ class CampusController extends Controller
         $sql = 0;
         for ($i = 0; $i < Count($JAId); $i++) {
             $query = jobapply::find($JAId[$i]);
-            $query->Status = 'Selected';
+            $query->Status = 'Selected';       //HR Screening
+            $query->FwdTechScr ='Yes';
             $query->SelectedBy = Auth::user()->id;
             $query->save();
 

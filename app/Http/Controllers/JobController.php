@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\CandidateActivityLog;
 use App\Http\Controllers\Controller;
 use App\Mail\AppSubOTPMail;
 use App\Mail\AppSuccessMaill;
@@ -14,6 +15,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
+use function App\Helpers\getCompanyCode;
+use function App\Helpers\getDesignation;
 use function App\Helpers\SendOTP;
 
 class JobController extends Controller
@@ -29,8 +32,16 @@ class JobController extends Controller
         $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
         $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
         $education_list = DB::table("master_education")->where('Status', 'A')->orderBy('EducationCode', 'asc')->pluck("EducationCode", "EducationId");
-        $resume_list = DB::table("master_resumesource")->where('Status', 'A')->where('ResumeSouId','!=','7')->orderBy('ResumeSouId', 'asc')->pluck("ResumeSource", "ResumeSouId");
-        return view('jobportal.job_apply', compact('state_list', 'institute_list', 'education_list','resume_list'));
+        $resume_list = DB::table("master_resumesource")->where('Status', 'A')->where('ResumeSouId', '!=', '7')->orderBy('ResumeSouId', 'asc')->pluck("ResumeSource", "ResumeSouId");
+        return view('jobportal.job_apply', compact('state_list', 'institute_list', 'education_list', 'resume_list'));
+    }
+    public function job_apply_form_manual()
+    {
+        $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
+        $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+        $education_list = DB::table("master_education")->where('Status', 'A')->orderBy('EducationCode', 'asc')->pluck("EducationCode", "EducationId");
+        $resume_list = DB::table("master_resumesource")->where('Status', 'A')->where('ResumeSouId', '!=', '7')->orderBy('ResumeSouId', 'asc')->pluck("ResumeSource", "ResumeSouId");
+        return view('jobportal.job_apply_form_manual', compact('state_list', 'institute_list', 'education_list', 'resume_list'));
     }
 
     public function job_apply(Request $request)
@@ -40,6 +51,7 @@ class JobController extends Controller
         $jobPost = master_post::find($JPId);
         $CompanyId = $jobPost->CompanyId;
         $DepartmentId = $jobPost->DepartmentId;
+        $Title = $jobPost->Title;
 
         $EmailOTP = rand(100000, 999999);
         $SmsOTP = rand(100000, 999999);
@@ -116,6 +128,7 @@ class JobController extends Controller
         $jobApply->Department = $DepartmentId;
         $jobApply->save();
 
+        CandidateActivityLog::addToCandLog($JCId, $request->Aadhaar, 'Applied for ' . $Title . ' in ' . getCompanyCode($CompanyId));
         if (!$jobApply) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {

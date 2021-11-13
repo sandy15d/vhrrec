@@ -47,6 +47,7 @@ Route::middleware(['middleware' => 'PreventBackHistory'])->group(function () {
 Route::group(['prefix' => 'jobportal'], function () {
     Route::get('jobs', [JobController::class, 'jobs'])->name('jobs');
     Route::get('job_apply_form', [JobController::class, 'job_apply_form'])->name('job_apply_form');
+    Route::get('jobapply', [JobController::class, 'job_apply_form_manual']);
     Route::post('job_apply', [JobController::class, 'job_apply'])->name('job_apply');
     Route::get('campus_apply_form', [JobController::class, 'campus_apply_form'])->name('campus_apply_form');
     Route::post('campus_apply', [JobController::class, 'campus_apply'])->name('campus_apply');
@@ -78,8 +79,11 @@ Route::get('job_response', [JobApplicationController::class, 'job_response'])->n
 Route::get('job_applications', [JobApplicationController::class, 'job_applications'])->name('job_applications');
 Route::post('getJobResponseSummary', [JobApplicationController::class, 'getJobResponseSummary'])->name('getJobResponseSummary');
 Route::post('getCandidates', [JobApplicationController::class, 'getCandidates'])->name('getCandidates');
-
-
+Route::post('update_hrscreening', [JobApplicationController::class, 'update_hrscreening'])->name('update_hrscreening');
+Route::post('SendForTechScreening', [JobApplicationController::class, 'SendForTechScreening'])->name('SendForTechScreening');
+Route::get('job_application_manual_entry_form', [JobApplicationController::class, 'job_application_manual_entry_form'])->name('job_application_manual_entry_form');
+Route::post('job_application_manual', [JobApplicationController::class, 'job_application_manual'])->name('job_application_manual');
+Route::get('getManualEntryCandidate', [JobApplicationController::class, 'getManualEntryCandidate'])->name('getManualEntryCandidate');
 
 
 Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');

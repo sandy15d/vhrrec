@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers\Common;
 
-use App\Helpers\LogActivity;
-use App\Http\Controllers\Controller;
-use App\Mail\MrfCreationMail;
 use App\Models\master_mrf;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
+use App\Helpers\LogActivity;
+use Illuminate\Http\Request;
+use App\Mail\MrfCreationMail;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
-
 use function App\Helpers\convertData;
+
+use function App\Helpers\getFullName;
 use function App\Helpers\getCompanyCode;
+use Illuminate\Support\Facades\Validator;
 use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getDesignationCode;
-use function App\Helpers\getFullName;
 
 class ManualEntryController extends Controller
 {

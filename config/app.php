@@ -230,6 +230,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'LogActivity' => App\Helpers\LogActivity::class,
+        'CandidateActivity' => App\Helpers\CandidateActivityLog::class,
     ],
 
 ];

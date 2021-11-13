@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Helpers\LogActivity;
-use App\Helpers\UserNotification;
-use App\Http\Controllers\Controller;
-use App\Mail\MrfStatusChangeMail;
-use App\Models\master_mrf;
-
 use DateTime;
+use App\Models\master_mrf;
+use App\Helpers\LogActivity;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
+use App\Helpers\UserNotification;
 
-use function App\Helpers\getDepartmentCode;
-use function App\Helpers\getDesignationCode;
-use function App\Helpers\getDistrictName;
+use App\Mail\MrfStatusChangeMail;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 use function App\Helpers\getFullName;
 use function App\Helpers\getStateCode;
+use function App\Helpers\getDistrictName;
+
+use function App\Helpers\getDepartmentCode;
+use function App\Helpers\getDesignationCode;
 
 class AdminController extends Controller
 {
