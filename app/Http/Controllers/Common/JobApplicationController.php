@@ -334,6 +334,7 @@ class JobApplicationController extends Controller
         $jobApply->OtherResumeSource = $request->OtherResumeSource;
         $jobApply->Company = '0';
         $jobApply->Department = '0';
+        $jobApply->CreatedBy = Auth::user()->id;
         $jobApply->save();
 
         CandidateActivityLog::addToCandLog($JCId, $request->Aadhaar, 'Candidate Manual Entry');

@@ -599,6 +599,7 @@ $query = DB::table('jobcandidates')
                                                                     @php
                                                                         $file = URL::to('/')."/uploads/Resume/".$query[0]->Resume;
                                                                         echo $file;
+                                                                        clearstatcache();
                                                                       if (file_exists($file)) {
                                                                          echo 'File Exist';
                                                                       }else{
