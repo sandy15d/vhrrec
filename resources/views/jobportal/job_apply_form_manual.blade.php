@@ -73,7 +73,7 @@ $query = DB::table('jobcandidates')
                                     <p style="font-size: 14px; margin-bottom:0px;">Mention your name as per yor Aadhaar
                                         card only.</p>
                                     <hr style="margin: 10px 0px 10px 0px;">
-                                    <form action="{{ route('job_apply') }}" id="jobApplyForm" name="jobApplyForm"
+                                    <form action="{{ route('job_apply_manual') }}" id="jobApplyForm" name="jobApplyForm"
                                         method="POST">
                                         @csrf
                                         <input type="hidden" name="JCId" value="{{ $jcid }}">
@@ -597,18 +597,15 @@ $query = DB::table('jobcandidates')
 
                                                                 @if ($query[0]->Resume != null)
                                                                     @php
-                                                                        $file = URL::to('/')."/uploads/Resume/".$query[0]->Resume;
-                                                                        echo $file;
-                                                                        clearstatcache();
-                                                                      if (file_exists($file)) {
-                                                                         echo 'File Exist';
-                                                                      }else{
-                                                                        echo  'Could not find file';
-                                                                      }
+                                                                        $file = public_path('/uploads/Resume/' . $query[0]->Resume);
+                                                                        $file1 = URL::to('/') . '/uploads/Resume/' . $query[0]->Resume;
+                                                                        if (file_exists($file)) {
+                                                                            echo "<a class='link-primary' style='font-size:14px;' href='$file1' target='_blank'>Resume</a>  <small class='text-secondary'>  Click to view uploaded resume.</small>";
+                                                                        }
                                                                     @endphp
                                                                 @else
                                                                     <input type="file" name="Resume" id="Resume"
-                                                                        class="form-control form-control-sm reqinp"
+                                                                        class="form-control form-control-sm"
                                                                         accept=".pdf,.docx">
                                                                     <p class="text-primary">Plese upload PDF/Word
                                                                         Document
@@ -624,8 +621,16 @@ $query = DB::table('jobcandidates')
                                                         class=" mt-3 d-inline-block" style="width: 150; height: 150;">
                                                         <span id="preview">
                                                             <center>
-                                                                <img src="{{ URL::to('/') }}/assets/images/user.png"
-                                                                    style="width: 150px; height: 150px;" id="img1" />
+                                                                @if ($query[0]->CandidateImage != null)
+                                                                    <img src="{{ URL::to('/') }}/uploads/Picture/<?= $query[0]->CandidateImage?>"
+                                                                        style="width: 150px; height: 150px;"
+                                                                        id="img1" />
+                                                                @else
+                                                                    <img src="{{ URL::to('/') }}/assets/images/user.png"
+                                                                        style="width: 150px; height: 150px;"
+                                                                        id="img1" />
+                                                                @endif
+
                                                             </center>
                                                         </span>
                                                         <center>

@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'MRF Allocated')
+@section('title', 'Campus Screening Tracker')
 @section('PageContent')
     <style>
         .table>:not(caption)>*>* {

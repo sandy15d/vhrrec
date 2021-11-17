@@ -88,29 +88,24 @@ use function App\Helpers\getStateName;
                             <label class="text-primary"><input id="checkall" type="checkbox" name="">&nbsp;Check
                                 all</label>
                             <i class="text-muted" style="font-size: 13px;">With selected:</i> 
-                            <label class="text-primary " style=" cursor: pointer;" onclick="SendForScreening()"><i
-                                    class="fas fa-share text-primary"></i> Fwd. for Technical
+                            <label class="text-primary " style=" cursor: pointer;" data-bs-toggle="modal"
+                                data-bs-target="#TechScreeningModal"><i class="fas fa-share text-primary"></i> Fwd. for
+                                Technical
                                 Screening
                             </label>
                         </span>
-                       {{--  <span class="d-inline">
-                            <label class="text-primary" style=" cursor: pointer;" onclick="MoveCandidate()"><i
-                                    class="fas fa-shekel-sign text-primary"></i> Move to Other Co.
-                            </label>
-                        </span> --}}
                     </div>
                 </div>
                 @foreach ($candidate_list as $row)
                     @php
                         $bg_color = '';
-                        if ($row->Status == 'Rejected') {
+                        if ($row->Status == 'Rejected' || $row->BlackList == 1) {
                             $bg_color = '#fe36501f';
                         } else {
                             if ($row->FwdTechScr == 'Yes') {
                                 $bg_color = '#dbffdacc';
                             }
                         }
-                        
                     @endphp
                     <div class="card mb-3" style="background-color:<?= $bg_color ?>">
                         <div class="card-body" style="padding: 5px;">
@@ -121,20 +116,22 @@ use function App\Helpers\getStateName;
                                             <tr>
                                                 <td colspan="3">
                                                     <label>
-                                                        @if ($row->Status == 'Selected' && $row->FwdTechScr == 'No')
+                                                        @if ($row->Status == 'Selected' && $row->FwdTechScr == 'No' && $row->BlackList == 0)
                                                             <input type="checkbox" name="selectCand" class="japchks"
                                                                 onclick="checkAllorNot()" value="{{ $row->JAId }}">
                                                         @endif
                                                         <span
                                                             style="color: #275A72;font-weight: bold;padding-bottom: 10px;">
-                                                            {{ $row->FName }} {{ $row->MName }} {{ $row->LName }} (Ref.No {{ $row->ReferenceNo }} ) </span>
+                                                            {{ $row->FName }} {{ $row->MName }} {{ $row->LName }}
+                                                            (Ref.No {{ $row->ReferenceNo }} ) </span>
                                                     </label>
                                                 </td>
-                                               
                                             </tr>
                                             <tr>
                                                 <td style="text-align: left">Applied For:</td>
-                                                <td  colspan="3"><?= $row->DesigId != null ? getDesignation($row->DesigId) : "<i class='fa fa-pencil-square-o text-primary' aria-hidden='true' style='cursor: pointer;' onclick='AddToJobPost($row->JAId)'></i>" ?></td>
+                                                <td colspan="3">
+                                                    <?= $row->DesigId != null ? getDesignation($row->DesigId) : "<i class='fa fa-pencil-square-o text-primary' aria-hidden='true' style='cursor: pointer;' id='AddToJobPost' data-id='$row->JAId'></i>" ?>
+                                                </td>
                                             </tr>
                                             <tr class="">
                                                 <td>Experience<span class="pull-right">:</span></td>
@@ -191,35 +188,62 @@ use function App\Helpers\getStateName;
                                                 <td style="text-align: right">
                                                     <?= $row->Education == null ? '' : getEducationById($row->Education) ?>
                                                     <?= $row->Specialization == null ? '' : '-' . getSpecializationbyId($row->Specialization) ?>
-
                                                 </td>
                                             </tr>
                                             <tr class="">
                                                 <td>Current Location<span class="pull-right">:</span></td>
                                                 <td style="text-align: right">{{ $row->City }}</td>
-
                                             </tr>
-
-
                                             <tr>
                                                 <td>Applied on date:</td>
                                                 <td style="text-align: right">
                                                     {{ date('d-m-Y', strtotime($row->ApplyDate)) }}</td>
                                                 <td style="text-align: right">HR Screening Status:</td>
                                                 <td style="text-align: right">
-                                                    <?= $row->Status != null ? '<b>' . $row->Status . '</b>' : "<i class='fa fa-pencil-square-o text-primary' aria-hidden='true' style='font-size:14px;cursor: pointer;' id='HrScreening' data-id='$row->JAId'></i>" ?>
+                                                    @if ($row->JPId != 0)
+                                                        <?= $row->Status != null ? '<b>' . $row->Status . '</b>' : "<i class='fa fa-pencil-square-o text-primary' aria-hidden='true' style='font-size:14px;cursor: pointer;' id='HrScreening' data-id='$row->JAId'></i>" ?>
+                                                    @endif
                                                 </td>
-
                                             </tr>
                                             <tr>
                                                 <td> Source: </td>
                                                 <td style="text-align: right">
                                                     {{ getResumeSourceById($row->ResumeSource) }}
                                                 </td>
-                                                <td class="text-danger" style="text-align: right">Blocklist Candidate
+
+                                                <td class="text-danger fw-bold" style="text-align: center" colspan="2">
+                                                    @if ($row->BlackList == 0)
+                                                        <label class="text-danger" style=" cursor: pointer;"
+                                                            id="BlackListCandidate" data-id="{{ $row->JCId }}"><i
+                                                                class="fas fa-ban text-danger"></i>
+                                                            Blacklist Candidate
+                                                        </label>
+                                                    @else
+                                                        @if (Auth::user()->role == 'A')
+                                                            <label class="text-primary" style=" cursor: pointer;"
+                                                                id="UnBlockCandidate" data-id="{{ $row->JCId }}"><i
+                                                                    class="fas fa-user text-primary"></i>
+                                                                Unblock Candidate
+                                                            </label>
+                                                        @endif
+                                                    @endif
+
                                                 </td>
                                             </tr>
-
+                                            @if ($row->BlackListRemark != null)
+                                                <tr>
+                                                    <td colspan="4" class="text-danger fw-bold">
+                                                        {{ $row->BlackListRemark }}
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                            @if ($row->UnBlockRemark != null)
+                                                <tr>
+                                                    <td colspan="4" class="text-success fw-bold">
+                                                        {{ $row->UnBlockRemark }}
+                                                    </td>
+                                                </tr>
+                                            @endif
 
                                         </tbody>
                                     </table>
@@ -233,8 +257,6 @@ use function App\Helpers\getStateName;
                                             <img src="{{ URL::to('/') }}/uploads/Picture/{{ $row->CandidateImage }}"
                                                 style="width: 130px; height: 130px;" class="img-fluid rounded" />
                                         @endif
-
-
                                     </center>
                                     <center>
                                         <small>
@@ -242,6 +264,16 @@ use function App\Helpers\getStateName;
                                                 View Details
                                             </span>
                                         </small>
+                                    </center>
+
+                                    <center class="mt-3 fw-bold">
+                                        <span class="d-inline">
+                                            <label class="text-success" style=" cursor: pointer;" id="MoveCandidate"
+                                                data-id="{{ $row->JAId }}"><i
+                                                    class="fas fa-shekel-sign text-success"></i>
+                                                Move to Other Co.
+                                            </label>
+                                        </span>
                                     </center>
                                 </div>
 
@@ -256,7 +288,7 @@ use function App\Helpers\getStateName;
                 <div class="card border-top border-0 border-4 border-danger">
                     <div class="card-body">
                         <div class="col-12 mb-2 d-flex justify-content-between">
-                            <span class="d-inline text-dark fw-bold">Filter</span>
+                            <span class="d-inline fw-bold">Filter</span>
                             <span class="text-danger fw-bold" style="font-size: 14px; cursor: pointer;" id="reset"><i
                                     class="bx bx-refresh"></i>Reset</span>
                         </div>
@@ -363,23 +395,80 @@ use function App\Helpers\getStateName;
                 </div>
 
             </div>
-
         </div>
-
     </div>
 
     <div class="modal fade" id="HrScreeningModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
         data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-dialog">
             <form action="{{ route('update_hrscreening') }}" method="POST" id="ScreeningForm">
                 <div class="modal-content">
                     <div class="modal-body">
                         <input type="hidden" name="JAId" id="JAId">
                         <label for="Status">HR Screening Status</label>
-                        <select name="Status" id="Status" class="form-select form-select-sm">
+                        <select name="Status" id="Status" class="form-select form-select-sm" required>
                             <option value="" disabled selected></option>
                             <option value="Selected">Selected</option>
                             <option value="Rejected">Rejected</option>
+                        </select>
+
+                        <textarea name="RejectRemark" id="RejectRemark" cols="30" rows="3"
+                            class="form-control form-control-sm mt-2 d-none"
+                            placeholder="Please Enter Rejection Remark"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="AddJobPostModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <form action="{{ route('MapCandidateToJob') }}" method="POST" id="MapCandidateForm">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <input type="hidden" name="AddJobPost_JAId" id="AddJobPost_JAId">
+                        <label for="Status">Map Candidate to Job</label>
+                        <select name="JPId" id="JPId" class="form-select form-select-sm">
+                            <option value="">Select</option>
+                            @foreach ($jobpost_list as $item)
+                                <option value="{{ $item->JPId }}">{{ $item->JobCode }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="MoveCandidategModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <form action="{{ route('MoveCandidate') }}" method="POST" id="MoveCandidateForm">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <label for="Status">Move Candidate To:</label>
+                        <input type="hidden" name="MoveCandidate_JAId" id="MoveCandidate_JAId">
+                        <select name="MoveCompany" id="MoveCompany" class="form-select form-select-sm">
+                            <option value="" disabled selected></option>
+                            @foreach ($company_list as $key => $value)
+                                <option value="{{ $key }}">{{ $value }}</option>
+                            @endforeach
+                        </select>
+
+                        <label for="MoveDepartment">Department</label>
+                        <select name="MoveDepartment" id="MoveDepartment" class="form-select form-select-sm">
+
                         </select>
                     </div>
                     <div class="modal-footer">
@@ -393,25 +482,46 @@ use function App\Helpers\getStateName;
 
     <div class="modal fade" id="TechScreeningModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
         data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered">
-            <form action="{{ route('SendForTechScreening') }}" method="POST" id="ScreeningForm">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <label for="Status">HR Screening Status</label>
-                        <select name="Status" id="Status" class="form-select form-select-sm">
-                            <option value="" disabled selected></option>
-                            <option value="Selected">Selected</option>
-                            <option value="Rejected">Rejected</option>
-                        </select>
-                    </div>
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td style="vertical-align: middle;">Resume Sent For Technical Screen</td>
+                            <td><input type="date" id="ResumeSent" class="form-control" value="<?php echo date('Y-m-d'); ?>">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: middle;">Technical Screening By</td>
+                            <td>
+                                <select id="TechScrCompany" class="form-select form-select-sm mb-1">
+                                    <option value="">Select Company</option>
+                                    @foreach ($company_list as $key => $value)
+                                        <option value="{{ $key }}">{{ $value }}</option>
+                                    @endforeach
+                                </select>
+
+                                <select id="TechScrDepartment" class="form-select form-select-sm mb-1">
+                                    <option value="">Select Department</option>
+                                </select>
+                                <select id="ScreeningBy" class="form-select form-select-sm">
+                                    <option value="">Select Employee</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary btn-sm">Save changes</button>
+                        <button type="button" id="SendForTechSceenBtn" class="btn btn-primary btn-sm">Save
+                            changes</button>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
+
 @endsection
 
 @section('scriptsection')
@@ -456,6 +566,78 @@ use function App\Helpers\getStateName;
                     "&Education=" + Education + "&Name=" + Name;
             }
 
+            $(document).on('change', '#MoveCompany', function() {
+                var CompanyId = $(this).val();
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('getDepartment') }}?CompanyId=" + CompanyId,
+                    success: function(res) {
+                        if (res) {
+                            $("#MoveDepartment").empty();
+                            $("#MoveDepartment").append(
+                                '<option value="">Select Department</option>');
+                            $.each(res, function(key, value) {
+                                $("#MoveDepartment").append('<option value="' + value +
+                                    '">' +
+                                    key +
+                                    '</option>');
+                            });
+                            $('#MoveDepartment').val('<?= $_REQUEST['Department'] ?? '' ?>');
+                        } else {
+                            $("#MoveDepartment").empty();
+                        }
+                    }
+                });
+            });
+
+            $(document).on('change', '#TechScrCompany', function() {
+                var CompanyId = $(this).val();
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('getDepartment') }}?CompanyId=" + CompanyId,
+                    success: function(res) {
+                        if (res) {
+                            $("#TechScrDepartment").empty();
+                            $("#TechScrDepartment").append(
+                                '<option value="">Select Department</option>');
+                            $.each(res, function(key, value) {
+                                $("#TechScrDepartment").append('<option value="' +
+                                    value +
+                                    '">' +
+                                    key +
+                                    '</option>');
+                            });
+                            $('#TechScrDepartment').val('<?= $_REQUEST['Department'] ?? '' ?>');
+                        } else {
+                            $("#TechScrDepartment").empty();
+                        }
+                    }
+                });
+            });
+
+            $(document).on('change', '#TechScrDepartment', function() {
+                var DepartmentId = $(this).val();
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('getReportingManager') }}?DepartmentId=" + DepartmentId,
+                    success: function(res) {
+                        if (res) {
+                            $("#ScreeningBy").empty();
+                            $("#ScreeningBy").append(
+                                '<option value="">Select Department</option>');
+                            $.each(res, function(key, value) {
+                                $("#ScreeningBy").append('<option value="' + value +
+                                    '">' +
+                                    key +
+                                    '</option>');
+                            });
+                        } else {
+                            $("#ScreeningBy").empty();
+                        }
+                    }
+                });
+            });
+
             $(document).on('change', '#Fill_Company', function() {
                 GetApplications();
             });
@@ -491,6 +673,18 @@ use function App\Helpers\getStateName;
                 $('#HrScreeningModal').modal('show');
             });
 
+            $(document).on('click', '#AddToJobPost', function() {
+                var JAId = $(this).data('id');
+                $('#AddJobPost_JAId').val(JAId);
+                $('#AddJobPostModal').modal('show');
+            });
+
+            $(document).on('click', '#MoveCandidate', function() {
+                var JAId = $(this).data('id');
+                $('#MoveCandidate_JAId').val(JAId);
+                $('#MoveCandidategModal').modal('show');
+            });
+
             $('#ScreeningForm').on('submit', function(e) {
                 e.preventDefault();
                 var form = this;
@@ -511,8 +705,148 @@ use function App\Helpers\getStateName;
                     }
                 });
             });
+
+            $('#MapCandidateForm').on('submit', function(e) {
+                e.preventDefault();
+                var form = this;
+                $.ajax({
+                    url: $(form).attr('action'),
+                    method: $(form).attr('method'),
+                    data: new FormData(form),
+                    processData: false,
+                    dataType: 'json',
+                    contentType: false,
+                    success: function(data) {
+                        if (data.status == 400) {
+                            toastr.error(data.msg);
+                        } else {
+                            toastr.success(data.msg);
+                            window.location.reload();
+                        }
+                    }
+                });
+            });
+
+            $('#MoveCandidateForm').on('submit', function(e) {
+                e.preventDefault();
+                var form = this;
+                $.ajax({
+                    url: $(form).attr('action'),
+                    method: $(form).attr('method'),
+                    data: new FormData(form),
+                    processData: false,
+                    dataType: 'json',
+                    contentType: false,
+                    success: function(data) {
+                        if (data.status == 400) {
+                            toastr.error(data.msg);
+                        } else {
+                            toastr.success(data.msg);
+                            window.location.reload();
+                        }
+                    }
+                });
+            });
+
+            $(document).on('change', '#Status', function() {
+                var Status = $(this).val();
+                if (Status == 'Rejected') {
+                    $('#RejectRemark').removeClass('d-none');
+                    $("#RejectRemark").prop('required', true);
+                } else {
+                    $('#RejectRemark').addClass('d-none');
+                    $("#RejectRemark").prop('required', false);
+                }
+            });
+
+            $(document).on('click', '#BlackListCandidate', function() {
+                var JCId = $(this).data('id');
+                var Remark = prompt("Please Enter Remark to BlackList Candidate");
+                if (Remark != null) {
+                    $.ajax({
+                        url: "{{ route('BlacklistCandidate') }}",
+                        type: 'POST',
+                        data: {
+                            JCId: JCId,
+                            Remark: Remark
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.status == 200) {
+                                toastr.success(data.msg);
+                                window.location.reload();
+                            } else {
+                                toastr.error(data.msg);
+                            }
+                        }
+                    });
+                } else {
+                    window.location.reload();
+                }
+            });
+
+            $(document).on('click', '#UnBlockCandidate', function() {
+                var JCId = $(this).data('id');
+                var Remark = prompt("Please Enter Remark to Unblock Candidate");
+                if (Remark != null) {
+                    $.ajax({
+                        url: "{{ route('UnBlockCandidate') }}",
+                        type: 'POST',
+                        data: {
+                            JCId: JCId,
+                            Remark: Remark
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.status == 200) {
+                                toastr.success(data.msg);
+                                window.location.reload();
+                            } else {
+                                toastr.error(data.msg);
+                            }
+                        }
+                    });
+                } else {
+                    window.location.reload();
+                }
+            });
         });
 
+
+        $(document).on('click', '#SendForTechSceenBtn', function() {
+            var JAId = [];
+            var ScreeningBy = $('#ScreeningBy').val();
+            $("input[name='selectCand']").each(function() {
+                if ($(this).prop("checked") == true) {
+                    var value = $(this).val();
+                    JAId.push(value);
+                }
+            });
+            if (JAId.length > 0) {
+                if (confirm('Are you sure to Send Selected Candidates to Screening Stage?')) {
+                    $.ajax({
+                        url: '{{ url('SendForTechScreening') }}',
+                        method: 'POST',
+                        data: {
+                            JAId: JAId,
+                            ScreeningBy: ScreeningBy
+                        },
+                        success: function(data) {
+                            if (data.status == 400) {
+                                alert('Something went wrong..!!');
+                            } else {
+                                toastr.success(data.msg);
+                                window.location.reload();
+                            }
+                        }
+                    });
+                }
+
+            } else {
+                alert('No Candidate Selected!\nPlease select atleast one candidate to proceed.');
+            }
+
+        });
 
         $('#checkall').click(function() {
             if ($(this).prop("checked") == true) {
@@ -534,39 +868,6 @@ use function App\Helpers\getStateName;
             } else if (allchk == 1) {
                 $('#checkall').prop("checked", true);
             }
-        }
-
-        function SendForScreening() {
-            var JAId = [];
-            $("input[name='selectCand']").each(function() {
-                if ($(this).prop("checked") == true) {
-                    var value = $(this).val();
-                    JAId.push(value);
-                }
-            });
-            if (JAId.length > 0) {
-                if (confirm('Are you sure to Send Selected Candidates to Screening Stage?')) {
-                    $.ajax({
-                        url: '{{ url('SendForTechScreening') }}',
-                        method: 'POST',
-                        data: {
-                            JAId: JAId,
-                        },
-                        success: function(data) {
-                            if (data.status == 400) {
-                                alert('Something went wrong..!!');
-                            } else {
-                                toastr.success(data.msg);
-                                window.location.reload();
-                            }
-                        }
-                    });
-                }
-
-            } else {
-                alert('No Candidate Selected!\nPlease select atleast one candidate to proceed.');
-            }
-
         }
     </script>
 @endsection

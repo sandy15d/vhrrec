@@ -33,6 +33,7 @@ use App\Http\Controllers\Common\CampusController;
 use App\Http\Controllers\Common\ManualEntryController;
 use App\Http\Controllers\Common\CommonController;
 use App\Http\Controllers\Common\JobApplicationController;
+use App\Http\Controllers\Common\TrackerController;
 use App\Http\Controllers\JobController;
 
 Route::get('/', function () {
@@ -49,6 +50,7 @@ Route::group(['prefix' => 'jobportal'], function () {
     Route::get('job_apply_form', [JobController::class, 'job_apply_form'])->name('job_apply_form');
     Route::get('jobapply', [JobController::class, 'job_apply_form_manual']);
     Route::post('job_apply', [JobController::class, 'job_apply'])->name('job_apply');
+    Route::post('job_apply_manual', [JobController::class, 'job_apply_manual'])->name('job_apply_manual');
     Route::get('campus_apply_form', [JobController::class, 'campus_apply_form'])->name('campus_apply_form');
     Route::post('campus_apply', [JobController::class, 'campus_apply'])->name('campus_apply');
     Route::get('verification', [JobController::class, 'verification'])->name('verification');
@@ -74,6 +76,11 @@ Route::post('updateMRF', [CommonController::class, 'updateMRF'])->name('updateMR
 Route::post('deleteMRF', [CommonController::class, 'deleteMRF'])->name('deleteMRF');
 Route::post('notificationMarkRead', [CommonController::class, 'notificationMarkRead'])->name('notificationMarkRead');
 Route::post('markAllRead', [CommonController::class, 'markAllRead'])->name('markAllRead');
+Route::get('getMRFByDepartment', [CommonController::class, 'getMRFByDepartment'])->name('getMRFByDepartment');
+//Route::post('getCandidateName', [CommonController::class, 'getCandidateName'])->name('getCandidateName');
+
+
+
 
 Route::get('job_response', [JobApplicationController::class, 'job_response'])->name('job_response');
 Route::get('job_applications', [JobApplicationController::class, 'job_applications'])->name('job_applications');
@@ -81,10 +88,18 @@ Route::post('getJobResponseSummary', [JobApplicationController::class, 'getJobRe
 Route::post('getCandidates', [JobApplicationController::class, 'getCandidates'])->name('getCandidates');
 Route::post('update_hrscreening', [JobApplicationController::class, 'update_hrscreening'])->name('update_hrscreening');
 Route::post('SendForTechScreening', [JobApplicationController::class, 'SendForTechScreening'])->name('SendForTechScreening');
+Route::post('MapCandidateToJob', [JobApplicationController::class, 'MapCandidateToJob'])->name('MapCandidateToJob');
+Route::post('MoveCandidate', [JobApplicationController::class, 'MoveCandidate'])->name('MoveCandidate');
+Route::post('BlacklistCandidate', [JobApplicationController::class, 'BlacklistCandidate'])->name('BlacklistCandidate');
+Route::post('UnBlockCandidate', [JobApplicationController::class, 'UnBlockCandidate'])->name('UnBlockCandidate');
 Route::get('job_application_manual_entry_form', [JobApplicationController::class, 'job_application_manual_entry_form'])->name('job_application_manual_entry_form');
 Route::post('job_application_manual', [JobApplicationController::class, 'job_application_manual'])->name('job_application_manual');
 Route::get('getManualEntryCandidate', [JobApplicationController::class, 'getManualEntryCandidate'])->name('getManualEntryCandidate');
+Route::post('getJobResponseCandidateByJPId', [JobApplicationController::class, 'getJobResponseCandidateByJPId'])->name('getJobResponseCandidateByJPId');
 
+
+Route::get('TechnicalScreening', [TrackerController::class, 'TechnicalScreening'])->name('TechnicalScreening');
+Route::post('getTechnicalSceeningCandidate', [TrackerController::class, 'getTechnicalSceeningCandidate'])->name('getTechnicalSceeningCandidate');
 
 Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');
 Route::get('get_all_manual_mrf_created_by_me', [ManualEntryController::class, 'get_all_manual_mrf_created_by_me'])->name('get_all_manual_mrf_created_by_me');

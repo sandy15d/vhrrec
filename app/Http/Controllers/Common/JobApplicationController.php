@@ -12,7 +12,10 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\CandidateActivityLog;
+
+use function App\Helpers\getCompanyCode;
 use function App\Helpers\getDepartment;
+use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getDesignation;
 use function App\Helpers\ResumeSourceCount;
 use function App\Helpers\getResumeSourceById;
@@ -28,7 +31,6 @@ class JobApplicationController extends Controller
         $source_list = DB::table("master_resumesource")->where('Status', 'A')->Where('ResumeSouId', '!=', '7')->pluck('ResumeSource', 'ResumeSouId');
         return view('common.job_response', compact('company_list', 'months', 'source_list'));
     }
-
 
     public  function getJobResponseSummary(Request $request)
     {
@@ -85,7 +87,7 @@ class JobApplicationController extends Controller
             })
 
             ->editColumn('Response', function ($data) {
-                return '<a href="javascript:void(0);" class="btn btn-sm btn-warning" onclick="return getCandidate(' . $data->JPId . ');">' . $data->Response . '</a>';
+                return '<a href="javascript:void(0);" class="btn btn-sm btn-warning getCandidate" data-id="' . $data->JPId . '">' . $data->Response . '</a>';
             })
             ->addColumn('Source', function ($data) {
                 return ResumeSourceCount($data->JPId, $data->ResumeSource);
@@ -95,76 +97,6 @@ class JobApplicationController extends Controller
             ->make(true);
     }
 
-    public function getCandidates(Request $request)
-    {
-        $usersQuery = jobapply::query();
-        $Gender = $request->Gender;
-        $Source = $request->Source;
-        if ($Gender != '') {
-            $usersQuery->where("jobcandidates.Gender", $Gender);
-        }
-        if ($Source != '') {
-            $usersQuery->where("jobapply.ResumeSource", $Source);
-        }
-
-        $data =  $usersQuery->select('*')
-            ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
-            ->where('jobapply.JPId', $request->JPId);
-
-        return datatables()->of($data)
-            ->addIndexColumn()
-
-            ->addColumn('chk', function ($data) {
-                return '<input type="checkbox" class="japchks" data-id="' . $data->JAId . '" name="selectCand" id="selectCand" value="' . $data->JAId . '">';
-            })
-            ->addColumn('Name', function ($data) {
-                return $data->FName . ' ' . $data->MName . ' ' . $data->LName;
-            })
-            ->editColumn('Phone', function ($data) {
-                if ($data->Verified == 'Y') {
-                    return $data->Phone . '<i class="fa fa-check-circle text-success" aria-hidden="true"></i>';
-                } else {
-                    return $data->Phone;
-                }
-            })
-            ->editColumn('Email', function ($data) {
-                if ($data->Verified == 'Y') {
-                    return $data->Email . '<i class="fa fa-check-circle text-success" aria-hidden="true"></i>';
-                } else {
-                    return $data->Email;
-                }
-            })
-            ->editColumn('Professional', function ($data) {
-                if ($data->Professional == 'F') {
-                    return 'Fresher';
-                } else {
-                    return 'Experienced';
-                }
-            })
-            ->editColumn('Gender', function ($data) {
-                if ($data->Gender == 'F') {
-                    return 'Female';
-                } elseif ($data->Gender == 'M') {
-                    return 'Male';
-                } else {
-                    return 'Other';
-                }
-            })
-            ->editColumn('ApplyDate', function ($data) {
-                return Carbon::parse($data->ApplyDate)->format('d-m-Y');
-            })
-            ->addColumn('ScreenedBy', function ($data) {
-                return '';
-            })
-            ->addColumn('Source', function ($data) {
-                return getResumeSourceById($data->ResumeSource);
-            })
-            ->addColumn('Details', function ($data) {
-                return '<i class="fa fa-eye text-info" style="cursor:pointer" onclick="return ViewCandidate(' . $data->JCId . ');"></i>';
-            })
-            ->rawColumns(['chk', 'Phone', 'Email', 'Details'])
-            ->make(true);
-    }
 
     public function job_applications(Request $request)
     {
@@ -172,6 +104,16 @@ class JobApplicationController extends Controller
         $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
         $source_list = DB::table("master_resumesource")->where('Status', 'A')->Where('ResumeSouId', '!=', '7')->pluck('ResumeSource', 'ResumeSouId');
         $education_list = DB::table("master_education")->where('Status', 'A')->orderBy('EducationCode', 'asc')->pluck("EducationCode", "EducationId");
+
+        $job = jobpost::query();
+        if (Auth::user()->role == 'R') {
+            $job->where('CreatedBy', Auth::user()->id);
+        }
+        $jobpost_list = $job->select('JPId', 'JobCode')
+            ->where('Status', 'Open')
+            ->where('JobPostType', 'Regular')
+            ->get();
+
 
         $Company = $request->Company;
         $Department = $request->Department;
@@ -212,11 +154,12 @@ class JobApplicationController extends Controller
             $usersQuery->where("jobcandidates.FName", 'like', "%$Name%");
         }
 
-        $candidate_list = $usersQuery->select('jobapply.JAId', 'jobapply.ResumeSource', 'jobapply.ApplyDate', 'jobapply.Status', 'jobapply.FwdTechScr', 'jobcandidates.JCId', 'jobcandidates.ReferenceNo', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.Phone', 'jobcandidates.Email', 'jobcandidates.City', 'jobcandidates.Education', 'jobcandidates.Specialization', 'jobcandidates.Professional', 'jobcandidates.JobStartDate', 'jobcandidates.JobEndDate', 'jobcandidates.PresentCompany', 'jobcandidates.Designation', 'jobcandidates.Verified', 'jobcandidates.CandidateImage', 'jobpost.DesigId')
+        $candidate_list = $usersQuery->select('jobapply.JAId', 'jobapply.ResumeSource', 'jobapply.ApplyDate', 'jobapply.Status', 'jobapply.FwdTechScr', 'jobcandidates.JCId', 'jobcandidates.ReferenceNo', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.Phone', 'jobcandidates.Email', 'jobcandidates.City', 'jobcandidates.Education', 'jobcandidates.Specialization', 'jobcandidates.Professional', 'jobcandidates.JobStartDate', 'jobcandidates.JobEndDate', 'jobcandidates.PresentCompany', 'jobcandidates.Designation', 'jobcandidates.Verified', 'jobcandidates.CandidateImage', 'jobcandidates.BlackList', 'jobcandidates.BlackListRemark', 'jobcandidates.UnBlockRemark', 'jobapply.JPId', 'jobpost.DesigId')
             ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
             ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
             ->leftJoin('screening', 'jobapply.JAId', '=', 'screening.JAId')
             ->where('jobapply.Type', '!=', 'Campus');
+          
 
         $total_candidate = $candidate_list->count();
         $candidate_list = $candidate_list->paginate(10);
@@ -235,7 +178,7 @@ class JobApplicationController extends Controller
             ->where('Type', '!=', 'Campus')
             ->where('FwdTechScr', 'Yes');
         $total_fwd = $total_fwd->count();
-        return view('common.job_applications', compact('company_list', 'months', 'source_list', 'education_list', 'candidate_list', 'total_candidate', 'total_available', 'total_hr_scr', 'total_fwd'));
+        return view('common.job_applications', compact('company_list', 'months', 'source_list', 'education_list', 'candidate_list', 'total_candidate', 'total_available', 'total_hr_scr', 'total_fwd', 'jobpost_list'));
     }
 
     public function update_hrscreening(Request $request)
@@ -284,6 +227,59 @@ class JobApplicationController extends Controller
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
             return response()->json(['status' => 200, 'msg' => 'Candidate Successfully Forwaded for Technical Screening.']);
+        }
+    }
+
+    public function MapCandidateToJob(Request $request)
+    {
+        $JAId = $request->AddJobPost_JAId;
+        $JPId = $request->JPId;
+        $jobpost = jobpost::find($JPId);
+        $Company = $jobpost->CompanyId;
+        $Department = $jobpost->DepartmentId;
+        $title = $jobpost->Title;
+
+        $query = jobapply::find($JAId);
+        $query->JPId = $JPId;
+        $query->Company = $Company;
+        $query->Department = $Department;
+        $query->save();
+
+        $JCId = $query->JCId;
+        $candidate = jobcandidate::find($JCId);
+        $Aadhaar = $candidate->Aadhaar;
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            CandidateActivityLog::addToCandLog($JCId, $Aadhaar, 'Candidate Mapped to JobPost, ' . $title);
+            return response()->json(['status' => 200, 'msg' => 'Candidate Successfully Mapped to JobPost.']);
+        }
+    }
+    public function MoveCandidate(Request $request)
+    {
+        $JAId = $request->MoveCandidate_JAId;
+        $Company = $request->MoveCompany;
+        $Department = $request->MoveDepartment;
+
+        $query = jobapply::find($JAId);
+        $query->JPId = '0';
+        $query->Company = $Company;
+        $query->Department = $Department;
+        $query->Status = null;
+        $query->SelectedBy = null;
+        $query->FwdTechScr = 'No';
+        $query->save();
+
+        $sql = DB::table('screening')->where('JAId', $JAId)->delete();
+
+        $JCId = $query->JCId;
+        $candidate = jobcandidate::find($JCId);
+        $Aadhaar = $candidate->Aadhaar;
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            CandidateActivityLog::addToCandLog($JCId, $Aadhaar, 'Candidate Moved To, ' . getCompanyCode($Company) . ' ,' . getDepartmentCode($Department) . ' Department');
+            return response()->json(['status' => 200, 'msg' => 'Candidate Moved Successfully.']);
         }
     }
 
@@ -378,5 +374,72 @@ class JobApplicationController extends Controller
             })
             ->rawColumns(['chk', 'Link'])
             ->make(true);
+    }
+
+    public function BlacklistCandidate(Request $request)
+    {
+        $JCId = $request->JCId;
+        $Remark = $request->Remark;
+
+        $query = jobcandidate::find($JCId);
+        $query->BlackList = 1;
+        $query->BlackListRemark = $Remark;
+        $query->save();
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            CandidateActivityLog::addToCandLog($JCId, $query->Aadhaar, 'Candidate is BlackListed because ' . $Remark);
+            return response()->json(['status' => 200, 'msg' => 'Candidate Blaclisted successfully']);
+        }
+    }
+
+    public function UnBlockCandidate(Request $request)
+    {
+        $JCId = $request->JCId;
+        $Remark = $request->Remark;
+
+        $query = jobcandidate::find($JCId);
+        $query->BlackList = 0;
+        $query->UnBlockRemark = $Remark;
+        $query->save();
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            CandidateActivityLog::addToCandLog($JCId, $query->Aadhaar, 'Candidate is Unblocked because ' . $Remark);
+            return response()->json(['status' => 200, 'msg' => 'Candidate Unblocked successfully']);
+        }
+    }
+
+
+    public function getJobResponseCandidateByJPId(Request $request)
+    {
+        $JPId = $request->JPId;
+        $Gender = $request->Gender;
+        $Source = $request->Source;
+
+        $usersQuery = jobapply::query();
+        if ($Gender != '') {
+            $usersQuery->where("jobcandidates.Gender", $Gender);
+        }
+        if ($Source != '') {
+            $usersQuery->where("jobapply.ResumeSource", $Source);
+        }
+
+
+        $data =  $usersQuery->select('jobapply.*', 'jobcandidates.*', 'master_education.EducationCode', 'master_specialization.Specialization', 'jobpost.JPId', 'jobpost.Title', 'jobpost.DesigId', 'master_resumesource.ResumeSource')
+            ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+            ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
+            ->leftJoin('screening', 'jobapply.JAId', '=', 'screening.JAId')
+            ->leftJoin('master_education', 'jobcandidates.Education', '=', 'master_education.EducationId')
+            ->leftJoin('master_specialization', 'jobcandidates.Specialization', '=', 'master_specialization.SpId')
+            ->leftJoin('master_resumesource', 'jobapply.ResumeSource', '=', 'master_resumesource.ResumeSouId')
+            ->where('jobapply.JPId', $JPId)
+            ->paginate(10);
+
+        $links = $data->links('vendor.pagination.custom');
+
+        $links = str_replace("<a", "<a class='page_click page-link' ", $links);
+
+        return response(array('data' => $data, 'page_link' => (string)$links), 200);
     }
 }

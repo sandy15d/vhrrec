@@ -278,6 +278,7 @@ class JobController extends Controller
             $ReferenceNo = $cand->ReferenceNo;
             $Email = $cand->Email;
             $Candidate = $cand->Title . ' ' . $cand->FName . ' ' . $cand->LName;
+            
             if ($EmailOTP == $request->EmailOTP && $SmsOTP == $request->SmsOTP) {
                 $query = jobcandidate::find($JCId);
                 $query->Verified = 'Y';
@@ -292,6 +293,83 @@ class JobController extends Controller
             } else {
                 return response()->json(['status' => 400, 'msg' => 'OTP Does Not Match Please try again...!!']);
             }
+        }
+    }
+
+    public function job_apply_manual(Request $request)
+    {
+
+        $JCId = $request->JCId;
+
+        $EmailOTP = rand(100000, 999999);
+        $SmsOTP = rand(100000, 999999);
+
+        $query = jobcandidate::find($JCId);
+        $CandidateImage = $query->CandidateImage;
+
+        $query->Title = $request->Title;
+        $query->FName = $request->FName;
+        $query->MName = $request->MName;
+        $query->LName = $request->LName;
+        $query->DOB = $request->DOB;
+        $query->Gender = $request->Gender;
+        $query->FatherTitle = $request->FatherTitle;
+        $query->FatherName = $request->FatherName;
+        $query->Email = $request->Email;
+        $query->Phone = $request->Phone;
+        $query->AddressLine1 = $request->AddressLine1;
+        $query->AddressLine2 = $request->AddressLine2;
+        $query->AddressLine3 = $request->AddressLine3;
+        $query->State = $request->State;
+        $query->District = $request->District;
+        $query->City = $request->City;
+        $query->PinCode = $request->PinCode;
+        $query->Aadhaar = $request->Aadhaar;
+        $query->Education = $request->Education;
+        $query->CGPA = $request->CGPA;
+        $query->Specialization = $request->Specialization;
+        $query->PassingYear = $request->PassingYear;
+        $query->College = $request->College;
+        $query->Professional = $request->ProfCheck;
+        $query->PresentCompany = $request->PresentCompany;
+        $query->Designation = $request->Designation;
+        $query->JobStartDate = $request->JobStartDate;
+        $query->JobEndDate = $request->JobEndDate;
+        $query->StillEmp = $request->StillEmp;
+        $query->GrossSalary = $request->GrossSalary;
+        $query->CTC = $request->CTC;
+        $query->NoticePeriod = $request->NoticePeriod;
+        $query->ResignReason = $request->ResignReason;
+        $query->Reference = $request->RefCheck;
+        $query->RefPerson = $request->RefPerson;
+        $query->RefCompany = $request->RefCompany;
+        $query->RefDesignation = $request->RefDesignation;
+        $query->RefContact = $request->RefContact;
+        $query->RefMail = $request->RefMail;
+        $query->EmailOTP = $EmailOTP;
+        $query->SmsOTP = $SmsOTP;
+
+        if ($request->CandidateImage != '' || $request->CandidateImage != null) {
+            $CandidateImage = $JCId . '.' . $request->CandidateImage->extension();
+            $request->CandidateImage->move(public_path('uploads/Picture'), $CandidateImage);
+        }
+        $query->CandidateImage = $CandidateImage;
+        $query->save();
+
+
+
+        CandidateActivityLog::addToCandLog($JCId, $request->Aadhaar, 'Candidate Filled Application Form');
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            $details = [
+                "subject" => 'OTP to verify your email address for Application submission',
+                "Candidate" => $request->Title . ' ' . $request->FName . ' ' . $request->LName,
+                "EmailOTP" => $EmailOTP,
+            ];
+            Mail::to($request->Email)->send(new AppSubOTPMail($details));
+            SendOTP($request->Phone, $SmsOTP);
+            return response()->json(['status' => 200, 'msg' => ' successfully created.', 'jcid' => $JCId]);
         }
     }
 }

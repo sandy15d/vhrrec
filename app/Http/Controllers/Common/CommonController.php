@@ -9,6 +9,7 @@ use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\jobcandidate;
 use Illuminate\Support\Facades\Auth;
 
 use function App\Helpers\convertData;
@@ -316,5 +317,19 @@ class CommonController extends Controller
         }
     }
 
+    public function getMRFByDepartment(Request $request)
+    {
+        $JobCode = DB::table("jobpost")->orderBy('JobCode', 'asc')
+            ->where("DepartmentId", $request->DepartmentId)
+            ->where('Status', 'Open')
+            ->pluck("JPId", "JobCode");
+        return response()->json($JobCode);
+    }
+    public function getCandidateName(Request $request)
+    {
 
+     print_r('AAA');die;
+        $sql = jobcandidate::find($request->JCId);
+        return $sql->FName;
+    }
 }
