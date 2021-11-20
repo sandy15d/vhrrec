@@ -351,10 +351,8 @@ use function App\Helpers\getStateName;
                 ],
 
             });
-
-
-
         });
+
         $('#jobapplicationform').on('submit', function(e) {
             e.preventDefault();
             var form = this;

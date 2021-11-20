@@ -474,9 +474,6 @@ class AdminController extends Controller
     }
 
 
-
-
-
     function getTaskList(Request $request)
     {
         $sql = DB::table('manpowerrequisition')

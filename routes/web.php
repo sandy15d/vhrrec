@@ -77,7 +77,7 @@ Route::post('deleteMRF', [CommonController::class, 'deleteMRF'])->name('deleteMR
 Route::post('notificationMarkRead', [CommonController::class, 'notificationMarkRead'])->name('notificationMarkRead');
 Route::post('markAllRead', [CommonController::class, 'markAllRead'])->name('markAllRead');
 Route::get('getMRFByDepartment', [CommonController::class, 'getMRFByDepartment'])->name('getMRFByDepartment');
-//Route::post('getCandidateName', [CommonController::class, 'getCandidateName'])->name('getCandidateName');
+
 
 
 
@@ -100,6 +100,14 @@ Route::post('getJobResponseCandidateByJPId', [JobApplicationController::class, '
 
 Route::get('TechnicalScreening', [TrackerController::class, 'TechnicalScreening'])->name('TechnicalScreening');
 Route::post('getTechnicalSceeningCandidate', [TrackerController::class, 'getTechnicalSceeningCandidate'])->name('getTechnicalSceeningCandidate');
+Route::post('getScreenDetail', [TrackerController::class, 'getScreenDetail'])->name('getScreenDetail');
+Route::post('CandidateTechnicalScreening', [TrackerController::class, 'CandidateTechnicalScreening'])->name('CandidateTechnicalScreening');
+Route::post('getInterviewTrackerCandidate', [TrackerController::class, 'getInterviewTrackerCandidate'])->name('getInterviewTrackerCandidate');
+Route::get('interview_tracker', [TrackerController::class, 'interview_tracker'])->name('interview_tracker');
+Route::post('first_round_interview', [TrackerController::class, 'first_round_interview'])->name('first_round_interview');
+Route::post('second_round_interview', [TrackerController::class, 'second_round_interview'])->name('second_round_interview');
+Route::post('select_cmp_dpt_for_candidate', [TrackerController::class, 'select_cmp_dpt_for_candidate'])->name('select_cmp_dpt_for_candidate');
+
 
 Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');
 Route::get('get_all_manual_mrf_created_by_me', [ManualEntryController::class, 'get_all_manual_mrf_created_by_me'])->name('get_all_manual_mrf_created_by_me');

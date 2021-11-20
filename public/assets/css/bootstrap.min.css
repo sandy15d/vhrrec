@@ -6057,7 +6057,7 @@ textarea.form-control-lg {
 	color: #6c757d!important
 }
 .text-success {
-	color: #15ca20!important
+	color: #198754!important
 }
 .text-info {
 	color: #0dcaf0!important
@@ -6106,12 +6106,13 @@ textarea.form-control-lg {
 }
 .bg-primary {
 	background-color: #008cff!important
+	
 }
 .bg-secondary {
 	background-color: #6c757d!important
 }
 .bg-success {
-	background-color: #15ca20!important
+	background-color: #198754!important
 }
 .bg-info {
 	background-color: #0dcaf0!important
@@ -6120,7 +6121,7 @@ textarea.form-control-lg {
 	background-color: #ffc107!important
 }
 .bg-danger {
-	background-color: #fd3550!important
+	background-color: #dc3545!important
 }
 .bg-light {
 	background-color: #f8f9fa!important

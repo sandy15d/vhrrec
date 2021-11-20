@@ -128,13 +128,13 @@ use function App\Helpers\getStateName;
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="text-align: left">Applied For:</td>
-                                                <td colspan="3">
+                                                <td style="text-align: left">Applied For<span class="text-right">:</span></td>
+                                                <td colspan="3" style="text-align: left">
                                                     <?= $row->DesigId != null ? getDesignation($row->DesigId) : "<i class='fa fa-pencil-square-o text-primary' aria-hidden='true' style='cursor: pointer;' id='AddToJobPost' data-id='$row->JAId'></i>" ?>
                                                 </td>
                                             </tr>
                                             <tr class="">
-                                                <td>Experience<span class="pull-right">:</span></td>
+                                                <td>Experience<span class="pull-right" style="width: 25%">:</span></td>
                                                 <td style="text-align: right">
                                                     @php
                                                         if ($row->Professional == 'F') {
@@ -161,9 +161,8 @@ use function App\Helpers\getStateName;
                                                         }
                                                     @endphp
                                                 </td>
-                                                <td style="text-align: right">Contact No<span
-                                                        class="pull-right">:</span></td>
-                                                <td style="text-align:right"> {{ $row->Phone }}@if ($row->Verified == 'Y')
+                                                <td style="text-align: right;width:25%">Contact No:</td>
+                                                <td style="text-align:right" > {{ $row->Phone }}@if ($row->Verified == 'Y')
                                                         <i class="fadeIn animated bx bx-badge-check text-success"></i>
                                                     @endif
                                                 </td>

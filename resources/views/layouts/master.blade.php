@@ -37,14 +37,18 @@ $CompanyQry = DB::table('master_company')
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/header-colors.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/sweetalert2.min.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/toastr.min.css" />
+    <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/BsMultiSelect.css" />
 
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
         rel="stylesheet">
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTablesButtons.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
+    
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/jquery.min.js"></script>
+
+
     <title>HR Recruitment | @yield('title')</title>
     <style>
         .btn--red {
@@ -191,6 +195,21 @@ $CompanyQry = DB::table('master_company')
                                         class="bx bx-right-arrow-alt"></i>Communication Control</a></li>
                         </ul>
                     </li>
+                    <li>
+                        <a href="javascript:;" class="has-arrow">
+                            <div class="parent-icon"><i class="bx bx-category" style="color: maroon"></i>
+                            </div>
+                            <div class="menu-title">MRF</div>
+                        </a>
+                        <ul>
+                            <li> <a href="/admin/mrf"><i class="bx bx-right-arrow-alt"></i>New MRF</a></li>
+                            <li> <a href="/admin/active_mrf"><i class="bx bx-right-arrow-alt"></i>Active MRF</a></li>
+                            <li> <a href="/admin/closedmrf"><i class="bx bx-right-arrow-alt"></i>Closed MRF</a></li>
+                            <li> <a href="/recruiter_mrf_entry"><i class="bx bx-right-arrow-alt"></i>Manual Entry</a>
+                            </li>
+
+                        </ul>
+                    </li>
 
                 @endif
 
@@ -252,21 +271,7 @@ $CompanyQry = DB::table('master_company')
                 @endif
 
                 @if (Auth::user()->role == 'A' || Auth::user()->role == 'R')
-                    <li>
-                        <a href="javascript:;" class="has-arrow">
-                            <div class="parent-icon"><i class="bx bx-category" style="color: maroon"></i>
-                            </div>
-                            <div class="menu-title">MRF</div>
-                        </a>
-                        <ul>
-                            <li> <a href="/admin/mrf"><i class="bx bx-right-arrow-alt"></i>New MRF</a></li>
-                            <li> <a href="/admin/active_mrf"><i class="bx bx-right-arrow-alt"></i>Active MRF</a></li>
-                            <li> <a href="/admin/closedmrf"><i class="bx bx-right-arrow-alt"></i>Closed MRF</a></li>
-                            <li> <a href="/recruiter_mrf_entry"><i class="bx bx-right-arrow-alt"></i>Manual Entry</a>
-                            </li>
-
-                        </ul>
-                    </li>
+                  
                     <li>
                         <a href="javascript:;" class="has-arrow">
                             <div class="parent-icon"><i class="lni lni-write text-warning"></i>
@@ -275,9 +280,11 @@ $CompanyQry = DB::table('master_company')
                         </a>
                         <ul>
                             <li> <a href="/job_response"><i class="bx bx-right-arrow-alt"></i>Job & Response</a></li>
-                            <li> <a href="/job_applications"><i class="bx bx-right-arrow-alt"></i>Job Application (Resume Databank)</a>
+                            <li> <a href="/job_applications"><i class="bx bx-right-arrow-alt"></i>Job Application
+                                    (Resume Databank)</a>
                             </li>
-                            <li> <a href="/job_application_manual_entry_form"><i class="bx bx-right-arrow-alt"></i>Job Application Form (Manual
+                            <li> <a href="/job_application_manual_entry_form"><i class="bx bx-right-arrow-alt"></i>Job
+                                    Application Form (Manual
                                     Entry)</a></li>
                         </ul>
                     </li>
@@ -307,8 +314,8 @@ $CompanyQry = DB::table('master_company')
                         </a>
                         <ul>
 
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Screening Tracker</a></li>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Interview Tracker</a></li>
+                            <li> <a href="/TechnicalScreening"><i class="bx bx-right-arrow-alt"></i>Screening Tracker</a></li>
+                            <li> <a href="/interview_tracker"><i class="bx bx-right-arrow-alt"></i>Interview Tracker</a></li>
                         </ul>
                     </li>
                     <li>
@@ -584,7 +591,7 @@ $CompanyQry = DB::table('master_company')
     <!-- Bootstrap JS -->
     <script src="{{ URL::to('/') }}/assets/js/bootstrap.bundle.min.js"></script>
     <!--plugins-->
-  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/simplebar/js/simplebar.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/metismenu/js/metisMenu.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
@@ -593,6 +600,7 @@ $CompanyQry = DB::table('master_company')
     <script src="{{ URL::to('/') }}/assets/plugins/datatable/js/dataTables.bootstrap5.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
+    <script src="{{ URL::to('/') }}/assets/js/BsMultiSelect.min.js"></script>
 
     <!--app JS-->
     <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
