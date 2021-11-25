@@ -22,11 +22,14 @@ $query = DB::table('jobpost')
     <link rel="icon" href="{{ URL::to('/') }}/assets/images/favicon-32x32.png" type="image/png" />
     <!--plugins-->
     <link href="{{ URL::to('/') }}/assets/plugins/simplebar/css/simplebar.css" rel="stylesheet" />
+    <link href="{{ URL::to('/') }}/assets/plugins/select2/css/select2.min.css" rel="stylesheet" />
+    <link href="{{ URL::to('/') }}/assets/plugins/select2/css/select2-bootstrap4.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/metismenu/css/metisMenu.min.css" rel="stylesheet" />
     <!-- loader-->
     <link href="{{ URL::to('/') }}/assets/css/pace.min.css" rel="stylesheet" />
     <script src="{{ URL::to('/') }}/assets/js/pace.min.js"></script>
+
     <!-- Bootstrap CSS -->
     <link href="{{ URL::to('/') }}/assets/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/sweetalert2.min.css" />
@@ -34,6 +37,7 @@ $query = DB::table('jobpost')
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&amp;display=swap" rel="stylesheet">
     <link href="{{ URL::to('/') }}/assets/css/app.css" rel="stylesheet">
     <link href="{{ URL::to('/') }}/assets/css/icons.css" rel="stylesheet">
+    <link href="{{ URL::to('/') }}/assets/css/ijaboCropTool.min.css" rel="stylesheet">
     <title>Job Apply</title>
     <style>
         .borderless td,
@@ -106,6 +110,7 @@ $query = DB::table('jobpost')
                                                                 <input type="text"
                                                                     class="form-control form-control-sm reqinp"
                                                                     name="FName" id="FName"
+                                                                    placeholder="First Name as per Aadhaar"
                                                                     onblur="return convertCase(this)">
                                                             </td>
                                                         </tr>
@@ -113,7 +118,8 @@ $query = DB::table('jobpost')
                                                             <td valign="middle">Middle Name</td>
                                                             <td>
                                                                 <input type="text" class="form-control form-control-sm"
-                                                                    name="MName" onblur="return convertCase(this)">
+                                                                    name="MName" onblur="return convertCase(this)"
+                                                                    placeholder="Middle Name as per Aadhaar">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -122,7 +128,8 @@ $query = DB::table('jobpost')
                                                             <td>
                                                                 <input type="text"
                                                                     class="form-control form-control-sm reqinp"
-                                                                    name="LName" onblur="return convertCase(this)">
+                                                                    name="LName" onblur="return convertCase(this)"
+                                                                    placeholder="Last Name as per Aadhaar">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -168,7 +175,8 @@ $query = DB::table('jobpost')
                                                                             <input type="text"
                                                                                 class="form-control form-control-sm reqinp"
                                                                                 name="FatherName" id="FatherName"
-                                                                                onblur="return convertCase(this)">
+                                                                                onblur="return convertCase(this)"
+                                                                                placeholder="Father Name as per Aadhaar">
                                                                         </td>
                                                                     </tr>
                                                                 </table>
@@ -181,7 +189,8 @@ $query = DB::table('jobpost')
                                                             <td>
                                                                 <input type="text"
                                                                     class="form-control form-control-sm reqinp"
-                                                                    name="Email" id="Email">
+                                                                    name="Email" id="Email" placeholder="Email Id"
+                                                                    style="text-transform: lowercase">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -192,7 +201,8 @@ $query = DB::table('jobpost')
                                                                 <input type="text"
                                                                     class="form-control form-control-sm reqinp"
                                                                     name="Phone" id="Phone"
-                                                                    onkeypress="return isNumberKey(event)">
+                                                                    onkeypress="return isNumberKey(event)"
+                                                                    placeholder="Phone No">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -352,7 +362,7 @@ $query = DB::table('jobpost')
                                                             </td>
                                                             <td>
                                                                 <select name="College" id="College"
-                                                                    class="form-select form-select-sm reqinp">
+                                                                    class="form-select form-select-sm reqinp single-select">
                                                                     <option value="">Select</option>
                                                                     @foreach ($institute_list as $key => $value)
                                                                         <option value="{{ $key }}">
@@ -636,7 +646,8 @@ $query = DB::table('jobpost')
                                                         <span id="preview">
                                                             <center>
                                                                 <img src="{{ URL::to('/') }}/assets/images/user.png"
-                                                                    style="width: 150px; height: 150px;" id="img1" />
+                                                                    style="width: 150px; height: 150px;" id="img1"
+                                                                    class="img1" />
                                                             </center>
                                                         </span>
                                                         <center>
@@ -682,12 +693,13 @@ $query = DB::table('jobpost')
     <script src="{{ URL::to('/') }}/assets/js/bootstrap.bundle.min.js"></script>
     <!--plugins-->
     <script src="{{ URL::to('/') }}/assets/js/jquery.min.js"></script>
+    <script src="{{ URL::to('/') }}/assets/plugins/select2/js/select2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/simplebar/js/simplebar.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/metismenu/js/metisMenu.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
-
+    <script src="{{ URL::to('/') }}/assets/js/ijaboCropTool.min.js"></script>
     <!--app JS-->
     <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
 
@@ -760,8 +772,8 @@ $query = DB::table('jobpost')
 
         function checkResumeSource(id) {
             if (id == 5 || id == 6 || id == 8) {
-               $('#othersource_tr').removeClass('d-none');
-            }else{
+                $('#othersource_tr').removeClass('d-none');
+            } else {
                 $('#othersource_tr').addClass('d-none');
             }
 
@@ -843,14 +855,37 @@ $query = DB::table('jobpost')
 
 
         $(document).ready(function() {
+            $('.single-select').select2({
+                theme: 'bootstrap4',
+                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' :
+                    'style',
+                placeholder: $(this).data('placeholder'),
+                allowClear: Boolean($(this).data('allow-clear')),
+            });
 
-            $(document).on('change', '#CandidateImage', function(e) {
+            /* $(document).on('change', '#CandidateImage', function(e) {
                 const [file] = e.target.files;
                 if (file) {
                     img1.src = URL.createObjectURL(file);
                 }
-            });
+            }); */
 
+
+            $('#CandidateImage').ijaboCropTool({
+                preview: '.img1',
+                setRatio: 1,
+                allowedExtensions: ['jpg', 'jpeg', 'png'],
+                buttonsText: ['CROP', 'QUIT'],
+                buttonsColor: ['#30bf7d', '#ee5155', -15],
+                processUrl: '{{ route('cropImage') }}',
+                withCSRF: ['_token', '{{ csrf_token() }}'],
+                onSuccess: function(message, element, status) {
+                    alert(message);
+                },
+                onError: function(message, element, status) {
+                    alert(message);
+                }
+            });
             $(function() {
                 var dtToday = new Date();
                 var month = dtToday.getMonth() + 1; // jan=0; feb=1 .......

@@ -213,4 +213,13 @@ if (!function_exists('getFullName')) {
 		$ResumeSource = DB::table('master_resumesource')->select('ResumeSource')->where('ResumeSouId', $id)->first();
 		return $ResumeSource->ResumeSource;
 	}
+
+	function getHqStateCode($StateId)
+	{
+		$StateCode = Db::table('master_state')->select('StateCode')->where('StateId', $StateId)->first();
+		return $StateCode->StateCode;
+	}
+
+	
+	
 }

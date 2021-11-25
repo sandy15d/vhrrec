@@ -18,7 +18,7 @@ use function App\Helpers\getDepartment;
 use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getDesignation;
 use function App\Helpers\ResumeSourceCount;
-use function App\Helpers\getResumeSourceById;
+use Image;
 
 class JobApplicationController extends Controller
 {
@@ -159,7 +159,7 @@ class JobApplicationController extends Controller
             ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
             ->leftJoin('screening', 'jobapply.JAId', '=', 'screening.JAId')
             ->where('jobapply.Type', '!=', 'Campus');
-          
+
 
         $total_candidate = $candidate_list->count();
         $candidate_list = $candidate_list->paginate(10);
@@ -441,5 +441,18 @@ class JobApplicationController extends Controller
         $links = str_replace("<a", "<a class='page_click page-link' ", $links);
 
         return response(array('data' => $data, 'page_link' => (string)$links), 200);
+    }
+
+    public function cropImage(Request $request)
+    {
+        $file = $request->file('CandidateImage');
+        $newImageName = 'UIMG' . date('YmdHis') . uniqid() . '.jpg';
+ 
+        $move = $file->move(public_path('uploads/temp'), $newImageName);
+        if (!$move) {
+            return response()->json(['status' => 0, 'msg' => 'Something went wrong!']);
+        } else {
+            return response()->json(['status' => 1, 'msg' => 'success']);
+        }
     }
 }

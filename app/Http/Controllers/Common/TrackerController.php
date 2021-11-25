@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\jobapply;
 use App\Models\jobcandidate;
+use App\Models\OfferLetter;
 use App\Models\screen2ndround;
 use App\Models\screening;
 use Illuminate\Support\Carbon;
@@ -112,17 +113,11 @@ class TrackerController extends Controller
         $InterviewTime = $request->InterviewTime;
         $InterviewLocation = $request->InterviewLocation;
         $InterviewPannel = $request->InterviewPannel;
-
-
-
-
-
         $TravelElg = serialize($request->TravelElg);
         $InterviewMail = $request->InterviewMail;
         $BlackList = $request->BlackList;
         $BlackListRemark = $request->BlackListRemark;
         $RegretMail = $request->RegretMail;
-
 
         $query = DB::table('screening')
             ->where('JAId', $JAId)
@@ -165,7 +160,7 @@ class TrackerController extends Controller
 
 
         if (Auth::user()->role == 'R') {
-            $usersQuery->where('jobpost.CreatedBy', Auth::user()->id);
+            $usersQuery->where('jp.CreatedBy', Auth::user()->id);
         }
         if ($Company != '') {
             $usersQuery->where("screening.ScrCmp", $Company);
@@ -174,7 +169,7 @@ class TrackerController extends Controller
             $usersQuery->where("screening.ScrDpt", $Department);
         }
         if ($Mrf != '') {
-            $usersQuery->where("jobpost.JPId", $Mrf);
+            $usersQuery->where("jp.JPId", $Mrf);
         }
 
         $data = $usersQuery->select('screening.*', 'jc.ReferenceNo', 'jc.FName', 'jc.MName', 'jc.LName', 'jp.JobCode', 'sc.IntervDt2', 'sc.IntervLoc2', 'sc.IntervPanel2', 'sc.IntervStatus2')
@@ -184,8 +179,8 @@ class TrackerController extends Controller
             ->join('screen2ndround as sc', 'screening.ScId', '=', 'sc.ScId', 'left')
             ->where('jp.JobPostType', 'Regular')
             ->where('jp.Status', 'Open')
-            ->where('screening.ScreenStatus', 'Shortlist');
-
+            ->where('screening.ScreenStatus', 'Shortlist')
+            ->orderBy('ScId', 'DESC');
 
         return datatables()->of($data)
             ->addIndexColumn()
@@ -265,8 +260,6 @@ class TrackerController extends Controller
             ->make(true);
     }
 
-
-
     public function first_round_interview(Request $request)
     {
         $sql = screening::find($request->ScId);
@@ -322,7 +315,17 @@ class TrackerController extends Controller
         $sql->SelectedForC = $request->SelectedForC;
         $sql->SelectedForD = $request->SelectedForD;
         $sql->save();
-        if (!$sql) {
+
+        $JAId = $sql->JAId;
+
+        $query = new OfferLetter;
+        $query->JAId = $JAId;
+        $query->Company = $request->SelectedForC;
+        $query->Department = $request->SelectedForD;
+        $query->CreatedTime = now();
+        $query->CreatedBy = Auth::user()->id;
+        $query->save();
+        if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
             return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully.']);

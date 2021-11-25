@@ -325,7 +325,7 @@ $CompanyQry = DB::table('master_company')
                             <div class="menu-title">Onboarding</div>
                         </a>
                         <ul>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Job Offers</a></li>
+                            <li> <a href="/offer_letter"><i class="bx bx-right-arrow-alt"></i>Job Offers</a></li>
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Candidates for Joining</a></li>
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Appointments</a></li>
                         </ul>

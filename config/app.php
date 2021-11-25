@@ -175,7 +175,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
-
+      
     ],
 
     /*
@@ -217,7 +217,7 @@ return [
         'Password' => Illuminate\Support\Facades\Password::class,
         'Queue' => Illuminate\Support\Facades\Queue::class,
         'Redirect' => Illuminate\Support\Facades\Redirect::class,
-        // 'Redis' => Illuminate\Support\Facades\Redis::class,
+      
         'Request' => Illuminate\Support\Facades\Request::class,
         'Response' => Illuminate\Support\Facades\Response::class,
         'Route' => Illuminate\Support\Facades\Route::class,
@@ -231,6 +231,8 @@ return [
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'LogActivity' => App\Helpers\LogActivity::class,
         'CandidateActivity' => App\Helpers\CandidateActivityLog::class,
+    
+
     ],
 
 ];

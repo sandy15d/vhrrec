@@ -33,6 +33,7 @@ use App\Http\Controllers\Common\CampusController;
 use App\Http\Controllers\Common\ManualEntryController;
 use App\Http\Controllers\Common\CommonController;
 use App\Http\Controllers\Common\JobApplicationController;
+use App\Http\Controllers\Common\OfferLtrController;
 use App\Http\Controllers\Common\TrackerController;
 use App\Http\Controllers\JobController;
 
@@ -67,6 +68,7 @@ Route::get('getResignedEmployee', [CommonController::class, 'getResignedEmployee
 Route::get('getResignedEmpDetail', [CommonController::class, 'getResignedEmpDetail'])->name('getResignedEmpDetail');
 Route::get('getState', [CommonController::class, 'getState'])->name('getState');
 Route::get('getDistrict', [CommonController::class, 'getDistrict'])->name('getDistrict');
+Route::get('getHq', [CommonController::class, 'getHq'])->name('getHq');
 Route::get('getEducation', [CommonController::class, 'getEducation'])->name('getEducation');
 Route::get('getSpecialization', [CommonController::class, 'getSpecialization'])->name('getSpecialization');
 Route::get('getAllDistrict', [CommonController::class, 'getAllDistrict'])->name('getAllDistrict');
@@ -96,6 +98,7 @@ Route::get('job_application_manual_entry_form', [JobApplicationController::class
 Route::post('job_application_manual', [JobApplicationController::class, 'job_application_manual'])->name('job_application_manual');
 Route::get('getManualEntryCandidate', [JobApplicationController::class, 'getManualEntryCandidate'])->name('getManualEntryCandidate');
 Route::post('getJobResponseCandidateByJPId', [JobApplicationController::class, 'getJobResponseCandidateByJPId'])->name('getJobResponseCandidateByJPId');
+Route::post('cropImage', [JobApplicationController::class, 'cropImage'])->name('cropImage');
 
 
 Route::get('TechnicalScreening', [TrackerController::class, 'TechnicalScreening'])->name('TechnicalScreening');
@@ -107,6 +110,12 @@ Route::get('interview_tracker', [TrackerController::class, 'interview_tracker'])
 Route::post('first_round_interview', [TrackerController::class, 'first_round_interview'])->name('first_round_interview');
 Route::post('second_round_interview', [TrackerController::class, 'second_round_interview'])->name('second_round_interview');
 Route::post('select_cmp_dpt_for_candidate', [TrackerController::class, 'select_cmp_dpt_for_candidate'])->name('select_cmp_dpt_for_candidate');
+
+
+Route::get('offer_letter', [OfferLtrController::class, 'offer_letter'])->name('offer_letter');
+Route::post('update_offerletter_basic', [OfferLtrController::class, 'update_offerletter_basic'])->name('update_offerletter_basic');
+Route::get('get_offerltr_basic_detail', [OfferLtrController::class, 'get_offerltr_basic_detail'])->name('get_offerltr_basic_detail');
+Route::get('offer_letter_generate', [OfferLtrController::class, 'offer_letter_generate'])->name('offer_letter_generate');
 
 
 Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');

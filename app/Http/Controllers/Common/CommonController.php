@@ -106,6 +106,14 @@ class CommonController extends Controller
         return response()->json($District);
     }
 
+    public function getHq(Request $request)
+    {
+        $Hq = DB::table("master_headquater")->orderBy('HqName', 'ASC')
+            ->where("StateId", $request->StateId)
+            ->pluck("HqId", "HqName");
+        return response()->json($Hq);
+    }
+
 
     public function getEducation()
     {
@@ -129,8 +137,6 @@ class CommonController extends Controller
             ->pluck("DepartmentId", "DepartmentName");
         return response()->json($Department);
     }
-
-
 
     public function getReportingManager(Request $request)
     {

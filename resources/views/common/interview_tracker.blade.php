@@ -1,47 +1,47 @@
 @extends('layouts.master')
 @section('title', 'Interview Tracker')
 @section('PageContent')
-<style>
-    .table>:not(caption)>*>* {
-        padding: 2px 1px;
-    }
+    <style>
+        .table>:not(caption)>*>* {
+            padding: 2px 1px;
+        }
 
-    .frminp {
-        padding: 4 px !important;
-        height: 25 px;
-        border-radius: 4 px;
-        font-size: 11px;
-        font-weight: 550;
-    }
+        .frminp {
+            padding: 4 px !important;
+            height: 25 px;
+            border-radius: 4 px;
+            font-size: 11px;
+            font-weight: 550;
+        }
 
-    .frmbtn {
-        padding: 2 px 4 px !important;
-        font-size: 11px;
-        cursor: pointer;
-    }
+        .frmbtn {
+            padding: 2 px 4 px !important;
+            font-size: 11px;
+            cursor: pointer;
+        }
 
-    table,
-    th,
-    td {
-        border: 0.25px solid white;
-        vertical-align: middle;
-  
-    }
- 
-    td.details-control {
-        background: url("{{ asset('assets/images/details_open.png') }}") no-repeat center center;
-        cursor: pointer;
-    }
+        table,
+        th,
+        td {
+            border: 0.25px solid white;
+            vertical-align: middle;
 
-    tr.shown td.details-control {
-        background: url("{{ asset('assets/images/details_close.png') }}") no-repeat center center;
-    }
+        }
 
-    .details-control {
-        width: 100px;
-    }
+        td.details-control {
+            background: url("{{ asset('assets/images/details_open.png') }}") no-repeat center center;
+            cursor: pointer;
+        }
 
-</style>
+        tr.shown td.details-control {
+            background: url("{{ asset('assets/images/details_close.png') }}") no-repeat center center;
+        }
+
+        .details-control {
+            width: 40px;
+        }
+
+    </style>
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb  align-items-center mb-3">
@@ -87,27 +87,22 @@
                 <table class="table table-striped table-condensed text-center" id="candidate_table"
                     style="width: 100%; margin-right:20px; ">
                     <thead class="text-center bg-primary bg-gradient text-light">
-                        <tr>
-                            <th style="width:60px;" rowspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        <tr class="text-center">
+                            <th style="width:30px;" rowspan="2"></th>
                             <td rowspan="2">#</td>
                             <td rowspan="2">S.no</td>
                             <td rowspan="2">Ref.No</td>
                             <td rowspan="2">Candidate</td>
                             <td rowspan="2">Department</td>
-                            <td rowspan="2" style="width: 60px;">MRF</td>
-                            <td colspan="5" class="text-center">Interview</td>
-                            <td colspan="5" class="text-center">2nd Round<br> Interview</td>
-                            <td colspan="3" style="text-align: center;">Selected for</td>
+                            <td rowspan="2">MRF</td>
+                            <td colspan="2" class="text-center" style="padding-right: 0px">Interview</td>
+                            <td colspan="2" class="text-center" style="padding-right: 0px">2nd Round<br> Interview</td>
+                            <td colspan="3" style="text-align: center;padding-right: 0px">Selected for</td>
                         </tr>
-                        <tr>
-                            <td>Date of<br> Interview</td>
-                            <td>Interview<br> Location</td>
-                            <td>Interview <br>Panel Members</td>
-                            <td>Interview <br>Status</td>
+                        <tr class="text-center">
+
+                            <td style="text-align: center">Interview <br>Status</td>
                             <td>Edit</td>
-                            <td>Date of<br> Interview</td>
-                            <td>Interview <br>Location</td>
-                            <td>Interview <br>Panel Members</td>
                             <td>Interview<br> Status</td>
                             <td>Edit</td>
                             <td>Company</td>
@@ -223,7 +218,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <form action="{{ route('Save_Cmp_Dpt_Campus') }}" method="POST" id="cmp_dpt_form">
+                <form action="{{ route('select_cmp_dpt_for_candidate') }}" method="POST" id="cmp_dpt_form">
                     @csrf
                     <div class="modal-body">
                         <table class="table table-borderless">
@@ -355,52 +350,41 @@
             function format(d) {
                 x = '';
                 x = x +
-                    '<table class="table table-bordered bg-light text-dark">' +
+                    '<table class="table" style="background-color:#f3cfbfb5">' +
+                    '<tr><td colspan="6" class="fw-bold">1st Interview</td></tr>' +
                     '<tr>' +
-                    '<td style="text-align:left;width:25%">Resume Sent for<br>Technical Screeing</td>' +
-                    '<td style="text-align:left;width:25%">' + d.ReSentForScreen.split("-").reverse().join("-") +
+                    '<td style="text-align:left;">Interview Date:</td>' +
+                    '<td style="text-align:left;">' + d.IntervDt.split("-").reverse().join("-") +
                     '</td>' +
-                    '<td style="text-align:left;width:25%">Date Resume Screened</td>' +
-                    '<td style="text-align:left;width:25%">' + d.ResScreened.split("-").reverse().join("-") +
-                    '</td>' +
-                    '</tr>' +
-
-                    '<tr>' +
-                    '<td style="text-align:left;width:25%">Technical Screen By</td>' +
-                    '<td style="text-align:left;width:25%">' + d.ScreenedBy + '</td>' +
-                    '<td style="text-align:left;width:25%">Screening Status</td>' +
-                    '<td style="text-align:left;width:25%">' + d.ScreenStatus + '</td>' +
+                    '<td style="text-align:left;">Location:</td>' +
+                    '<td style="text-align:left;">' + d.IntervLoc + '</td>' +
+                    '<td style="text-align:left;">Panel Member</td>' +
+                    '<td style="text-align:left;">' + d.IntervPanel + '</td>' +
                     '</tr>';
 
-
-                if (d.ScreenStatus == 'Shortlist') {
-                    x = x + '<tr>' +
-                        '<td style="text-align:left;width:25%">Interview Date:</td>' +
-                        '<td style="text-align:left;width:25%">' + d.IntervDt.split("-").reverse().join("-") +
+                if (d.IntervStatus == '2nd Round Interview') {
+                    x = x + '<tr><td colspan="6" class="fw-bold">2nd Round Interview</td></tr>' +
+                        '<tr>' +
+                        '<td style="text-align:left;">Interview Date:</td>' +
+                        '<td style="text-align:left;">' + d.IntervDt2.split("-").reverse().join("-") +
                         '</td>' +
-                        '<td style="text-align:left;width:25%">Interview Time</td>' +
-                        '<td style="text-align:left;width:25%">' + d.interviewTime + '</td>' +
-                        '</tr>' +
-
-                        '<tr>' +
-                        '<td style="text-align:left;width:25%">Location:</td>' +
-                        '<td style="text-align:left;width:25%">' + d.IntervLoc + '</td>' +
-                        '<td style="text-align:left;width:25%">Interview Schedule:</td>' +
-                        '<td style="text-align:left;width:25%">' + d.InterviewMode + '</td>' +
-                        '</tr>' +
-
-                        '<tr>' +
-                        '<td style="text-align:left;width:25%">Panel</td>' +
-                        '<td style="text-align:left;width:25%">' + d.IntervPanel + '</td>' +
-                        '<td style="text-align:left;width:25%">Travel Eligibility</td>' +
-                        '<td style="text-align:left;width:25%">' + d.travelElg + '</td>' +
-                        '</tr>';
-                } else {
-                    x = x + '<tr>' +
-                        '<td style="text-align:left;width:25%">Rejection Remark</td>' +
-                        '<td  colspan="3" style="text-align:left;width:25%">' + d.RejectionRem + '</td>' +
+                        '<td style="text-align:left;">Location:</td>' +
+                        '<td style="text-align:left;">' + d.IntervLoc2 + '</td>' +
+                        '<td style="text-align:left;">Panel Member</td>' +
+                        '<td style="text-align:left;">' + d.IntervPanel2 + '</td>' +
                         '</tr>';
                 }
+
+                x = x + '<tr><td colspan="6" class="fw-bold">Other Details</td></tr>' +
+                        '<tr>' +
+                        '<td style="text-align:left;">Interview Assessment<br> Record:</td>' +
+                        '<td style="text-align:left;">' + d.IntervDt2.split("-").reverse().join("-") +
+                        '</td>' +
+                        '<td style="text-align:left;">Interview Cost:</td>' +
+                        '<td style="text-align:left;">' + d.IntervLoc2 + '</td>' +
+                        '<td style="text-align:left;">Interview <br>Application Form</td>' +
+                        '<td style="text-align:left;">' + d.IntervPanel2 + '</td>' +
+                        '</tr>';
                 x = x + '</table>';
                 return x;
             }
@@ -436,7 +420,7 @@
                     data: function(d) {
                         d.Company = $('#Fill_Company').val();
                         d.Department = $('#Fill_Department').val();
-                       
+
                     },
                     type: 'POST',
                     dataType: "JSON",
@@ -471,18 +455,7 @@
                         data: 'JobCode',
                         name: 'JobCode'
                     },
-                    {
-                        data: 'IntervDt',
-                        name: 'IntervDt'
-                    },
-                    {
-                        data: 'IntervLoc',
-                        name: 'IntervLoc'
-                    },
-                    {
-                        data: 'IntervPanel',
-                        name: 'IntervPanel'
-                    },
+
                     {
                         data: 'IntervStatus',
                         name: 'IntervStatus'
@@ -491,18 +464,7 @@
                         data: 'IntervEdit',
                         name: 'IntervEdit'
                     },
-                    {
-                        data: 'IntervDt2',
-                        name: 'IntervDt2'
-                    },
-                    {
-                        data: 'IntervLoc2',
-                        name: 'IntervLoc2'
-                    },
-                    {
-                        data: 'IntervPanel2',
-                        name: 'IntervPanel2'
-                    },
+
                     {
                         data: 'IntervStatus2',
                         name: 'IntervStatus2'
@@ -528,12 +490,10 @@
                 ],
 
                 createdRow: (row, data, dataIndex, cells) => {
-                    if (data['IntervStatus'] == null || data['IntervStatus'] != '2nd Round Interview') {
-                        $(cells[11]).css('background-color', 'rgb(218 209 237)')
-                        $(cells[12]).css('background-color', 'rgb(218 209 237)')
-                        $(cells[13]).css('background-color', 'rgb(218 209 237)')
-                        $(cells[14]).css('background-color', 'rgb(218 209 237)')
-                        $(cells[15]).css('background-color', 'rgb(218 209 237)')
+                    if (data['IntervStatus'] == 'Selected' || data['IntervStatus'] == null) {
+                      
+                        $(cells[9]).css('background-color', 'rgb(218 209 237)')
+                        $(cells[10]).css('background-color', 'rgb(218 209 237)')
                     }
                 }
 
