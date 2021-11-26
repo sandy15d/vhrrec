@@ -886,6 +886,7 @@ $query = DB::table('jobpost')
                     alert(message);
                 }
             });
+
             $(function() {
                 var dtToday = new Date();
                 var month = dtToday.getMonth() + 1; // jan=0; feb=1 .......
@@ -909,6 +910,7 @@ $query = DB::table('jobpost')
                     $(this).removeClass('errorfield');
                 }
             });
+
             $('#Aadhaar').focusout(function() {
                 var count = $(this).val().length;
                 if (count != 12) {
@@ -921,6 +923,11 @@ $query = DB::table('jobpost')
 
         });
 
+
+
+        $(document).on('change', '#College', function() {
+
+        });
         $('#jobApplyForm').on('submit', function(e) {
             e.preventDefault();
             var form = this;
@@ -959,6 +966,10 @@ $query = DB::table('jobpost')
             }
 
         });
+
+    
+
+
     </script>
 </body>
 

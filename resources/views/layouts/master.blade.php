@@ -49,6 +49,7 @@ $CompanyQry = DB::table('master_company')
     <script src="{{ URL::to('/') }}/assets/js/jquery.min.js"></script>
 
 
+
     <title>HR Recruitment | @yield('title')</title>
     <style>
         .btn--red {
@@ -144,6 +145,7 @@ $CompanyQry = DB::table('master_company')
         }
 
     </style>
+    @livewireStyles
 </head>
 
 <body>
@@ -157,6 +159,7 @@ $CompanyQry = DB::table('master_company')
                 </div>
             </div>
             <!--navigation-->
+      
             <ul class="metismenu" id="menu">
 
                 @if (Auth::user()->role == 'A')
@@ -498,7 +501,7 @@ $CompanyQry = DB::table('master_company')
         </header>
 
         <div class="page-wrapper">
-
+           
             @yield('PageContent')
             <div class="modal" id="loader" data-bs-backdrop="static" data-bs-keyboard="false">
                 <div class="modal-dialog modal-dialog-centered" style="width:220px;">
@@ -587,6 +590,7 @@ $CompanyQry = DB::table('master_company')
             </div>
         </div>
     </div>
+    
     <!--end switcher-->
     <!-- Bootstrap JS -->
     <script src="{{ URL::to('/') }}/assets/js/bootstrap.bundle.min.js"></script>
@@ -604,7 +608,9 @@ $CompanyQry = DB::table('master_company')
 
     <!--app JS-->
     <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
+ 
     @yield('scriptsection')
+   
     <script>
         $(document).ready(function() {
 
@@ -898,6 +904,7 @@ $CompanyQry = DB::table('master_company')
             });
         }
     </script>
+
 </body>
 
 </html>

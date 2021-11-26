@@ -63,7 +63,7 @@ class LoginController extends Controller
 
         if (auth()->attempt(array('email' => $input['email'], 'password' => $input['password'])) || auth()->attempt(array('Username' => $input['email'], 'password' => $input['password']))) {
 
-            $request->session()->put('Set_Company',$input['company']);
+            $request->session()->put('Set_Company', $input['company']);
             $userId = Auth::user()->id;
             $themedetail = DB::table("theme_customizer")->where("UserId", $userId)->get();
 
@@ -83,5 +83,11 @@ class LoginController extends Controller
         } else {
             return redirect()->route('login')->with('error', 'Email or Password are wrong...');
         }
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        return redirect('/login');
     }
 }

@@ -3,9 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
-
-
+use LivewireUI\Spotlight\Spotlight;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,6 +29,6 @@ class AppServiceProvider extends ServiceProvider
     {
        Paginator::useBootstrap();
 
-    //   Spotlight::registerCommandIf(Auth::check() && Auth::user()->role == 'A',Logout::class);
+        
     }
 }
