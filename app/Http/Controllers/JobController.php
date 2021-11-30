@@ -80,6 +80,7 @@ class JobController extends Controller
         $query->Specialization = $request->Specialization;
         $query->PassingYear = $request->PassingYear;
         $query->College = $request->College;
+        $query->OtherCollege = $request->OtherCollege;
         $query->Professional = $request->ProfCheck;
         $query->PresentCompany = $request->PresentCompany;
         $query->Designation = $request->Designation;

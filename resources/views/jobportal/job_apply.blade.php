@@ -291,7 +291,7 @@ $query = DB::table('jobpost')
                                                                 <input type="text" name="Aadhaar" id="Aadhaar"
                                                                     maxlength="12"
                                                                     onkeypress="return isNumberKey(event)"
-                                                                    class="form-control form-control-sm reqinp">
+                                                                    class="form-control form-control-sm reqinp" placeholder="Enter Your Aadhaar No.">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -337,7 +337,7 @@ $query = DB::table('jobpost')
                                                             </td>
                                                             <td>
                                                                 <input type="text" name="CGPA" id="CGPA"
-                                                                    class="form-control form-control-sm">
+                                                                    class="form-control form-control-sm" placeholder="Enter Your CGPA / Percent">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -369,6 +369,14 @@ $query = DB::table('jobpost')
                                                                             {{ $value }}</option>
                                                                     @endforeach
                                                                 </select>
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr id="other_clg_tr" class="d-none">
+                                                            <td>Other College</td>
+                                                            <td>
+                                                                <input type="text" name="OtherCollege" id="OtherCollege"
+                                                                    class="form-control form-control-sm" placeholder="Enter Your College/University Name">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -926,8 +934,15 @@ $query = DB::table('jobpost')
 
 
         $(document).on('change', '#College', function() {
-
+            var College = $(this).val();
+            if (College == 637) {
+                $('#other_clg_tr').removeClass('d-none');
+            } else {
+                $('#other_clg_tr').addClass('d-none');
+            }
         });
+
+
         $('#jobApplyForm').on('submit', function(e) {
             e.preventDefault();
             var form = this;
@@ -966,10 +981,6 @@ $query = DB::table('jobpost')
             }
 
         });
-
-    
-
-
     </script>
 </body>
 

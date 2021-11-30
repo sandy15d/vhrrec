@@ -20,7 +20,7 @@ use App\Http\Controllers\Admin\InstituteController;
 use App\Http\Controllers\Admin\ResumeSourcController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CommunicationController;
-
+use App\Http\Controllers\Common\AboutCandidateController;
 use App\Http\Controllers\Recruiter\RecruiterController;
 use App\Http\Controllers\Recruiter\MrfAllocatedController;
 
@@ -80,7 +80,7 @@ Route::post('notificationMarkRead', [CommonController::class, 'notificationMarkR
 Route::post('markAllRead', [CommonController::class, 'markAllRead'])->name('markAllRead');
 Route::get('getMRFByDepartment', [CommonController::class, 'getMRFByDepartment'])->name('getMRFByDepartment');
 
-
+Route::get('candidate_detail',[AboutCandidateController::class,'candidate_detail'])->name('candidate_detail');
 
 
 

@@ -25,6 +25,11 @@ if (!function_exists('getFullName')) {
 		$CompanyCode = Db::table('master_company')->select('CompanyCode')->where('CompanyId', $companyId)->first();
 		return $CompanyCode->CompanyCode;
 	}
+	function getCompanyName($companyId)
+	{
+		$CompanyName = Db::table('master_company')->select('CompanyName')->where('CompanyId', $companyId)->first();
+		return $CompanyName->CompanyName;
+	}
 
 	function getDepartmentCode($DeptId)
 	{

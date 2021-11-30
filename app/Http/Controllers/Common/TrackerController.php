@@ -7,21 +7,21 @@ use App\Models\jobpost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Mail\InterviewMail;
 use App\Models\jobapply;
 use App\Models\jobcandidate;
 use App\Models\OfferLetter;
 use App\Models\screen2ndround;
 use App\Models\screening;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
-use function App\Helpers\getCollegeCode;
 use function App\Helpers\getCompanyCode;
+use function App\Helpers\getCompanyName;
 use function App\Helpers\getDepartment;
 use function App\Helpers\getDepartmentCode;
-use function App\Helpers\getDesignationCode;
 use function App\Helpers\getFullName;
-use function App\Helpers\getResumeSourceById;
+
 
 class TrackerController extends Controller
 {
@@ -118,14 +118,24 @@ class TrackerController extends Controller
         $BlackList = $request->BlackList;
         $BlackListRemark = $request->BlackListRemark;
         $RegretMail = $request->RegretMail;
-
-        $query = DB::table('screening')
+        $curDate = date('Y-m-d');
+        $sql = DB::table('screening')
             ->where('JAId', $JAId)
-            ->update(['ResScreened' => now(), 'ScreenStatus' => $TechScreenStatus, 'InterviewMode' => $InterviewSchedule, 'RejectionRem' => $RejectRemark, 'IntervDt' => $InterviewDate, 'IntervTime' => $InterviewTime, 'IntervLoc' => $InterviewLocation, 'IntervPanel' => $InterviewPannel, 'travelEligibility' => $TravelElg, 'SendInterMail' => $InterviewMail]);
+            ->update(['ResScreened' => $curDate, 'ScreenStatus' => $TechScreenStatus, 'InterviewMode' => $InterviewSchedule, 'RejectionRem' => $RejectRemark, 'IntervDt' => $InterviewDate, 'IntervTime' => $InterviewTime, 'IntervLoc' => $InterviewLocation, 'IntervPanel' => $InterviewPannel, 'travelEligibility' => $TravelElg, 'SendInterMail' => $InterviewMail,'UpdatedBy'=>Auth::user()->id,'LastUpdated'=>now()]);
+
+        $jobapply = jobapply::find($JAId);
+        $JCId = $jobapply->JCId;
+        $JPId = $jobapply->JPId;
+
+        $jobpost = jobpost::find($JPId);
+        $Title = $jobpost->Title;
+
+        $jobcandidates = jobcandidate::find($JCId);
+        $CandidateEmail = $jobcandidates->Email;
+        $Company = $jobapply->Company;
+        $CompanyName = getCompanyName($Company);
 
         if ($BlackList == 1) {
-            $jobapply = jobapply::find($JAId);
-            $JCId = $jobapply->JCId;
             $query1 = jobcandidate::find($JCId);
             $query1->BlackList = $BlackList;
             $query1->BlackListRemark = $BlackListRemark;
@@ -133,11 +143,23 @@ class TrackerController extends Controller
             CandidateActivityLog::addToCandLog($JCId, $query1->Aadhaar, 'Candidate is BlackListed because ' . $BlackListRemark);
         }
 
-        if ($RegretMail == 'Yes') {
-            //Send Regrate Mail
+        if ($TechScreenStatus == 'Shortlist' && $InterviewMail == 'Yes') {
+            $details = [
+                "subject" => 'Interview Call Letter-' . $CompanyName,
+                "name" => $jobcandidates->FName . ' ' . $jobcandidates->MName . ' ' . $jobcandidates->LName,
+                "reference_no" => $jobcandidates->ReferenceNo,
+                "title" => $jobpost->Title,
+                "interview_date"   => $InterviewDate,
+                "interview_time" => $InterviewTime,
+                "interview_venue" => $InterviewLocation,
+                "contact_person" => 'Ajay Kumar Dewangana',
+            ];
+            if ($request->va != 'New') {
+                Mail::to($CandidateEmail)->send(new InterviewMail($details));
+            }
         }
 
-        if (!$query) {
+        if (!$sql) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
             return response()->json(['status' => 200, 'msg' => 'Technical Screening Data has been changed successfully.']);
