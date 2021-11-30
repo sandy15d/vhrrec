@@ -170,7 +170,9 @@ use function App\Helpers\getCompanyCode;
                                                             <i class="fa fa-check-circle text-success"></i>
                                                         @endif
                                                     @else
-                                                        <a href="javascript:void(0);" title="Offer Letter Basic Detail Not Mentioned" id="{{$row->JAId}}">Generate
+                                                        <a href="javascript:void(0);"
+                                                            title="Offer Letter Basic Detail Not Mentioned"
+                                                            id="{{ $row->JAId }}">Generate
                                                             & View
                                                             Offer Letter</a>
 
@@ -216,7 +218,8 @@ use function App\Helpers\getCompanyCode;
                                     </center>
                                     <center>
                                         <small>
-                                            <span class="text-primary m-1 " style="cursor: pointer; font-size:14px;">
+                                            <span class="text-primary m-1 " style="cursor: pointer; font-size:14px;"
+                                                onclick="aboutCand($row->JAId);">
                                                 View Details
                                             </span>
                                         </small>
@@ -744,7 +747,7 @@ use function App\Helpers\getCompanyCode;
 @section('scriptsection')
     <script>
         $(document).ready(function() {
-          
+
 
             GetDepartment();
 
@@ -1309,5 +1312,7 @@ use function App\Helpers\getCompanyCode;
             window.open("{{ route('offer_letter_generate') }}?jaid=" + sendingId, '_blank');
 
         });
+
+
     </script>
 @endsection
