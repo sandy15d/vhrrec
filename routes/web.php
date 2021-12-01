@@ -20,21 +20,18 @@ use App\Http\Controllers\Admin\InstituteController;
 use App\Http\Controllers\Admin\ResumeSourcController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CommunicationController;
-use App\Http\Controllers\Common\AboutCandidateController;
 use App\Http\Controllers\Recruiter\RecruiterController;
 use App\Http\Controllers\Recruiter\MrfAllocatedController;
-
 use App\Http\Controllers\Hod\HodController;
 use App\Http\Controllers\Hod\MrfController;
 use App\Http\Controllers\Hod\MyTeamController;
-
-
 use App\Http\Controllers\Common\CampusController;
 use App\Http\Controllers\Common\ManualEntryController;
 use App\Http\Controllers\Common\CommonController;
 use App\Http\Controllers\Common\JobApplicationController;
 use App\Http\Controllers\Common\OfferLtrController;
 use App\Http\Controllers\Common\TrackerController;
+use App\Http\Controllers\Common\AboutCandidateController;
 use App\Http\Controllers\JobController;
 
 Route::get('/', function () {
@@ -80,7 +77,18 @@ Route::post('notificationMarkRead', [CommonController::class, 'notificationMarkR
 Route::post('markAllRead', [CommonController::class, 'markAllRead'])->name('markAllRead');
 Route::get('getMRFByDepartment', [CommonController::class, 'getMRFByDepartment'])->name('getMRFByDepartment');
 
-Route::get('candidate_detail',[AboutCandidateController::class,'candidate_detail'])->name('candidate_detail');
+Route::get('candidate_detail', [AboutCandidateController::class, 'candidate_detail'])->name('candidate_detail');
+Route::post('Candidate_PersonalData', [AboutCandidateController::class, 'Candidate_PersonalData'])->name('Candidate_PersonalData');
+Route::post('Candidate_PersonalData_Save', [AboutCandidateController::class, 'Candidate_PersonalData_Save'])->name('Candidate_PersonalData_Save');
+
+Route::post('Candidate_EmergencyContact', [AboutCandidateController::class, 'Candidate_EmergencyContact'])->name('Candidate_EmergencyContact');
+Route::post('Candidate_EmergencyContact_Save', [AboutCandidateController::class, 'Candidate_EmergencyContact_Save'])->name('Candidate_EmergencyContact_Save');
+
+Route::post('Candidate_BankInfo', [AboutCandidateController::class, 'Candidate_BankInfo'])->name('Candidate_BankInfo');
+Route::post('Candidate_BankInfo_Save', [AboutCandidateController::class, 'Candidate_BankInfo_Save'])->name('Candidate_BankInfo_Save');
+
+Route::post('Candidate_Family', [AboutCandidateController::class, 'Candidate_Family'])->name('Candidate_Family');
+Route::post('Candidate_Family_Save', [AboutCandidateController::class, 'Candidate_Family_Save'])->name('Candidate_Family_Save');
 
 
 
