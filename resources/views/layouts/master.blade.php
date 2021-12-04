@@ -234,7 +234,7 @@ $CompanyQry = DB::table('master_company')
                         </a>
                     </li>
                     <li>
-                        <a href="/hod/mrf">
+                        <a href="/hod/manpowerrequisition">
                             <div class="parent-icon"><i class="fas fa-feather-alt text-success"></i>
                             </div>
                             <div class="menu-title">MRF</div>

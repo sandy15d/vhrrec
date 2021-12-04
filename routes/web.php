@@ -329,7 +329,7 @@ Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackH
     Route::post('getMyTeam', [MyTeamController::class, 'getMyTeam'])->name('getMyTeam');
     Route::get('repmrf', [MyTeamController::class, 'repmrf'])->name('repmrf');
     //!=============================MRF===============================================//
-    Route::get('mrf', [MrfController::class, 'mrf'])->name('mrf');
+    Route::get('manpowerrequisition', [MrfController::class, 'manpowerrequisition'])->name('manpowerrequisition');
     Route::get('new_mrf', [MrfController::class, 'new_mrf'])->name('new_mrf');
     Route::get('sip_mrf', [MrfController::class, 'sip_mrf'])->name('sip_mrf');
     Route::get('campus_mrf', [MrfController::class, 'campus_mrf'])->name('campus_mrf');
