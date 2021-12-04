@@ -54,19 +54,19 @@ $sql = DB::table('users')
             </div>
             <div class="col">
                 <a href="/admin/closedmrf">
-                <div class="card radius-10 border-start border-0 border-3 border-danger">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div>
-                                <p class="mb-0 text-secondary">Closed MRF's</p>
-                                <h4 class="my-1 text-danger">{{ $CloseMRF }}</h4>
-                            </div>
-                            <div class="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto"><i
-                                    class='bx bxs-comment-minus'></i>
+                    <div class="card radius-10 border-start border-0 border-3 border-danger">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <p class="mb-0 text-secondary">Closed MRF's</p>
+                                    <h4 class="my-1 text-danger">{{ $CloseMRF }}</h4>
+                                </div>
+                                <div class="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto"><i
+                                        class='bx bxs-comment-minus'></i>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 </a>
             </div>
             <div class="col">
@@ -165,12 +165,10 @@ $sql = DB::table('users')
             </div>
         </div>
         <!--end row-->
-        @php
-            
-        @endphp
-        <div class="row">
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
             @foreach ($sql as $item)
-                <div class="col-3 viewTask" data-id="{{ $item->id }}" style="cursor: pointer">
+                <div class="col viewTask " data-id="{{ $item->id }}" style="cursor: pointer">
                     <div class="card radius-10">
                         <div class="card-body">
                             <div class="d-flex align-items-center">
@@ -194,22 +192,24 @@ $sql = DB::table('users')
             <div class="modal-content" style="border-radius:10px;">
                 <div class="modal-header">
                     <h6 class="modal-title text-primary ">Task Allocation List (<i id="RecruiterName"></i>)</h6>
-                    <p class="download_label d-none" >Task Allocation List</p>
+                    <p class="download_label d-none">Task Allocation List</p>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <table class="table table-striped table-hover table-condensed table-bordered text-center" id="taskTable"
-                        style="width: 100%">
-                        <thead class="bg-primary text-light text-center">
-                            <tr>
-                                <td class="td-sm">S.No</td>
-                                <td>Job Code</td>
-                                <td>MRF Allocation Date</td>
-                                <td>MRF Status</td>
-                                <td>Days to Close MRF</td>
-                            </tr>
-                        </thead>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-condensed table-bordered text-center"
+                            id="taskTable" style="width: 100%">
+                            <thead class="bg-primary text-light text-center">
+                                <tr>
+                                    <td class="td-sm">S.No</td>
+                                    <td>Job Code</td>
+                                    <td>MRF Allocation Date</td>
+                                    <td>MRF Status</td>
+                                    <td>Days to Close MRF</td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -343,7 +343,7 @@ $sql = DB::table('users')
                 Uid: Uid
             }, function(data) {
                 $('#RecruiterName').html(data.details);
-               
+
             }, 'json');
         }
     </script>

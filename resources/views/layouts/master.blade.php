@@ -20,6 +20,7 @@ $CompanyQry = DB::table('master_company')
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/mystyle.css" />
     <link rel="icon" href="{{ URL::to('/') }}/assets/images/favicon-32x32.png" type="image/png" />
     <link href="{{ URL::to('/') }}/assets/plugins/simplebar/css/simplebar.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/select2/css/select2.min.css" rel="stylesheet" />
@@ -47,6 +48,7 @@ $CompanyQry = DB::table('master_company')
     
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/jquery.min.js"></script>
+
 
 
     <title>HR Recruitment | @yield('title')</title>
@@ -144,6 +146,7 @@ $CompanyQry = DB::table('master_company')
         }
 
     </style>
+    @livewireStyles
 </head>
 
 <body>
@@ -157,6 +160,7 @@ $CompanyQry = DB::table('master_company')
                 </div>
             </div>
             <!--navigation-->
+      
             <ul class="metismenu" id="menu">
 
                 @if (Auth::user()->role == 'A')
@@ -498,7 +502,7 @@ $CompanyQry = DB::table('master_company')
         </header>
 
         <div class="page-wrapper">
-
+           
             @yield('PageContent')
             <div class="modal" id="loader" data-bs-backdrop="static" data-bs-keyboard="false">
                 <div class="modal-dialog modal-dialog-centered" style="width:220px;">
@@ -587,6 +591,7 @@ $CompanyQry = DB::table('master_company')
             </div>
         </div>
     </div>
+    
     <!--end switcher-->
     <!-- Bootstrap JS -->
     <script src="{{ URL::to('/') }}/assets/js/bootstrap.bundle.min.js"></script>
@@ -604,7 +609,9 @@ $CompanyQry = DB::table('master_company')
 
     <!--app JS-->
     <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
+ 
     @yield('scriptsection')
+   
     <script>
         $(document).ready(function() {
 
@@ -898,6 +905,7 @@ $CompanyQry = DB::table('master_company')
             });
         }
     </script>
+
 </body>
 
 </html>

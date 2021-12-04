@@ -291,7 +291,8 @@ $query = DB::table('jobpost')
                                                                 <input type="text" name="Aadhaar" id="Aadhaar"
                                                                     maxlength="12"
                                                                     onkeypress="return isNumberKey(event)"
-                                                                    class="form-control form-control-sm reqinp">
+                                                                    class="form-control form-control-sm reqinp"
+                                                                    placeholder="Enter Your Aadhaar No.">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -337,7 +338,8 @@ $query = DB::table('jobpost')
                                                             </td>
                                                             <td>
                                                                 <input type="text" name="CGPA" id="CGPA"
-                                                                    class="form-control form-control-sm">
+                                                                    class="form-control form-control-sm"
+                                                                    placeholder="Enter Your CGPA / Percent">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -369,6 +371,15 @@ $query = DB::table('jobpost')
                                                                             {{ $value }}</option>
                                                                     @endforeach
                                                                 </select>
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr id="other_clg_tr" class="d-none">
+                                                            <td>Other College</td>
+                                                            <td>
+                                                                <input type="text" name="OtherCollege" id="OtherCollege"
+                                                                    class="form-control form-control-sm"
+                                                                    placeholder="Enter Your College/University Name">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -647,7 +658,8 @@ $query = DB::table('jobpost')
                                                             <center>
                                                                 <img src="{{ URL::to('/') }}/assets/images/user.png"
                                                                     style="width: 150px; height: 150px;" id="img1"
-                                                                    class="img1" />
+                                                                    name="img1" class="img1" />
+
                                                             </center>
                                                         </span>
                                                         <center>
@@ -863,15 +875,15 @@ $query = DB::table('jobpost')
                 allowClear: Boolean($(this).data('allow-clear')),
             });
 
-            /* $(document).on('change', '#CandidateImage', function(e) {
-                const [file] = e.target.files;
-                if (file) {
-                    img1.src = URL.createObjectURL(file);
-                }
-            }); */
+                $(document).on('change', '#CandidateImage', function(e) {
+                    const [file] = e.target.files;
+                    if (file) {
+                        img1.src = URL.createObjectURL(file);
+                    }
+                });
 
 
-            $('#CandidateImage').ijaboCropTool({
+    /*         $('#CandidateImage').ijaboCropTool({
                 preview: '.img1',
                 setRatio: 1,
                 allowedExtensions: ['jpg', 'jpeg', 'png'],
@@ -881,11 +893,13 @@ $query = DB::table('jobpost')
                 withCSRF: ['_token', '{{ csrf_token() }}'],
                 onSuccess: function(message, element, status) {
                     alert(message);
+                    //console.log(element);
                 },
                 onError: function(message, element, status) {
                     alert(message);
                 }
-            });
+            }); */
+
             $(function() {
                 var dtToday = new Date();
                 var month = dtToday.getMonth() + 1; // jan=0; feb=1 .......
@@ -909,6 +923,7 @@ $query = DB::table('jobpost')
                     $(this).removeClass('errorfield');
                 }
             });
+
             $('#Aadhaar').focusout(function() {
                 var count = $(this).val().length;
                 if (count != 12) {
@@ -921,10 +936,23 @@ $query = DB::table('jobpost')
 
         });
 
+
+
+        $(document).on('change', '#College', function() {
+            var College = $(this).val();
+            if (College == 637) {
+                $('#other_clg_tr').removeClass('d-none');
+            } else {
+                $('#other_clg_tr').addClass('d-none');
+            }
+        });
+
+
         $('#jobApplyForm').on('submit', function(e) {
             e.preventDefault();
             var form = this;
-            var reqcond = checkRequired();
+            form.append('img1', $('.img1').attr('src'));
+            var reqcond =checkRequired();
             if (reqcond == 1) {
                 alert('Please fill required field...!');
             } else {

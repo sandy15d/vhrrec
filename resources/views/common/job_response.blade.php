@@ -86,7 +86,7 @@ use function App\Helpers\getStateName;
         <!--end breadcrumb-->
 
         <div class="card border-top border-0 border-4 border-primary mb-3">
-            <div class="card-body">
+            <div class="card-body table-responsive">
                 <table class="table table-hover table-striped table-condensed align-middle text-center table-bordered"
                     id="JobApplications" style="width: 100%">
                     <thead class="text-center bg-primary text-light">
@@ -109,7 +109,7 @@ use function App\Helpers\getStateName;
         <div class="card border-top d-none border-0 border-4 border-primary mb-2" id="DetailDiv">
             <div class="card-body">
                 <div class="row mb-1">
-                    <h5 class=" text-primary" id="PostTitle">Executive IT</h5>
+                    <h5 class=" text-primary" id="PostTitle"></h5>
                 </div>
                 <div class="row">
                     <div class="col-5">

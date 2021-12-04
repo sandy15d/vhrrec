@@ -896,6 +896,7 @@
                                 '</option>';
                         });
                     }
+                    console.log(SpecializationList);
                 }
             });
         }
@@ -913,7 +914,7 @@
                 },
 
                 success: function(res) {
-
+                    console.log(res);
                     if (res) {
                         $('#SpeLoader' + No).addClass('d-none');
                         $('#Specialization' + No).removeClass('d-none');

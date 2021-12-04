@@ -260,7 +260,10 @@ use function App\Helpers\getStateName;
                                     <center>
                                         <small>
                                             <span class="text-primary m-1 " style="cursor: pointer; font-size:14px;">
-                                                View Details
+                                                @php
+                                                    $sendingId = base64_encode($row->JAId);
+                                                @endphp
+                                              <a href="{{route('candidate_detail')}}?jaid={{$sendingId}}" target="_blank">View Details</a>
                                             </span>
                                         </small>
                                     </center>
@@ -868,5 +871,7 @@ use function App\Helpers\getStateName;
                 $('#checkall').prop("checked", true);
             }
         }
+
+       
     </script>
 @endsection

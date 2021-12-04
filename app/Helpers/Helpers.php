@@ -25,6 +25,11 @@ if (!function_exists('getFullName')) {
 		$CompanyCode = Db::table('master_company')->select('CompanyCode')->where('CompanyId', $companyId)->first();
 		return $CompanyCode->CompanyCode;
 	}
+	function getCompanyName($companyId)
+	{
+		$CompanyName = Db::table('master_company')->select('CompanyName')->where('CompanyId', $companyId)->first();
+		return $CompanyName->CompanyName;
+	}
 
 	function getDepartmentCode($DeptId)
 	{
@@ -143,8 +148,11 @@ if (!function_exists('getFullName')) {
 
 	function getSpecializationbyId($sid)
 	{
-		$Specialization = DB::table('master_specialization')->select('Specialization')->where('SpId', $sid)->first();
-		return $Specialization->Specialization;
+	
+
+		$query = DB::table('master_specialization')->select('Specialization')->where('SpId', $sid)->first();
+		return $query->Specialization;
+	
 	}
 
 	function getCollegeById($id)
@@ -207,7 +215,7 @@ if (!function_exists('getFullName')) {
 		}
 		return $x;
 	}
-	
+
 	function getResumeSourceById($id)
 	{
 		$ResumeSource = DB::table('master_resumesource')->select('ResumeSource')->where('ResumeSouId', $id)->first();
@@ -219,7 +227,4 @@ if (!function_exists('getFullName')) {
 		$StateCode = Db::table('master_state')->select('StateCode')->where('StateId', $StateId)->first();
 		return $StateCode->StateCode;
 	}
-
-	
-	
 }

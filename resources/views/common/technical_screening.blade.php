@@ -479,9 +479,15 @@
                     '<table class="table table-bordered bg-light text-dark">' +
                     '<tr>' +
                     '<td style="text-align:left;width:25%">Resume Sent for<br>Technical Screeing</td>' +
-                    '<td style="text-align:left;width:25%">' + d.ReSentForScreen.split("-").reverse().join("-") + '</td>' +
-                    '<td style="text-align:left;width:25%">Date Resume Screened</td>' +
-                    '<td style="text-align:left;width:25%">' + d.ResScreened.split("-").reverse().join("-") + '</td>' +
+                    '<td style="text-align:left;width:25%">' + d.ReSentForScreen.split("-").reverse().join("-") +
+                    '</td>' +
+                    '<td style="text-align:left;width:25%">Date Resume Screened</td>';
+
+                if (d.ResScreened != null) {
+                    x = x + '<td style="text-align:left;width:25%">' + d.ResScreened.split("-").reverse().join(
+                        "-") + '</td>';
+                }
+                x = x + '</td>' +
                     '</tr>' +
 
                     '<tr>' +
@@ -495,7 +501,8 @@
                 if (d.ScreenStatus == 'Shortlist') {
                     x = x + '<tr>' +
                         '<td style="text-align:left;width:25%">Interview Date:</td>' +
-                        '<td style="text-align:left;width:25%">' + d.IntervDt.split("-").reverse().join("-") + '</td>' +
+                        '<td style="text-align:left;width:25%">' + d.IntervDt.split("-").reverse().join("-") +
+                        '</td>' +
                         '<td style="text-align:left;width:25%">Interview Time</td>' +
                         '<td style="text-align:left;width:25%">' + d.interviewTime + '</td>' +
                         '</tr>' +
@@ -608,10 +615,10 @@
             ],
             "createdRow": function(row, data, name) {
                 if (data['ScreenStatus'] == 'Reject') {
-                  //  $(row).addClass('bg-danger text-light');
+                    //  $(row).addClass('bg-danger text-light');
 
                 } else if (data['ScreenStatus'] == 'Shortlist') {
-                   // $(row).addClass('bg-success text-light');
+                    // $(row).addClass('bg-success text-light');
                 }
             }
         });
