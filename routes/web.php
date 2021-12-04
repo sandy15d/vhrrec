@@ -67,6 +67,7 @@ Route::get('getState', [CommonController::class, 'getState'])->name('getState');
 Route::get('getDistrict', [CommonController::class, 'getDistrict'])->name('getDistrict');
 Route::get('getHq', [CommonController::class, 'getHq'])->name('getHq');
 Route::get('getEducation', [CommonController::class, 'getEducation'])->name('getEducation');
+Route::get('getCollege', [CommonController::class, 'getCollege'])->name('getCollege');
 Route::get('getSpecialization', [CommonController::class, 'getSpecialization'])->name('getSpecialization');
 Route::get('getAllDistrict', [CommonController::class, 'getAllDistrict'])->name('getAllDistrict');
 Route::get('getAllSP', [CommonController::class, 'getAllSP'])->name('getAllSP');
@@ -90,7 +91,20 @@ Route::post('Candidate_BankInfo_Save', [AboutCandidateController::class, 'Candid
 Route::post('Candidate_Family', [AboutCandidateController::class, 'Candidate_Family'])->name('Candidate_Family');
 Route::post('Candidate_Family_Save', [AboutCandidateController::class, 'Candidate_Family_Save'])->name('Candidate_Family_Save');
 
+Route::post('Candidate_CurrentAddress', [AboutCandidateController::class, 'Candidate_CurrentAddress'])->name('Candidate_CurrentAddress');
+Route::post('Candidate_CurrentAddress_Save', [AboutCandidateController::class, 'Candidate_CurrentAddress_Save'])->name('Candidate_CurrentAddress_Save');
 
+Route::post('Candidate_PermanentAddress', [AboutCandidateController::class, 'Candidate_PermanentAddress'])->name('Candidate_PermanentAddress');
+Route::post('Candidate_PermanentAddress_Save', [AboutCandidateController::class, 'Candidate_PermanentAddress_Save'])->name('Candidate_PermanentAddress_Save');
+
+Route::post('Candidate_Education', [AboutCandidateController::class, 'Candidate_Education'])->name('Candidate_Education');
+Route::post('Candidate_Education_Save', [AboutCandidateController::class, 'Candidate_Education_Save'])->name('Candidate_Education_Save');
+
+Route::post('Candidate_Experience', [AboutCandidateController::class, 'Candidate_Experience'])->name('Candidate_Experience');
+Route::post('Candidate_Experience_Save', [AboutCandidateController::class, 'Candidate_Experience_Save'])->name('Candidate_Experience_Save');
+
+Route::post('Candidate_CurrentEmployement', [AboutCandidateController::class, 'Candidate_CurrentEmployement'])->name('Candidate_CurrentEmployement');
+Route::post('Candidate_CurrentEmployement_Save', [AboutCandidateController::class, 'Candidate_CurrentEmployement_Save'])->name('Candidate_CurrentEmployement_Save');
 
 Route::get('job_response', [JobApplicationController::class, 'job_response'])->name('job_response');
 Route::get('job_applications', [JobApplicationController::class, 'job_applications'])->name('job_applications');

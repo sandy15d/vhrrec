@@ -121,11 +121,16 @@ class CommonController extends Controller
         return response()->json($Education);
     }
 
+    public function getCollege()
+    {
+        $Education = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteId", "InstituteName");
+        return response()->json($Education);
+    }
     public function getSpecialization(Request $request)
     {
         $Specialization = DB::table("master_specialization")->orderBy('Specialization', 'asc')
             ->where("EducationId", $request->EducationId)
-            ->pluck("EducationId", "Specialization");
+            ->pluck("SpId", "Specialization");
         return response()->json($Specialization);
     }
 
@@ -180,7 +185,10 @@ class CommonController extends Controller
 
     public function getAllSP()
     {
+      
         $Sp = DB::table("master_specialization")->orderBy('Specialization', 'asc')->pluck("SpId", "Specialization");
+        $sql = DB::getQueryLog();
+        
         return response()->json($Sp);
     }
 
@@ -334,7 +342,8 @@ class CommonController extends Controller
     public function getCandidateName(Request $request)
     {
 
-     print_r('AAA');die;
+        print_r('AAA');
+        die;
         $sql = jobcandidate::find($request->JCId);
         return $sql->FName;
     }

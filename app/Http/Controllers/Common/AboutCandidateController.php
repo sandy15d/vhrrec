@@ -12,7 +12,12 @@ class AboutCandidateController extends Controller
 {
     public function candidate_detail()
     {
-        return view('common.candidate_detail');
+        $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
+        $district_list = DB::table("master_district")->orderBy('DistrictName', 'asc')->pluck("DistrictName", "DistrictId");
+        $education_list = DB::table("master_education")->orderBy('EducationCode', 'asc')->pluck("EducationCode", "EducationId");
+        $specialization_list = DB::table("master_specialization")->orderBy('Specialization', 'asc')->pluck("Specialization", "SpId");
+        $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+        return view('common.candidate_detail', compact('state_list', 'district_list', 'education_list', 'institute_list', 'specialization_list'));
     }
 
     public function Candidate_PersonalData(Request $request)
@@ -89,7 +94,7 @@ class AboutCandidateController extends Controller
         $JCId = $request->Emr_JCId;
         $query = DB::table('jf_contact_det')->where('JCId', $JCId)->first();
         if ($query !== null) {
-            $query1 = DB::table('jf_contact_det')->update(['cont_one_name' => $request->PrimaryName, 'cont_one_number' => $request->PrimaryPhone, 'cont_one_relation' => $request->PrimaryRelation, 'cont_two_name' => $request->SecondaryName, 'cont_two_number' => $request->SecondaryPhone, 'cont_two_relation' => $request->SecondaryRelation]);
+            $query1 = DB::table('jf_contact_det')->where('JCId', $JCId)->update(['cont_one_name' => $request->PrimaryName, 'cont_one_number' => $request->PrimaryPhone, 'cont_one_relation' => $request->PrimaryRelation, 'cont_two_name' => $request->SecondaryName, 'cont_two_number' => $request->SecondaryPhone, 'cont_two_relation' => $request->SecondaryRelation]);
         } else {
             $query1 = new jf_contact_det;
             $query1->JCId = $JCId;
@@ -129,7 +134,7 @@ class AboutCandidateController extends Controller
         $JCId = $request->Bank_JCId;
         $query = DB::table('jf_pf_esic')->where('JCId', $JCId)->first();
         if ($query !== null) {
-            $query1 = DB::table('jf_pf_esic')->update([
+            $query1 = DB::table('jf_pf_esic')->where('JCId', $JCId)->update([
                 'UAN' => $request->UAN,
                 'BankName' => $request->BankName,
                 'BranchName' => $request->BranchName,
@@ -206,4 +211,194 @@ class AboutCandidateController extends Controller
             return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
         }
     }
+
+    public function Candidate_CurrentAddress(Request $request)
+    {
+        $JCId = $request->JCId;
+        $query = "SELECT * FROM jf_contact_det WHERE JCId='$JCId'";
+        $result = DB::select($query);
+        if (!$result) {
+            return response()->json(['status' => 400, 'msg' => 'No Record Found..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'data' => $result[0]]);
+        }
+    }
+
+    public function Candidate_CurrentAddress_Save(Request $request)
+    {
+        $JCId = $request->Current_JCId;
+        $query = DB::table('jf_contact_det')->where('JCId', $JCId)->first();
+        if ($query !== null) {
+            $query1 = DB::table('jf_contact_det')->where('JCId', $JCId)->update([
+                'pre_address' => $request->PreAddress,
+                'pre_city' => $request->PreCity,
+                'pre_state' => $request->PreState,
+                'pre_pin' => $request->PrePinCode,
+                'pre_dist' => $request->PreDistrict,
+                'LastUpdated' => now()
+            ]);
+        } else {
+            $query1 = new jf_contact_det;
+            $query1->JCId = $JCId;
+            $query1->pre_address = $request->PreAddress;
+            $query1->pre_city = $request->PreCity;
+            $query1->pre_state = $request->PreState;
+            $query1->pre_pin = $request->PrePinCode;
+            $query1->pre_dist = $request->PreDistrict;
+            $query1->LastUpdated = now();
+            $query1->save();
+        }
+        if (!$query1) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
+    }
+
+    public function Candidate_PermanentAddress(Request $request)
+    {
+        $JCId = $request->JCId;
+        $query = "SELECT * FROM jf_contact_det WHERE JCId='$JCId'";
+        $result = DB::select($query);
+        if (!$result) {
+            return response()->json(['status' => 400, 'msg' => 'No Record Found..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'data' => $result[0]]);
+        }
+    }
+
+    public function Candidate_PermanentAddress_Save(Request $request)
+    {
+
+        $JCId = $request->Permanent_JCId;
+        $query = DB::table('jf_contact_det')->where('JCId', $JCId)->first();
+        if ($query !== null) {
+            $query1 = DB::table('jf_contact_det')->where('JCId', $JCId)->update([
+                'perm_address' => $request->PermAddress,
+                'perm_city' => $request->PermCity,
+                'perm_state' => $request->PermState,
+                'perm_pin' => $request->PermPinCode,
+                'perm_dist' => $request->PermDistrict,
+                'LastUpdated' => now()
+            ]);
+        } else {
+            $query1 = new jf_contact_det;
+            $query1->JCId = $JCId;
+            $query1->perm_address = $request->PermAddress;
+            $query1->perm_city = $request->PermCity;
+            $query1->perm_state = $request->PermState;
+            $query1->perm_pin = $request->PermPin;
+            $query1->perm_dist = $request->PermDis;
+            $query1->LastUpdated = now();
+            $query1->save();
+        }
+        if (!$query1) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
+    }
+
+    public function Candidate_Education(Request $request)
+    {
+        $JCId = $request->JCId;
+        $query = "SELECT * FROM candidateeducation WHERE JCId='$JCId'";
+        $result = DB::select($query);
+        if (!$result) {
+            return response()->json(['status' => 400, 'msg' => 'No Record Found..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'data' => $result]);
+        }
+    }
+
+    public function Candidate_Education_Save(Request $request)
+    {
+        $JCId = $request->Edu_JCId;
+        $Qualification = $request->Qualification;
+        $Course = $request->Course;
+        $Specialization = $request->Specialization;
+        $Institute = $request->Collage;
+        $PassingYear = $request->PassingYear;
+        $CGPA = $request->Percentage;
+
+        $query = DB::table('candidateeducation')->where('JCId', $JCId)->delete();
+
+        $educationArray = array();
+        for ($i = 0; $i < count($Qualification); $i++) {
+            $educationArray[$i] = array(
+                'JCId' => $JCId,
+                'Qualification' => $Qualification[$i],
+                'Course' => $Course[$i],
+                'Specialization' => $Specialization[$i],
+                'Institute' => $Institute[$i],
+                'YearOfPassing' => $PassingYear[$i],
+                'CGPA' => $CGPA[$i],
+                'LastUpdated' => now()
+            );
+        }
+
+        $query1 = DB::table('candidateeducation')->insert($educationArray);
+        if (!$query1) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
+    }
+
+    public function Candidate_Experience(Request $request)
+    {
+        $JCId = $request->JCId;
+        $query = "SELECT * FROM jf_work_exp WHERE JCId='$JCId'";
+        $result = DB::select($query);
+        if (!$result) {
+            return response()->json(['status' => 400, 'msg' => 'No Record Found..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'data' => $result]);
+        }
+    }
+
+    public function Candidate_Experience_Save(Request $request)
+    {
+        $JCId = $request->Work_JCId;
+        $CompanyName = $request->WorkExpCompany;
+        $Designation = $request->WorkExpDesignation;
+        $GrossMonthSalary = $request->WorkExpGrossMonthlySalary;
+        $AnualCTC = $request->WorkExpAnualCTC;
+        $FromDate = $request->WorkExpJobStartDate;
+        $ToDate = $request->WorkExpJobEndDate;
+        $ReasonForLeaving = $request->WorkExpReasonForLeaving;
+        $query = DB::table('jf_work_exp')->where('JCId', $JCId)->delete();
+
+        $experienceArray = array();
+        for ($i = 0; $i < count($CompanyName); $i++) {
+            $experienceArray[$i] = array(
+                'JCId' => $JCId,
+                'company' => $CompanyName[$i],
+                'desgination' => $Designation[$i],
+                'gross_mon_sal' => $GrossMonthSalary[$i],
+                'annual_ctc' => $AnualCTC[$i],
+                'job_start' => $FromDate[$i],
+                'job_end' => $ToDate[$i],
+                'reason_fr_leaving' => $ReasonForLeaving[$i],
+                'LastUpdated' => now()
+            );
+        }
+
+        $query1 = DB::table('jf_work_exp')->insert($experienceArray);
+        if (!$query1) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
+    }
+  
+    
 }
