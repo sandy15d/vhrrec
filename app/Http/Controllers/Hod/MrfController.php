@@ -25,7 +25,7 @@ class MrfController extends Controller
     public $state_list;
     public $institute_list;
 
-    function mrf()
+    function manpowerrequisition()
     {
         $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
         $department_list = DB::table("master_department")->where('DeptStatus', 'A')->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
@@ -36,7 +36,7 @@ class MrfController extends Controller
             ->where('EmpStatus', 'A')
             ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
             ->pluck("FullName", "EmployeeID");
-        return view('hod.mrf', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list'));
+        return view('hod.manpowerrequisition', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list'));
     }
 
 
