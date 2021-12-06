@@ -23,7 +23,7 @@ class AboutCandidateController extends Controller
     public function Candidate_PersonalData(Request $request)
     {
         $JCId   = $request->JCId;
-        $query  = "SELECT JCId,Gender,Aadhaar,Nationality,Religion,OtherReligion,MaritalStatus,MarriageDate,SpouseName,Caste,OtherCaste,DrivingLicense,LValidity  FROM `jobcandidates` WHERE `JCId` = '$JCId'";
+        $query  = "SELECT * FROM `jobcandidates` WHERE `JCId` = '$JCId'";
         $result = DB::select($query);
         if (!$result) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
@@ -399,6 +399,90 @@ class AboutCandidateController extends Controller
             return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
         }
     }
-  
-    
+
+    public function Candidate_CurrentEmployement_Save(Request $request)
+    {
+        $JCId   = $request->Curr_JCId;
+        $PresentCompany = $request->CurrCompanyName;
+        $PresentDepartment = $request->CurrDepartment;
+        $Designation = $request->CurrDesignation;
+        $JobStartDate = $request->CurrDateOfJoining;
+        $Reporting = $request->CurrReportingTo;
+        $RepDesig = $request->CurrRepDesig;
+        $JobResponsibility = $request->CurrJobResponsibility;
+        $ResignReason = $request->CurrReason;
+        $NoticePeriod = $request->CurrNoticePeriod;
+        $query = DB::table('jobcandidates')
+            ->where('JCId', $JCId)
+            ->update(
+                [
+                    'PresentCompany' => $PresentCompany,
+                    'PresentDepartment' => $PresentDepartment,
+                    'Designation' => $Designation,
+                    'JobStartDate' => $JobStartDate,
+                    'Reporting' => $Reporting,
+                    'RepDesig' => $RepDesig,
+                    'JobResponsibility' => $JobResponsibility,
+                    'NoticePeriod' => $NoticePeriod,
+                    'ResignReason' => $ResignReason,
+                    'LastUpdated' => now()
+                ]
+            );
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
+    }
+    public function Candidate_CurrentSalary_Save(Request $request)
+    {
+        $JCId   = $request->Sal_JCId;
+        $DAHq = $request->CurrDA;
+        $GrossSalary = $request->CurrSalary;
+        $DAOutHq = $request->DAOutHq;
+        $PetrolAlw = $request->PetrolAlw;
+        $PhoneAlw = $request->PhoneAlw;
+        $HotelElg = $request->HotelElg;
+        $CTC = $request->CurrCTC;
+        $query = DB::table('jobcandidates')
+            ->where('JCId', $JCId)
+            ->update(
+                [
+                    'DAHq' => $DAHq,
+                    'GrossSalary' => $GrossSalary,
+                    'DAOutHq' => $DAOutHq,
+                    'PetrolAlw' => $PetrolAlw,
+                    'PhoneAlw' => $PhoneAlw,
+                    'HotelElg' => $HotelElg,
+                    'CTC' => $CTC,
+                    'LastUpdated' => now()
+                ]
+            );
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
+    }
+
+    public function Candidate_Training(Request $request)
+    {
+        $JCId = $request->JCId;
+        $query = "SELECT * FROM jf_training WHERE JCId='$JCId'";
+        $result = DB::select($query);
+        if (!$result) {
+            return response()->json(['status' => 400, 'msg' => 'No Record Found..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'data' => $result]);
+        }
+    }
+
+    public function Candidate_Training_Save(Request $request)
+    {
+        # code...
+    }
+
 }
