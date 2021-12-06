@@ -549,6 +549,11 @@ $Year = Carbon::now()->year;
                                         <div class="text">{{ $Rec->JobResponsibility ?? '-' }}</div>
                                     </li>
                                     <li>
+                                        <div class="title" style="width: 150px;">Job Change Reason<span
+                                                style="float: right">:</span></div>
+                                        <div class="text">{{ $Rec->ResignReason ?? '-' }}</div>
+                                    </li>
+                                    <li>
                                         <div class="title" style="width: 150px;">Notice Period<span
                                                 style="float: right">:</span></div>
                                         <div class="text">{{ $Rec->NoticePeriod ?? '-' }}</div>
@@ -561,8 +566,8 @@ $Year = Carbon::now()->year;
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
                                 <h3 class="card-title">Present Salary Details <a href="#" class="edit-icon"
-                                        data-bs-toggle="modal" data-bs-target="#family_info_modal"><i
-                                            class="fa fa-pencil"></i></a></h3>
+                                        data-bs-toggle="modal" data-bs-target="#current_salary_modal"
+                                        onclick="GetPresentSalaryDetails();"><i class="fa fa-pencil"></i></a></h3>
                                 <ul class="personal-info">
                                     <li>
                                         <div class="title" style="width: 200px;">Salary (Per Month)<span
@@ -659,7 +664,7 @@ $Year = Carbon::now()->year;
                         <div class="card-body">
                             <h3 class="card-title">Training & Practical Experience <small>(Other than regular
                                     jobs)</small>
-                                <a href="#" class="edit-icon" data-bs-toggle="modal" data-bs-target="#work_exp_modal"
+                                <a href="#" class="edit-icon" data-bs-toggle="modal" data-bs-target="#training_modal"
                                     onclick="getWorkExp();">
                                     <i class="fa fa-pencil"></i>
                                 </a>
@@ -1728,7 +1733,7 @@ $Year = Carbon::now()->year;
         <div class="modal-dialog modal-dialog-centered " role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Personal Information</h5>
+                    <h5 class="modal-title">Current Employement</h5>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1743,20 +1748,24 @@ $Year = Carbon::now()->year;
                         </div>
                         <div class="form-group">
                             <label for="">Department</label>
-                            <input type="text" name="CurrDepartment" id="CurrDepartment" class="form-control form-control-sm">
+                            <input type="text" name="CurrDepartment" id="CurrDepartment"
+                                class="form-control form-control-sm">
                         </div>
-                      
+
                         <div class="form-group">
                             <label for="">Designation</label>
-                            <input type="text" name="CurrDesignation" id="CurrDesignation" class="form-control form-control-sm">
+                            <input type="text" name="CurrDesignation" id="CurrDesignation"
+                                class="form-control form-control-sm">
                         </div>
                         <div class="form-group">
                             <label for="">Date of Joining</label>
-                            <input type="date" name="CurrDateOfJoining" id="CurrDateOfJoining" class="form-control form-control-sm">
+                            <input type="date" name="CurrDateOfJoining" id="CurrDateOfJoining"
+                                class="form-control form-control-sm">
                         </div>
                         <div class="form-group">
                             <label for="">Reporting To</label>
-                            <input type="text" name="CurrReportingTo" id="CurrReportingTo" class="form-control form-control-sm">
+                            <input type="text" name="CurrReportingTo" id="CurrReportingTo"
+                                class="form-control form-control-sm">
                         </div>
                         <div class="form-group">
                             <label for="">Reporting Manager Designation</label>
@@ -1764,11 +1773,17 @@ $Year = Carbon::now()->year;
                         </div>
                         <div class="form-group">
                             <label for="">Job Responsibility</label>
-                           <textarea name="CurrJobResponsibility" id="CurrJobResponsibility" class="form-control form-control-sm"></textarea>
+                            <textarea name="CurrJobResponsibility" id="CurrJobResponsibility"
+                                class="form-control form-control-sm"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Job Change Reason</label>
+                            <textarea name="CurrReason" id="CurrReason" class="form-control form-control-sm"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="">Notice Period</label>
-                            <input type="text" name="CurrNoticePeriod" id="CurrNoticePeriod" class="form-control form-control-sm">
+                            <input type="text" name="CurrNoticePeriod" id="CurrNoticePeriod"
+                                class="form-control form-control-sm">
                         </div>
 
                         <div class="submit-section">
@@ -1779,6 +1794,114 @@ $Year = Carbon::now()->year;
             </div>
         </div>
     </div>
+    <div id="current_salary_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Present Salary Details</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="CurrentSalaryForm" action="{{ route('Candidate_CurrentSalary_Save') }}" method="POST">
+                        <input type="hidden" name="Sal_JCId" id="Sal_JCId">
+                        <div class="form-group">
+                            <label>Salary (Per Month)</label>
+                            <input type="text" name="CurrSalary" id="CurrSalary" class="form-control form-control-sm">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Annual Package (CTC)</label>
+                            <input type="text" name="CurrCTC" id="CurrCTC" class="form-control form-control-sm">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">DA @ headquarter</label>
+                            <input type="text" name="CurrDA" id="CurrDA" class="form-control form-control-sm">
+                        </div>
+                        <div class="form-group">
+                            <label for="">DA Outside Headquarter</label>
+                            <input type="text" name="DAOutHq" id="DAOutHq" class="form-control form-control-sm">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Petrol Allowances</label>
+                            <input type="text" name="PetrolAlw" id="PetrolAlw" class="form-control form-control-sm">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Phone Allowances</label>
+                            <input type="text" name="PhoneAlw" id="PhoneAlw" class="form-control form-control-sm">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Hotel Eligibility</label>
+                            <input type="text" name="HotelElg" id="HotelElg" class="form-control form-control-sm">
+                        </div>
+                        <div class="submit-section">
+                            <button class="btn btn-primary submit-btn">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="training_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static"
+    data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Training & Practical Experience</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="TrainingForm" action="{{route('Candidate_Training_Save')}}" method="POST">
+                    <input type="hidden" name="Work_JCId" id="Work_JCId">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="text-center">
+                                <tr>
+                                    <td>Nature of Training</td>
+                                    <td>Organization / Institution</td>
+                                    <td>From Date</td>
+                                    <td>To Date</td>
+                                    <td></td>
+                                </tr>
+                            </thead>
+                            <tbody id="TrainingData">
+                                <tr>
+                                    <td>
+                                        <input type="text" name="TrainingNature[]" id="TrainingNature"
+                                            class="form-control form-control-sm">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="TrainingOrganization[]" id="TrainingOrganization"
+                                            class="form-control form-control-sm">
+                                    </td>
+                                    <td>
+                                        <input type="date" name="TrainingFromDate[]" id="TrainingFromDate"
+                                            class="form-control form-control-sm datepicker">
+                                    </td>
+                                    <td>
+                                        <input type="date" name="TrainingToDate[]" id="TrainingToDate"
+                                            class="form-control form-control-sm datepicker">
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <input type="button" value="Add Experience" id="addTraining" class="btn btn-primary btn-sm">
+                    <div class="submit-section">
+                        <button class="btn btn-primary submit-btn">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
 @section('scriptsection')
@@ -2257,19 +2380,45 @@ $Year = Carbon::now()->year;
         function GetCurrentEmployementData() {
             var JCId = $('#JCId').val();
             $.ajax({
-                url: "{{ route('Candidate_CurrentEmployement') }}",
+                url: "{{ route('Candidate_PersonalData') }}",
                 type: "POST",
                 data: {
                     JCId: JCId
                 },
                 dataType: "json",
                 success: function(data) {
-                    $('#CurrentEmployement_JCId').val($('#JCId').val());
-                    $('#CurrentEmployementCompanyName').val(data.data.company_name);
-                    $('#CurrentEmployementDesignation').val(data.data.designation);
-                    $('#CurrentEmployementJoiningDate').val(data.data.joining_date);
-                    $('#CurrentEmployementLeavingDate').val(data.data.leaving_date);
-                    $('#CurrentEmployementReasonForLeaving').val(data.data.reason_for_leaving);
+                    $('#Curr_JCId').val($('#JCId').val());
+                    $('#CurrCompanyName').val(data.data.PresentCompany);
+                    $('#CurrDepartment').val(data.data.PresentDepartment);
+                    $('#CurrDesignation').val(data.data.Designation);
+                    $('#CurrDateOfJoining').val(data.data.JobStartDate);
+                    $('#CurrReportingTo').val(data.data.Reporting);
+                    $('#CurrRepDesig').val(data.data.RepDesig);
+                    $('#CurrJobResponsibility').val(data.data.JobResponsibility);
+                    $('#CurrReason').val(data.data.ResignReason);
+                    $('#CurrNoticePeriod').val(data.data.NoticePeriod);
+                }
+            });
+        }
+
+        function GetPresentSalaryDetails() {
+            var JCId = $('#JCId').val();
+            $.ajax({
+                url: "{{ route('Candidate_PersonalData') }}",
+                type: "POST",
+                data: {
+                    JCId: JCId
+                },
+                dataType: "json",
+                success: function(data) {
+                    $('#Sal_JCId').val($('#JCId').val());
+                    $('#CurrSalary').val(data.data.GrossSalary);
+                    $('#CurrCTC').val(data.data.CTC);
+                    $('#CurrDA').val(data.data.DAHq);
+                    $('#DAOutHq').val(data.data.DAOutHq);
+                    $('#PetrolAlw').val(data.data.PetrolAlw);
+                    $('#PhoneAlw').val(data.data.PhoneAlw);
+                    $('#HotelElg').val(data.data.HotelElg);
                 }
             });
         }
@@ -2517,6 +2666,50 @@ $Year = Carbon::now()->year;
                     } else {
                         $(form)[0].reset();
                         $('#work_exp_modal').modal('hide');
+                        toastr.success(data.msg);
+                        window.location.reload();
+                    }
+                }
+            });
+        });
+        $('#CurrentEmpForm').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.message);
+                    } else {
+                        $(form)[0].reset();
+                        $('#current_emp_modal').modal('hide');
+                        toastr.success(data.msg);
+                        window.location.reload();
+                    }
+                }
+            });
+        });
+        $('#CurrentSalaryForm').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.message);
+                    } else {
+                        $(form)[0].reset();
+                        $('#current_salary_modal').modal('hide');
                         toastr.success(data.msg);
                         window.location.reload();
                     }

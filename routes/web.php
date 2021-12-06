@@ -103,8 +103,12 @@ Route::post('Candidate_Education_Save', [AboutCandidateController::class, 'Candi
 Route::post('Candidate_Experience', [AboutCandidateController::class, 'Candidate_Experience'])->name('Candidate_Experience');
 Route::post('Candidate_Experience_Save', [AboutCandidateController::class, 'Candidate_Experience_Save'])->name('Candidate_Experience_Save');
 
-Route::post('Candidate_CurrentEmployement', [AboutCandidateController::class, 'Candidate_CurrentEmployement'])->name('Candidate_CurrentEmployement');
+Route::post('Candidate_Training', [AboutCandidateController::class, 'Candidate_Training'])->name('Candidate_Training');
+Route::post('Candidate_Training_Save', [AboutCandidateController::class, 'Candidate_Training_Save'])->name('Candidate_Training_Save');
+
 Route::post('Candidate_CurrentEmployement_Save', [AboutCandidateController::class, 'Candidate_CurrentEmployement_Save'])->name('Candidate_CurrentEmployement_Save');
+
+Route::post('Candidate_CurrentSalary_Save', [AboutCandidateController::class, 'Candidate_CurrentSalary_Save'])->name('Candidate_CurrentSalary_Save');
 
 Route::get('job_response', [JobApplicationController::class, 'job_response'])->name('job_response');
 Route::get('job_applications', [JobApplicationController::class, 'job_applications'])->name('job_applications');
