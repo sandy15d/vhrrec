@@ -1,28 +1,25 @@
 @php
 use function App\Helpers\ActiveMRFCount;
-$NewMRFSQL = DB::table('manpowerrequisition')
+$NewMRF = DB::table('manpowerrequisition')
     ->where('Status', 'Approved')
     ->whereNull('Allocated')
     ->orWhere('Status', 'New')
-    ->get();
-$NewMRF = $NewMRFSQL->count();
-
-$ActiveSQL = DB::table('manpowerrequisition')
+    ->count();
+$ActiveMRF = DB::table('manpowerrequisition')
     ->where('MRFId', '!=', 0)
     ->where('Allocated', '!=', null)
     ->where('Status', 'Approved')
-    ->get();
-$ActiveMRF = $ActiveSQL->count();
-
-$CloseActive = DB::table('manpowerrequisition')
+    ->count();
+$CloseMRF = DB::table('manpowerrequisition')
     ->where('MRFId', '!=', 0)
     ->where('Status', 'Close')
-    ->get();
-$CloseMRF = $CloseActive->count();
+    ->count();
 $sql = DB::table('users')
     ->where('role', 'R')
     ->where('Status', 'A')
     ->get();
+$TotalCandidate = DB::table('jobcandidates')->count();
+
 @endphp
 @extends('layouts.master')
 @section('title', 'Dashboard')
@@ -42,10 +39,9 @@ $sql = DB::table('users')
                             <div class="d-flex align-items-center">
                                 <div>
                                     <p class="mb-0 text-secondary">New MRF's</p>
-                                    <h4 class="my-1 text-success">{{ $NewMRF }}</h4>
                                 </div>
-                                <div class="widgets-icons-2 rounded-circle bg-gradient-ohhappiness text-white ms-auto"><i
-                                        class='bx bxs-comment-add'></i>
+                                <div class="ms-auto">
+                                    <h3 class="my-1 text-success">{{ $NewMRF }}</h3>
                                 </div>
                             </div>
                         </div>
@@ -59,10 +55,9 @@ $sql = DB::table('users')
                             <div class="d-flex align-items-center">
                                 <div>
                                     <p class="mb-0 text-secondary">Closed MRF's</p>
-                                    <h4 class="my-1 text-danger">{{ $CloseMRF }}</h4>
                                 </div>
-                                <div class="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto"><i
-                                        class='bx bxs-comment-minus'></i>
+                                <div class="ms-auto">
+                                    <h3 class="my-1 text-danger">{{ $CloseMRF }}</h3>
                                 </div>
                             </div>
                         </div>
@@ -76,10 +71,9 @@ $sql = DB::table('users')
                             <div class="d-flex align-items-center">
                                 <div>
                                     <p class="mb-0 text-secondary">Active MRF's</p>
-                                    <h4 class="my-1 text-info">{{ $ActiveMRF }}</h4>
                                 </div>
-                                <div class="widgets-icons-2 rounded-circle bg-gradient-scooter text-white ms-auto"><i
-                                        class='bx bxs-bar-chart-alt-2'></i>
+                                <div class="ms-auto">
+                                    <h3 class="my-1 text-info">{{ $ActiveMRF }}</h3>
                                 </div>
                             </div>
                         </div>
@@ -92,11 +86,10 @@ $sql = DB::table('users')
                         <div class="d-flex align-items-center">
                             <div>
                                 <p class="mb-0 text-secondary">Total Candidates</p>
-                                <h4 class="my-1 text-warning">837</h4>
 
                             </div>
-                            <div class="widgets-icons-2 rounded-circle bg-gradient-blooker text-white ms-auto"><i
-                                    class='bx bxs-group'></i>
+                            <div class="ms-auto">
+                                <h3 class="my-1 text-warning">{{ $TotalCandidate }}</h3>
                             </div>
                         </div>
                     </div>

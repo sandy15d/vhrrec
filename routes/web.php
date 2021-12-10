@@ -77,8 +77,10 @@ Route::post('deleteMRF', [CommonController::class, 'deleteMRF'])->name('deleteMR
 Route::post('notificationMarkRead', [CommonController::class, 'notificationMarkRead'])->name('notificationMarkRead');
 Route::post('markAllRead', [CommonController::class, 'markAllRead'])->name('markAllRead');
 Route::get('getMRFByDepartment', [CommonController::class, 'getMRFByDepartment'])->name('getMRFByDepartment');
+Route::post('sendMailToCandidate', [CommonController::class, 'sendMailToCandidate'])->name('sendMailToCandidate');
 
 Route::get('candidate_detail', [AboutCandidateController::class, 'candidate_detail'])->name('candidate_detail');
+Route::get('interview_form_detail', [AboutCandidateController::class, 'interview_form_detail'])->name('interview_form_detail');
 Route::post('Candidate_PersonalData', [AboutCandidateController::class, 'Candidate_PersonalData'])->name('Candidate_PersonalData');
 Route::post('Candidate_PersonalData_Save', [AboutCandidateController::class, 'Candidate_PersonalData_Save'])->name('Candidate_PersonalData_Save');
 
@@ -100,15 +102,24 @@ Route::post('Candidate_PermanentAddress_Save', [AboutCandidateController::class,
 Route::post('Candidate_Education', [AboutCandidateController::class, 'Candidate_Education'])->name('Candidate_Education');
 Route::post('Candidate_Education_Save', [AboutCandidateController::class, 'Candidate_Education_Save'])->name('Candidate_Education_Save');
 
+Route::post('Candidate_CurrentEmployement_Save', [AboutCandidateController::class, 'Candidate_CurrentEmployement_Save'])->name('Candidate_CurrentEmployement_Save');
+
+Route::post('Candidate_CurrentSalary_Save', [AboutCandidateController::class, 'Candidate_CurrentSalary_Save'])->name('Candidate_CurrentSalary_Save');
+
 Route::post('Candidate_Experience', [AboutCandidateController::class, 'Candidate_Experience'])->name('Candidate_Experience');
 Route::post('Candidate_Experience_Save', [AboutCandidateController::class, 'Candidate_Experience_Save'])->name('Candidate_Experience_Save');
 
 Route::post('Candidate_Training', [AboutCandidateController::class, 'Candidate_Training'])->name('Candidate_Training');
 Route::post('Candidate_Training_Save', [AboutCandidateController::class, 'Candidate_Training_Save'])->name('Candidate_Training_Save');
 
-Route::post('Candidate_CurrentEmployement_Save', [AboutCandidateController::class, 'Candidate_CurrentEmployement_Save'])->name('Candidate_CurrentEmployement_Save');
+Route::post('Candidate_PreOrgRef', [AboutCandidateController::class, 'Candidate_PreOrgRef'])->name('Candidate_PreOrgRef');
+Route::post('Candidate_PreOrgRef_Save', [AboutCandidateController::class, 'Candidate_PreOrgRef_Save'])->name('Candidate_PreOrgRef_Save');
 
-Route::post('Candidate_CurrentSalary_Save', [AboutCandidateController::class, 'Candidate_CurrentSalary_Save'])->name('Candidate_CurrentSalary_Save');
+Route::post('Candidate_VnrRef', [AboutCandidateController::class, 'Candidate_VnrRef'])->name('Candidate_VnrRef');
+Route::post('Candidate_VnrRef_Save', [AboutCandidateController::class, 'Candidate_VnrRef_Save'])->name('Candidate_VnrRef_Save');
+
+Route::post('Candidate_Strength', [AboutCandidateController::class, 'Candidate_Strength'])->name('Candidate_Strength');
+Route::post('Candidate_Strength_Save', [AboutCandidateController::class, 'Candidate_Strength_Save'])->name('Candidate_Strength_Save');
 
 Route::get('job_response', [JobApplicationController::class, 'job_response'])->name('job_response');
 Route::get('job_applications', [JobApplicationController::class, 'job_applications'])->name('job_applications');
@@ -142,6 +153,12 @@ Route::get('offer_letter', [OfferLtrController::class, 'offer_letter'])->name('o
 Route::post('update_offerletter_basic', [OfferLtrController::class, 'update_offerletter_basic'])->name('update_offerletter_basic');
 Route::get('get_offerltr_basic_detail', [OfferLtrController::class, 'get_offerltr_basic_detail'])->name('get_offerltr_basic_detail');
 Route::get('offer_letter_generate', [OfferLtrController::class, 'offer_letter_generate'])->name('offer_letter_generate');
+Route::post('insert_ctc', [OfferLtrController::class,'insert_ctc'])->name('insert_ctc');
+Route::post('insert_ent', [OfferLtrController::class,'insert_ent'])->name('insert_ent');
+Route::post('offer_ltr_gen', [OfferLtrController::class,'offer_ltr_gen'])->name('offer_ltr_gen');
+Route::get('offer_ltr_print', [OfferLtrController::class,'offer_ltr_print'])->name('offer_ltr_print');
+Route::get('offerLtrHistory', [OfferLtrController::class,'offerLtrHistory'])->name('offerLtrHistory');
+Route::get('offer_ltr_history', [OfferLtrController::class,'offer_ltr_history'])->name('offer_ltr_history');
 
 
 Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');

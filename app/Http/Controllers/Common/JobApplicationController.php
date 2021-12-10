@@ -104,7 +104,7 @@ class JobApplicationController extends Controller
         $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
         $source_list = DB::table("master_resumesource")->where('Status', 'A')->Where('ResumeSouId', '!=', '7')->pluck('ResumeSource', 'ResumeSouId');
         $education_list = DB::table("master_education")->where('Status', 'A')->orderBy('EducationCode', 'asc')->pluck("EducationCode", "EducationId");
-
+        $resume_list = DB::table("master_resumesource")->where('Status', 'A')->where('ResumeSouId', '!=', '7')->orderBy('ResumeSouId', 'asc')->pluck("ResumeSource", "ResumeSouId");
         $job = jobpost::query();
         if (Auth::user()->role == 'R') {
             $job->where('CreatedBy', Auth::user()->id);
@@ -113,8 +113,6 @@ class JobApplicationController extends Controller
             ->where('Status', 'Open')
             ->where('JobPostType', 'Regular')
             ->get();
-
-
         $Company = $request->Company;
         $Department = $request->Department;
         $Year = $request->Year;
@@ -154,11 +152,12 @@ class JobApplicationController extends Controller
             $usersQuery->where("jobcandidates.FName", 'like', "%$Name%");
         }
 
-        $candidate_list = $usersQuery->select('jobapply.JAId', 'jobapply.ResumeSource', 'jobapply.ApplyDate', 'jobapply.Status', 'jobapply.FwdTechScr', 'jobcandidates.JCId', 'jobcandidates.ReferenceNo', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.Phone', 'jobcandidates.Email', 'jobcandidates.City', 'jobcandidates.Education', 'jobcandidates.Specialization', 'jobcandidates.Professional', 'jobcandidates.JobStartDate', 'jobcandidates.JobEndDate', 'jobcandidates.PresentCompany', 'jobcandidates.Designation', 'jobcandidates.Verified', 'jobcandidates.CandidateImage', 'jobcandidates.BlackList', 'jobcandidates.BlackListRemark', 'jobcandidates.UnBlockRemark', 'jobapply.JPId', 'jobpost.DesigId')
+        $candidate_list = $usersQuery->select('jobapply.JAId', 'jobapply.ResumeSource','jobapply.Type', 'jobapply.ApplyDate', 'jobapply.Status', 'jobapply.FwdTechScr', 'jobcandidates.JCId', 'jobcandidates.ReferenceNo', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.Phone', 'jobcandidates.Email', 'jobcandidates.City', 'jobcandidates.Education', 'jobcandidates.Specialization', 'jobcandidates.Professional', 'jobcandidates.JobStartDate', 'jobcandidates.JobEndDate', 'jobcandidates.PresentCompany', 'jobcandidates.Designation', 'jobcandidates.Verified', 'jobcandidates.CandidateImage', 'jobcandidates.BlackList', 'jobcandidates.BlackListRemark', 'jobcandidates.UnBlockRemark', 'jobapply.JPId', 'jobpost.DesigId')
             ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
             ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
             ->leftJoin('screening', 'jobapply.JAId', '=', 'screening.JAId')
-            ->where('jobapply.Type', '!=', 'Campus');
+            ->where('jobapply.Type', '!=', 'Campus')
+            ->orderBy('jobapply.ApplyDate', 'desc');
 
 
         $total_candidate = $candidate_list->count();
@@ -178,7 +177,7 @@ class JobApplicationController extends Controller
             ->where('Type', '!=', 'Campus')
             ->where('FwdTechScr', 'Yes');
         $total_fwd = $total_fwd->count();
-        return view('common.job_applications', compact('company_list', 'months', 'source_list', 'education_list', 'candidate_list', 'total_candidate', 'total_available', 'total_hr_scr', 'total_fwd', 'jobpost_list'));
+        return view('common.job_applications', compact('company_list', 'months', 'source_list', 'education_list', 'candidate_list', 'total_candidate', 'total_available', 'total_hr_scr', 'total_fwd', 'jobpost_list','resume_list'));
     }
 
     public function update_hrscreening(Request $request)
@@ -349,7 +348,7 @@ class JobApplicationController extends Controller
             $usersQuery->where('jobapply.CreatedBy', Auth::user()->id);
         }
 
-        $data =  $usersQuery->select('*')
+        $data =  $usersQuery->select('*')->where('Type', 'Manual Entry')
             ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId');
 
         return datatables()->of($data)
@@ -358,10 +357,9 @@ class JobApplicationController extends Controller
                 return '<input type="checkbox" class="japchks" data-id="' . $data->JCId . '" name="selectCand" id="selectCand" value="' . $data->JCId . '">';
             })
             ->addColumn('Name', function ($data) {
+                
                 return $data->FName . ' ' . $data->MName . ' ' . $data->LName;
             })
-
-
 
             ->editColumn('ApplyDate', function ($data) {
                 return Carbon::parse($data->ApplyDate)->format('d-m-Y');
