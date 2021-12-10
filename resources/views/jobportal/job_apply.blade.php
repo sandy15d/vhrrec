@@ -656,10 +656,7 @@ $query = DB::table('jobpost')
                                                         class=" mt-3 d-inline-block" style="width: 150; height: 150;">
                                                         <span id="preview">
                                                             <center>
-                                                                <img src="{{ URL::to('/') }}/assets/images/user.png"
-                                                                    style="width: 150px; height: 150px;" id="img1"
-                                                                    name="img1" class="img1" />
-
+                                                                <img src="{{ URL::to('/') }}/assets/images/user.png" style="width: 150px; height: 150px;" id="img1" name="img1" class="img1" />
                                                             </center>
                                                         </span>
                                                         <center>
@@ -669,7 +666,7 @@ $query = DB::table('jobpost')
                                                                     style="width: 100px;display: none;"
                                                                     accept="image/png, image/gif, image/jpeg"><span
                                                                     class="btn btn-sm btn-light shadow-sm text-primary">Upload
-                                                                    photo</span>
+                                                                    Photo</span>
                                                             </label>
                                                         </center>
                                                     </div>

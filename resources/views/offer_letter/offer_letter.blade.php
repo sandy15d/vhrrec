@@ -3,6 +3,7 @@ use function App\Helpers\getDesignation;
 use function App\Helpers\getStateName;
 use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getCompanyCode;
+
 @endphp
 @extends('layouts.master')
 @section('title', 'Job Applications')
@@ -101,7 +102,6 @@ use function App\Helpers\getCompanyCode;
                     </div>
                 </div>
                 @foreach ($candidate_list as $row)
-
                     <div class="card mb-2">
                         <div class="card-body" style="padding: 5px;">
                             <div class="row  p-2 py-2">
@@ -127,10 +127,6 @@ use function App\Helpers\getCompanyCode;
                                                 </td>
                                                 <td style="text-align: right">Offer Letter Send:</td>
                                                 <td style="text-align: right">{{ $row->OfferLetterSent ?? 'No' }}
-                                                    @if ($row->OfferLetterSent != null)
-                                                        <span style="margin-left: 10px;"><button
-                                                                class="frmbtn btn btn-primary">View History</button></span>
-                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr>
@@ -176,9 +172,7 @@ use function App\Helpers\getCompanyCode;
                                                             & View
                                                             Offer Letter</a>
 
-
                                                     @endif
-
                                                 </td>
                                                 <td class="text-primary" style="text-align: right">Send for Review
                                                     @if ($row->SendReview == 1)
@@ -191,16 +185,34 @@ use function App\Helpers\getCompanyCode;
                                                 @php
                                                     $jaid = base64_encode($row->JAId);
                                                 @endphp
-                                                <td colspan="3"><input type="text" name="" id="" class="frminp d-inline"
+                                                <td colspan="2"><input type="text" name="" id="" class="frminp d-inline"
                                                         value="{{ url('jobportal/aaa?jaid=' . $jaid) }}">
                                                     <button class="frmbtn btn btn-sm btn-secondary">Copy Link</button>
                                                 </td>
+                                                @php
+                                                    $sql = DB::table('offerletterbasic_history')
+                                                        ->where('JAId', $row->JAId)
+                                                        ->get();
+                                                    $count = count($sql);
+                                                    $i = 0;
+                                                @endphp
+                                                @if ($count > 1)
+
+                                                    <td class="text-center"><a href="javascript:vaoid(0);"
+                                                            class="offer-history-btn" data-bs-toggle="modal"
+                                                            data-bs-target="#HistoryModal"
+                                                            onclick="getOfHistory({{ $row->JAId }});">Offer Ltr.
+                                                            History</a></td>
+
+                                                @endif
+
                                             </tr>
                                             <tr>
                                                 <td>Joining Form View:</td>
-                                                <td colspan="3"><input type="text" name="" id="" class="frminp d-inline">
+                                                <td colspan="2"><input type="text" name="" id="" class="frminp d-inline">
                                                     <button class="frmbtn btn btn-sm btn-secondary">Copy Link</button>
                                                 </td>
+
                                             </tr>
 
                                         </tbody>
@@ -218,16 +230,16 @@ use function App\Helpers\getCompanyCode;
                                     </center>
                                     <center>
                                         <small>
-                                            <span class="text-primary m-1 " style="cursor: pointer; font-size:14px;"
-                                                onclick="aboutCand($row->JAId);">
-                                                View Details
+                                            <span class="text-primary m-1 " style="cursor: pointer; font-size:14px;">
+                                                @php
+                                                    $sendingId = base64_encode($row->JAId);
+                                                @endphp
+                                                <a href="{{ route('candidate_detail') }}?jaid={{ $sendingId }}"
+                                                    target="_blank">View Details</a>
                                             </span>
                                         </small>
                                     </center>
-
-
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -335,6 +347,9 @@ use function App\Helpers\getCompanyCode;
                         <table class="table table-bordered" style="vertical-align: middle;">
                             <tbody>
                                 <tr>
+                                    <input type="hidden" name="JCId" id="JCId">
+                                    <input type="hidden" name="SelectedForC" id="SelectedForC">
+                                    <input type="hidden" name="SelectedForD" id="SelectedForD">
                                     <td style="width:150px; ">Candidate's Name</td>
                                     <td><input type="text" name="CandidateName" id="CandidateName" disabled
                                             style="background-color: white;border:aliceblue; width: 160px; color:black">
@@ -358,6 +373,7 @@ use function App\Helpers\getCompanyCode;
                                 <tr>
                                     <td style="width:150px;">Department</td>
                                     <td>
+
                                         <input type="text" name="SelectedDepartment" id="SelectedDepartment" disabled
                                             style="background-color: white;border:aliceblue; width: 160px; color:black">
                                     </td>
@@ -741,6 +757,35 @@ use function App\Helpers\getCompanyCode;
         </div>
     </div>
 
+    <div class="modal fade" id="HistoryModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title text-light" id="exampleModalLabel">Offer Letter History</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered text-center" style="vertical-align: middle;">
+                        <thead>
+                            <tr>
+                                <th>Date Generate</th>
+                                <th>Offer Letter Ref.No</td>
+                                <th>Offer Letter</th>
+                                <th>Reason for Change</td>
+                            </tr>
+
+                        </thead>
+                        <tbody id="offerHistory">
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 @endsection
 
@@ -963,7 +1008,7 @@ use function App\Helpers\getCompanyCode;
                 $('.scon').css('display', 'none');
                 $("input[name=ServiceCond][value=" + value + "]").prop('checked', true);
             } else {
-                $('.scon').css('display', 'inline');
+                $('.scon').css('display', 'inline-block');
                 $("input[name=ServiceCond][value=" + value + "]").prop('checked', false);
             }
         });
@@ -978,6 +1023,9 @@ use function App\Helpers\getCompanyCode;
                     if (res.status == 200) {
 
                         $('#JAId').val(res.candidate_detail.JAId);
+                        $('#JCId').val(res.candidate_detail.JCId);
+                        $('#SelectedForC').val(res.candidate_detail.SelectedForC);
+                        $('#SelectedForD').val(res.candidate_detail.SelectedForD);
                         $("#Grade").empty();
                         $("#Grade").append(
                             '<option value="0">Select Grade</option>');
@@ -1173,58 +1221,6 @@ use function App\Helpers\getCompanyCode;
         });
 
 
-        /* $(document).on('change', '#PermState', function() {
-                    var StateId = $(this).val();
-                    $.ajax({
-                        type: "GET",
-                        url: "{{ route('getHq') }}?StateId=" + StateId,
-                        success: function(res) {
-                            if (res) {
-                                $("#PermHQ").empty();
-                                $("#PermHQ").append(
-                                    '<option value="">Select Headquarter</option>');
-                                $.each(res, function(key, value) {
-                                    $("#PermHQ").append('<option value="' + value + '">' +
-                                        key +
-                                        '</option>');
-                                });
-                                $('#PermHQ').val('<?= $_REQUEST['Department'] ?? '' ?>');
-                            } else {
-                                $("#PermHQ").empty();
-                            }
-                        }
-                    });
-                });
-
-                $(document).on('change', '#TempState', function() {
-                    var StateId = $(this).val();
-                    $.ajax({
-                        type: "GET",
-                        url: "{{ route('getHq') }}?StateId=" + StateId,
-                        success: function(res) {
-                            if (res) {
-                                $("#TempHQ").empty();
-                                $("#TempHQ").append(
-                                    '<option value="">Select Headquarter</option>');
-                                $.each(res, function(key, value) {
-                                    $("#TempHQ").append('<option value="' + value + '">' +
-                                        key +
-                                        '</option>');
-                                });
-                                $('#TempHQ').val('<?= $_REQUEST['Department'] ?? '' ?>');
-                            } else {
-                                $("#TempHQ").empty();
-                            }
-                        }
-                    });
-                }); */
-
-
-
-
-
-
-
         $(document).on('change', '#AdminstrativeDepartment', function() {
             var DepartmentId = $(this).val();
             $.ajax({
@@ -1313,6 +1309,25 @@ use function App\Helpers\getCompanyCode;
 
         });
 
+        function getOfHistory(JAId) {
+            var JAId = JAId;
+            var route = "{{ route('offer_ltr_history') }}";
+            $.ajax({
+                type: "GET",
+                url: "{{ route('offerLtrHistory') }}?jaid=" + JAId,
+                success: function(res) {
+                    var x = '';
+                    $.each(res.data, function(key, value) {
+                        x += '<tr>';
+                        x += '<td>' + value.OfDate + '</td>';
+                        x += '<td>' + value.LtrNo + '</td>';
+                        x += '<td><a href="' + route + '?LtrId='+value.LtrId+'" target="_blank">View Offer</a></td>';
+                        x += '<td>' + value.RevisionRemark + '</td>';
 
+                    });
+                    $('#offerHistory').html(x);
+                }
+            });
+        }
     </script>
 @endsection

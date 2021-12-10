@@ -9,8 +9,10 @@ use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Mail\CandidateMail;
 use App\Models\jobcandidate;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 use function App\Helpers\convertData;
 use function App\Helpers\getCompanyCode;
@@ -185,10 +187,10 @@ class CommonController extends Controller
 
     public function getAllSP()
     {
-      
+
         $Sp = DB::table("master_specialization")->orderBy('Specialization', 'asc')->pluck("SpId", "Specialization");
         $sql = DB::getQueryLog();
-        
+
         return response()->json($Sp);
     }
 
@@ -341,10 +343,23 @@ class CommonController extends Controller
     }
     public function getCandidateName(Request $request)
     {
-
-        print_r('AAA');
-        die;
         $sql = jobcandidate::find($request->JCId);
         return $sql->FName;
+    }
+
+    public function sendMailToCandidate(Request $request)
+    {
+        $details = [
+            "subject" => $request->Subject,
+            "Candidate" => $request->CandidateName,
+            "Message" => $request->eMailMsg,
+        ];
+        Mail::to($request->eMailId)->send(new CandidateMail($details));
+
+        if (count(Mail::failures()) > 0) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'Mail has been sent successfully.']);
+        }
     }
 }

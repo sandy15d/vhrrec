@@ -19,6 +19,15 @@ class AboutCandidateController extends Controller
         $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
         return view('common.candidate_detail', compact('state_list', 'district_list', 'education_list', 'institute_list', 'specialization_list'));
     }
+    public function interview_form_detail()
+    {
+        $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
+        $district_list = DB::table("master_district")->orderBy('DistrictName', 'asc')->pluck("DistrictName", "DistrictId");
+        $education_list = DB::table("master_education")->orderBy('EducationCode', 'asc')->pluck("EducationCode", "EducationId");
+        $specialization_list = DB::table("master_specialization")->orderBy('Specialization', 'asc')->pluck("Specialization", "SpId");
+        $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+        return view('common.interview_form_detail', compact('state_list', 'district_list', 'education_list', 'institute_list', 'specialization_list'));
+    }
 
     public function Candidate_PersonalData(Request $request)
     {
@@ -114,7 +123,6 @@ class AboutCandidateController extends Controller
             return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
         }
     }
-
 
     public function Candidate_BankInfo(Request $request)
     {
@@ -435,6 +443,7 @@ class AboutCandidateController extends Controller
             return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
         }
     }
+
     public function Candidate_CurrentSalary_Save(Request $request)
     {
         $JCId   = $request->Sal_JCId;
@@ -470,7 +479,7 @@ class AboutCandidateController extends Controller
     public function Candidate_Training(Request $request)
     {
         $JCId = $request->JCId;
-        $query = "SELECT * FROM jf_training WHERE JCId='$JCId'";
+        $query = "SELECT * FROM jf_tranprac WHERE JCId='$JCId'";
         $result = DB::select($query);
         if (!$result) {
             return response()->json(['status' => 400, 'msg' => 'No Record Found..!!']);
@@ -482,7 +491,152 @@ class AboutCandidateController extends Controller
 
     public function Candidate_Training_Save(Request $request)
     {
-        # code...
+        $JCId = $request->Training_JCId;
+        $training = $request->TrainingNature;
+        $organization = $request->TrainingOrganization;
+        $from = $request->TrainingFromDate;
+        $to = $request->TrainingToDate;
+        $query = DB::table('jf_tranprac')->where('JCId', $JCId)->delete();
+
+        $trainingArray = array();
+        for ($i = 0; $i < count($training); $i++) {
+            $trainingArray[$i] = array(
+                'JCId' => $JCId,
+                'training' => $training[$i],
+                'organization' => $organization[$i],
+                'from' => $from[$i],
+                'to' => $to[$i],
+            );
+        }
+
+        $query1 = DB::table('jf_tranprac')->insert($trainingArray);
+        if (!$query1) {
+            return response()->json(['status' => 400, ' msg' => 'Something went wrong..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
     }
+
+    public function Candidate_PreOrgRef(Request $request)
+    {
+        $JCId = $request->JCId;
+        $query = "SELECT * FROM jf_reference WHERE JCId='$JCId' AND `from` ='Previous Organization'";
+        $result = DB::select($query);
+        if (!$result) {
+            return response()->json(['status' => 400, 'msg' => 'No Record Found..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'data' => $result]);
+        }
+    }
+
+    public function Candidate_PreOrgRef_Save(Request $request)
+    {
+        $JCId = $request->PreOrgRef_JCId;
+        $from = 'Previous Organization';
+        $name = $request->PreOrgName;
+        $company = $request->PreOrgCompany;
+        $designation = $request->PreOrgDesignation;
+        $email = $request->PreOrgEmail;
+        $contact = $request->PreOrgContact;
+        $PreOrgRefArray = DB::table('jf_reference')->where('JCId', $JCId)->where('from', $from)->delete();
+        $PreOrgRefArray = array();
+        for ($i = 0; $i < count($name); $i++) {
+            $PreOrgRefArray[$i] = array(
+                'JCId' => $JCId,
+                'from' => $from,
+                'name' => $name[$i],
+                'company' => $company[$i],
+                'designation' => $designation[$i],
+                'email' => $email[$i],
+                'contact' => $contact[$i],
+            );
+        }
+      
+        $query1 = DB::table('jf_reference')->insert($PreOrgRefArray);
+      
+        if (!$query1) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
+    }
+
+    public function Candidate_VnrRef(Request $request)
+    {
+        $JCId = $request->JCId;
+        $query = "SELECT * FROM jf_reference WHERE JCId='$JCId' AND `from`='VNR'";
+        $result = DB::select($query);
+        if (!$result) {
+            return response()->json(['status' => 400, 'msg' => 'No Record Found..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'data' => $result]);
+        }
+    }
+
+    public function Candidate_VnrRef_Save(Request $request)
+    {
+        $JCId = $request->Vnr_JCId;
+        $from = 'VNR';
+        $name = $request->VnrRefName;
+        $designation = $request->VnrRefDesignation;
+        $email = $request->VnrRefEmail;
+        $contact = $request->VnrRefContact;
+        $rel_with_person = $request->VnrRefRelWithPerson;
+        $query = DB::table('jf_reference')->where('JCId', $JCId)->where('from', $from)->delete();
+        $array = array();
+        for ($i = 0; $i < count($name); $i++) {
+            $array[$i] = array(
+                'JCId' => $JCId,
+                'from' => $from,
+                'name' => $name[$i],
+                'designation' => $designation[$i],
+                'email' => $email[$i],
+                'contact' => $contact[$i],
+                'rel_with_person' => $rel_with_person[$i],
+            );
+        }
+      
+        $query1 = DB::table('jf_reference')->insert($array);
+        if (!$query1) {
+            return response()->json(['status' => 400, ' msg' => 'Something went wrong..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
+    }
+
+    function Candidate_Strength(Request $request)
+    {
+        $JCId = $request->JCId;
+        $query = "SELECT * FROM jf_strength WHERE JCId='$JCId'";
+        $result = DB::select($query);
+        if (!$result) {
+            return response()->json(['status' => 400, 'msg' => 'No Record Found..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'data' => $result]);
+        }
+    }
+    public function Candidate_Strength_Save(Request $request)
+    {
+        $JCId = $request->S_JCId;
+        $query = DB::table('jf_strength')->where('JCId', $JCId)->first();
+        if ($query !== null) {
+            $query1 = DB::table('jf_strength')->where('JCId', $JCId)->update(['Strength1' => $request->Strength1, 'Strength2' => $request->Strength2, 'Improvement1' => $request->Improvement1, 'Improvement2' => $request->Improvement2, 'LastUpdated' => now()]);
+        } else {
+            $query1 = DB::table('jf_strength')->insert(['JCId' => $JCId, 'Strength1' => $request->Strength1, 'Strength2' => $request->Strength2, 'Improvement1' => $request->Improvement1, 'Improvement2' => $request->Improvement2, 'LastUpdated' => now()]);
+        }
+        if (!$query1) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
+    }
+
 
 }

@@ -398,6 +398,7 @@ use function App\Helpers\getStateName;
                     var s_no = (parseInt(response.data.current_page - 1) * parseInt(response.data
                         .per_page) + 1)
                     $.each(response.data.data, function(key, value) {
+                        var jaid = btoa(value.JAId);
                         var bg_color = '';
                         if (value.Status == 'Rejected' || value.BlackList == 1) {
                             bg_color = '#fe36501f';
@@ -553,7 +554,7 @@ use function App\Helpers\getStateName;
                             ' <center>' +
                             '<small>' +
                             '<span class="text-primary m-1 " style="cursor: pointer; font-size:14px;">' +
-                            ' View Details' +
+                            '<a href="{{route('candidate_detail')}}?jaid='+jaid+'" target="_blank">View Details</a>' +
                             '</span>' +
                             '</small>' +
                             '</center>' +

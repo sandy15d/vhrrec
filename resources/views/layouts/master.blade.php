@@ -86,7 +86,7 @@ $CompanyQry = DB::table('master_company')
 
 
         .btn-xs {
-            padding: .25rem .4rem;
+            padding: .35rem .4rem;
             font-size: .875rem;
 
             border-radius: .2rem;
@@ -287,9 +287,9 @@ $CompanyQry = DB::table('master_company')
                             <li> <a href="/job_applications"><i class="bx bx-right-arrow-alt"></i>Job Application
                                     (Resume Databank)</a>
                             </li>
-                            <li> <a href="/job_application_manual_entry_form"><i class="bx bx-right-arrow-alt"></i>Job
+                       {{--      <li> <a href="/job_application_manual_entry_form"><i class="bx bx-right-arrow-alt"></i>Job
                                     Application Form (Manual
-                                    Entry)</a></li>
+                                    Entry)</a></li> --}}
                         </ul>
                     </li>
                     <li>

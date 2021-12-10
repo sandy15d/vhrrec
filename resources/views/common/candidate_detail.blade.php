@@ -12,8 +12,9 @@ $Rec = DB::table('jobapply')
     ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
     ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
     ->leftJoin('jf_pf_esic', 'jobcandidates.JCId', '=', 'jf_pf_esic.JCId')
+    ->leftJoin('jf_strength', 'jobcandidates.JCId', '=', 'jf_strength.JCId')
     ->where('JAId', $JAId)
-    ->select('jobapply.*', 'jobcandidates.*', 'jobpost.Title', 'jobpost.JobCode', 'jf_contact_det.pre_address', 'jf_contact_det.pre_city', 'jf_contact_det.pre_state', 'jf_contact_det.pre_pin', 'jf_contact_det.pre_dist', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin', 'jf_contact_det.perm_dist', 'jf_contact_det.cont_one_name', 'jf_contact_det.cont_one_relation', 'jf_contact_det.cont_one_number', 'jf_contact_det.cont_two_name', 'jf_contact_det.cont_two_relation', 'jf_contact_det.cont_two_number', 'jf_pf_esic.UAN', 'jf_pf_esic.PFNumber', 'jf_pf_esic.ESICNumber', 'jf_pf_esic.BankName', 'jf_pf_esic.BranchName', 'jf_pf_esic.IFSCCode', 'jf_pf_esic.AccountNumber', 'jf_pf_esic.PAN')
+    ->select('jobapply.*', 'jobcandidates.*', 'jobpost.Title as JobTitle', 'jobpost.JobCode', 'jf_contact_det.pre_address', 'jf_contact_det.pre_city', 'jf_contact_det.pre_state', 'jf_contact_det.pre_pin', 'jf_contact_det.pre_dist', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin', 'jf_contact_det.perm_dist', 'jf_contact_det.cont_one_name', 'jf_contact_det.cont_one_relation', 'jf_contact_det.cont_one_number', 'jf_contact_det.cont_two_name', 'jf_contact_det.cont_two_relation', 'jf_contact_det.cont_two_number', 'jf_pf_esic.UAN', 'jf_pf_esic.PFNumber', 'jf_pf_esic.ESICNumber', 'jf_pf_esic.BankName', 'jf_pf_esic.BranchName', 'jf_pf_esic.IFSCCode', 'jf_pf_esic.AccountNumber', 'jf_pf_esic.PAN', 'jf_strength.Strength1', 'jf_strength.Strength2', 'jf_strength.Improvement1', 'jf_strength.Improvement2')
     ->first();
 
 $JCId = $Rec->JCId;
@@ -26,6 +27,20 @@ $Education = DB::table('candidateeducation')
     ->get();
 $Experience = DB::table('jf_work_exp')
     ->where('JCId', $JCId)
+    ->get();
+
+$Training = DB::table('jf_tranprac')
+    ->where('JCId', $JCId)
+    ->get();
+
+$PreRef = DB::table('jf_reference')
+    ->where('JCId', $JCId)
+    ->where('from', 'Previous Organization')
+    ->get();
+
+$VnrRef = DB::table('jf_reference')
+    ->where('JCId', $JCId)
+    ->where('from', 'VNR')
     ->get();
 $Year = Carbon::now()->year;
 @endphp
@@ -55,13 +70,16 @@ $Year = Carbon::now()->year;
                                         <div class="profile-info-left">
                                             <h5 class="user-name m-t-0 mb-0"> {{ $Rec->FName }} {{ $Rec->MName }}
                                                 {{ $Rec->LName }}</h5>
-                                            <h6 class="staff-id">Applied For: {{ $Rec->Title }}</h6>
+                                            <h6 class="staff-id">Applied For: {{ $Rec->JobTitle }}</h6>
 
                                             <div class="staff-id">ReferenceNo : {{ $Rec->ReferenceNo }}</div>
                                             <div class="staff-id">Date of Apply :
                                                 {{ date('d-M-Y', strtotime($Rec->ApplyDate)) }}</div>
                                             <div class="staff-msg"><a class="btn btn-custom btn-sm"
-                                                    href="https://smarthr.dreamguystech.com/light/chat.html">View Resume</a>
+                                                    href="javascript:void(0);" data-bs-toggle="modal"
+                                                    data-bs-target="#resume_modal">View Resume</a>
+                                                <a href="javascript:;" class="btn btn-primary btn-sm compose-mail-btn">Send
+                                                    Mail</a>
                                             </div>
                                         </div>
                                     </div>
@@ -90,7 +108,12 @@ $Year = Carbon::now()->year;
                                             </li>
                                             <li>
                                                 <div class="title">
-                                                    <a class="text-danger" href="#">Interview Form</a>
+                                                    @php
+                                                        $sendingId = base64_encode($Rec->JAId);
+                                                    @endphp
+                                                    <a class="text-danger"
+                                                        href="{{ route('interview_form_detail') }}?jaid={{ $sendingId }}"
+                                                        target="_blank">Interview Form</a>
                                                 </div>
                                                 <div class="title">
                                                     <a class="text-danger" href="#">Joining Form</a>
@@ -147,6 +170,7 @@ $Year = Carbon::now()->year;
                 </div>
             </div>
         </div>
+
         <div class="tab-content">
             <div id="cand_profile" class=" tab-pane fade pro-overview show active">
                 <div class="row">
@@ -665,7 +689,7 @@ $Year = Carbon::now()->year;
                             <h3 class="card-title">Training & Practical Experience <small>(Other than regular
                                     jobs)</small>
                                 <a href="#" class="edit-icon" data-bs-toggle="modal" data-bs-target="#training_modal"
-                                    onclick="getWorkExp();">
+                                    onclick="getTraining();">
                                     <i class="fa fa-pencil"></i>
                                 </a>
                             </h3>
@@ -675,29 +699,24 @@ $Year = Carbon::now()->year;
                                     <thead>
                                         <tr>
                                             <td style="width: 5%">S.No</td>
-                                            <td style="width: 20%">Company Name</td>
-                                            <td style="width: 15%">Designation</td>
-                                            <td style="width: 10%">Gross Monthly Salary</td>
-                                            <td style="width: 10%">Anual CTC</td>
+                                            <td style="width: 20%">Training Nature</td>
+                                            <td style="width: 15%">Organization</td>
                                             <td style="width: 10%">From</td>
                                             <td style="width: 10%">To</td>
-                                            <td style="width: 20%">Reason for Leaving</td>
+
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @php
                                             $i = 1;
                                         @endphp
-                                        @foreach ($Experience as $item)
+                                        @foreach ($Training as $item)
                                             <tr>
                                                 <td>{{ $i }}</td>
-                                                <td>{{ $item->company }}</td>
-                                                <td>{{ $item->desgination }}</td>
-                                                <td>{{ $item->gross_mon_sal }}</td>
-                                                <td>{{ $item->annual_ctc }}</td>
-                                                <td>{{ $item->job_start }}</td>
-                                                <td>{{ $item->job_end }}</td>
-                                                <td>{{ $item->reason_fr_leaving }}</td>
+                                                <td>{{ $item->training }}</td>
+                                                <td>{{ $item->organization }}</td>
+                                                <td>{{ $item->from }}</td>
+                                                <td>{{ $item->to }}</td>
                                             </tr>
                                             @php
                                                 $i++;
@@ -718,7 +737,7 @@ $Year = Carbon::now()->year;
                         <div class="card-body">
                             <h3 class="card-title">Previous Organization Reference
                                 <a href="#" class="edit-icon" data-bs-toggle="modal"
-                                    data-bs-target="#personal_info_modal">
+                                    data-bs-target="#pre_org_ref_modal" onclick="getPreOrgRef();">
                                     <i class="fa fa-pencil"></i>
                                 </a>
                             </h3>
@@ -728,27 +747,30 @@ $Year = Carbon::now()->year;
                                     <thead>
                                         <tr>
                                             <td>S.No</td>
-                                            <td>Organization Name</td>
+                                            <td>Name</td>
+                                            <td>Company</td>
                                             <td>Designation</td>
                                             <td>Contact No.</td>
                                             <td>Email</td>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>B.S.R. Engineering College</td>
-                                            <td>Assistant Professor</td>
-                                            <td>+91-9876543210</td>
-                                            <td>abc@gmail.com</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>B.S.R. Engineering College</td>
-                                            <td>Assistant Professor</td>
-                                            <td>+91-9876543210</td>
-                                            <td>xyx@gmail.com</td>
-                                        </tr>
+                                        @php
+                                            $i = 1;
+                                        @endphp
+                                        @foreach ($PreRef as $item)
+                                            <tr>
+                                                <td>{{ $i }}</td>
+                                                <td>{{ $item->name }}</td>
+                                                <td>{{ $item->company }}</td>
+                                                <td>{{ $item->designation }}</td>
+                                                <td>{{ $item->contact }}</td>
+                                                <td>{{ $item->email }}</td>
+                                            </tr>
+                                            @php
+                                                $i++;
+                                            @endphp
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -761,36 +783,37 @@ $Year = Carbon::now()->year;
                             <div class="card-body">
                                 <h3 class="card-title">Acquaintances / Relatives associated with the VNR Group<a
                                         href="#" class="edit-icon" data-bs-toggle="modal"
-                                        data-bs-target="#family_info_modal"><i class="fa fa-pencil"></i></a></h3>
+                                        data-bs-target="#vnr_ref_modal" onclick="getVnrRef();"><i
+                                            class="fa fa-pencil"></i></a></h3>
 
                                 <table class="table">
                                     <thead>
                                         <tr>
                                             <td>S.No</td>
                                             <td>Name</td>
-                                            <td>Company</td>
-                                            <td>Designation</td>
                                             <td>Relationship</td>
+                                            <td>Designation</td>
+                                            <td>Contact</td>
                                             <td>Email</td>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Sandeep</td>
-                                            <td>VNR</td>
-                                            <td>Exe IT</td>
-                                            <td>Brother</td>
-                                            <td>aaa@gmail.com</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Sandeep</td>
-                                            <td>VNR</td>
-                                            <td>Exe IT</td>
-                                            <td>Brother</td>
-                                            <td>abc@gmail.com</td>
-                                        </tr>
+                                        @php
+                                            $i = 1;
+                                        @endphp
+                                        @foreach ($VnrRef as $item)
+                                            <tr>
+                                                <td>{{ $i }}</td>
+                                                <td>{{ $item->name }}</td>
+                                                <td>{{ $item->rel_with_person }}</td>
+                                                <td>{{ $item->designation }}</td>
+                                                <td>{{ $item->contact }}</td>
+                                                <td>{{ $item->email }}</td>
+                                            </tr>
+                                            @php
+                                                $i++;
+                                            @endphp
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -800,50 +823,86 @@ $Year = Carbon::now()->year;
             </div>
 
             <div class="tab-pane fade" id="cand_other">
-                <div class="col-md-12 d-flex">
-                    <div class="card profile-box flex-fill">
-                        <div class="card-body">
-                            <h3 class="card-title">Language Proficiency
-                                <a href="#" class="edit-icon" data-bs-toggle="modal"
-                                    data-bs-target="#personal_info_modal">
-                                    <i class="fa fa-pencil"></i>
-                                </a>
-                            </h3>
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <td>S.No</td>
-                                            <td>Language</td>
-                                            <td>Reading</td>
-                                            <td>Writing</td>
-                                            <td>Speaking</td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>English</td>
-                                            <td>Excellent</td>
-                                            <td>Excellent</td>
-                                            <td>Excellent</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Hindi</td>
-                                            <td>Excellent</td>
-                                            <td>Excellent</td>
-                                            <td>Excellent</td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>Marathi</td>
-                                            <td>Excellent</td>
-                                            <td>Excellent</td>
-                                            <td>Excellent</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                <div class="row">
+                    <div class="col-md-6 d-flex">
+                        <div class="card profile-box flex-fill">
+                            <div class="card-body">
+                                <h3 class="card-title">Strength & Areas of Improvement?
+                                    <a href="#" class="edit-icon" data-bs-toggle="modal"
+                                        data-bs-target="#strength_modal" onclick="GetStrength();">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                </h3>
+
+                                <ul class="personal-info">
+                                    <li>
+                                        <div class="title">Strength <span style="float: right">1</span></div>
+                                        <div class="text">{{ $Rec->Strength1 ?? '-' }}</div>
+                                    </li>
+                                    <li>
+                                        <div class="title"> <span style="float: right">2</span></div>
+                                        <div class="text">{{ $Rec->Strength2 ?? '-' }}</div>
+                                    </li>
+
+                                    <li>
+                                        <div class="title">Improvement? <span style="float: right">1</span></div>
+                                        <div class="text">
+                                            {{ $Rec->Improvement1 ?? '-' }}
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="title"> <span style="float: right">2</span></div>
+                                        <div class="text">{{ $Rec->Improvement2 ?? '-' }}</div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 d-flex">
+                        <div class="card profile-box flex-fill">
+                            <div class="card-body">
+                                <h3 class="card-title">Language Proficiency
+                                    <a href="#" class="edit-icon" data-bs-toggle="modal"
+                                        data-bs-target="#personal_info_modal">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                </h3>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <td>S.No</td>
+                                                <td>Language</td>
+                                                <td>Reading</td>
+                                                <td>Writing</td>
+                                                <td>Speaking</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>English</td>
+                                                <td>Excellent</td>
+                                                <td>Excellent</td>
+                                                <td>Excellent</td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>Hindi</td>
+                                                <td>Excellent</td>
+                                                <td>Excellent</td>
+                                                <td>Excellent</td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>Marathi</td>
+                                                <td>Excellent</td>
+                                                <td>Excellent</td>
+                                                <td>Excellent</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -904,6 +963,41 @@ $Year = Carbon::now()->year;
 
         </div>
     </div>
+
+    <div class="compose-mail-popup" style="display: none;">
+        <div class="card">
+            <div class="card-header bg-dark text-white py-2 cursor-pointer">
+                <div class="d-flex align-items-center">
+                    <div class="compose-mail-title">New Message</div>
+                    <div class="compose-mail-close ms-auto">x</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <form action="{{route('sendMailToCandidate')}}" method="POST" id="SendMailForm">
+                    <div class="email-form">
+                        <div class="mb-3">
+                            <input type="hidden" name="CandidateName" id="CandidateName" value="{{ $Rec->FName }} {{ $Rec->LName }}">
+                            <input type="text" class="form-control" value="{{ $Rec->Email }}" readonly
+                                name="eMailId" id="eMailId">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" placeholder="Subject" name="Subject" id="Subject">
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" placeholder="Message" rows="10" cols="10"
+                                name="eMailMsg" id="eMailMsg"></textarea>
+                        </div>
+                        <div class="mb-0">
+                            <div style="float: right">
+                                <button class="btn btn-primary submit-btn" id="send_mail_btn">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="overlay email-toggle-btn-mobile"></div>
 
     <div id="personal_info_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static"
         data-bs-keyboard="false">
@@ -1794,6 +1888,7 @@ $Year = Carbon::now()->year;
             </div>
         </div>
     </div>
+
     <div id="current_salary_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static"
         data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered " role="document">
@@ -1846,63 +1941,262 @@ $Year = Carbon::now()->year;
     </div>
 
     <div id="training_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static"
-    data-bs-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Training & Practical Experience</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="TrainingForm" action="{{route('Candidate_Training_Save')}}" method="POST">
-                    <input type="hidden" name="Work_JCId" id="Work_JCId">
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead class="text-center">
-                                <tr>
-                                    <td>Nature of Training</td>
-                                    <td>Organization / Institution</td>
-                                    <td>From Date</td>
-                                    <td>To Date</td>
-                                    <td></td>
-                                </tr>
-                            </thead>
-                            <tbody id="TrainingData">
-                                <tr>
-                                    <td>
-                                        <input type="text" name="TrainingNature[]" id="TrainingNature"
-                                            class="form-control form-control-sm">
-                                    </td>
-                                    <td>
-                                        <input type="text" name="TrainingOrganization[]" id="TrainingOrganization"
-                                            class="form-control form-control-sm">
-                                    </td>
-                                    <td>
-                                        <input type="date" name="TrainingFromDate[]" id="TrainingFromDate"
-                                            class="form-control form-control-sm datepicker">
-                                    </td>
-                                    <td>
-                                        <input type="date" name="TrainingToDate[]" id="TrainingToDate"
-                                            class="form-control form-control-sm datepicker">
-                                    </td>
-                                    <td></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Training & Practical Experience</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="TrainingForm" action="{{ route('Candidate_Training_Save') }}" method="POST">
+                        <input type="hidden" name="Training_JCId" id="Training_JCId">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="text-center">
+                                    <tr>
+                                        <td>Nature of Training</td>
+                                        <td>Organization / Institution</td>
+                                        <td>From Date</td>
+                                        <td>To Date</td>
+                                        <td></td>
+                                    </tr>
+                                </thead>
+                                <tbody id="TrainingData">
+                                    <tr>
+                                        <td>
+                                            <input type="text" name="TrainingNature[]" id="TrainingNature1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="TrainingOrganization[]" id="TrainingOrganization1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td>
+                                            <input type="date" name="TrainingFromDate[]" id="TrainingFromDate1"
+                                                class="form-control form-control-sm datepicker">
+                                        </td>
+                                        <td>
+                                            <input type="date" name="TrainingToDate[]" id="TrainingToDate1"
+                                                class="form-control form-control-sm datepicker">
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-                    <input type="button" value="Add Experience" id="addTraining" class="btn btn-primary btn-sm">
-                    <div class="submit-section">
-                        <button class="btn btn-primary submit-btn">Submit</button>
-                    </div>
-                </form>
+                        <input type="button" value="Add Experience" id="addTraining" class="btn btn-primary btn-sm">
+                        <div class="submit-section">
+                            <button class="btn btn-primary submit-btn">Submit</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
+    <div id="pre_org_ref_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Previous Organization Reference</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="PreOrgRefForm" action="{{ route('Candidate_PreOrgRef_Save') }}" method="POST">
+                        <input type="hidden" name="PreOrgRef_JCId" id="PreOrgRef_JCId">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="text-center">
+                                    <tr>
+                                        <td>Name</td>
+                                        <td>Name of Company</td>
+                                        <td>Email Id</td>
+                                        <td>Contact No</td>
+                                        <td>Designation</td>
+                                        <td></td>
+                                    </tr>
+                                </thead>
+                                <tbody id="PreOrgRefData">
+                                    <tr>
+                                        <td>
+                                            <input type="text" name="PreOrgName[]" id="PreOrgName1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="PreOrgCompany[]" id="PreOrgCompany1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="PreOrgEmail[]" id="PreOrgEmail1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="PreOrgContact[]" id="PreOrgContact1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="PreOrgDesignation[]" id="PreOrgDesignation1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <input type="button" value="Add Reference" id="addPreOrgRef" class="btn btn-primary btn-sm">
+                        <div class="submit-section">
+                            <button class="btn btn-primary submit-btn">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="vnr_ref_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Acquaintances/Relatives: (Associated with VNR Group)</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="VNRRefForm" action="{{ route('Candidate_VnrRef_Save') }}" method="POST">
+                        <input type="hidden" name="Vnr_JCId" id="Vnr_JCId">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="text-center">
+                                    <tr>
+                                        <td>Name</td>
+                                        <td>Relation</td>
+                                        <td>Email</td>
+                                        <td>Contact No</td>
+                                        <td>Designation</td>
+                                        <td></td>
+                                    </tr>
+                                </thead>
+                                <tbody id="VNRRefData">
+                                    <tr>
+                                        <td>
+                                            <input type="text" name="VnrRefName[]" id="VnrRefName1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="VnrRefRelWithPerson[]" id="VnrRefRelWithPerson1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="VnrRefEmail[]" id="VnrRefEmail1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="VnrRefContact[]" id="VnrRefContact1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="VnrRefDesignation[]" id="VnrRefDesignation1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <input type="button" value="Add Reference" id="addVnrRef" class="btn btn-primary btn-sm">
+                        <div class="submit-section">
+                            <button class="btn btn-primary submit-btn">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="resume_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog  modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Resume</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <object width="760" height="500" data="{{ URL::to('/') }}/uploads/Resume/{{ $Rec->Resume }}"
+                        id="{{ $Rec->JCId }}"></object>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="strength_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Strength & Areas of Improvement</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="StrengthForm" action="{{ route('Candidate_Strength_Save') }}" method="POST">
+                        <input type="hidden" name="S_JCId" id="S_JCId">
+                        <p class="mb-1 fw-bold">Strengths ---------------------------</p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="Strength1">1:</label>
+                                    <input type="text" name="Strength1" id="Strength1"
+                                        class="form-control form-control-sm">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+
+                                    2: <input type="text" name="Strength2" id="Strength2"
+                                        class="form-control form-control-sm">
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mb-1 fw-bold mt-2">Area of Improvement ----------------------</p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="Improvement1">1</label>
+                                    <input type="text" name="Improvement1" id="Improvement1"
+                                        class="form-control form-control-sm">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="Improvement2">2</label>
+                                    <input type="text" name="Improvement2" id="Improvement2"
+                                        class="form-control form-control-sm">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="submit-section">
+                            <button class="btn btn-primary submit-btn">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('scriptsection')
     <script>
@@ -1965,6 +2259,26 @@ $Year = Carbon::now()->year;
             });
         }
 
+        function GetStrength() {
+            var JCId = $('#JCId').val();
+            $.ajax({
+                url: "{{ route('Candidate_Strength') }}",
+                type: "POST",
+                data: {
+                    JCId: JCId
+                },
+                dataType: "json",
+                success: function(data) {
+                    $('#S_JCId').val($('#JCId').val());
+                    $('#Strength1').val(data.data.Strength1);
+                    $('#Strength2').val(data.data.Strength2);
+                    $('#Improvement1').val(data.data.Improvement1);
+                    $('#Improvement2').val(data.data.Improvement2);
+
+                }
+            });
+        }
+
         function GetBankInfo() {
             var JCId = $('#JCId').val();
             $.ajax({
@@ -2016,6 +2330,9 @@ $Year = Carbon::now()->year;
         var MemberCount = 1;
         var EducationCount = 6;
         var WorkExpCount = 1;
+        var TrainingCount = 1;
+        var RefCount = 1;
+        var VRefCount = 1;
         var EducationList = '';
         var SpecializationList = '';
         var CollegeList = '';
@@ -2190,7 +2507,6 @@ $Year = Carbon::now()->year;
             $('#EducationData').append(a);
         }
 
-
         function getWorkExp() {
             var JCId = $('#JCId').val();
             $.ajax({
@@ -2202,8 +2518,8 @@ $Year = Carbon::now()->year;
                 dataType: "json",
                 success: function(data) {
                     $('#Work_JCId').val($('#JCId').val());
-                    EducationCount = data.data.length;
-                    for (var i = 1; i <= EducationCount; i++) {
+                    WorkExpCount = data.data.length;
+                    for (var i = 1; i <= WorkExpCount; i++) {
                         if (i >= 2) {
                             WorkExperience(i);
                         }
@@ -2242,6 +2558,150 @@ $Year = Carbon::now()->year;
                 '</td>';
             b += '</tr>';
             $('#WorkExpData').append(b);
+        }
+
+        function getTraining() {
+            $('#Training_JCId').val($('#JCId').val());
+            var JCId = $('#JCId').val();
+            $.ajax({
+                url: "{{ route('Candidate_Training') }}",
+                type: "POST",
+                data: {
+                    JCId: JCId
+                },
+                dataType: "json",
+                success: function(data) {
+
+                    TrainingCount = data.data.length;
+                    for (var i = 1; i <= TrainingCount; i++) {
+                        if (i >= 2) {
+                            Training(i);
+                        }
+                        $('#TrainingNature' + i).val(data.data[i - 1].training);
+                        $('#TrainingOrganization' + i).val(data.data[i - 1].organization);
+                        $('#TrainingFromDate' + i).val(data.data[i - 1].from);
+                        $('#TrainingToDate' + i).val(data.data[i - 1].to);
+
+
+                    }
+                }
+            });
+        }
+
+        function Training(num) {
+            var b = '';
+            b += '<tr>';
+            b += '<td>' + '<input type="text" name="TrainingNature[]" id="TrainingNature' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="TrainingOrganization[]" id="TrainingOrganization' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="date" name="TrainingFromDate[]" id="TrainingFromDate' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="date" name="TrainingToDate[]" id="TrainingToDate' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' +
+                '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removeTraining"><i class="bx bxs-trash text-danger"></i></a></div>' +
+                '</td>';
+            b += '</tr>';
+            $('#TrainingData').append(b);
+        }
+
+        function getPreOrgRef() {
+            $('#PreOrgRef_JCId').val($('#JCId').val());
+            var JCId = $('#JCId').val();
+            $.ajax({
+                url: "{{ route('Candidate_PreOrgRef') }}",
+                type: "POST",
+                data: {
+                    JCId: JCId
+                },
+                dataType: "json",
+                success: function(data) {
+
+                    RefCount = data.data.length;
+                    for (var i = 1; i <= RefCount; i++) {
+                        if (i >= 2) {
+                            PreviousOrgReference(i);
+                        }
+                        $('#PreOrgName' + i).val(data.data[i - 1].name);
+                        $('#PreOrgCompany' + i).val(data.data[i - 1].company);
+                        $('#PreOrgEmail' + i).val(data.data[i - 1].email);
+                        $('#PreOrgContact' + i).val(data.data[i - 1].contact);
+                        $('#PreOrgDesignation' + i).val(data.data[i - 1].designation);
+
+
+                    }
+                }
+            });
+        }
+
+        function PreviousOrgReference(num) {
+            var b = '';
+            b += '<tr>';
+            b += '<td>' + '<input type="text" name="PreOrgName[]" id="PreOrgName' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="PreOrgCompany[]" id="PreOrgCompany' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="PreOrgEmail[]" id="PreOrgEmail' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="PreOrgContact[]" id="PreOrgContact' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="PreOrgDesignation[]" id="PreOrgDesignation' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' +
+                '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removePreOrgRef"><i class="bx bxs-trash text-danger"></i></a></div>' +
+                '</td>';
+            b += '</tr>';
+            $('#PreOrgRefData').append(b);
+        }
+
+        function getVnrRef() {
+            $('#Vnr_JCId').val($('#JCId').val());
+            var JCId = $('#JCId').val();
+            $.ajax({
+                url: "{{ route('Candidate_VnrRef') }}",
+                type: "POST",
+                data: {
+                    JCId: JCId
+                },
+                dataType: "json",
+                success: function(data) {
+
+                    RefCount = data.data.length;
+                    for (var i = 1; i <= RefCount; i++) {
+                        if (i >= 2) {
+                            VNRReference(i);
+                        }
+                        $('#VnrRefName' + i).val(data.data[i - 1].name);
+                        $('#VnrRefRelWithPerson' + i).val(data.data[i - 1].rel_with_person);
+                        $('#VnrRefEmail' + i).val(data.data[i - 1].email);
+                        $('#VnrRefContact' + i).val(data.data[i - 1].contact);
+                        $('#VnrRefDesignation' + i).val(data.data[i - 1].designation);
+
+
+                    }
+                }
+            });
+        }
+
+        function VNRReference(num) {
+            var b = '';
+            b += '<tr>';
+            b += '<td>' + '<input type="text" name="VnrRefName[]" id="VnrRefName' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefRelWithPerson[]" id="VnrRefRelWithPerson' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefEmail[]" id="VnrRefEmail' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefContact[]" id="VnrRefContact' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefDesignation[]" id="VnrRefDesignation' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' +
+                '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removeVnrRef"><i class="bx bxs-trash text-danger"></i></a></div>' +
+                '</td>';
+            b += '</tr>';
+            $('#VNRRefData').append(b);
         }
 
         function getSpecialization(EducationId, No) {
@@ -2441,7 +2901,7 @@ $Year = Carbon::now()->year;
         });
 
         $(document).on('click', '#removeQualification', function() {
-            if (confirm('Are you sure you want to delete this member?')) {
+            if (confirm('Are you sure you want to delete this record?')) {
                 $(this).closest('tr').remove();
                 EducationCount--;
             }
@@ -2453,12 +2913,47 @@ $Year = Carbon::now()->year;
         });
 
         $(document).on('click', '#removeWorkExp', function() {
-            if (confirm('Are you sure you want to delete this member?')) {
+            if (confirm('Are you sure you want to delete this record?')) {
                 $(this).closest('tr').remove();
                 WorkExpCount--;
             }
         });
 
+        $(document).on('click', '#addTraining', function() {
+            TrainingCount++;
+            Training(TrainingCount);
+        });
+
+        $(document).on('click', '#removeTraining', function() {
+            if (confirm('Are you sure you want to delete this record?')) {
+                $(this).closest('tr').remove();
+                TrainingCount--;
+            }
+        });
+
+        $(document).on('click', '#addPreOrgRef', function() {
+            RefCount++;
+            PreviousOrgReference(RefCount);
+        });
+
+        $(document).on('click', '#removePreOrgRef', function() {
+            if (confirm('Are you sure you want to delete this record?')) {
+                $(this).closest('tr').remove();
+                RefCount--;
+            }
+        });
+
+        $(document).on('click', '#addVnrRef', function() {
+            VRefCount++;
+            VNRReference(VRefCount);
+        });
+
+        $(document).on('click', '#removeVnrRef', function() {
+            if (confirm('Are you sure you want to delete this record?')) {
+                $(this).closest('tr').remove();
+                VRefCount--;
+            }
+        });
 
         $(document).on('change', '#Religion', function() {
             var Religion = $(this).val();
@@ -2501,7 +2996,7 @@ $Year = Carbon::now()->year;
                 contentType: false,
                 success: function(data) {
                     if (data.status == 400) {
-                        toastr.error(data.message);
+                        toastr.error(data.msg);
                     } else {
                         $(form)[0].reset();
                         $('#createpostmodal').modal('hide');
@@ -2524,7 +3019,7 @@ $Year = Carbon::now()->year;
                 contentType: false,
                 success: function(data) {
                     if (data.status == 400) {
-                        toastr.error(data.message);
+                        toastr.error(data.msg);
                     } else {
                         $(form)[0].reset();
                         $('#emergency_contact_modal').modal('hide');
@@ -2547,7 +3042,7 @@ $Year = Carbon::now()->year;
                 contentType: false,
                 success: function(data) {
                     if (data.status == 400) {
-                        toastr.error(data.message);
+                        toastr.error(data.msg);
                     } else {
                         $(form)[0].reset();
                         $('#bank_info_modal').modal('hide');
@@ -2570,7 +3065,7 @@ $Year = Carbon::now()->year;
                 contentType: false,
                 success: function(data) {
                     if (data.status == 400) {
-                        toastr.error(data.message);
+                        toastr.error(data.msg);
                     } else {
                         $(form)[0].reset();
                         $('#family_info_modal').modal('hide');
@@ -2593,7 +3088,7 @@ $Year = Carbon::now()->year;
                 contentType: false,
                 success: function(data) {
                     if (data.status == 400) {
-                        toastr.error(data.message);
+                        toastr.error(data.msg);
                     } else {
                         $(form)[0].reset();
                         $('#current_address_modal').modal('hide');
@@ -2616,7 +3111,7 @@ $Year = Carbon::now()->year;
                 contentType: false,
                 success: function(data) {
                     if (data.status == 400) {
-                        toastr.error(data.message);
+                        toastr.error(data.msg);
                     } else {
                         $(form)[0].reset();
                         $('#permanent_address_modal').modal('hide');
@@ -2639,7 +3134,7 @@ $Year = Carbon::now()->year;
                 contentType: false,
                 success: function(data) {
                     if (data.status == 400) {
-                        toastr.error(data.message);
+                        toastr.error(data.msg);
                     } else {
                         $(form)[0].reset();
                         $('#education_info_modal').modal('hide');
@@ -2662,7 +3157,7 @@ $Year = Carbon::now()->year;
                 contentType: false,
                 success: function(data) {
                     if (data.status == 400) {
-                        toastr.error(data.message);
+                        toastr.error(data.msg);
                     } else {
                         $(form)[0].reset();
                         $('#work_exp_modal').modal('hide');
@@ -2672,6 +3167,7 @@ $Year = Carbon::now()->year;
                 }
             });
         });
+
         $('#CurrentEmpForm').on('submit', function(e) {
             e.preventDefault();
             var form = this;
@@ -2684,7 +3180,7 @@ $Year = Carbon::now()->year;
                 contentType: false,
                 success: function(data) {
                     if (data.status == 400) {
-                        toastr.error(data.message);
+                        toastr.error(data.msg);
                     } else {
                         $(form)[0].reset();
                         $('#current_emp_modal').modal('hide');
@@ -2694,6 +3190,7 @@ $Year = Carbon::now()->year;
                 }
             });
         });
+
         $('#CurrentSalaryForm').on('submit', function(e) {
             e.preventDefault();
             var form = this;
@@ -2706,12 +3203,128 @@ $Year = Carbon::now()->year;
                 contentType: false,
                 success: function(data) {
                     if (data.status == 400) {
-                        toastr.error(data.message);
+                        toastr.error(data.msg);
                     } else {
                         $(form)[0].reset();
                         $('#current_salary_modal').modal('hide');
                         toastr.success(data.msg);
                         window.location.reload();
+                    }
+                }
+            });
+        });
+
+        $('#TrainingForm').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        $(form)[0].reset();
+                        $('#training_modal').modal('hide');
+                        toastr.success(data.msg);
+                        window.location.reload();
+                    }
+                }
+            });
+        });
+
+        $('#PreOrgRefForm').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        $(form)[0].reset();
+                        $('#pre_org_ref_modal').modal('hide');
+                        toastr.success(data.msg);
+                        window.location.reload();
+                    }
+                }
+            });
+        });
+
+        $('#VNRRefForm').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        $(form)[0].reset();
+                        $('#vnr_ref_modal').modal('hide');
+                        toastr.success(data.msg);
+                        window.location.reload();
+                    }
+                }
+            });
+        });
+        $('#StrengthForm').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        $(form)[0].reset();
+                        $('#strength_modal').modal('hide');
+                        toastr.success(data.msg);
+                        window.location.reload();
+                    }
+                }
+            });
+        });
+
+        $('#SendMailForm').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                beforeSend: function() {
+                    $('#send_mail_btn').html('<i class="fa fa-spinner fa-spin"></i> Sending...');
+                },
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        $(form)[0].reset();
+                        $('.compose-mail-popup').hide();
+                        toastr.success(data.msg);
                     }
                 }
             });
