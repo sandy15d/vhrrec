@@ -81,37 +81,41 @@ $TotalCandidate = DB::table('jobcandidates')->count();
                 </a>
             </div>
             <div class="col">
-                <div class="card radius-10 border-start border-0 border-3 border-warning">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div>
-                                <p class="mb-0 text-secondary">Total Candidates</p>
+                <a href="/job_applications">
+                    <div class="card radius-10 border-start border-0 border-3 border-warning">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <p class="mb-0 text-secondary">Total Candidates</p>
 
-                            </div>
-                            <div class="ms-auto">
-                                <h3 class="my-1 text-warning">{{ $TotalCandidate }}</h3>
+                                </div>
+                                <div class="ms-auto">
+                                    <h3 class="my-1 text-warning">{{ $TotalCandidate }}</h3>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
         <!--end row-->
 
         <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
             <div class="col">
-                <div class="card radius-10">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div>
-                                <p class="mb-0 text-primary">Resume Pending for Tech. Screening</p>
-                            </div>
-                            <div class="ms-auto">
-                                <h4 class="my-1 text-danger">23</h4>
+                <a href="/TechnicalScreening">
+                    <div class="card radius-10">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <p class="mb-0 text-primary">Resume Pending for Tech. Screening</p>
+                                </div>
+                                <div class="ms-auto">
+                                    <h4 class="my-1 text-danger">23</h4>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col">
                 <div class="card radius-10">

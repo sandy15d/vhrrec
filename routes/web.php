@@ -157,8 +157,15 @@ Route::post('insert_ctc', [OfferLtrController::class,'insert_ctc'])->name('inser
 Route::post('insert_ent', [OfferLtrController::class,'insert_ent'])->name('insert_ent');
 Route::post('offer_ltr_gen', [OfferLtrController::class,'offer_ltr_gen'])->name('offer_ltr_gen');
 Route::get('offer_ltr_print', [OfferLtrController::class,'offer_ltr_print'])->name('offer_ltr_print');
+Route::get('candidate-offer-letter', [OfferLtrController::class,'candidate_offer_letter'])->name('candidate-offer-letter');
 Route::get('offerLtrHistory', [OfferLtrController::class,'offerLtrHistory'])->name('offerLtrHistory');
 Route::get('offer_ltr_history', [OfferLtrController::class,'offer_ltr_history'])->name('offer_ltr_history');
+Route::get('getDetailForReview', [OfferLtrController::class,'getDetailForReview'])->name('getDetailForReview');
+Route::post('saveJoinDate', [OfferLtrController::class,'saveJoinDate'])->name('saveJoinDate');
+Route::post('SendOfferLtr', [OfferLtrController::class,'SendOfferLtr'])->name('SendOfferLtr');
+Route::post('OfferResponse', [OfferLtrController::class,'OfferResponse'])->name('OfferResponse');
+Route::get('offer-letter-response', [OfferLtrController::class,'OfferLetterResponse'])->name('offer-letter-response');
+Route::post('offerReopen', [OfferLtrController::class,'offerReopen'])->name('offerReopen');
 
 
 Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');

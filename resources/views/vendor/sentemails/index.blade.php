@@ -66,9 +66,7 @@
 
 
 <div class="flex flex-1 overflow-hidden">
-
     <main class="flex-1 flex bg-gray-200">
-
         <div class="relative flex flex-col w-full max-w-xs flex-grow border-l border-r bg-gray-200">
             <div class="flex-1 overflow-y-auto">
                 @foreach($emails as $email)

@@ -412,23 +412,7 @@ table.table td,table.table th {
 	background: linear-gradient(to right, #ff9b44 0%, #fc6075 100%);
 	color: #fff;
 }
-.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
-	background-color: #ff9b44;
-	border-color: #ff9b44;
-}
-.pagination > li > a, .pagination > li > span {
-	color: #ff9b44;
-}
-.page-link:hover {
-	color: #ff9b44;
-}
-.page-link:focus {
-	box-shadow: unset;
-}
-.page-item.active .page-link {
-	background-color: #ff9b44;
-	border-color: #ff9b44;
-}
+
 .dropdown-menu {
 	border: 1px solid rgba(0, 0, 0, 0.1);
 	border-radius: 3px;

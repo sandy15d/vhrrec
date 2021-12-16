@@ -5,6 +5,11 @@ use function App\Helpers\getStateName;
 use function App\Helpers\getEducationById;
 use function App\Helpers\getSpecializationbyId;
 use function App\Helpers\getCollegeById;
+use function App\Helpers\getDepartment;
+use function App\Helpers\getCompanyCode;
+use function App\Helpers\getDesignation;
+use function App\Helpers\getGradeValue;
+use function App\Helpers\getFullName;
 $sendingId = request()->query('jaid');
 $JAId = base64_decode($sendingId);
 $Rec = DB::table('jobapply')
@@ -18,6 +23,12 @@ $Rec = DB::table('jobapply')
     ->first();
 
 $JCId = $Rec->JCId;
+
+$OfBasic = DB::table('offerletterbasic')
+    ->leftJoin('candjoining', 'candjoining.JAId', '=', 'offerletterbasic.JAId')
+    ->select('offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.RejReason')
+    ->where('offerletterbasic.JAId', $JAId)
+    ->first();
 
 $FamilyInfo = DB::table('jf_family_det')
     ->where('JCId', $JCId)
@@ -43,10 +54,35 @@ $VnrRef = DB::table('jf_reference')
     ->where('from', 'VNR')
     ->get();
 $Year = Carbon::now()->year;
+
+$sql = DB::table('offerletterbasic_history')
+    ->where('JAId', $JAId)
+    ->get();
+$count = count($sql);
 @endphp
 @extends('layouts.master')
 @section('title', 'Candidate Detail')
 @section('PageContent')
+    <style>
+        .table>:not(caption)>*>* {
+            padding: 2px 1px;
+        }
+
+        .frminp {
+            padding: 4 px !important;
+            height: 25 px;
+            border-radius: 4 px;
+            font-size: 11px;
+            font-weight: 550;
+        }
+
+        .frmbtn {
+            padding: 2px 4px !important;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+    </style>
     <div class="page-content">
         <input type="hidden" name="JAId" id="JAId" value="{{ $JAId }}">
         <input type="hidden" name="JCId" id="JCId" value="{{ $JCId }}">
@@ -68,8 +104,8 @@ $Year = Carbon::now()->year;
                                 <div class="row">
                                     <div class="col-md-5">
                                         <div class="profile-info-left">
-                                            <h5 class="user-name m-t-0 mb-0"> {{ $Rec->FName }} {{ $Rec->MName }}
-                                                {{ $Rec->LName }}</h5>
+                                            <h6 class="user-name m-t-0 mb-0"> {{ $Rec->FName }} {{ $Rec->MName }}
+                                                {{ $Rec->LName }}</h6>
                                             <h6 class="staff-id">Applied For: {{ $Rec->JobTitle }}</h6>
 
                                             <div class="staff-id">ReferenceNo : {{ $Rec->ReferenceNo }}</div>
@@ -111,13 +147,21 @@ $Year = Carbon::now()->year;
                                                     @php
                                                         $sendingId = base64_encode($Rec->JAId);
                                                     @endphp
-                                                    <a class="text-danger"
-                                                        href="{{ route('interview_form_detail') }}?jaid={{ $sendingId }}"
-                                                        target="_blank">Interview Form</a>
+                                                    <a class="text-danger" href="javascript:void(0);"
+                                                        onclick="printInterviewForm('{{ route('interview_form_detail') }}?jaid={{ $sendingId }}');">Interview
+                                                        Form</a>
                                                 </div>
-                                                <div class="title">
-                                                    <a class="text-danger" href="#">Joining Form</a>
+                                                <div class=" title">
+                                                    <a class="text-danger" href="javascript:void(0);">Joining Form</a>
                                                 </div>
+                                                @if ($OfBasic->OfferLtrGen == 1)
+                                                    <div class="title">
+                                                        <a href="javascript:void(0);" class="text-danger"
+                                                            onclick="OfferLetterPrint('{{ route('offer_ltr_print') }}?jaid={{ $Rec->JAId }}');">Offer
+                                                            Letter</a>
+                                                    </div>
+                                                @endif
+
                                             </li>
 
 
@@ -152,16 +196,14 @@ $Year = Carbon::now()->year;
                                 class="nav-link">Reference</a></li>
 
                         <li class="nav-item"><a href="#cand_other" data-bs-toggle="tab"
-                                class="nav-link">Other</a></li>
+                                class="nav-link">Document & Other </a></li>
 
                         <li class="nav-item"><a href="#cand_history" data-bs-toggle="tab"
                                 class="nav-link">History</a></li>
 
-                        <li class="nav-item"><a href="#cand_log" data-bs-toggle="tab" class="nav-link">Candidate
-                                Log</a></li>
+                        <li class="nav-item"><a href="#job_offer" data-bs-toggle="tab" class="nav-link">Job
+                                Offer</a></li>
 
-                        <li class="nav-item"><a href="#cand_document" data-bs-toggle="tab"
-                                class="nav-link">Documents</a></li>
                         <li class="nav-item">
                             <a href="#cand_family" data-bs-toggle="tab" class="nav-link">Changes <small
                                     class="text-danger">(Admin Only)</small></a>
@@ -177,9 +219,9 @@ $Year = Carbon::now()->year;
                     <div class="col-md-6 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
-                                <h3 class="card-title">Personal Informations <a href="#" class="edit-icon"
+                                <h6 class="card-title">Personal Informations <a href="#" class="edit-icon"
                                         data-bs-toggle="modal" data-bs-target="#personal_info_modal"
-                                        onclick="GetPersonalData();"><i class="fa fa-pencil"></i></a></h3>
+                                        onclick="GetPersonalData();"><i class="fa fa-pencil"></i></a></h6>
                                 <ul class="personal-info">
                                     <li>
                                         <div class="title">Gender<span style="float: right">:</span></div>
@@ -244,10 +286,10 @@ $Year = Carbon::now()->year;
                     <div class="col-md-6 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
-                                <h3 class="card-title">Emergency Contact <a href="#" class="edit-icon"
+                                <h6 class="card-title">Emergency Contact <a href="#" class="edit-icon"
                                         data-bs-toggle="modal" data-bs-target="#emergency_contact_modal"
-                                        onclick="GetEmergencyContact();"><i class="fa fa-pencil"></i></a></h3>
-                                <h5 class="section-title">Primary</h5>
+                                        onclick="GetEmergencyContact();"><i class="fa fa-pencil"></i></a></h6>
+                                <h6 class="section-title">Primary</h6>
                                 <ul class="personal-info">
                                     <li>
                                         <div class="title">Name</div>
@@ -264,7 +306,7 @@ $Year = Carbon::now()->year;
                                 </ul>
 
                                 <hr>
-                                <h5 class="section-title">Secondary</h5>
+                                <h6 class="section-title">Secondary</h6>
                                 <ul class="personal-info">
                                     <li>
                                         <div class="title">Name</div>
@@ -287,9 +329,9 @@ $Year = Carbon::now()->year;
                     <div class="col-md-6 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
-                                <h3 class="card-title">Bank Informations <a href="#" class="edit-icon"
+                                <h6 class="card-title">Bank Informations <a href="#" class="edit-icon"
                                         data-bs-toggle="modal" data-bs-target="#bank_info_modal" onclick="GetBankInfo();"><i
-                                            class="fa fa-pencil"></i></a></h3>
+                                            class="fa fa-pencil"></i></a></h6>
                                 <ul class="personal-info">
                                     <li>
                                         <div class="title">Bank Name<span style="float: right">:</span></div>
@@ -332,9 +374,9 @@ $Year = Carbon::now()->year;
                     <div class="col-md-6 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
-                                <h3 class="card-title">Family Informations <a href="#" class="edit-icon"
+                                <h6 class="card-title">Family Informations <a href="#" class="edit-icon"
                                         data-bs-toggle="modal" data-bs-target="#family_info_modal" onclick="GetFamily();"><i
-                                            class="fa fa-pencil"></i></a></h3>
+                                            class="fa fa-pencil"></i></a></h6>
                                 <div class="table-responsive">
                                     <table class="table table-nowrap">
                                         <thead>
@@ -373,12 +415,12 @@ $Year = Carbon::now()->year;
                     <div class="col-md-6 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
-                                <h3 class="card-title">Current Address
+                                <h6 class="card-title">Current Address
                                     <a href="#" class="edit-icon" data-bs-toggle="modal"
                                         data-bs-target="#current_address_modal" onclick="GetCurrentAddress();">
                                         <i class="fa fa-pencil"></i>
                                     </a>
-                                </h3>
+                                </h6>
                                 <ul class="personal-info">
                                     <li>
                                         <div class="title">Address <span style="float: right">:</span></div>
@@ -421,12 +463,12 @@ $Year = Carbon::now()->year;
                     <div class="col-md-6 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
-                                <h3 class="card-title">Permanent Address
+                                <h6 class="card-title">Permanent Address
                                     <a href="#" class="edit-icon" data-bs-toggle="modal"
                                         data-bs-target="#permanent_address_modal" onclick="GetPermanentAddress();">
                                         <i class="fa fa-pencil"></i>
                                     </a>
-                                </h3>
+                                </h6>
                                 <ul class="personal-info">
                                     <li>
                                         <div class="title">Address <span style="float: right">:</span></div>
@@ -473,12 +515,12 @@ $Year = Carbon::now()->year;
                 <div class="col-md-12 d-flex">
                     <div class="card profile-box flex-fill">
                         <div class="card-body">
-                            <h3 class="card-title">Educational Details
+                            <h6 class="card-title">Educational Details
                                 <a href="#" class="edit-icon" data-bs-toggle="modal"
                                     data-bs-target="#education_info_modal" onclick="GetQualification();">
                                     <i class="fa fa-pencil"></i>
                                 </a>
-                            </h3>
+                            </h6>
                             <div class="table-responsive">
                                 <table class="table text-center">
                                     <thead>
@@ -535,11 +577,11 @@ $Year = Carbon::now()->year;
                     <div class="col-md-6 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
-                                <h3 class="card-title">Current Employement
+                                <h6 class="card-title">Current Employement
                                     <a href="#" class="edit-icon" data-bs-toggle="modal"
                                         data-bs-target="#current_emp_modal" onclick="GetCurrentEmployementData();"><i
                                             class="fa fa-pencil"></i></a>
-                                </h3>
+                                </h6>
                                 <ul class="personal-info">
                                     <li>
                                         <div class="title" style="width: 150px;">Name of Company <span
@@ -589,9 +631,9 @@ $Year = Carbon::now()->year;
                     <div class="col-md-6 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
-                                <h3 class="card-title">Present Salary Details <a href="#" class="edit-icon"
+                                <h6 class="card-title">Present Salary Details <a href="#" class="edit-icon"
                                         data-bs-toggle="modal" data-bs-target="#current_salary_modal"
-                                        onclick="GetPresentSalaryDetails();"><i class="fa fa-pencil"></i></a></h3>
+                                        onclick="GetPresentSalaryDetails();"><i class="fa fa-pencil"></i></a></h6>
                                 <ul class="personal-info">
                                     <li>
                                         <div class="title" style="width: 200px;">Salary (Per Month)<span
@@ -636,12 +678,12 @@ $Year = Carbon::now()->year;
                 <div class="col-md-12 d-flex">
                     <div class="card profile-box flex-fill">
                         <div class="card-body">
-                            <h3 class="card-title">Previous Employement Records <small>(except the present)</small>
+                            <h6 class="card-title">Previous Employement Records <small>(except the present)</small>
                                 <a href="#" class="edit-icon" data-bs-toggle="modal" data-bs-target="#work_exp_modal"
                                     onclick="getWorkExp();">
                                     <i class="fa fa-pencil"></i>
                                 </a>
-                            </h3>
+                            </h6>
 
                             <div class="table-responsive">
                                 <table class="table text-center">
@@ -686,13 +728,13 @@ $Year = Carbon::now()->year;
                 <div class="col-md-12 d-flex">
                     <div class="card profile-box flex-fill">
                         <div class="card-body">
-                            <h3 class="card-title">Training & Practical Experience <small>(Other than regular
+                            <h6 class="card-title">Training & Practical Experience <small>(Other than regular
                                     jobs)</small>
                                 <a href="#" class="edit-icon" data-bs-toggle="modal" data-bs-target="#training_modal"
                                     onclick="getTraining();">
                                     <i class="fa fa-pencil"></i>
                                 </a>
-                            </h3>
+                            </h6>
 
                             <div class="table-responsive">
                                 <table class="table text-center">
@@ -735,12 +777,12 @@ $Year = Carbon::now()->year;
                 <div class="col-md-12 d-flex">
                     <div class="card profile-box flex-fill">
                         <div class="card-body">
-                            <h3 class="card-title">Previous Organization Reference
+                            <h6 class="card-title">Previous Organization Reference
                                 <a href="#" class="edit-icon" data-bs-toggle="modal"
                                     data-bs-target="#pre_org_ref_modal" onclick="getPreOrgRef();">
                                     <i class="fa fa-pencil"></i>
                                 </a>
-                            </h3>
+                            </h6>
 
                             <div class="table-responsive">
                                 <table class="table">
@@ -781,10 +823,10 @@ $Year = Carbon::now()->year;
                     <div class="col-md-12 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
-                                <h3 class="card-title">Acquaintances / Relatives associated with the VNR Group<a
+                                <h6 class="card-title">Acquaintances / Relatives associated with the VNR Group<a
                                         href="#" class="edit-icon" data-bs-toggle="modal"
                                         data-bs-target="#vnr_ref_modal" onclick="getVnrRef();"><i
-                                            class="fa fa-pencil"></i></a></h3>
+                                            class="fa fa-pencil"></i></a></h6>
 
                                 <table class="table">
                                     <thead>
@@ -827,12 +869,12 @@ $Year = Carbon::now()->year;
                     <div class="col-md-6 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
-                                <h3 class="card-title">Strength & Areas of Improvement?
+                                <h6 class="card-title">Strength & Areas of Improvement?
                                     <a href="#" class="edit-icon" data-bs-toggle="modal"
                                         data-bs-target="#strength_modal" onclick="GetStrength();">
                                         <i class="fa fa-pencil"></i>
                                     </a>
-                                </h3>
+                                </h6>
 
                                 <ul class="personal-info">
                                     <li>
@@ -861,12 +903,12 @@ $Year = Carbon::now()->year;
                     <div class="col-md-6 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
-                                <h3 class="card-title">Language Proficiency
+                                <h6 class="card-title">Language Proficiency
                                     <a href="#" class="edit-icon" data-bs-toggle="modal"
                                         data-bs-target="#personal_info_modal">
                                         <i class="fa fa-pencil"></i>
                                     </a>
-                                </h3>
+                                </h6>
                                 <div class="table-responsive">
                                     <table class="table">
                                         <thead>
@@ -911,9 +953,9 @@ $Year = Carbon::now()->year;
                     <div class="col-md-12 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
-                                <h3 class="card-title">About Yourself<a href="#" class="edit-icon"
+                                <h6 class="card-title">About Yourself<a href="#" class="edit-icon"
                                         data-bs-toggle="modal" data-bs-target="#family_info_modal"><i
-                                            class="fa fa-pencil"></i></a></h3>
+                                            class="fa fa-pencil"></i></a></h6>
 
                                 <div class="table-responsive">
                                     <table class="table">
@@ -945,22 +987,193 @@ $Year = Carbon::now()->year;
                 </div>
             </div>
 
-            <div class="tab-pane fade" id="cand_log">
-                <div class="card">
-                    <div class="card-body">
-                        Log
+            <div class="tab-pane fade" id="job_offer">
+                <div class="row">
+                    <div class="col-md-5 d-flex">
+                        <div class="card profile-box flex-fill">
+                            <div class="card-body">
+                                <h6 class="card-title">Offer Letter Basic Details
+                                    <a href="#" class="edit-icon" data-bs-toggle="modal"
+                                        data-bs-target="#OfferLtrModal" id="offerltredit" data-id="{{ $Rec->JAId }}">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                </h6>
+                                <ul class="personal-info">
+                                    <li>
+                                        <div class="title" style="width: 150px;">Department<span
+                                                style="float: right">:</span></div>
+                                        <div class="text">{{ getDepartment($OfBasic->Department) ?? '-' }}
+                                            ({{ getCompanyCode($OfBasic->Company) }})</div>
+                                    </li>
+                                    <li>
+                                        <div class="title" style="width: 150px;">Designation<span
+                                                style="float: right">:</span></div>
+                                        <div class="text">{{ getDesignation($OfBasic->Designation) ?? '-' }}
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="title" style="width: 150px;">Grade<span
+                                                style="float: right">:</span></div>
+                                        <div class="text">{{ getGradeValue($OfBasic->Grade) ?? '-' }}</div>
+                                    </li>
+                                    <li>
+                                        <div class="title" style="width: 150px;">Reporting Mgr.<span
+                                                style="float: right">:</span></div>
+                                        <div class="text">
+                                            {{ getFullName($OfBasic->A_ReportingManager) ?? '-' }}</div>
+                                    </li>
+                                    <li>
+                                        <div class="title" style="width: 150px;">CTC<span
+                                                style="float: right">:</span></div>
+                                        <div class="text">{{ $OfBasic->CTC ?? '-' }}</div>
+                                    </li>
+                                    <li>
+                                        <div class="title" style="width: 150px;">Service Condition<span
+                                                style="float: right">:</span></div>
+                                        <div class="text">
+                                            @if ($OfBasic->ServiceCondition == 'Training')
+                                                Training
+                                            @elseif($OfBasic->ServiceCondition == 'Probation')
+                                                Probation
+                                            @else
+                                                No Probation No Training
+                                            @endif
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-7 d-flex">
+                        <div class="card profile-box flex-fill">
+                            <div class="card-body">
+                                <h6 class="card-title">Offer Letter Generation & Review
+                                    <a href="javascript:void(0);" class="edit-icon" id="offerltrgen"
+                                        data-id="{{ $Rec->JAId }}">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                </h6>
+                                <ul class="personal-info">
+                                    <li>
+                                        <div class="title" style="width: 150px;">Offer Letter Generate<span
+                                                style="float: right">:</span></div>
+                                        <div class="text">
+                                            @if ($OfBasic->OfferLtrGen == 1)
+                                                <span class="text-dark">Yes</span>
+                                            @else
+                                                <span class="text-danger">No</span>
+                                            @endif
+                                            @if ($count > 1)
+                                                ( <a href="javascript:vaoid(0);" class="offer-history-btn"
+                                                    data-bs-toggle="modal" data-bs-target="#HistoryModal"
+                                                    onclick="getOfHistory({{ $Rec->JAId }});"> View History</a>)
+                                            @endif
+
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="title" style="width: 150px;">Offer Letter Send<span
+                                                style="float: right">:</span></div>
+                                        <div class="text">
+                                            @if ($OfBasic->OfferLetterSent != null)
+                                                <span class="text-dark">Yes</span>
+                                            @else
+                                                <span class="text-danger">No</span> ( <a href="javascript:void(0);"
+                                                    class="" onclick="sendOfferLtr({{ $Rec->JAId }});">
+                                                    Send Now</a>)
+                                            @endif
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="title" style="width: 150px;">Acceptance Status<span
+                                                style="float: right">:</span></div>
+                                        <div class="text"> <span
+                                                class="text-danger">{{ $OfBasic->Answer ?? '-' }}</span>
+                                            @if ($OfBasic->Answer == 'Rejected')
+                                                ( <a href="javascript:void(0);" class=""
+                                                    onclick="offerReopen({{ $Rec->JAId }});"> Offer Reopen</a>)
+                                            @endif
+                                        </div>
+                                    </li>
+
+                                    @if ($OfBasic->Answer == 'Rejected')
+                                        <li>
+                                            <div class="title" style="width: 150px;">Rejection Reason<span
+                                                    style="float: right">:</span></div>
+                                            <div class="text text-danger">{{ $OfBasic->RejReason ?? '-' }}</div>
+                                        </li>
+
+                                    @endif
+                                    <li>
+                                        <div class="title" style="width: 150px;">Date of Joining<span
+                                                style="float: right">:</span></div>
+                                        <div class="text">
+                                            <input type="date" class="form-control frminp form-control-sm d-inline-block"
+                                                id="dateofJoin" name="" readonly="" style="width: 130px;"
+                                                value="{{ $OfBasic->JoinOnDt }}">
+                                            <i class="fa fa-pencil text-primary" aria-hidden="true" id="joindtenable"
+                                                onclick="joinDateEnbl()"
+                                                style="font-size: 16px;cursor: pointer; display: "></i>
+                                            <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
+                                                id="JoinSave" onclick="saveJoinDate()">Save</button>
+                                            <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
+                                                id="JoinCanc" onclick="window.location.reload();">Cancel</button>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div class="title" style="width: 150px;">Joining Form Sent<span
+                                                style="float: right">:</span></div>
+                                        <div class="text">
+                                            @if ($OfBasic->JoiningFormSent != null)
+                                                <span class="text-dark">Yes</span>
+                                            @else
+                                                <span class="text-danger">No</span> ( <a href="javascript:void(0);"
+                                                    class=""
+                                                    onclick="sendJoiningForm({{ $Rec->JAId }});"> Send Now</a>)
+                                            @endif
+                                    </li>
+                                    <li>
+                                        <div class="title" style="width: 150px;">Send for Review<span
+                                                style="float: right">:</span></div>
+                                        <div class="text">
+                                            @if ($OfBasic->SendReview != 0)
+                                                <span class="text-dark">Yes</span>
+                                            @else
+                                                <span class="text-danger">No</span> (<a href="javascript:void(0);"
+                                                    class="" onclick="sendReviewLtr({{ $Rec->JAId }});">
+                                                    Send Now</a>)
+                                            @endif
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="title" style="width: 150px;">Offer Letter View<span
+                                                style="float: right">:</span></div>
+                                        <div class="text"><input type="text" name="" id="oflink"
+                                                class="frminp d-inline"
+                                                value="{{ route('candidate-offer-letter') }}?jaid={{ $sendingId }}">
+                                            <button class="frmbtn btn btn-sm btn-secondary" onclick="copyOfLink();">Copy
+                                                Link</button>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="title" style="width: 150px;">Joining Form View<span
+                                                style="float: right">:</span></div>
+                                        <div class="text"><input type="text" name="" id="jflink"
+                                                class="frminp d-inline"
+                                                value="{{ url('jobportal/aaa?jaid=' . $Rec->JAId) }}">
+                                            <button class="frmbtn btn btn-sm btn-secondary" onclick="copyJFrmLink();">Copy
+                                                Link</button>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="tab-pane fade" id="cand_document">
-                <div class="card">
-                    <div class="card-body">
-                        Document
-                    </div>
-                </div>
             </div>
-
         </div>
     </div>
 
@@ -973,19 +1186,20 @@ $Year = Carbon::now()->year;
                 </div>
             </div>
             <div class="card-body">
-                <form action="{{route('sendMailToCandidate')}}" method="POST" id="SendMailForm">
+                <form action="{{ route('sendMailToCandidate') }}" method="POST" id="SendMailForm">
                     <div class="email-form">
                         <div class="mb-3">
-                            <input type="hidden" name="CandidateName" id="CandidateName" value="{{ $Rec->FName }} {{ $Rec->LName }}">
-                            <input type="text" class="form-control" value="{{ $Rec->Email }}" readonly
-                                name="eMailId" id="eMailId">
+                            <input type="hidden" name="CandidateName" id="CandidateName"
+                                value="{{ $Rec->FName }} {{ $Rec->LName }}">
+                            <input type="text" class="form-control" value="{{ $Rec->Email }}" readonly name="eMailId"
+                                id="eMailId">
                         </div>
                         <div class="mb-3">
                             <input type="text" class="form-control" placeholder="Subject" name="Subject" id="Subject">
                         </div>
                         <div class="mb-3">
-                            <textarea class="form-control" placeholder="Message" rows="10" cols="10"
-                                name="eMailMsg" id="eMailMsg"></textarea>
+                            <textarea class="form-control" placeholder="Message" rows="10" cols="10" name="eMailMsg"
+                                id="eMailMsg"></textarea>
                         </div>
                         <div class="mb-0">
                             <div style="float: right">
@@ -1004,7 +1218,7 @@ $Year = Carbon::now()->year;
         <div class="modal-dialog modal-dialog-centered " role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Personal Information</h5>
+                    <h6 class="modal-title">Personal Information</h6>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1096,7 +1310,7 @@ $Year = Carbon::now()->year;
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Emergency Contact</h5>
+                    <h6 class="modal-title">Emergency Contact</h6>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1168,7 +1382,7 @@ $Year = Carbon::now()->year;
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Bank Information</h5>
+                    <h6 class="modal-title">Bank Information</h6>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1245,7 +1459,7 @@ $Year = Carbon::now()->year;
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Family Information</h5>
+                    <h6 class="modal-title">Family Information</h6>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1283,7 +1497,7 @@ $Year = Carbon::now()->year;
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Current Address</h5>
+                    <h6 class="modal-title">Current Address</h6>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1356,7 +1570,7 @@ $Year = Carbon::now()->year;
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Current Address</h5>
+                    <h6 class="modal-title">Current Address</h6>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1430,7 +1644,7 @@ $Year = Carbon::now()->year;
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Educational Qualification</h5>
+                    <h6 class="modal-title">Educational Qualification</h6>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1754,7 +1968,7 @@ $Year = Carbon::now()->year;
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Work Experience</h5>
+                    <h6 class="modal-title">Work Experience</h6>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1827,7 +2041,7 @@ $Year = Carbon::now()->year;
         <div class="modal-dialog modal-dialog-centered " role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Current Employement</h5>
+                    <h6 class="modal-title">Current Employement</h6>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1894,7 +2108,7 @@ $Year = Carbon::now()->year;
         <div class="modal-dialog modal-dialog-centered " role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Present Salary Details</h5>
+                    <h6 class="modal-title">Present Salary Details</h6>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1945,7 +2159,7 @@ $Year = Carbon::now()->year;
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Training & Practical Experience</h5>
+                    <h6 class="modal-title">Training & Practical Experience</h6>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -2003,7 +2217,7 @@ $Year = Carbon::now()->year;
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Previous Organization Reference</h5>
+                    <h6 class="modal-title">Previous Organization Reference</h6>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -2066,7 +2280,7 @@ $Year = Carbon::now()->year;
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Acquaintances/Relatives: (Associated with VNR Group)</h5>
+                    <h6 class="modal-title">Acquaintances/Relatives: (Associated with VNR Group)</h6>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -2129,7 +2343,7 @@ $Year = Carbon::now()->year;
         <div class="modal-dialog  modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Resume</h5>
+                    <h6 class="modal-title">Resume</h6>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -2147,7 +2361,7 @@ $Year = Carbon::now()->year;
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Strength & Areas of Improvement</h5>
+                    <h6 class="modal-title">Strength & Areas of Improvement</h6>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -2193,6 +2407,446 @@ $Year = Carbon::now()->year;
                             <button class="btn btn-primary submit-btn">Submit</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="OfferLtrModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <form action="{{ route('update_offerletter_basic') }}" method="POST" id="offerletterbasicform">
+                <input type="hidden" name="Of_JAId" id="Of_JAId">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary">
+                        <h6 class="modal-title text-light" id="exampleModalLabel">Offer Letter Basic Details</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-bordered" style="vertical-align: middle;">
+                            <tbody>
+                                <tr>
+                                    <input type="hidden" name="JCId" id="JCId">
+                                    <input type="hidden" name="SelectedForC" id="SelectedForC">
+                                    <input type="hidden" name="SelectedForD" id="SelectedForD">
+                                </tr>
+
+                                <tr>
+                                    <td style="width:150px;">Grade</td>
+                                    <td>
+                                        <select name="Grade" id="Grade" class="form-select form-select-sm"
+                                            style="width: 200px;">
+                                            <option value="">Select</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:150px;">Department</td>
+                                    <td>
+
+                                        <input type="text" name="SelectedDepartment" id="SelectedDepartment" disabled
+                                            style="background-color: white;border:aliceblue; width: 160px; color:black">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:150px;">Designation</td>
+                                    <td>
+                                        <select name="Designation" id="Designation" class="form-select form-select-sm"
+                                            style="width: 200px;">
+                                            <option value="">Select</option>
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Location(HQ)</td>
+                                    <td>
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input " type="checkbox"
+                                                                id="permanent_chk" name="permanent_chk" value="1">
+                                                            <label class="form-check-label" for="permanent_chk">Permanent
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline d-none"
+                                                            id="permanent_div">
+                                                            <select name="Of_PermState" id="Of_PermState"
+                                                                class="form-select form-select-sm d-inline"
+                                                                style="width: 130px;">
+                                                                <option value="">Select State</option>
+                                                            </select>
+                                                            <select name="PermHQ" id="PermHQ"
+                                                                class="form-select form-select-sm d-inline"
+                                                                style="width: 130px;">
+                                                                <option value="">Select HQ</option>
+                                                            </select>
+                                                            <input type="text" name="Of_PermCity" id="Of_PermCity"
+                                                                class="form-control form-control-sm d-inline"
+                                                                style="width: 130px;" placeholder="City">
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input " type="checkbox"
+                                                                id="temporary_chk" name="temporary_chk" value="1">
+                                                            <label class="form-check-label" for="temporary_chk">Temporary
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline d-none" id="temporary_div"
+                                                            style="margin-right:0px;">
+                                                            <select name="TempState" id="TempState"
+                                                                class="form-select form-select-sm d-inline"
+                                                                style="width: 130px;">
+                                                                <option value="">Select State</option>
+
+                                                            </select>
+                                                            <select name="TempHQ" id="TempHQ"
+                                                                class="form-select form-select-sm d-inline"
+                                                                style="width: 130px;">
+                                                                <option value="">Select HQ</option>
+
+                                                            </select>
+                                                            <input type="text" name="TempCity" id="TempCity"
+                                                                class="form-control form-control-sm d-inline"
+                                                                style="width: 100px;" placeholder="City">
+
+                                                            <select name="TemporaryMonth" id="TemporaryMonth"
+                                                                class="form-select form-select-sm d-inline"
+                                                                style="width: 90px;">
+                                                                <option value="0">Select Months</option>
+                                                                <option value="One">1</option>
+                                                                <option value="Two">2</option>
+                                                                <option value="Three">3</option>
+                                                                <option value="Four">4</option>
+                                                                <option value="Five">5</option>
+                                                                <option value="Six">6</option>
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Reporting</td>
+                                    <td>
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input " type="checkbox"
+                                                                id="administrative_chk" name="administrative_chk" value="1">
+                                                            <label class="form-check-label"
+                                                                for="administrative_chk">Administrative
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline d-none"
+                                                            id="administrative_div">
+                                                            <select name="AdministrativeDepartment"
+                                                                id="AdministrativeDepartment"
+                                                                class="form-select form-select-sm d-inline"
+                                                                style="width: 160px;">
+                                                                <option value="">Select Department</option>
+                                                            </select>
+                                                            <select name="AdministrativeEmployee"
+                                                                id="AdministrativeEmployee"
+                                                                class="form-select form-select-sm d-inline"
+                                                                style="width: 160px;">
+                                                                <option value="">Select Employee</option>
+                                                            </select>
+
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input " type="checkbox"
+                                                                id="functional_chk" name="functional_chk" value="1">
+                                                            <label class="form-check-label" for="functional_chk">Functional
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline d-none"
+                                                            style="padding-left: 43px;" id="functional_div">
+                                                            <select name="FunctionalDepartment" id="FunctionalDepartment"
+                                                                class="form-select form-select-sm d-inline"
+                                                                style="width: 160px;">
+                                                                <option value="">Select Department</option>
+                                                            </select>
+                                                            <select name="FunctionalEmployee" id="FunctionalEmployee"
+                                                                class="form-select form-select-sm d-inline"
+                                                                style="width: 160px;">
+                                                                <option value="">Select Employee</option>
+                                                            </select>
+
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>CTC</td>
+                                    <td>CTC:Rs. <input type="text" name="CTC" id="CTC"
+                                            class="form-control form-control-sm d-inline" style="width: 200px;"></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Service Condition</td>
+                                    <td>
+                                        <div class="form-check form-check-inline scon">
+                                            <input class="form-check-input" type="radio" id="Training" value="Training"
+                                                name="ServiceCond" onclick="$('#training_tr').removeClass('d-none');">
+                                            <label class="form-check-label" for="Training">Training</label>
+                                        </div>
+                                        <div class="form-check form-check-inline scon">
+                                            <input class="form-check-input" type="radio" id="Probation" value="Probation"
+                                                name="ServiceCond" onclick="$('#training_tr').addClass('d-none');">
+                                            <label class="form-check-label" for="Probation">Probation</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" id="nopnot" value="nopnot"
+                                                name="ServiceCond" onclick="$('#training_tr').addClass('d-none');">
+                                            <label class="form-check-label" for="nopnot">No Probation / No Training</label>
+                                        </div>
+
+                                    </td>
+                                </tr>
+
+                                <tr id="training_tr" class="d-none">
+                                    <td></td>
+                                    <td>
+                                        <table class="table table-borderless">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-check form-check-inline">
+
+                                                            <label>
+                                                                Orientation Period:
+                                                            </label>
+                                                        </div>
+                                                        <div class="d-inline" style="padding-left: 112px;">
+
+                                                            <select name="OrientationPeriod" id="OrientationPeriod"
+                                                                class="form-select form-select-sm d-inline"
+                                                                style="width: 130px;">
+                                                                <option value="">Select </option>
+                                                                <option value="One">1</option>
+                                                                <option value="Two">2</option>
+                                                                <option value="Three">3</option>
+                                                                <option value="Four">4</option>
+                                                                <option value="Five">5</option>
+                                                                <option value="Six">6</option>
+                                                            </select>
+                                                            <span>Months</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-check form-check-inline">
+
+                                                            <label>
+                                                                Stipend during Orientation Period:
+                                                            </label>
+                                                        </div>
+                                                        <div class="d-inline" style="padding-left: 18px;">
+
+                                                            <input type="text" name="Stipend" id="Stipend"
+                                                                class="form-control form-control-sm d-inline"
+                                                                style="width: 130px;">
+                                                            <span>per months</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-check form-check-inline">
+
+                                                            <label>Designation & Grade <br>After Training Completion
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline" id="permanent_div"
+                                                            style="padding-left: 71px;">
+                                                            <select name="AftDesignation" id="AftDesignation"
+                                                                class="form-select form-select-sm d-inline"
+                                                                style="width: 130px;">
+                                                                <option value="">Select Designation</option>
+                                                            </select>
+                                                            <select name="AftGrade" id="AftGrade"
+                                                                class="form-select form-select-sm d-inline"
+                                                                style="width: 130px;">
+                                                                <option value="">Select Grade</option>
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Service Bond</td>
+                                    <td>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="ServiceBond"
+                                                id="ServiceBondYes" value="Yes"
+                                                onclick="$('#bond_tr').removeClass('d-none');">
+                                            <label class="form-check-label" for="ServiceBondYes">Yes</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="ServiceBond"
+                                                id="ServiceBondNo" value="No" checked
+                                                onclick="$('#bond_tr').addClass('d-none');">
+                                            <label class="form-check-label" for="ServiceBondNo">No</label>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr id="bond_tr" class="d-none">
+                                    <td></td>
+                                    <td>
+                                        <table class="table table-borderless">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-check form-check-inline">
+
+                                                            <label>
+                                                                Service Bond Duration
+                                                            </label>
+                                                        </div>
+                                                        <div class="d-inline">
+
+                                                            <select name="ServiceBondDuration" id="ServiceBondDuration"
+                                                                class="form-select form-select-sm d-inline"
+                                                                style="width: 130px;">
+                                                                <option value="">Select </option>
+                                                                <option value="One">1</option>
+                                                                <option value="Two">2</option>
+                                                                <option value="Three">3</option>
+                                                                <option value="Four">4</option>
+                                                                <option value="Five">5</option>
+                                                                <option value="Six">6</option>
+                                                                <option value="Seven">7</option>
+                                                                <option value="Eight">8</option>
+                                                                <option value="Nine">9</option>
+                                                                <option value="Ten">10</option>
+                                                            </select>
+                                                            <span>Years</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-check form-check-inline">
+
+                                                            <label>
+                                                                Service Bond Refund
+                                                            </label>
+                                                        </div>
+                                                        <div class="d-inline">
+                                                            &nbsp;
+                                                            <input type="text" name="ServiceBondRefund"
+                                                                id="ServiceBondRefund"
+                                                                class="form-control form-control-sm d-inline"
+                                                                style="width: 130px;" value="50">
+                                                            <span>% of CTC</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Pre-Medical Check-up</td>
+                                    <td>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="MedicalCheckup"
+                                                id="MedicalCheckupYes" value="Yes">
+                                            <label class="form-check-label" for="MedicalCheckupYes">Yes</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="MedicalCheckup"
+                                                id="MedicalCheckupNo" value="No" checked>
+                                            <label class="form-check-label" for="MedicalCheckupNo">No</label>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        Signing Authority
+                                    </td>
+                                    <td>
+                                        <select name="SignAuth" id="SignAuth" class="form-select form-select-sm"
+                                            style="width: 170px">
+                                            <option value="General Manager HR">General Manager HR</option>
+                                            <option value="Managing Director">Managing Director</option>
+                                            <option value="Director">Director</option>
+                                            <option value="Business Head">Business Head</option>
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Remarks / Reason for Rivision</td>
+                                    <td>
+                                        <input type="text" name="Remark" id="Remark" class="form-control form-control-sm">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="HistoryModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h6 class="modal-title text-light" id="exampleModalLabel">Offer Letter History</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered text-center" style="vertical-align: middle;">
+                        <thead>
+                            <tr>
+                                <th>Date Generate</th>
+                                <th>Offer Letter Ref.No</td>
+                                <th>Offer Letter</th>
+                                <th>Reason for Change</td>
+                            </tr>
+                        </thead>
+                        <tbody id="offerHistory">
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -3282,6 +3936,7 @@ $Year = Carbon::now()->year;
                 }
             });
         });
+
         $('#StrengthForm').on('submit', function(e) {
             e.preventDefault();
             var form = this;
@@ -3329,5 +3984,463 @@ $Year = Carbon::now()->year;
                 }
             });
         });
+
+        function printInterviewForm(url) {
+            $("<iframe>") // create a new iframe element
+                .hide() // make it invisible
+                .attr("src", url) // point the iframe to the page you want to print
+                .appendTo("body");
+        }
+
+        $("#permanent_chk").change(function() {
+            if (!this.checked) {
+                $("#permanent_div").addClass("d-none");
+            } else {
+                $("#permanent_div").removeClass("d-none");
+            }
+        });
+
+        $("#temporary_chk").change(function() {
+            if (!this.checked) {
+                $("#temporary_div").addClass("d-none");
+            } else {
+                $("#temporary_div").removeClass("d-none");
+            }
+        });
+
+        $("#administrative_chk").change(function() {
+            if (!this.checked) {
+                $("#administrative_div").addClass("d-none");
+            } else {
+                $("#administrative_div").removeClass("d-none");
+            }
+        });
+
+        $("#functional_chk").change(function() {
+            if (!this.checked) {
+                $("#functional_div").addClass("d-none");
+            } else {
+                $("#functional_div").removeClass("d-none");
+            }
+        });
+
+        $(document).on('change', '#Grade', function() {
+            var Grade = $(this).val();
+            var value = 'nopnot';
+            if (Grade >= 70) {
+                $('.scon').css('display', 'none');
+                $("input[name=ServiceCond][value=" + value + "]").prop('checked', true);
+            } else {
+                $('.scon').css('display', 'inline-block');
+                $("input[name=ServiceCond][value=" + value + "]").prop('checked', false);
+            }
+        });
+
+        $(document).on('click', '#offerltredit', function() {
+            var JAId = $(this).data('id');
+            $.ajax({
+                type: "GET",
+                url: "{{ route('get_offerltr_basic_detail') }}?JAId=" + JAId,
+                success: function(res) {
+                    if (res.status == 200) {
+                        $('#Of_JAId').val(JAId);
+                        $('#JCId').val(res.candidate_detail.JCId);
+                        $('#SelectedForC').val(res.candidate_detail.SelectedForC);
+                        $('#SelectedForD').val(res.candidate_detail.SelectedForD);
+                        $("#Grade").empty();
+                        $("#Grade").append(
+                            '<option value="0">Select Grade</option>');
+                        $.each(res.grade_list, function(key, value) {
+                            $("#Grade").append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+                        $('#Grade').val(res.candidate_detail.Grade);
+                        var name = res.candidate_detail.FName;
+                        if (res.candidate_detail.MName != null) {
+                            name += ' ' + res.candidate_detail.MName;
+                        }
+                        name += ' ' + res.candidate_detail.LName;
+                        $('#CandidateName').val(name);
+                        $('#Father').val(res.candidate_detail.FatherName);
+                        $('#SelectedDepartment').val(res.candidate_detail.DepartmentName);
+
+                        $("#Designation").empty();
+                        $("#Designation").append(
+                            '<option value="0">Select Designation</option>');
+                        $.each(res.designation_list, function(key, value) {
+                            $("#Designation").append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+
+                        $('#Designation').val(res.candidate_detail.Designation);
+
+                        $("#AdministrativeDepartment").empty();
+                        $("#AdministrativeDepartment").append(
+                            '<option value="">Select Department</option>');
+                        $.each(res.department_list, function(key, value) {
+                            $("#AdministrativeDepartment").append('<option value="' + value +
+                                '">' + key +
+                                '</option>');
+                        });
+
+
+                        $("#FunctionalDepartment").empty();
+                        $("#FunctionalDepartment").append(
+                            '<option value="">Select Department</option>');
+                        $.each(res.department_list, function(key, value) {
+                            $("#FunctionalDepartment").append('<option value="' + value + '">' +
+                                key +
+                                '</option>');
+                        });
+
+                        $("#AdministrativeEmployee").empty();
+                        $("#AdministrativeEmployee").append(
+                            '<option value="">Select Employee</option>');
+                        $.each(res.employee_list, function(key, value) {
+                            $("#AdministrativeEmployee").append('<option value="' + key + '">' +
+                                value +
+                                '</option>');
+                        });
+
+                        $("#FunctionalEmployee").empty();
+                        $("#FunctionalEmployee").append(
+                            '<option value="">Select Employee</option>');
+                        $.each(res.employee_list, function(key, value) {
+                            $("#FunctionalEmployee").append('<option value="' + key + '">' +
+                                value +
+                                '</option>');
+                        });
+
+                        $("#AftDesignation").empty();
+                        $("#AftDesignation").append(
+                            '<option value="0">Select Designation</option>');
+                        $.each(res.designation_list, function(key, value) {
+                            $("#AftDesignation").append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+
+                        $("#AftGrade").empty();
+                        $("#AftGrade").append(
+                            '<option value="0">Select Grade</option>');
+                        $.each(res.grade_list, function(key, value) {
+                            $("#AftGrade").append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+
+                        $("#Of_PermState").empty();
+                        $("#Of_PermState").append(
+                            '<option value="0">Select State</option>');
+                        $.each(res.state_list, function(key, value) {
+                            $("#Of_PermState").append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+
+                        $("#PermHQ").empty();
+                        $("#PermHQ").append(
+                            '<option value="0">Select State</option>');
+                        $.each(res.headquarter_list, function(key, value) {
+                            $("#PermHQ").append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+
+                        $("#TempState").empty();
+                        $("#TempState").append(
+                            '<option value="0">Select State</option>');
+                        $.each(res.state_list, function(key, value) {
+                            $("#TempState").append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+
+                        $("#TempHQ").empty();
+                        $("#TempHQ").append(
+                            '<option value="0">Select State</option>');
+                        $.each(res.headquarter_list, function(key, value) {
+                            $("#TempHQ").append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+
+                        if (res.candidate_detail.FixedS == 1) {
+                            $('#permanent_chk').prop('checked', true);
+                            $("#permanent_div").removeClass("d-none");
+                            $('#Of_PermState').val(res.candidate_detail.F_StateHq);
+                            $('#PermHQ').val(res.candidate_detail.F_LocationHq);
+                            $('#Of_PermCity').val(res.candidate_detail.F_City);
+                        } else {
+                            $("#permanent_div").addClass("d-none");
+                        }
+                        if (res.candidate_detail.TempS == 1) {
+                            $('#temporary_chk').prop('checked', true);
+                            $("#temporary_div").removeClass("d-none");
+                            $('#TempState').val(res.candidate_detail.T_StateHq);
+                            $('#TempHQ').val(res.candidate_detail.T_LocationHq);
+                            $('#TempCity').val(res.candidate_detail.T_City);
+                            $('#TemporaryMonth').val(res.candidate_detail.TempM);
+                        } else {
+                            $("#temporary_div").addClass("d-none");
+                        }
+
+                        if (res.candidate_detail.Functional_R == 1) {
+                            $('#functional_chk').prop('checked', true);
+                            $("#functional_div").removeClass("d-none");
+                            $('#FunctionalDepartment').val(res.candidate_detail.Functional_Dpt);
+                            $('#FunctionalEmployee').val(res.candidate_detail.F_ReportingManager);
+
+                        } else {
+                            $("#functional_div").addClass("d-none");
+                        }
+
+                        if (res.candidate_detail.Admins_R == 1) {
+                            $('#administrative_chk').prop('checked', true);
+                            $("#administrative_div").removeClass("d-none");
+                            $('#AdministrativeDepartment').val(res.candidate_detail.Admins_Dpt);
+                            $('#AdministrativeEmployee').val(res.candidate_detail.A_ReportingManager);
+
+                        } else {
+                            $("#administrative_div").addClass("d-none");
+                        }
+
+                        $('#CTC').val(res.candidate_detail.CTC);
+                        if (res.candidate_detail.ServiceCondition != '') {
+                            $("input[name=ServiceCond][value=" + res.candidate_detail.ServiceCondition +
+                                "]").prop('checked', true);
+                        }
+
+                        if (res.candidate_detail.ServiceCondition === 'Training') {
+                            $('#training_tr').removeClass('d-none');
+                            $("#OrientationPeriod").val(res.candidate_detail.OrientationPeriod);
+                            $("#Stipend").val(res.candidate_detail.Stipend);
+                            $("#AftDesignation").val(res.candidate_detail.AFT_Designation);
+                            $("#AftGrade").val(res.candidate_detail.AFT_Grade);
+                        } else {
+                            $('#training_tr').addClass('d-none');
+                        }
+
+                        if (res.candidate_detail.ServiceBond != '') {
+                            $("input[name=ServiceBond][value=" + res.candidate_detail.ServiceBond +
+                                "]").prop('checked', true);
+                        }
+
+                        if (res.candidate_detail.PreMedicalCheckUp != '') {
+                            $("input[name=MedicalCheckup][value=" + res.candidate_detail
+                                .PreMedicalCheckUp +
+                                "]").prop('checked', true);
+                        }
+
+                        $('#SignAuth').val(res.candidate_detail.SigningAuth);
+                        $('#Remark').val(res.candidate_detail.Remarks);
+
+                    } else {
+                        alert('something went wrong..!!');
+                    }
+                }
+            });
+        });
+
+        $('#OfferLtrModal').on('hidden.bs.modal', function() {
+            $('#offerletterbasicform')[0].reset();
+        });
+
+        $(document).on('change', '#AdminstrativeDepartment', function() {
+            var DepartmentId = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getReportingManager') }}?DepartmentId=" + DepartmentId,
+                success: function(res) {
+                    if (res) {
+                        $("#AdministrativeEmployee").empty();
+                        $("#AdministrativeEmployee").append(
+                            '<option value="">Select Reporting</option>');
+                        $.each(res, function(key, value) {
+                            $("#AdministrativeEmployee").append('<option value="' + value +
+                                '">' +
+                                key +
+                                '</option>');
+                        });
+                        $('#AdministrativeEmployee').val();
+                    } else {
+                        $("#AdministrativeEmployee").empty();
+                    }
+                }
+            });
+        });
+
+        $(document).on('change', '#FunctionalDepartment', function() {
+            var DepartmentId = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getReportingManager') }}?DepartmentId=" + DepartmentId,
+                success: function(res) {
+                    if (res) {
+                        $("#FunctionalEmployee").empty();
+                        $("#FunctionalEmployee").append(
+                            '<option value="">Select Reporting</option>');
+                        $.each(res, function(key, value) {
+                            $("#FunctionalEmployee").append('<option value="' + value + '">' +
+                                key +
+                                '</option>');
+                        });
+                        $('#FunctionalEmployee').val();
+                    } else {
+                        $("#FunctionalEmployee").empty();
+                    }
+                }
+            });
+        });
+
+        $('#offerletterbasicform').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                beforeSend: function() {
+                    $(form).find('span.error-text').text('');
+                    $("#loader").modal('show');
+                },
+                success: function(data) {
+                    if (data.status == 400) {
+                        $("#loader").modal('hide');
+                        $.each(data.error, function(prefix, val) {
+                            $(form).find('span.' + prefix + '_error').text(val[0]);
+                        });
+                    } else {
+                        $(form)[0].reset();
+                        $('#loader').modal('hide');
+                        $('#OfferLtrModal').modal('hide');
+                    }
+                }
+            });
+        });
+
+        $(document).on('click', '#offerltrgen', function() {
+            var JAId = $(this).data('id');
+            sendingId = btoa(JAId);
+            window.open("{{ route('offer_letter_generate') }}?jaid=" + sendingId, '_blank');
+        });
+
+        function OfferLetterPrint(url) {
+            $("<iframe>") // create a new iframe element
+                .hide() // make it invisible
+                .attr("src", url) // point the iframe to the page you want to print
+                .appendTo("body");
+        }
+
+        function getOfHistory(JAId) {
+            var JAId = JAId;
+            var route = "{{ route('offer_ltr_history') }}";
+            $.ajax({
+                type: "GET",
+                url: "{{ route('offerLtrHistory') }}?jaid=" + JAId,
+                success: function(res) {
+                    var x = '';
+                    $.each(res.data, function(key, value) {
+                        x += '<tr>';
+                        x += '<td>' + value.OfDate + '</td>';
+                        x += '<td>' + value.LtrNo + '</td>';
+                        x += '<td><a href="' + route + '?LtrId=' + value.LtrId +
+                            '" target="_blank">View Offer</a></td>';
+                        x += '<td>' + value.RevisionRemark + '</td>';
+                    });
+                    $('#offerHistory').html(x);
+                }
+            });
+        }
+
+        function joinDateEnbl(jaid, th) {
+            $('#dateofJoin').prop('readonly', false);
+            $('#joindtenable').hide(500);
+            $('#JoinSave').show(500);
+            $('#JoinCanc').show(500);
+        }
+
+        function saveJoinDate() {
+            var joinDate = $('#dateofJoin').val();
+            var JAId = $('#JAId').val();
+            $.ajax({
+                type: "POST",
+                url: "{{ route('saveJoinDate') }}?JAId=" + JAId + "&JoinDate=" + joinDate,
+                success: function(res) {
+                    if (res.status == 200) {
+                        $('#joindtenable').show(500);
+                        $('#JoinSave').hide(500);
+                        $('#JoinCanc').hide(500);
+                        $('#dateofJoin').prop('readonly', true);
+                        toastr.success(res.msg);
+                    } else {
+                        toastr.error(res.msg);
+                    }
+                }
+            });
+        }
+
+        function copyOfLink() {
+            var copyText = document.getElementById("oflink");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999)
+            document.execCommand("copy");
+            alert("Copied Link: " + copyText.value);
+        }
+
+        function copyJFrmLink() {
+            var copyText = document.getElementById("jflink");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999)
+            document.execCommand("copy");
+            alert("Copied Link: " + copyText.value);
+        }
+
+        function sendOfferLtr(JAId) {
+            var JAId = JAId;
+            $.ajax({
+                url: "{{ route('SendOfferLtr') }}",
+                type: "POST",
+                data: {
+                    "JAId": JAId
+                },
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        toastr.success(data.msg);
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+
+        function offerReopen(JAId) {
+            var JAId = JAId;
+            var url = '<?= route('offerReopen') ?>';
+            swal.fire({
+                title: 'Are you sure?',
+                html: 'You want to <b>Open</b> this Offer',
+                showCancelButton: true,
+                showCloseButton: true,
+                cancelButtonText: 'Cancel',
+                confirmButtonText: 'Yes',
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#556ee6',
+                width: 400,
+                allowOutsideClick: false
+
+            }).then(function(result) {
+                if (result.value) {
+                    $.post(url, {
+                        JAId: JAId
+                    }, function(data) {
+                        if (data.status == 200) {
+                            toastr.success(data.msg);
+                            window.location.reload();
+                        } else {
+                            toastr.error(data.msg);
+                        }
+                    }, 'json');
+                }
+            });
+        }
     </script>
 @endsection
