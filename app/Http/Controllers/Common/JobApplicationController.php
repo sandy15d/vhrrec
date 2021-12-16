@@ -152,7 +152,7 @@ class JobApplicationController extends Controller
             $usersQuery->where("jobcandidates.FName", 'like', "%$Name%");
         }
 
-        $candidate_list = $usersQuery->select('jobapply.JAId', 'jobapply.ResumeSource','jobapply.Type', 'jobapply.ApplyDate', 'jobapply.Status', 'jobapply.FwdTechScr', 'jobcandidates.JCId', 'jobcandidates.ReferenceNo', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.Phone', 'jobcandidates.Email', 'jobcandidates.City', 'jobcandidates.Education', 'jobcandidates.Specialization', 'jobcandidates.Professional', 'jobcandidates.JobStartDate', 'jobcandidates.JobEndDate', 'jobcandidates.PresentCompany', 'jobcandidates.Designation', 'jobcandidates.Verified', 'jobcandidates.CandidateImage', 'jobcandidates.BlackList', 'jobcandidates.BlackListRemark', 'jobcandidates.UnBlockRemark', 'jobapply.JPId', 'jobpost.DesigId')
+        $candidate_list = $usersQuery->select('jobapply.JAId', 'jobapply.ResumeSource', 'jobapply.Type', 'jobapply.ApplyDate', 'jobapply.Status', 'jobapply.FwdTechScr', 'jobcandidates.JCId', 'jobcandidates.ReferenceNo', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.Phone', 'jobcandidates.Email', 'jobcandidates.City', 'jobcandidates.Education', 'jobcandidates.Specialization', 'jobcandidates.Professional', 'jobcandidates.JobStartDate', 'jobcandidates.JobEndDate', 'jobcandidates.PresentCompany', 'jobcandidates.Designation', 'jobcandidates.Verified', 'jobcandidates.CandidateImage', 'jobcandidates.BlackList', 'jobcandidates.BlackListRemark', 'jobcandidates.UnBlockRemark', 'jobapply.JPId', 'jobpost.DesigId')
             ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
             ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
             ->leftJoin('screening', 'jobapply.JAId', '=', 'screening.JAId')
@@ -177,7 +177,7 @@ class JobApplicationController extends Controller
             ->where('Type', '!=', 'Campus')
             ->where('FwdTechScr', 'Yes');
         $total_fwd = $total_fwd->count();
-        return view('common.job_applications', compact('company_list', 'months', 'source_list', 'education_list', 'candidate_list', 'total_candidate', 'total_available', 'total_hr_scr', 'total_fwd', 'jobpost_list','resume_list'));
+        return view('common.job_applications', compact('company_list', 'months', 'source_list', 'education_list', 'candidate_list', 'total_candidate', 'total_available', 'total_hr_scr', 'total_fwd', 'jobpost_list', 'resume_list'));
     }
 
     public function update_hrscreening(Request $request)
@@ -254,6 +254,7 @@ class JobApplicationController extends Controller
             return response()->json(['status' => 200, 'msg' => 'Candidate Successfully Mapped to JobPost.']);
         }
     }
+
     public function MoveCandidate(Request $request)
     {
         $JAId = $request->MoveCandidate_JAId;
@@ -357,7 +358,7 @@ class JobApplicationController extends Controller
                 return '<input type="checkbox" class="japchks" data-id="' . $data->JCId . '" name="selectCand" id="selectCand" value="' . $data->JCId . '">';
             })
             ->addColumn('Name', function ($data) {
-                
+
                 return $data->FName . ' ' . $data->MName . ' ' . $data->LName;
             })
 
@@ -408,7 +409,6 @@ class JobApplicationController extends Controller
         }
     }
 
-
     public function getJobResponseCandidateByJPId(Request $request)
     {
         $JPId = $request->JPId;
@@ -445,12 +445,17 @@ class JobApplicationController extends Controller
     {
         $file = $request->file('CandidateImage');
         $newImageName = 'UIMG' . date('YmdHis') . uniqid() . '.jpg';
- 
+
         $move = $file->move(public_path('uploads/temp'), $newImageName);
         if (!$move) {
             return response()->json(['status' => 0, 'msg' => 'Something went wrong!']);
         } else {
             return response()->json(['status' => 1, 'msg' => 'success']);
         }
+    }
+
+    public function CandidateJoiningForm(Request $Request)
+    {
+        return 'Candidate Joining Form';
     }
 }

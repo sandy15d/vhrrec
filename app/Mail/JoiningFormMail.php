@@ -2,24 +2,22 @@
 
 namespace App\Mail;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
 
 class JoiningFormMail extends Mailable
 {
-    use Queueable, SerializesModels;
 
+    public $details;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($details)
     {
-        //
+        $this->details = $details;
     }
+
 
     /**
      * Build the message.
@@ -28,6 +26,6 @@ class JoiningFormMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.JoiningFormMail');
+        return $this->from("recruitment@vnress.in", "VNR Recruitment")->subject($this->details['subject'])->markdown('emails.JoiningFormMail')->with("details", $this->details);
     }
 }

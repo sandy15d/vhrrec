@@ -6,6 +6,7 @@ use App\Models\screening;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Mail\JoiningFormMail;
 use App\Mail\OfferLetterMail;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Admin\master_employee;
@@ -555,6 +556,7 @@ class OfferLtrController extends Controller
 
 
         if ($update && $candJoin) {
+
             $details = [
                 "candidate_name" => $query->FName . ' ' . $query->MName . ' ' . $query->LName,
                 "reference_no" => $query->ReferenceNo,
@@ -599,8 +601,22 @@ class OfferLtrController extends Controller
             ]
         );
 
+        if ($Answer == 'Accepted') {
+            $sendId = base64_encode($JAId);
+            $row = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')
+                ->select('jobcandidates.ReferenceNo', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.Email')
+                ->where('jobapply.JAId', $JAId)->first();
+            $details = [
+                "candidate_name" => $row->FName . ' ' . $row->MName . ' ' . $row->LName,
+                "reference_no" => $row->ReferenceNo,
+                "subject" => "Complete your Onboarding Process",
+                "link" => route('candidate-joining-form') . '?jaid=' . $sendId
+            ];
+
+            Mail::to($row->Email)->send(new JoiningFormMail($details));
+        }
         if ($query && $query1) {
-            return response()->json(['status' => 200, 'msg' => 'Offer Letter Updated Successfully']);
+            return response()->json(['status' => 200, 'msg' => 'Response Submitted Successfully']);
         } else {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         }

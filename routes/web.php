@@ -136,6 +136,9 @@ Route::post('job_application_manual', [JobApplicationController::class, 'job_app
 Route::get('getManualEntryCandidate', [JobApplicationController::class, 'getManualEntryCandidate'])->name('getManualEntryCandidate');
 Route::post('getJobResponseCandidateByJPId', [JobApplicationController::class, 'getJobResponseCandidateByJPId'])->name('getJobResponseCandidateByJPId');
 Route::post('cropImage', [JobApplicationController::class, 'cropImage'])->name('cropImage');
+Route::get('candidate-joining-form', [JobApplicationController::class, 'CandidateJoiningForm'])->name('candidate-joining-form');
+
+
 
 
 Route::get('TechnicalScreening', [TrackerController::class, 'TechnicalScreening'])->name('TechnicalScreening');
