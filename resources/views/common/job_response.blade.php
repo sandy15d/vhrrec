@@ -97,7 +97,7 @@ use function App\Helpers\getStateName;
                             <td>Department</td>
                             <td>Designation</td>
                             <td>Responses</td>
-                            <td>Sources</td>
+                           {{--  <td>Sources</td> --}}
                         </tr>
                     </thead>
                     <tbody>
@@ -339,15 +339,23 @@ use function App\Helpers\getStateName;
                         data: 'Response',
                         name: 'Response'
                     },
-                    {
+                    /* {
                         data: 'Source',
                         name: 'Source'
-                    },
+                    }, */
 
                 ],
             });
 
 
+        });
+
+        $(document).on('click', '.select_all', function() {
+            if ($(this).prop("checked") == true) {
+                $(this).closest("tr").addClass("bg-secondary bg-gradient text-light");
+            } else {
+                $(this).closest("tr").removeClass("bg-secondary bg-gradient text-light");
+            }
         });
 
         function getPostTitle(JPId) {
