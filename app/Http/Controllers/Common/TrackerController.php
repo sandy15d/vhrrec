@@ -121,7 +121,7 @@ class TrackerController extends Controller
         $curDate = date('Y-m-d');
         $sql = DB::table('screening')
             ->where('JAId', $JAId)
-            ->update(['ResScreened' => $curDate, 'ScreenStatus' => $TechScreenStatus, 'InterviewMode' => $InterviewSchedule, 'RejectionRem' => $RejectRemark, 'IntervDt' => $InterviewDate, 'IntervTime' => $InterviewTime, 'IntervLoc' => $InterviewLocation, 'IntervPanel' => $InterviewPannel, 'travelEligibility' => $TravelElg, 'SendInterMail' => $InterviewMail,'UpdatedBy'=>Auth::user()->id,'LastUpdated'=>now()]);
+            ->update(['ResScreened' => $curDate, 'ScreenStatus' => $TechScreenStatus, 'InterviewMode' => $InterviewSchedule, 'RejectionRem' => $RejectRemark, 'IntervDt' => $InterviewDate, 'IntervTime' => $InterviewTime, 'IntervLoc' => $InterviewLocation, 'IntervPanel' => $InterviewPannel, 'travelEligibility' => $TravelElg, 'SendInterMail' => $InterviewMail, 'UpdatedBy' => Auth::user()->id, 'LastUpdated' => now()]);
 
         $jobapply = jobapply::find($JAId);
         $JCId = $jobapply->JCId;
@@ -345,6 +345,7 @@ class TrackerController extends Controller
         $query->Company = $request->SelectedForC;
         $query->Department = $request->SelectedForD;
         $query->CreatedTime = now();
+        $query->Year = date('Y');
         $query->CreatedBy = Auth::user()->id;
         $query->save();
         if (!$query) {

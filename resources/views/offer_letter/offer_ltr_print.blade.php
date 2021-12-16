@@ -8,11 +8,12 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="{{ URL::to('/') }}/assets/js/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&amp;display=swap" rel="stylesheet">
-    <script src="{{ URL::to('/') }}/assets/js/jquery.min.js"></script>
+
     <title>Offer Letter</title>
     <style>
         body {
@@ -487,7 +488,7 @@ $elg = DB::table('candidate_entitlement')
                     <p class="text-center"><b>ANNEXURE A – COMPENSATION STRUCTURE</b></p>
                     <br>
                     <center>
-                        <table class="table" >
+                        <table class="table">
                             <tr>
                                 <th class="text-center">Emolument Head</th>
                                 <th class="text-center">Amount (in Rs.)</th>
@@ -599,7 +600,7 @@ $elg = DB::table('candidate_entitlement')
                     <p class="text-center"><b>ANNEXURE B – ENTITLEMENTS</b></p>
                     <br>
                     <center>
-                        <table class="table" >
+                        <table class="table">
                             @php
                                 $rowCount = 0;
                             @endphp

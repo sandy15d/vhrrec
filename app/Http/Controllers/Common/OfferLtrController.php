@@ -6,12 +6,16 @@ use App\Models\screening;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Mail\OfferLetterMail;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Admin\master_employee;
 use App\Models\jobapply;
+use Illuminate\Support\Facades\Mail;
 
 use function App\Helpers\getCompanyCode;
+use function App\Helpers\getCompanyName;
 use function App\Helpers\getDepartmentCode;
+use function App\Helpers\getGradeValue;
 
 class OfferLtrController extends Controller
 {
@@ -28,6 +32,12 @@ class OfferLtrController extends Controller
         $Status = $request->Status;
         $Name = $request->Name;
         $usersQuery = screening::query();
+
+        if (Auth::user()->role == 'R') {
+
+            $usersQuery->where('screening.CreatedBy', Auth::user()->id);
+        }
+
         if ($Company != '') {
             $usersQuery->where("screening.SelectedForC", $Company);
         }
@@ -64,7 +74,7 @@ class OfferLtrController extends Controller
             ->leftJoin('candjoining', 'jobapply.JAId', '=', 'candjoining.JAId')
             ->whereNotNull('screening.SelectedForC')
             ->whereNotNull('screening.SelectedForD')
-            ->orderBy('ScId', 'DESC')->paginate(10);
+            ->orderBy('ScId', 'DESC')->paginate(20);
         return view('offer_letter.offer_letter', compact('company_list', 'months', 'candidate_list'));
     }
 
@@ -97,13 +107,13 @@ class OfferLtrController extends Controller
 
     public function update_offerletter_basic(Request $request)
     {
-        $JAId = $request->JAId;
+        $JAId = $request->Of_JAId;
         $Grade = $request->Grade;
         $Designation = $request->Designation;
         $permanent_chk = $request->permanent_chk ?? 0;
-        $PermState = $request->PermState;
+        $PermState = $request->Of_PermState;
         $PermHQ = $request->PermHQ;
-        $PermCity = $request->PermCity;
+        $PermCity = $request->Of_PermCity;
         $temporary_chk = $request->temporary_chk ?? 0;
         $TempState = $request->TempState;
         $TempHQ = $request->TempHQ ?? null;
@@ -455,11 +465,181 @@ class OfferLtrController extends Controller
     function offerLtrHistory(Request $request)
     {
         $JAId = $request->jaid;
-        $query = DB::table('offerletterbasic_history')->select('offerletterbasic_history.*',DB::raw('DATE_FORMAT(offerletterbasic_history.LtrDate, "%d-%b-%Y") as OfDate'))->where('JAId', $JAId)->get();
+        $query = DB::table('offerletterbasic_history')->select('offerletterbasic_history.*', DB::raw('DATE_FORMAT(offerletterbasic_history.LtrDate, "%d-%b-%Y") as OfDate'))->where('JAId', $JAId)->get();
         return response()->json(['status' => 200, 'data' => $query]);
     }
+
     public function offer_ltr_history(Request $request)
     {
         return view('offer_letter.offer_ltr_history');
+    }
+
+    public function getDetailForReview(Request $request)
+    {
+        $JAId = $request->JAId;
+        $query = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->join('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')->select('jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobpost.Title')->where('JAId', $JAId)->first();
+        return response()->json(['status' => 200, 'data' => $query]);
+    }
+
+    public function saveJoinDate(Request $request)
+    {
+        $JAId = $request->JAId;
+        $JoinDate = $request->JoinDate;
+        $chk = DB::table('candjoining')->select('*')->where('JAId', $JAId)->count();
+        if ($chk > 0) {
+            $update_query = DB::table('candjoining')->where('JAId', $JAId)->update(
+                [
+                    'JoinOnDt' => $JoinDate,
+                    'UpdatedBy' => Auth::user()->id,
+                    'LastUpdated' => now()
+                ]
+            );  //update
+        } else {
+            $update_query = DB::table('candjoining')->insert(
+                [
+                    'JAId' => $JAId,
+                    'JoinOnDt' => $JoinDate,
+                    'CreatedBy' => Auth::user()->id,
+                    'CreatedTime' => now()
+                ]
+            );  //insert
+        }
+        if ($update_query) {
+            return response()->json(['status' => 200, 'msg' => 'Join Date Updated Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function candidate_offer_letter(Request $request)
+    {
+        return view('jobportal.offer_letter');
+    }
+
+    public function SendOfferLtr(Request $request)
+    {
+        $JAId = $request->JAId;
+        $sendId = base64_encode($JAId);
+        $query = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->join('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')->join('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')->select('jobcandidates.ReferenceNo', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.Email', 'jobpost.Title', 'offerletterbasic.Company', 'offerletterbasic.Grade')->where('jobapply.JAId', $JAId)->first();
+        $update = DB::table('offerletterbasic')->where('JAId', $JAId)->update(
+            [
+                'OfferLetterSent' => 'Yes',
+                'UpdatedBy' => Auth::user()->id,
+                'LastUpdated' => now()
+            ]
+        );
+
+        $chk = DB::table('candjoining')->select('*')->where('JAId', $JAId)->count();
+        if ($chk > 0) {
+            $candJoin = DB::table('candjoining')->where('JAId', $JAId)->update(
+                [
+                    'LinkValidityStart' => now(),
+                    'LinkValidityEnd' => now()->addDays(7),
+                    'LinkStatus' => 'A',
+                    'UpdatedBy' => Auth::user()->id,
+                    'LastUpdated' => now()
+                ]
+            );  //update
+        } else {
+            $candJoin = DB::table('candjoining')->insert(
+                [
+                    'JAId' => $JAId,
+                    'LinkValidityStart' => now(),
+                    'LinkValidityEnd' => now()->addDays(7),
+                    'LinkStatus' => 'A',
+                    'CreatedBy' => Auth::user()->id,
+                    'CreatedTime' => now()
+                ]
+            );  //insert
+        }
+
+
+        if ($update && $candJoin) {
+            $details = [
+                "candidate_name" => $query->FName . ' ' . $query->MName . ' ' . $query->LName,
+                "reference_no" => $query->ReferenceNo,
+                "job_title" => $query->Title,
+                "company" => getCompanyName($query->Company),
+                "grade" => getGradeValue($query->Grade),
+                "subject" => "Job Offer Letter for the post of " . $query->Title,
+                "offer_link" => route('candidate-offer-letter') . '?jaid=' . $sendId
+            ];
+
+            Mail::to($query->Email)->send(new OfferLetterMail($details));
+            return response()->json(['status' => 200, 'msg' => 'Offer Letter Sent Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function OfferResponse(Request $request)
+    {
+        $Answer = $request->Answer;
+        $JAId = $request->JAId;
+        $JoinOnDt = $request->JoinOnDt ?? null;
+        $Place = $request->Place ?? null;
+        $Date = $request->Date ?? null;
+        $RejReason = $request->RejReason ?? null;
+
+        $query = DB::table('offerletterbasic')->where('JAId', $JAId)->update(
+            [
+                'Answer' => $Answer,
+                'LastUpdated' => now()
+            ]
+        );
+
+        $query1 = DB::table('candjoining')->where('JAId', $JAId)->update(
+            [
+                'Answer' => $Answer,
+                'JoinOnDt' => $JoinOnDt,
+                'Place' => $Place,
+                'Date' => $Date,
+                'RejReason' => $RejReason,
+                'LastUpdated' => now()
+            ]
+        );
+
+        if ($query && $query1) {
+            return response()->json(['status' => 200, 'msg' => 'Offer Letter Updated Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function OfferLetterResponse(Request $request)
+    {
+        return view('jobportal.offer_response_msg');
+    }
+
+    public function offerReopen(Request $request)
+    {
+        $JAId = $request->JAId;
+        $query = DB::table('offerletterbasic')->where('JAId', $JAId)->update(
+            [
+                'Answer' => null,
+                'OfferLetterSent' => null,
+                'LastUpdated' => now()
+            ]
+        );
+
+        $query1 = DB::table('candjoining')->where('JAId', $JAId)->update(
+            [
+                'LinkValidityStart' => null,
+                'LinkValidityEnd' => null,
+                'LinkStatus' => 'D',
+                'Answer' => '',
+                'JoinOnDt' => null,
+                'Place' => '',
+                'Date' => null,
+                'RejReason' => '',
+                'LastUpdated' => now()
+            ]
+        );
+
+        if ($query && $query1) {
+            return response()->json(['status' => 200, 'msg' => 'Offer Letter Reopen Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
     }
 }
