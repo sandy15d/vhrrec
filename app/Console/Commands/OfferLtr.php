@@ -37,6 +37,6 @@ class OfferLtr extends Command
      */
     public function handle()
     {
-        \Log::info("Cron is working Fine!");
+        \Log::info("Cron is working Fine!".date('Y-m-d H:i:s'));
     }
 }
