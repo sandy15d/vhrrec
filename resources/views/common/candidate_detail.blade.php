@@ -1138,13 +1138,16 @@ $count = count($sql);
                                         <div class="title" style="width: 150px;">Send for Review<span
                                                 style="float: right">:</span></div>
                                         <div class="text">
-                                            @if ($OfBasic->SendReview != 0)
-                                                <span class="text-dark">Yes</span>
+                                            @if ($OfBasic->SendReview == 1)
+                                                <span class="text-dark">Yes</span> ( <a href="javascript:void(0);"
+                                                    onclick="viewReview({{ $Rec->JAId }});" data-bs-toggle="modal"
+                                                    data-bs-target="#view_review">View</a>)
                                             @else
-                                                <span class="text-danger">No</span> (<a href="javascript:void(0);"
-                                                    class="" onclick="sendReviewLtr({{ $Rec->JAId }});">
-                                                    Send Now</a>)
+                                                <span class="text-danger">No</span>
                                             @endif
+                                            (<a href="javascript:void(0);" data-bs-toggle="modal"
+                                                data-bs-target="#review_modal">
+                                                Send Now</a>)
                                         </div>
                                     </li>
                                     <li>
@@ -2851,6 +2854,76 @@ $count = count($sql);
             </div>
         </div>
     </div>
+
+    <div id="review_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog " role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">Send Offer Letter for review</h6>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="send_for_review" method="POST" id="reviewForm">
+                        @csrf
+                        <div class="form-group mb-2">
+                            <input type="hidden" name="ReviewJaid" value="{{ $JAId }}">
+                            <label for="ReviewCompany">Company</label>
+                            <select name="ReviewCompany" id="ReviewCompany" class="form-select form-select-sm"
+                                onchange="getEmployee(this.value)">
+                                <option value="">Select</option>
+                                @foreach ($company_list as $key => $value)
+                                    <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="spinner-border text-primary d-none" role="status" id="EmpLoader"> <span
+                                class="visually-hidden">Loading...</span></div>
+                        <div class="form-group">
+                            <label>Select Employee</label>
+                            <select name="review_to[]" id="review_to" class="form-select form-select-sm multiple-select"
+                                multiple>
+
+                            </select>
+                        </div>
+                        <div class="submit-section">
+                            <button class="btn btn-primary submit-btn">Submit</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="view_review" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h6 class="modal-title text-light" id="exampleModalLabel">Offer Letter Review Status</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered text-center" style="vertical-align: middle;">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Offer Letter Ref.No</td>
+                                <th>Reviwed By</th>
+                                <th>Status</td>
+                                <th>Reason for Rejection</td>
+                            </tr>
+                        </thead>
+                        <tbody id="viewReviewData">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('scriptsection')
     <script>
@@ -2981,6 +3054,34 @@ $count = count($sql);
             });
         }
 
+        function getEmployee(ComapnyId) {
+            var ComapnyId = ComapnyId;
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getEmpByCompany') }}?ComapnyId=" + ComapnyId,
+                async: false,
+                beforeSend: function() {
+                    $('#EmpLoader').removeClass('d-none');
+                    $('#review_to').addClass('d-none');
+                },
+
+                success: function(res) {
+                    if (res) {
+                        $('#EmpLoader').addClass('d-none');
+                        $('#review_to').removeClass('d-none');
+                        $("#review_to").empty();
+
+                        $.each(res, function(key, value) {
+                            $("#review_to").append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+                    } else {
+                        $("#review_to").empty();
+                    }
+                }
+            });
+        }
+
         var MemberCount = 1;
         var EducationCount = 6;
         var WorkExpCount = 1;
@@ -3014,7 +3115,7 @@ $count = count($sql);
                     }
                 }
             });
-        }
+        } //getEducationList
 
         function getCollegeList() {
             $.ajax({
@@ -3033,7 +3134,7 @@ $count = count($sql);
                     }
                 }
             });
-        }
+        } //getCollegeList
 
         function getAllSP() {
             $.ajax({
@@ -3051,7 +3152,7 @@ $count = count($sql);
                     }
                 }
             });
-        }
+        } //getAllSP
 
         function getYearList() {
             var year = new Date().getFullYear();
@@ -3059,7 +3160,7 @@ $count = count($sql);
             for (var i = 1980; i <= year; i++) {
                 YearList = YearList + '<option value="' + i + '">' + i + '</option>';
             }
-        }
+        } //getYearList
 
         function familymember(number) {
 
@@ -3096,7 +3197,7 @@ $count = count($sql);
             x += '<td>' + '<button class="btn btn-sm btn-danger" id="removeMember">Delete</button>' + '</td>';
             x += '</tr>';
             $('#FamilyData').append(x);
-        }
+        } //familymember
 
         function GetQualification() {
             var JCId = $('#JCId').val();
@@ -3124,7 +3225,7 @@ $count = count($sql);
                     }
                 }
             });
-        }
+        } //GetQualification
 
         function Qualification(num) {
             var a = '';
@@ -3159,7 +3260,7 @@ $count = count($sql);
             a += '</tr>';
 
             $('#EducationData').append(a);
-        }
+        } //Qualification
 
         function getWorkExp() {
             var JCId = $('#JCId').val();
@@ -3188,7 +3289,7 @@ $count = count($sql);
                     }
                 }
             });
-        }
+        } //getWorkExp
 
         function WorkExperience(num) {
             var b = '';
@@ -3212,7 +3313,7 @@ $count = count($sql);
                 '</td>';
             b += '</tr>';
             $('#WorkExpData').append(b);
-        }
+        } //WorkExperience
 
         function getTraining() {
             $('#Training_JCId').val($('#JCId').val());
@@ -3240,7 +3341,7 @@ $count = count($sql);
                     }
                 }
             });
-        }
+        } //getTraining
 
         function Training(num) {
             var b = '';
@@ -3258,7 +3359,7 @@ $count = count($sql);
                 '</td>';
             b += '</tr>';
             $('#TrainingData').append(b);
-        }
+        } //Training
 
         function getPreOrgRef() {
             $('#PreOrgRef_JCId').val($('#JCId').val());
@@ -3287,7 +3388,7 @@ $count = count($sql);
                     }
                 }
             });
-        }
+        } //getPreOrgRef
 
         function PreviousOrgReference(num) {
             var b = '';
@@ -3307,7 +3408,7 @@ $count = count($sql);
                 '</td>';
             b += '</tr>';
             $('#PreOrgRefData').append(b);
-        }
+        } //PreviousOrgReference
 
         function getVnrRef() {
             $('#Vnr_JCId').val($('#JCId').val());
@@ -3336,7 +3437,7 @@ $count = count($sql);
                     }
                 }
             });
-        }
+        } //getVnrRef
 
         function VNRReference(num) {
             var b = '';
@@ -3356,7 +3457,7 @@ $count = count($sql);
                 '</td>';
             b += '</tr>';
             $('#VNRRefData').append(b);
-        }
+        } //VNRReference
 
         function getSpecialization(EducationId, No) {
             var EducationId = EducationId;
@@ -3385,7 +3486,7 @@ $count = count($sql);
                     }
                 }
             });
-        }
+        } //getSpecialization   
 
         function getLocation(StateId) {
             var StateId = StateId;
@@ -3417,7 +3518,7 @@ $count = count($sql);
                     }
                 }
             });
-        }
+        } //getLocation
 
         function getLocation1(StateId) {
             var StateId = StateId;
@@ -3449,7 +3550,7 @@ $count = count($sql);
                     }
                 }
             });
-        }
+        } // getLocation1
 
         function GetCurrentAddress() {
             var JCId = $('#JCId').val();
@@ -3469,7 +3570,7 @@ $count = count($sql);
                     $('#PreDistrict').val(data.data.pre_dist);
                 }
             });
-        }
+        } // GetCurrentAddress
 
         function GetPermanentAddress() {
             var JCId = $('#JCId').val();
@@ -3489,7 +3590,7 @@ $count = count($sql);
                     $('#PermDistrict').val(data.data.perm_dist);
                 }
             });
-        }
+        } // GetPermanentAddress
 
         function GetCurrentEmployementData() {
             var JCId = $('#JCId').val();
@@ -3513,7 +3614,7 @@ $count = count($sql);
                     $('#CurrNoticePeriod').val(data.data.NoticePeriod);
                 }
             });
-        }
+        } // GetCurrentEmployementData
 
         function GetPresentSalaryDetails() {
             var JCId = $('#JCId').val();
@@ -3535,12 +3636,12 @@ $count = count($sql);
                     $('#HotelElg').val(data.data.HotelElg);
                 }
             });
-        }
+        } // GetPresentSalaryDetails
 
         $(document).on('click', '#addMember', function() {
             MemberCount++;
             familymember(MemberCount);
-        });
+        }); // addMember
 
         $(document).on('click', '#removeMember', function() {
             if (confirm('Are you sure you want to delete this member?')) {
@@ -4316,6 +4417,39 @@ $count = count($sql);
             });
         });
 
+        $('#reviewForm').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                beforeSend: function() {
+                    $(form).find('span.error-text').text('');
+                    $('#review_modal').modal('hide');
+                    $("#loader").modal('show');
+                },
+                success: function(data) {
+                    if (data.status == 400) {
+                        $("#loader").modal('hide');
+                        $('#review_modal').modal('show');
+                        $.each(data.error, function(prefix, val) {
+                            $(form).find('span.' + prefix + '_error').text(val[0]);
+                        });
+                    } else {
+                        $(form)[0].reset();
+                        $('#loader').modal('hide');
+                        $('#review_modal').modal('hide');
+                        toastr.success(data.msg);
+                        window.location.reload();
+                    }
+                }
+            });
+        });
+
         $(document).on('click', '#offerltrgen', function() {
             var JAId = $(this).data('id');
             sendingId = btoa(JAId);
@@ -4441,6 +4575,46 @@ $count = count($sql);
                     }, 'json');
                 }
             });
+        }
+
+        $(document).ready(function() {
+
+        });
+
+        function viewReview(JAId) {
+
+            var JAId = JAId;
+            var url = '<?= route('viewReview') ?>';
+            $.get(url, {
+                JAId: JAId
+            }, function(data) {
+                if (data.status == 200) {
+                    $('#view_review').modal('show');
+                    $x = '';
+                    $i = 1;
+                    var reason = '';
+                    $.each(data.data, function(key, value) {
+                        debugger;
+                        if (value.RejReason == null) {
+                            reason = '-';
+                        } else {
+                            reason = value.RejReason;
+                        }
+                        $x += '<tr>';
+                        $x += '<td>' + $i + '</td>';
+                        $x += '<td>' + value.OfferLetterNo + '</td>';
+                        $x += '<td>' + value.full_name + '</td>';
+                        $x += '<td>' + value.Status + '</td>';
+                        $x += '<td>' + reason + '</td>';
+                        $x += '</tr>';
+                        $i++;
+                    });
+                    $('#viewReviewData').html($x);
+
+                } else {
+                    toastr.error(data.msg);
+                }
+            }, 'json');
         }
     </script>
 @endsection

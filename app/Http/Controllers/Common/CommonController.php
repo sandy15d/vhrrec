@@ -155,6 +155,16 @@ class CommonController extends Controller
         return response()->json($employee);
     }
 
+    public function getEmpByCompany(Request $request)
+    {
+        $employee = DB::table('master_employee')->orderBy('FullName', 'ASC')
+            ->where('CompanyId', $request->ComapnyId)
+            ->where('EmpStatus', 'A')
+            ->select('EmployeeID', DB::raw('CONCAT(EmpCode, "-", Fname, " ", Lname) AS FullName'))
+            ->pluck("EmployeeID", "FullName");
+        return response()->json($employee);
+    }
+
     public function getResignedEmployee(Request $request)
     {
         $employee = DB::table('master_employee')->orderBy('FullName', 'ASC')

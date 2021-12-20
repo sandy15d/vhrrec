@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Mail\JoiningFormMail;
 use App\Mail\OfferLetterMail;
+use App\Mail\ReviewMail;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Admin\master_employee;
 use App\Models\jobapply;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Mail;
 use function App\Helpers\getCompanyCode;
 use function App\Helpers\getCompanyName;
 use function App\Helpers\getDepartmentCode;
+use function App\Helpers\getEmployeeEmailId;
 use function App\Helpers\getGradeValue;
 
 class OfferLtrController extends Controller
@@ -614,6 +616,12 @@ class OfferLtrController extends Controller
             ];
 
             Mail::to($row->Email)->send(new JoiningFormMail($details));
+            $update = DB::table('offerletterbasic')->where('JAId', $JAId)->update(
+                [
+                    'JoiningFormSent' => 'Yes',
+                    'LastUpdated' => now()
+                ]
+            );
         }
         if ($query && $query1) {
             return response()->json(['status' => 200, 'msg' => 'Response Submitted Successfully']);
@@ -657,5 +665,65 @@ class OfferLtrController extends Controller
         } else {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         }
+    }
+
+    public function send_for_review(Request $request)
+    {
+        $JAId = $request->ReviewJaid;
+        $Company = $request->ReviewCompany;
+        $Employee = $request->review_to;
+
+        $update_query = DB::table('offerletterbasic')->where('JAId', $JAId)->update(
+            [
+                'SendReview' => '1',
+                'LastUpdated' => now()
+            ]
+        );
+
+        $getData = DB::table('offerletterbasic')->where('JAId', $JAId)->first();
+        $Final = array();
+        for ($i = 0; $i < Count($Employee); $i++) {
+            $data = array(
+                'JAId' => $JAId,
+                'EmpCompany' => $Company,
+                'OfferLetterNo' => $getData->LtrNo,
+                'EmpId' => $Employee[$i],
+                'EmpMail' =>  getEmployeeEmailId($Employee[$i]),
+                'CreatedTime' => date('Y-m-d')
+            );
+
+            array_push($Final, $data);
+        }
+
+        $query = DB::table('offerletter_review')->insert($Final);
+
+        $getData = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->join('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')->select('jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobpost.Title')->where('jobapply.JAId', $JAId)->first();
+        if ($update_query && $query) {
+            for ($j = 0; $j < count($Employee); $j++) {
+                $Fullname = $getData->FName . ' ' . $getData->MName . ' ' . $getData->LName;
+                $details = [
+                    "candidate_name" => $Fullname,
+                    "subject" => "For review - Offer Letter of " . $Fullname . " for the post of " . $getData->Title,
+                    "offer_link" => route('offer-letter-review') . '?jaid=' . $JAId . '&E=' . $Employee[$j]
+                ];
+
+                Mail::to(getEmployeeEmailId($Employee[$j]))->send(new ReviewMail($details));
+            }
+            return response()->json(['status' => 200, 'msg' => 'Offer Letter Sent for Review Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function viewReview(Request $request)
+    {
+        $JAId = $request->JAId;
+        $query = DB::table('offerletter_review')->join('master_employee', 'master_employee.EmployeeID', '=', 'offerletter_review.EmpId')->where('JAId', $JAId)->select('offerletter_review.*', DB::raw("CONCAT(master_employee.Fname,' ',master_employee.Lname) AS full_name"))->get();
+        return response()->json(['status' => 200,  'data' => $query]);
+    }
+
+    public function offer_letter_review(Request $request)
+    {
+        return view('jobportal.review_offer_letter');
     }
 }

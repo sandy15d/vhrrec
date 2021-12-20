@@ -78,6 +78,7 @@ Route::post('notificationMarkRead', [CommonController::class, 'notificationMarkR
 Route::post('markAllRead', [CommonController::class, 'markAllRead'])->name('markAllRead');
 Route::get('getMRFByDepartment', [CommonController::class, 'getMRFByDepartment'])->name('getMRFByDepartment');
 Route::post('sendMailToCandidate', [CommonController::class, 'sendMailToCandidate'])->name('sendMailToCandidate');
+Route::get('getEmpByCompany', [CommonController::class, 'getEmpByCompany'])->name('getEmpByCompany');
 
 Route::get('candidate_detail', [AboutCandidateController::class, 'candidate_detail'])->name('candidate_detail');
 Route::get('interview_form_detail', [AboutCandidateController::class, 'interview_form_detail'])->name('interview_form_detail');
@@ -169,6 +170,9 @@ Route::post('SendOfferLtr', [OfferLtrController::class,'SendOfferLtr'])->name('S
 Route::post('OfferResponse', [OfferLtrController::class,'OfferResponse'])->name('OfferResponse');
 Route::get('offer-letter-response', [OfferLtrController::class,'OfferLetterResponse'])->name('offer-letter-response');
 Route::post('offerReopen', [OfferLtrController::class,'offerReopen'])->name('offerReopen');
+Route::post('send_for_review', [OfferLtrController::class,'send_for_review'])->name('send_for_review');
+Route::get('offer-letter-review', [OfferLtrController::class,'offer_letter_review'])->name('offer-letter-review');
+Route::get('viewReview', [OfferLtrController::class,'viewReview'])->name('viewReview');
 
 
 Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');

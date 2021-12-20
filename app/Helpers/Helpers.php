@@ -31,6 +31,16 @@ if (!function_exists('getFullName')) {
 		}
 	}
 
+	function getEmployeeEmailId($empid)
+	{
+		if ($empid == null) {
+			return "";
+		} else {
+			$Name = DB::table('master_employee')->select("Email")->where('EmployeeID', $empid)->first();
+			return $Name->Email;
+		}
+	}
+
 
 	function getCompanyCode($companyId)
 	{

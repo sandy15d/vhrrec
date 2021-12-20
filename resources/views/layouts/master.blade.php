@@ -42,11 +42,11 @@ $CompanyQry = DB::table('master_company')
 
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
         rel="stylesheet">
-  
+
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTablesButtons.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
-    
+
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/jquery.min.js"></script>
 
@@ -147,7 +147,6 @@ $CompanyQry = DB::table('master_company')
         }
 
     </style>
-    @livewireStyles
 </head>
 
 <body>
@@ -161,7 +160,7 @@ $CompanyQry = DB::table('master_company')
                 </div>
             </div>
             <!--navigation-->
-      
+
             <ul class="metismenu" id="menu">
 
                 @if (Auth::user()->role == 'A')
@@ -276,7 +275,7 @@ $CompanyQry = DB::table('master_company')
                 @endif
 
                 @if (Auth::user()->role == 'A' || Auth::user()->role == 'R')
-                  
+
                     <li>
                         <a href="javascript:;" class="has-arrow">
                             <div class="parent-icon"><i class="lni lni-write text-warning"></i>
@@ -288,7 +287,7 @@ $CompanyQry = DB::table('master_company')
                             <li> <a href="/job_applications"><i class="bx bx-right-arrow-alt"></i>Job Application
                                     (Resume Databank)</a>
                             </li>
-                       {{--      <li> <a href="/job_application_manual_entry_form"><i class="bx bx-right-arrow-alt"></i>Job
+                            {{-- <li> <a href="/job_application_manual_entry_form"><i class="bx bx-right-arrow-alt"></i>Job
                                     Application Form (Manual
                                     Entry)</a></li> --}}
                         </ul>
@@ -319,8 +318,10 @@ $CompanyQry = DB::table('master_company')
                         </a>
                         <ul>
 
-                            <li> <a href="/TechnicalScreening"><i class="bx bx-right-arrow-alt"></i>Screening Tracker</a></li>
-                            <li> <a href="/interview_tracker"><i class="bx bx-right-arrow-alt"></i>Interview Tracker</a></li>
+                            <li> <a href="/TechnicalScreening"><i class="bx bx-right-arrow-alt"></i>Screening
+                                    Tracker</a></li>
+                            <li> <a href="/interview_tracker"><i class="bx bx-right-arrow-alt"></i>Interview Tracker</a>
+                            </li>
                         </ul>
                     </li>
                     <li>
@@ -503,15 +504,14 @@ $CompanyQry = DB::table('master_company')
         </header>
 
         <div class="page-wrapper">
-           
-            @yield('PageContent')
-            <div class="modal" id="loader" data-bs-backdrop="static" data-bs-keyboard="false">
-                <div class="modal-dialog modal-dialog-centered" style="width:220px;">
-                    <div class="modal-content" style="border-radius:10px;">
 
-                        <div class="modal-body">
-                            <img alt="" src="{{ URL::to('/') }}/assets/images/loader.gif">
-                        </div>
+            @yield('PageContent')
+
+            <div class="modal" id="loader" data-bs-backdrop="static" data-bs-keyboard="false"
+                style="background-color: rgba(0,0,0,.0001)">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="spinner-border text-danger" style="width: 5rem; height: 5rem;" role="status"> <span
+                            class="visually-hidden">Loading...</span>
                     </div>
                 </div>
             </div>
@@ -592,12 +592,14 @@ $CompanyQry = DB::table('master_company')
             </div>
         </div>
     </div>
-    
+
     <!--end switcher-->
     <!-- Bootstrap JS -->
     <script src="{{ URL::to('/') }}/assets/js/bootstrap.bundle.min.js"></script>
     <!--plugins-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+        integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous">
+    </script>
     <script src="{{ URL::to('/') }}/assets/plugins/simplebar/js/simplebar.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/metismenu/js/metisMenu.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
@@ -610,9 +612,9 @@ $CompanyQry = DB::table('master_company')
 
     <!--app JS-->
     <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
- 
+
     @yield('scriptsection')
-   
+
     <script>
         $(document).ready(function() {
 
