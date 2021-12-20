@@ -4,21 +4,21 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class OfferLtrResponse extends Command
+class OfferLtr extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'offer:reject';
+    protected $signature = 'offerletter:reject';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Auto Reject Offer Letter after 7 days';
+    protected $description = 'Offer Letter Auto Reject after 7 days';
 
     /**
      * Create a new command instance.
@@ -37,6 +37,6 @@ class OfferLtrResponse extends Command
      */
     public function handle()
     {
-        \Log::info('OfferLtrResponse: Auto Reject Offer Letter after 7 days');
+        \Log::info("Cron is working Fine!");
     }
 }
