@@ -1007,7 +1007,18 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                     </form>
 
                 </div>
+
+                <div class="modal" id="loader" data-bs-backdrop="static" data-bs-keyboard="false"
+                style="background-color: rgba(0,0,0,.0001)">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="spinner-border text-danger" style="width: 5rem; height: 5rem;" role="status"> <span
+                            class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
             </div>
+            </div>
+
+
         @endif
     @else
         <div class="section-authentication-signin d-flex align-items-center justify-content-center ">
@@ -1065,6 +1076,9 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                     processData: false,
                     dataType: 'json',
                     contentType: false,
+                    beforeSend: function() {
+                        $('#loader').show();
+                    },
                     success: function(data) {
                         if (data.status == 400) {
                             toastr.error(data.msg);

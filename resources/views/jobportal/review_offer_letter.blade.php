@@ -143,6 +143,7 @@ use function App\Helpers\getGradeValue;
 use function App\Helpers\getStateName;
 use function App\Helpers\getDistrictName;
 $JAId = $_REQUEST['jaid'];
+$EmpId = $_REQUEST['E'];
 $sql = DB::table('offerletterbasic')
     ->leftJoin('jobapply', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
     ->leftJoin('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
@@ -909,12 +910,13 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
             </div>
         </div>
         <div class="generate" id="generate">
-            <form method="POST" action="{{ route('OfferResponse') }}" id="responseform">
+            <form method="POST" action="{{ route('ReviewResponse') }}" id="responseform">
                 @csrf
                 <input type="hidden" name="JAId" value="{{ $JAId }}" id="JAId">
+                <input type="hidden" name="EmpId" value="{{ $EmpId }}" id="EmpId">
                 <div class="mb-5 ">
                     <center>
-                        <b>Offer Reply</b><br><br>
+                        <b>Offer Letter Review Reply</b><br><br>
                         <label class="btn btn-sm text-success font-weight-bold"
                             onclick="$('#jnfrmFormDiv').show(500);$('#Rejreason').hide(500);$('#RejReason').removeAttr('required'); $('#JoinOnDt').attr('required', 'true');">
                             <input type="radio" name="Answer" value="Accepted">
@@ -926,50 +928,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                             <i class="fa fa-times" aria-hidden="true"></i> Reject Offer
                         </label>
                         <br>
-                        <div class="p-2 py-5 m-3 " id="jnfrmFormDiv"
-                            style="display:none;border:2px solid #c1c1c1  !important;">
 
-                            <div class="px-4 py-5 text-left" style="">
-
-                                I will join on date <input type="date"
-                                    class="form-control d-inline-block form-control-sm" style="width:175px;"
-                                    id="JoinOnDt" name="JoinOnDt" min="2021-12-06">
-                                &nbsp;
-                                failing which I have no lien on this employment.
-
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <span>
-
-                                    Place: <input type="" class="form-control d-inline-block  form-control-sm"
-                                        style="width:175px;" name="Place">
-                                </span>
-
-                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                <span>
-                                    Date: &nbsp;&nbsp;<input type="date"
-                                        class="form-control d-inline-block  form-control-sm" style="width:175px;"
-                                        name="Date" value="{{ date('Y-m-d') }}">
-                                </span>
-                                <br>
-                                <br><br>
-                                <br>
-
-                                <br>
-                                <small>
-                                    <b>Note: </b><i>Please note this offer letter is valid for 7 days only, if
-                                        no
-                                        response is received from you on or before within 7 days form the
-                                        receipt of
-                                        this mail, It is assumed that you are no longer interested for the
-                                        offered
-                                        Job
-                                        and the Job offer letter link shall also be deactivated.</i>
-                                </small>
-                            </div>
-                        </div>
                         <span id="Rejreason" style="display: none;">
                             <br>
                             Please Mention Reason for Rejection:
@@ -1029,8 +988,11 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                             toastr.error(data.msg);
                         } else {
                             $(form)[0].reset();
-                            window.location.href =
-                                "{{ route('offer-letter-response') }}?jaid=" + SendId;
+                            toastr.success(data.msg);
+                            setTimeout(function() {
+                                window.close();
+                            }, 1000);
+                            
                         }
                     }
                 });

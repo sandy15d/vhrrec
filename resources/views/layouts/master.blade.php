@@ -480,8 +480,8 @@ $CompanyQry = DB::table('master_company')
                             </div>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="javascript:;"><i
-                                        class="bx bx-user"></i><span>Profile</span></a> </li>
+                            <li><a class="dropdown-item" href="/change-password"><i
+                                        class="bx bx-user"></i><span>Change Password</span></a> </li>
                             <li>
                                 <div class="dropdown-divider mb-0"></div>
                             </li>

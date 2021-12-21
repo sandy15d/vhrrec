@@ -79,6 +79,8 @@ Route::post('markAllRead', [CommonController::class, 'markAllRead'])->name('mark
 Route::get('getMRFByDepartment', [CommonController::class, 'getMRFByDepartment'])->name('getMRFByDepartment');
 Route::post('sendMailToCandidate', [CommonController::class, 'sendMailToCandidate'])->name('sendMailToCandidate');
 Route::get('getEmpByCompany', [CommonController::class, 'getEmpByCompany'])->name('getEmpByCompany');
+Route::get('change-password', [CommonController::class, 'changePassword'])->name('change-password');
+Route::post('passwordChange', [CommonController::class, 'passwordChange'])->name('passwordChange');
 
 Route::get('candidate_detail', [AboutCandidateController::class, 'candidate_detail'])->name('candidate_detail');
 Route::get('interview_form_detail', [AboutCandidateController::class, 'interview_form_detail'])->name('interview_form_detail');
@@ -173,6 +175,8 @@ Route::post('offerReopen', [OfferLtrController::class,'offerReopen'])->name('off
 Route::post('send_for_review', [OfferLtrController::class,'send_for_review'])->name('send_for_review');
 Route::get('offer-letter-review', [OfferLtrController::class,'offer_letter_review'])->name('offer-letter-review');
 Route::get('viewReview', [OfferLtrController::class,'viewReview'])->name('viewReview');
+Route::post('ReviewResponse', [OfferLtrController::class,'ReviewResponse'])->name('ReviewResponse');
+Route::post('saveEmpCode', [OfferLtrController::class,'saveEmpCode'])->name('saveEmpCode');
 
 
 Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');

@@ -26,7 +26,7 @@ $JCId = $Rec->JCId;
 
 $OfBasic = DB::table('offerletterbasic')
     ->leftJoin('candjoining', 'candjoining.JAId', '=', 'offerletterbasic.JAId')
-    ->select('offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.RejReason')
+    ->select('offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.RejReason', 'candjoining.EmpCode', 'candjoining.RefCheck')
     ->where('offerletterbasic.JAId', $JAId)
     ->first();
 
@@ -163,7 +163,7 @@ $count = count($sql);
                                                 @endif
 
                                             </li>
-
+                                            
 
                                         </ul>
                                     </div>
@@ -1175,6 +1175,68 @@ $count = count($sql);
                         </div>
                     </div>
                 </div>
+                @if ($OfBasic->Answer == 'Accepted')
+                    <div class="row">
+                        <div class="col-md-5 d-flex">
+                            <div class="card profile-box flex-fill">
+                                <div class="card-body">
+                                    <h6 class="card-title">Joining Details
+
+                                    </h6>
+                                    <ul class="personal-info">
+                                        <li>
+                                            <div class="title" style="width: 150px;">Emp Code<span
+                                                    style="float: right">:</span></div>
+                                            <div class="text">
+                                                <input type="text"
+                                                    class="form-control frminp form-control-sm d-inline-block" id="empCode"
+                                                    name="" readonly="" style="width: 100px;"
+                                                    value="{{ $OfBasic->EmpCode ?? '' }}">
+                                                <i class="fa fa-pencil text-primary" aria-hidden="true" id="empCodeEnable"
+                                                    onclick="empCodeEnable()"
+                                                    style="font-size: 16px;cursor: pointer; display: "></i>
+                                                <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
+                                                    id="EmpCodeSave" onclick="saveEmpCode()">Save</button>
+                                                <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
+                                                    id="empCancle" onclick="window.location.reload();">Cancel</button>
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            <div class="title" style="width: 150px;">Ref. Check <span
+                                                    style="float: right">:</span>
+                                            </div>
+                                            <div class="text">
+                                                @if ($OfBasic->RefCheck == 'Yes')
+                                                    <span class="text-dark">Yes</span>
+                                                    (view)
+                                                @else
+                                                    <span class="text-danger">No</span>( <a href="javascript:void(0);"
+                                                        class=""
+                                                        onclick="sendRefCheck({{ $Rec->JAId }});"> Send Now</a>)
+                                                @endif
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            <div class="title" style="width: 150px;">  Appointment Letter <span style="float: right">:</span> </div>
+                                            <div class="text  text-dark"> <i class="fa fa-pencil text-primary" aria-hidden="true" onclick="appointmentGen({{ $Rec->JAId }})"style="font-size: 16px;cursor: pointer; display: ">Generate </i> </div> 
+                                        </li>
+                                        <li>
+                                            <div class="title" style="width: 150px;">  Service Agreement <span style="float: right">:</span> </div>
+                                            <div class="text  text-dark"> <i class="fa fa-pencil text-primary" aria-hidden="true" onclick="appointmentGen({{ $Rec->JAId }})"style="font-size: 16px;cursor: pointer; display: ">Generate </i> </div> 
+                                        </li>
+                                        <li>
+                                            <div class="title" style="width: 150px;">  Service Bond <span style="float: right">:</span> </div>
+                                            <div class="text  text-dark"> <i class="fa fa-pencil text-primary" aria-hidden="true" onclick="appointmentGen({{ $Rec->JAId }})"style="font-size: 16px;cursor: pointer; display: ">Generate </i> </div> 
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                @endif
 
             </div>
         </div>
@@ -4511,6 +4573,33 @@ $count = count($sql);
             });
         }
 
+        function empCodeEnable() {
+            $('#empCode').prop('readonly', false);
+            $('#empCodeEnable').hide(500);
+            $('#EmpCodeSave').show(500);
+            $('#empCancle').show(500);
+        }
+
+        function saveEmpCode() {
+            var EmpCode = $('#empCode').val();
+            var JAId = $('#JAId').val();
+            $.ajax({
+                type: "POST",
+                url: "{{ route('saveEmpCode') }}?JAId=" + JAId + "&EmpCode=" + EmpCode,
+                success: function(res) {
+                    if (res.status == 200) {
+                        $('#empCodeEnable').show(500);
+                        $('#EmpCodeSave').hide(500);
+                        $('#empCancle').hide(500);
+                        $('#empCode').prop('readonly', true);
+                        toastr.success(res.msg);
+                    } else {
+                        toastr.error(res.msg);
+                    }
+                }
+            });
+        }
+
         function copyOfLink() {
             var copyText = document.getElementById("oflink");
             copyText.select();
@@ -4535,10 +4624,14 @@ $count = count($sql);
                 data: {
                     "JAId": JAId
                 },
+                beforeSend: function() {
+                    $('#loader').modal('show');
+                },
                 success: function(data) {
                     if (data.status == 400) {
                         toastr.error(data.msg);
                     } else {
+                        $('#loader').modal('hide');
                         toastr.success(data.msg);
                         window.location.reload();
                     }
@@ -4576,10 +4669,6 @@ $count = count($sql);
                 }
             });
         }
-
-        $(document).ready(function() {
-
-        });
 
         function viewReview(JAId) {
 

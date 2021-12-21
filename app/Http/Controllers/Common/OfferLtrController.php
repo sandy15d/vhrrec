@@ -69,7 +69,7 @@ class OfferLtrController extends Controller
             $usersQuery->where("jobcandidates.FName", 'like', "%$Name%");
         }
 
-        $candidate_list = $usersQuery->select('jobapply.JAId', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.ReferenceNo', 'jobcandidates.CandidateImage', 'screening.SelectedForC', 'screening.SelectedForD', 'offerletterbasic.OfferLetterSent', 'offerletterbasic.JoiningFormSent', 'offerletterbasic.Answer', 'offerletterbasic.OfferLtrGen', 'offerletterbasic.OfferLetter', 'candjoining.JoinOnDt', 'offerletterbasic.SendReview', 'jobpost.JobCode')
+        $candidate_list = $usersQuery->select('jobapply.JAId', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.ReferenceNo', 'jobcandidates.CandidateImage', 'screening.SelectedForC', 'screening.SelectedForD', 'offerletterbasic.OfferLetterSent', 'offerletterbasic.JoiningFormSent', 'offerletterbasic.Answer', 'offerletterbasic.OfferLtrGen', 'offerletterbasic.OfferLetter', 'candjoining.EmpCode', 'offerletterbasic.SendReview', 'jobpost.JobCode')
             ->Join('jobapply', 'screening.JAId', '=', 'jobapply.JAId')
             ->Join('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
             ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
@@ -725,5 +725,44 @@ class OfferLtrController extends Controller
     public function offer_letter_review(Request $request)
     {
         return view('jobportal.review_offer_letter');
+    }
+
+    public function ReviewResponse(Request $request)
+    {
+        $JAId = $request->JAId;
+        $EmpId = $request->EmpId;
+        $Answer = $request->Answer;
+        $RejReason = $request->RejReason ?? null;
+        $query = DB::table('offerletter_review')->where('JAId', $JAId)->where('EmpId', $EmpId)->where('Status', null)->update(
+            [
+                'Status' => $Answer,
+                'RejReason' => $RejReason,
+            ]
+        );
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Response Submitted Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function saveEmpCode(Request $request)
+    {
+        $JAId = $request->JAId;
+        $EmpCode = $request->EmpCode;
+
+        $update_query = DB::table('candjoining')->where('JAId', $JAId)->update(
+            [
+                'EmpCode' => $EmpCode,
+                'UpdatedBy' => Auth::user()->id,
+                'LastUpdated' => now()
+            ]
+        );  //update
+
+        if ($update_query) {
+            return response()->json(['status' => 200, 'msg' => 'Employee Code Updated Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
     }
 }

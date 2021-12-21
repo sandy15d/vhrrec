@@ -372,4 +372,21 @@ class CommonController extends Controller
             return response()->json(['status' => 200, 'msg' => 'Mail has been sent successfully.']);
         }
     }
+
+    public function changePassword()
+    {
+        return view('common.changePassword');
+    }
+
+    public function passwordChange(Request $request)
+    {
+        $query = DB::table('users')
+            ->where('id', Auth::user()->id)
+            ->update(['password' => bcrypt($request->new_password)]);
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'Password has been changed successfully.']);
+        }
+    }
 }
