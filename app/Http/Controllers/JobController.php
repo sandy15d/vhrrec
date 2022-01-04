@@ -40,8 +40,10 @@ class JobController extends Controller
         $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
         $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
         $education_list = DB::table("master_education")->where('Status', 'A')->orderBy('EducationCode', 'asc')->pluck("EducationCode", "EducationId");
+        $specialization_list = DB::table("master_specialization")->where('Status', 'A')->orderBy('Specialization', 'asc')->pluck("Specialization", "SpId");
+        $district_list = DB::table("master_district")->orderBy('DistrictName', 'asc')->pluck("DistrictName", "DistrictId");
         $resume_list = DB::table("master_resumesource")->where('Status', 'A')->where('ResumeSouId', '!=', '7')->orderBy('ResumeSouId', 'asc')->pluck("ResumeSource", "ResumeSouId");
-        return view('jobportal.job_apply_form_manual', compact('state_list', 'institute_list', 'education_list', 'resume_list'));
+        return view('jobportal.job_apply_form_manual', compact('state_list', 'institute_list', 'education_list', 'district_list' , 'resume_list','specialization_list'));
     }
 
     public function job_apply(Request $request)

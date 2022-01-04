@@ -208,8 +208,17 @@ if (!function_exists('getFullName')) {
 
 	function getEducationById($eid)
 	{
-		$EducationCode = DB::table('master_education')->select('EducationCode')->where('EducationId', $eid)->first();
-		return $EducationCode->EducationCode;
+		if ($eid == null) {
+			return "";
+		} else {
+			$Education = Db::table('master_education')->select('EducationName')->where('EducationId', $eid)->first();
+			
+			if (is_null($Education)) {
+				return '';
+			} else {
+				return $Education->EducationName;
+			}
+		}
 	}
 
 	function getSpecializationbyId($sid)

@@ -62,7 +62,11 @@ class OfferLtrController extends Controller
             $usersQuery->where("jobcandidates.Gender", $Gender);
         }
         if ($Status != '') {
-            $usersQuery->where("offerletterbasic.Answer", $Status);
+            if ($Status == 'Pending') {
+                $usersQuery->where('offerletterbasic.OfferLetterSent','Yes')->where("offerletterbasic.Answer",null);
+            } else {
+                $usersQuery->where("offerletterbasic.Answer", $Status);
+            }
         }
 
         if ($Name != '') {

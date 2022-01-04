@@ -149,8 +149,9 @@ $rejected = DB::table('offerletterbasic')->where('Answer','Rejected')->where('Ye
                     <div class="col-2">
                         <select name="Status" id="Status" class="form-select form-select-sm" onchange="GetApplications();">
                             <option value="">Select Status</option>
-                            <option value="Accept">Accept</option>
-                            <option value="Reject">Reject</option>
+                            <option value="Accepted">Accepted</option>
+                            <option value="Rejected">Rejected</option>
+                            <option value="Pending">Pending</option>
                         </select>
                         @if (isset($_REQUEST['Status']) && $_REQUEST['Status'] != '')
                             <script>

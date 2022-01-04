@@ -124,6 +124,9 @@ Route::post('Candidate_VnrRef_Save', [AboutCandidateController::class, 'Candidat
 Route::post('Candidate_Strength', [AboutCandidateController::class, 'Candidate_Strength'])->name('Candidate_Strength');
 Route::post('Candidate_Strength_Save', [AboutCandidateController::class, 'Candidate_Strength_Save'])->name('Candidate_Strength_Save');
 
+Route::post('Candidate_Language', [AboutCandidateController::class, 'Candidate_Language'])->name('Candidate_Language');
+Route::post('Candidate_Language_Save', [AboutCandidateController::class, 'Candidate_Language_Save'])->name('Candidate_Language_Save');
+
 Route::get('job_response', [JobApplicationController::class, 'job_response'])->name('job_response');
 Route::get('job_applications', [JobApplicationController::class, 'job_applications'])->name('job_applications');
 Route::post('getJobResponseSummary', [JobApplicationController::class, 'getJobResponseSummary'])->name('getJobResponseSummary');
@@ -139,7 +142,24 @@ Route::post('job_application_manual', [JobApplicationController::class, 'job_app
 Route::get('getManualEntryCandidate', [JobApplicationController::class, 'getManualEntryCandidate'])->name('getManualEntryCandidate');
 Route::post('getJobResponseCandidateByJPId', [JobApplicationController::class, 'getJobResponseCandidateByJPId'])->name('getJobResponseCandidateByJPId');
 Route::post('cropImage', [JobApplicationController::class, 'cropImage'])->name('cropImage');
+Route::get('candidate-interview-form', [JobApplicationController::class, 'candidate_interview_form'])->name('candidate-interview-form');
+Route::post('candidate_interview', [JobApplicationController::class, 'candidate_interview'])->name('candidate_interview');
 Route::get('candidate-joining-form', [JobApplicationController::class, 'CandidateJoiningForm'])->name('candidate-joining-form');
+Route::get('onboarding', [JobApplicationController::class, 'onboarding'])->name('onboarding');
+Route::post('SavePersonalInfo', [JobApplicationController::class, 'SavePersonalInfo'])->name('SavePersonalInfo');
+Route::post('SaveContact', [JobApplicationController::class, 'SaveContact'])->name('SaveContact');
+Route::post('SaveEducation', [JobApplicationController::class, 'SaveEducation'])->name('SaveEducation');
+Route::post('SaveFamily', [JobApplicationController::class, 'SaveFamily'])->name('SaveFamily');
+Route::post('SaveExperience', [JobApplicationController::class, 'SaveExperience'])->name('SaveExperience');
+Route::post('SaveAbout', [JobApplicationController::class, 'SaveAbout'])->name('SaveAbout');
+Route::post('SaveOther', [JobApplicationController::class, 'SaveOther'])->name('SaveOther');
+Route::post('OfferLtrFileUpload', [JobApplicationController::class, 'OfferLtrFileUpload'])->name('OfferLtrFileUpload');
+Route::post('RelievingLtrFileUpload', [JobApplicationController::class, 'RelievingLtrFileUpload'])->name('RelievingLtrFileUpload');
+Route::post('SalarySlipFileUpload', [JobApplicationController::class, 'SalarySlipFileUpload'])->name('SalarySlipFileUpload');
+Route::post('AppraisalLtrFileUpload', [JobApplicationController::class, 'AppraisalLtrFileUpload'])->name('AppraisalLtrFileUpload');
+Route::post('VaccinationCertFileUpload', [JobApplicationController::class, 'VaccinationCertFileUpload'])->name('VaccinationCertFileUpload');
+Route::post('CheckDocumentUpload', [JobApplicationController::class, 'CheckDocumentUpload'])->name('CheckDocumentUpload');
+Route::post('FinalSubmitInterviewApplicationForm', [JobApplicationController::class, 'FinalSubmitInterviewApplicationForm'])->name('FinalSubmitInterviewApplicationForm');
 
 
 

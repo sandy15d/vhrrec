@@ -746,22 +746,8 @@ $query = DB::table('jobpost')
             return res;
         }
 
-        function showProFromOrNot() {
-            if ($('#Professional').prop("checked") == true) {
-                $('#work_exp').removeClass('d-none');
-                $('#PresentCompany').addClass('reqinp');
-                $('#Designation').addClass('reqinp');
-                $('#JobStartDate').addClass('reqinp');
-                $('#GrossSalary').addClass('reqinp');
-
-            } else if ($('#Professional').prop("checked") == false) {
-                $('#work_exp').addClass('d-none');
-                $('#PresentCompany').removeClass('reqinp');
-                $('#Designation').removeClass('reqinp');
-                $('#JobStartDate').removeClass('reqinp');
-                $('#GrossSalary').removeClass('reqinp');
-            }
-        }
+        
+        
 
         function showRefFormOrNot() {
             if ($('#YesRef').prop("checked") == true) {

@@ -73,8 +73,8 @@ $query = DB::table('jobcandidates')
                                     <p style="font-size: 14px; margin-bottom:0px;">Mention your name as per yor Aadhaar
                                         card only.</p>
                                     <hr style="margin: 10px 0px 10px 0px;">
-                                    <form action="{{ route('job_apply_manual') }}" id="jobApplyForm" name="jobApplyForm"
-                                        method="POST">
+                                    <form action="{{ route('job_apply_manual') }}" id="jobApplyForm"
+                                        name="jobApplyForm" method="POST">
                                         @csrf
                                         <input type="hidden" name="JCId" value="{{ $jcid }}">
                                         <div class="form-body">
@@ -138,7 +138,8 @@ $query = DB::table('jobcandidates')
                                                             <td>
                                                                 <input type="date"
                                                                     class="form-control form-control-sm reqinp"
-                                                                    name="DOB" id="DOB">
+                                                                    name="DOB" id="DOB"
+                                                                    value="{{ $query[0]->DOB ?? '' }}">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -222,7 +223,8 @@ $query = DB::table('jobcandidates')
                                                                                 id="AddressLine1"
                                                                                 class="form-control form-control-sm reqinp"
                                                                                 placeholder="Address Line 1"
-                                                                                onblur="return convertCase(this)">
+                                                                                onblur="return convertCase(this)"
+                                                                                value="{{ $query[0]->AddressLine1 ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -231,7 +233,8 @@ $query = DB::table('jobcandidates')
                                                                                 id="AddressLine2"
                                                                                 class="form-control form-control-sm"
                                                                                 placeholder="Address Line 2"
-                                                                                onblur="return convertCase(this)">
+                                                                                onblur="return convertCase(this)"
+                                                                                value="{{ $query[0]->AddressLine2 ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -240,7 +243,8 @@ $query = DB::table('jobcandidates')
                                                                                 id="AddressLine3"
                                                                                 class="form-control form-control-sm"
                                                                                 placeholder="Address Line 3"
-                                                                                onblur="return convertCase(this)">
+                                                                                onblur="return convertCase(this)"
+                                                                                value="{{ $query[0]->AddressLine3 ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -256,6 +260,9 @@ $query = DB::table('jobcandidates')
 
                                                                                 @endforeach
                                                                             </select>
+                                                                            <script>
+                                                                                $('#State').val('{{ $query[0]->State }}');
+                                                                            </script>
                                                                         </td>
                                                                         <td>
                                                                             <div class="spinner-border text-primary d-none"
@@ -266,7 +273,16 @@ $query = DB::table('jobcandidates')
                                                                                 class="form-select form-select-sm reqinp">
                                                                                 <option value="">Select District
                                                                                 </option>
+                                                                                @foreach ($district_list as $key => $value)
+                                                                                    <option
+                                                                                        value="{{ $key }}">
+                                                                                        {{ $value }}</option>
+
+                                                                                @endforeach
                                                                             </select>
+                                                                            <script>
+                                                                                $('#District').val('{{ $query[0]->District }}');
+                                                                            </script>
                                                                         </td>
 
                                                                     </tr>
@@ -275,14 +291,16 @@ $query = DB::table('jobcandidates')
                                                                             <input type="text" name="City" id="City"
                                                                                 class="form-control form-control-sm reqinp"
                                                                                 placeholder="City / Village"
-                                                                                onblur="return convertCase(this)">
+                                                                                onblur="return convertCase(this)"
+                                                                                value="{{ $query[0]->City ?? '' }}">
                                                                         </td>
                                                                         <td colspan="2">
                                                                             <input type="text" name="PinCode"
                                                                                 id="PinCode"
                                                                                 class="form-control form-control-sm reqinp"
                                                                                 placeholder="Pin Code" maxlength="6"
-                                                                                onkeypress="return isNumberKey(event)">
+                                                                                onkeypress="return isNumberKey(event)"
+                                                                                value="{{ $query[0]->PinCode ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                 </table>
@@ -320,6 +338,9 @@ $query = DB::table('jobcandidates')
                                                                                         {{ $value }}</option>
                                                                                 @endforeach
                                                                             </select>
+                                                                            <script>
+                                                                                $('#Education').val('{{ $query[0]->Education }}');
+                                                                            </script>
                                                                         </td>
                                                                         <td>
                                                                             <div class="spinner-border text-primary d-none"
@@ -331,7 +352,16 @@ $query = DB::table('jobcandidates')
                                                                                 class="form-select form-select-sm reqinp">
                                                                                 <option value="">Select Specialization
                                                                                 </option>
+                                                                                @foreach ($specialization_list as $key => $value)
+                                                                                    <option
+                                                                                        value="{{ $key }}">
+                                                                                        {{ $value }}</option>
+
+                                                                                @endforeach
                                                                             </select>
+                                                                            <script>
+                                                                                $('#Specialization').val('{{ $query[0]->Specialization }}');
+                                                                            </script>
                                                                         </td>
                                                                     </tr>
                                                                 </table>
@@ -343,7 +373,8 @@ $query = DB::table('jobcandidates')
                                                             </td>
                                                             <td>
                                                                 <input type="text" name="CGPA" id="CGPA"
-                                                                    class="form-control form-control-sm">
+                                                                    class="form-control form-control-sm"
+                                                                    value="{{ $query[0]->CGPA ?? '' }}">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -359,6 +390,9 @@ $query = DB::table('jobcandidates')
                                                                             {{ $i }}</option>
                                                                     @endfor
                                                                 </select>
+                                                                <script>
+                                                                    $('#PassingYear').val('{{ $query[0]->PassingYear }}');
+                                                                </script>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -375,6 +409,9 @@ $query = DB::table('jobcandidates')
                                                                             {{ $value }}</option>
                                                                     @endforeach
                                                                 </select>
+                                                                <script>
+                                                                    $('#College').val('{{ $query[0]->College }}');
+                                                                </script>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -389,7 +426,12 @@ $query = DB::table('jobcandidates')
                                                                             <input class="form-check-input reqinp"
                                                                                 type="radio" name="ProfCheck"
                                                                                 id="Professional" value="P"
-                                                                                onclick="showProFromOrNot()">
+                                                                                onclick="showProFromOrNot()"
+                                                                                @php
+                                                                                    if ($query != null && $query[0]->Professional == 'P') {
+                                                                                        echo 'checked';
+                                                                                    }
+                                                                                @endphp>
                                                                             <label class="form-check-label"
                                                                                 for="Professional">I am a working
                                                                                 professional</label>
@@ -399,7 +441,13 @@ $query = DB::table('jobcandidates')
                                                                             <input class="form-check-input reqinp"
                                                                                 type="radio" name="ProfCheck"
                                                                                 id="Fresher" value="F"
-                                                                                onclick="showProFromOrNot()" checked>
+                                                                                onclick="showProFromOrNot()"
+                                                                                @php
+                                                                                    if ($query != null && $query[0]->Professional == 'F') {
+                                                                                        echo 'checked';
+                                                                                    }
+                                                                                @endphp>
+
                                                                             <label class="form-check-label"
                                                                                 for="Fresher">I am a
                                                                                 Fresher</label>
@@ -408,7 +456,8 @@ $query = DB::table('jobcandidates')
                                                                 </table>
                                                             </td>
                                                         </tr>
-                                                        <tr id="work_exp" class="d-none">
+                                                        <tr id="work_exp"
+                                                            class="{{ $query != null && $query[0]->Professional == 'P' ? '' : 'd-none' }}">
                                                             <td></td>
                                                             <td>
                                                                 <table>
@@ -419,7 +468,8 @@ $query = DB::table('jobcandidates')
                                                                         <td><input type="text" name="PresentCompany"
                                                                                 id="PresentCompany"
                                                                                 class="form-control-sm form-control"
-                                                                                onblur="return convertCase(this)">
+                                                                                onblur="return convertCase(this)"
+                                                                                value="{{ $query[0]->PresentCompany ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -429,7 +479,8 @@ $query = DB::table('jobcandidates')
                                                                         <td><input type="text" name="Designation"
                                                                                 id="Designation"
                                                                                 class="form-control-sm form-control"
-                                                                                onblur="return convertCase(this)">
+                                                                                onblur="return convertCase(this)"
+                                                                                value="{{ $query[0]->Designation ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -438,7 +489,8 @@ $query = DB::table('jobcandidates')
                                                                         </td>
                                                                         <td><input type="date" name="JobStartDate"
                                                                                 id="JobStartDate"
-                                                                                class="form-control-sm form-control">
+                                                                                class="form-control-sm form-control"
+                                                                                value="{{ $query[0]->JobStartDate ?? null }}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -448,14 +500,16 @@ $query = DB::table('jobcandidates')
                                                                                 <div>
                                                                                     <input type="date" name="JobEndDate"
                                                                                         id="JobEndDate"
-                                                                                        class="form-control form-control-sm">
+                                                                                        class="form-control form-control-sm"
+                                                                                        value="{{ $query[0]->JobEndDate ?? null }}">
                                                                                 </div>
                                                                                 <div
                                                                                     class="form-check form-check-inline">
                                                                                     <input class="form-check-input"
                                                                                         type="checkbox" id="StillEmp"
                                                                                         name="StillEmp" value="Y"
-                                                                                        style="margin-left:0px;">
+                                                                                        style="margin-left:0px;"
+                                                                                        {{ $query[0]->StillEmp == 'Y' ? 'checked' : '' }}>
                                                                                     <label class="form-check-label"
                                                                                         for="StillEmp">If still
                                                                                         employed,
@@ -472,7 +526,8 @@ $query = DB::table('jobcandidates')
                                                                             <input type="text" name="GrossSalary"
                                                                                 id="GrossSalary"
                                                                                 class="form-control form-control-sm"
-                                                                                onkeypress="return isNumberKey(event)">
+                                                                                onkeypress="return isNumberKey(event)"
+                                                                                value="{{ $query[0]->GrossSalary ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -481,7 +536,8 @@ $query = DB::table('jobcandidates')
                                                                         <td>
                                                                             <input type="text" name="CTC" id="CTC"
                                                                                 class="form-control form-control-sm"
-                                                                                onkeypress="return isNumberKey(event)">
+                                                                                onkeypress="return isNumberKey(event)"
+                                                                                value="{{ $query[0]->CTC ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -490,7 +546,8 @@ $query = DB::table('jobcandidates')
                                                                             <input type="text" name="NoticePeriod"
                                                                                 id="NoticePeriod"
                                                                                 class="form-control form-control-sm"
-                                                                                onblur="return convertCase(this)">
+                                                                                onblur="return convertCase(this)"
+                                                                                value="{{ $query[0]->NoticePeriod ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -499,7 +556,8 @@ $query = DB::table('jobcandidates')
                                                                             <input type="text" name="ResignReason"
                                                                                 id="ResignReason"
                                                                                 class="form-control form-control-sm"
-                                                                                onblur="return convertCase(this)">
+                                                                                onblur="return convertCase(this)"
+                                                                                value="{{ $query[0]->ResignReason ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                 </table>
@@ -516,7 +574,13 @@ $query = DB::table('jobcandidates')
 
                                                                             <input class="form-check-input" type="radio"
                                                                                 name="RefCheck" id="YesRef" value="Y"
-                                                                                onclick="showRefFormOrNot()">
+                                                                                onclick="showRefFormOrNot()"
+                                                                                @php
+                                                                                    if ($query != null && $query[0]->Reference == 'Y') {
+                                                                                        echo 'checked';
+                                                                                    }
+                                                                                    
+                                                                                @endphp>
                                                                             <label class="form-check-label"
                                                                                 for="YesRef">Yes</label>
 
@@ -524,7 +588,12 @@ $query = DB::table('jobcandidates')
                                                                         <td class="form-check form-check-inline">
                                                                             <input class="form-check-input" type="radio"
                                                                                 name="RefCheck" id="NoRef" value="N"
-                                                                                onclick="showRefFormOrNot()" checked>
+                                                                                onclick="showRefFormOrNot()"
+                                                                                @php
+                                                                                    if ($query != null && $query[0]->Reference == 'N') {
+                                                                                        echo 'checked';
+                                                                                    }
+                                                                                @endphp>
                                                                             <label class="form-check-label"
                                                                                 for="NoRef">No</label>
                                                                         </td>
@@ -532,7 +601,8 @@ $query = DB::table('jobcandidates')
                                                                 </table>
                                                             </td>
                                                         </tr>
-                                                        <tr id="reference_tr" class="d-none">
+                                                        <tr id="reference_tr"
+                                                            class="{{ $query != null && $query[0]->Reference == 'Y' ? '' : 'd-none' }}">
                                                             <td></td>
                                                             <td>
                                                                 <table>
@@ -543,7 +613,7 @@ $query = DB::table('jobcandidates')
                                                                         <td><input type="text" name="RefPerson"
                                                                                 id="RefPerson"
                                                                                 class="form-control-sm form-control"
-                                                                                onblur="return convertCase(this)">
+                                                                                onblur="return convertCase(this)" value="{{$query[0]->RefPerson ?? ''}}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -553,7 +623,7 @@ $query = DB::table('jobcandidates')
                                                                         <td><input type="text" name="RefCompany"
                                                                                 id="RefCompany"
                                                                                 class="form-control-sm form-control"
-                                                                                onblur="return convertCase(this)">
+                                                                                onblur="return convertCase(this)" value="{{$query[0]->RefCompany ?? ''}}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -563,7 +633,7 @@ $query = DB::table('jobcandidates')
                                                                         <td><input type="text" name="RefDesignation"
                                                                                 id="RefDesignation"
                                                                                 class="form-control-sm form-control"
-                                                                                onblur="return convertCase(this)">
+                                                                                onblur="return convertCase(this)" value="{{$query[0]->RefDesignation ?? ''}}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -572,7 +642,7 @@ $query = DB::table('jobcandidates')
                                                                             <input type="text" name="RefContact"
                                                                                 id="RefContact" maxlength="13"
                                                                                 class="form-control form-control-sm"
-                                                                                onkeypress="return isNumberKey(event)">
+                                                                                onkeypress="return isNumberKey(event)" value="{{$query[0]->RefContact ?? ''}}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -582,7 +652,7 @@ $query = DB::table('jobcandidates')
                                                                         <td>
                                                                             <input type="email" name="RefMail"
                                                                                 id="RefMail"
-                                                                                class="form-control form-control-sm">
+                                                                                class="form-control form-control-sm" value="{{$query[0]->RefMail ?? ''}}">
                                                                         </td>
                                                                     </tr>
                                                                 </table>
@@ -622,7 +692,7 @@ $query = DB::table('jobcandidates')
                                                         <span id="preview">
                                                             <center>
                                                                 @if ($query[0]->CandidateImage != null)
-                                                                    <img src="{{ URL::to('/') }}/uploads/Picture/<?= $query[0]->CandidateImage?>"
+                                                                    <img src="{{ URL::to('/') }}/uploads/Picture/<?= $query[0]->CandidateImage ?>"
                                                                         style="width: 150px; height: 150px;"
                                                                         id="img1" />
                                                                 @else

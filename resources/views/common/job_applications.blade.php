@@ -248,16 +248,19 @@ use function App\Helpers\getStateName;
                                                 </tr>
                                             @endif
 
-                                            @if ($row->Type=='Manual Entry')
-                                            @php
-                                                $JCId = base64_encode($row->JCId);
-                                            @endphp
-                                            <tr>
-                                                <td>Link</td>
-                                                <td colspan="3"><input type="text" id="link{{$row->JCId}}" value="{{url('jobportal/jobapply?jcid=' . $JCId . '')}}">  <button onclick="copylink({{$row->JCId}})" class="btn btn-xs btn-primary"> Copy</button></td>
-                                            </tr>
+                                            @if ($row->Type == 'Manual Entry')
+                                                @php
+                                                    $JCId = base64_encode($row->JCId);
+                                                @endphp
+                                                <tr>
+                                                    <td>Link</td>
+                                                    <td colspan="3"><input type="text" id="link{{ $row->JCId }}"
+                                                            value="{{ url('jobportal/jobapply?jcid=' . $JCId . '') }}">
+                                                        <button onclick="copylink({{ $row->JCId }})"
+                                                            class="btn btn-xs btn-primary"> Copy</button></td>
+                                                </tr>
                                             @endif
-                                           
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -1018,23 +1021,24 @@ use function App\Helpers\getStateName;
             });
 
             $('#Phone').focusout(function() {
-            var count = $(this).val().length;
-            if (count != 10) {
-                alert('Phone number should be of 10 digits');
-                $(this).addClass('errorfield');
-            } else {
-                $(this).removeClass('errorfield');
-            }
-        });
-        $('#Aadhaar').focusout(function() {
-            var count = $(this).val().length;
-            if (count != 12) {
-                alert('Aadhaar Number should be of 12 digits');
-                $(this).addClass('errorfield');
-            } else {
-                $(this).removeClass('errorfield');
-            }
-        });
+                var count = $(this).val().length;
+                if (count != 10) {
+                    alert('Phone number should be of 10 digits');
+                    $(this).addClass('errorfield');
+                } else {
+                    $(this).removeClass('errorfield');
+                }
+            });
+            
+            $('#Aadhaar').focusout(function() {
+                var count = $(this).val().length;
+                if (count != 12) {
+                    alert('Aadhaar Number should be of 12 digits');
+                    $(this).addClass('errorfield');
+                } else {
+                    $(this).removeClass('errorfield');
+                }
+            });
         });
 
 

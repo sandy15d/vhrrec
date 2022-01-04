@@ -58,6 +58,9 @@ $Year = Carbon::now()->year;
 $sql = DB::table('offerletterbasic_history')
     ->where('JAId', $JAId)
     ->get();
+$lang = DB::table('jf_language')
+    ->where('JCId', $JCId)
+    ->get();
 $count = count($sql);
 @endphp
 @extends('layouts.master')
@@ -143,17 +146,23 @@ $count = count($sql);
                                                     {{ $Rec->AddressLine2 }}, {{ $Rec->AddressLine3 }}</div>
                                             </li>
                                             <li>
-                                                <div class="title">
-                                                    @php
-                                                        $sendingId = base64_encode($Rec->JAId);
-                                                    @endphp
-                                                    <a class="text-danger" href="javascript:void(0);"
-                                                        onclick="printInterviewForm('{{ route('interview_form_detail') }}?jaid={{ $sendingId }}');">Interview
-                                                        Form</a>
-                                                </div>
-                                                <div class=" title">
-                                                    <a class="text-danger" href="javascript:void(0);">Joining Form</a>
-                                                </div>
+                                                @if ($Rec->InterviewSubmit == 1)
+                                                    <div class="title">
+                                                        @php
+                                                            $sendingId = base64_encode($Rec->JAId);
+                                                        @endphp
+                                                        <a class="text-danger" href="javascript:void(0);"
+                                                            onclick="printInterviewForm('{{ route('interview_form_detail') }}?jaid={{ $sendingId }}');">Interview
+                                                            Form</a>
+                                                    </div>
+                                                @endif
+                                                @if ($Rec->FinalSubmit == 1)
+                                                    <div class=" title">
+                                                        <a class="text-danger" href="javascript:void(0);">Joining
+                                                            Form</a>
+                                                    </div>
+                                                @endif
+
                                                 @if ($OfBasic->OfferLtrGen == 1)
                                                     <div class="title">
                                                         <a href="javascript:void(0);" class="text-danger"
@@ -163,7 +172,7 @@ $count = count($sql);
                                                 @endif
 
                                             </li>
-                                            
+
 
                                         </ul>
                                     </div>
@@ -179,7 +188,7 @@ $count = count($sql);
         <div class="card tab-box">
             <div class="row user-tabs">
                 <div class="col-lg-12 col-md-12 col-sm-12 line-tabs">
-                    <ul class="nav nav-tabs nav-tabs-bottom">
+                    <ul class="nav nav-tabs nav-tabs-bottom" id="myTab">
                         <li class="nav-item"><a href="#cand_profile" data-bs-toggle="tab"
                                 class="nav-link active">Profile</a></li>
 
@@ -866,46 +875,13 @@ $count = count($sql);
 
             <div class="tab-pane fade" id="cand_other">
                 <div class="row">
-                    <div class="col-md-6 d-flex">
-                        <div class="card profile-box flex-fill">
-                            <div class="card-body">
-                                <h6 class="card-title">Strength & Areas of Improvement?
-                                    <a href="#" class="edit-icon" data-bs-toggle="modal"
-                                        data-bs-target="#strength_modal" onclick="GetStrength();">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
-                                </h6>
-
-                                <ul class="personal-info">
-                                    <li>
-                                        <div class="title">Strength <span style="float: right">1</span></div>
-                                        <div class="text">{{ $Rec->Strength1 ?? '-' }}</div>
-                                    </li>
-                                    <li>
-                                        <div class="title"> <span style="float: right">2</span></div>
-                                        <div class="text">{{ $Rec->Strength2 ?? '-' }}</div>
-                                    </li>
-
-                                    <li>
-                                        <div class="title">Improvement? <span style="float: right">1</span></div>
-                                        <div class="text">
-                                            {{ $Rec->Improvement1 ?? '-' }}
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="title"> <span style="float: right">2</span></div>
-                                        <div class="text">{{ $Rec->Improvement2 ?? '-' }}</div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                   
                     <div class="col-md-6 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Language Proficiency
                                     <a href="#" class="edit-icon" data-bs-toggle="modal"
-                                        data-bs-target="#personal_info_modal">
+                                        data-bs-target="#language_modal" onclick="getLanguageProficiency();">
                                         <i class="fa fa-pencil"></i>
                                     </a>
                                 </h6>
@@ -921,27 +897,22 @@ $count = count($sql);
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>English</td>
-                                                <td>Excellent</td>
-                                                <td>Excellent</td>
-                                                <td>Excellent</td>
-                                            </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>Hindi</td>
-                                                <td>Excellent</td>
-                                                <td>Excellent</td>
-                                                <td>Excellent</td>
-                                            </tr>
-                                            <tr>
-                                                <td>3</td>
-                                                <td>Marathi</td>
-                                                <td>Excellent</td>
-                                                <td>Excellent</td>
-                                                <td>Excellent</td>
-                                            </tr>
+                                            @php
+                                                $i = 1;
+                                            @endphp
+                                            @foreach ($lang as $item)
+                                                <tr>
+                                                    <td>{{ $i }}</td>
+                                                    <td>{{ $item->language }}</td>
+                                                    <td>{{ $item->read == 1 ? 'Yes' : 'No' }}</td>
+                                                    <td>{{ $item->write == 1 ? 'Yes' : 'No' }}</td>
+                                                    <td>{{ $item->speak == 1 ? 'Yes' : 'No' }}</td>
+                                                </tr>
+                                                @php
+                                                    $i++;
+                                                @endphp
+                                            @endforeach
+                                        </tbody>
                                         </tbody>
                                     </table>
                                 </div>
@@ -1161,11 +1132,22 @@ $count = count($sql);
                                         </div>
                                     </li>
                                     <li>
+                                        <div class="title" style="width: 150px;">Interview Form View<span
+                                                style="float: right">:</span></div>
+                                        <div class="text"><input type="text" name="" id="interviewlink"
+                                                class="frminp d-inline"
+                                                value="{{ route('candidate-interview-form') }}?jaid={{ $sendingId }}">
+                                            <button class="frmbtn btn btn-sm btn-secondary"
+                                                onclick="copyJIntFrmLink();">Copy
+                                                Link</button>
+                                        </div>
+                                    </li>
+                                    <li>
                                         <div class="title" style="width: 150px;">Joining Form View<span
                                                 style="float: right">:</span></div>
                                         <div class="text"><input type="text" name="" id="jflink"
                                                 class="frminp d-inline"
-                                                value="{{ url('jobportal/aaa?jaid=' . $Rec->JAId) }}">
+                                                value="{{ route('candidate-joining-form') }}?jaid={{ $sendingId }}">
                                             <button class="frmbtn btn btn-sm btn-secondary" onclick="copyJFrmLink();">Copy
                                                 Link</button>
                                         </div>
@@ -1219,16 +1201,25 @@ $count = count($sql);
                                         </li>
 
                                         <li>
-                                            <div class="title" style="width: 150px;">  Appointment Letter <span style="float: right">:</span> </div>
-                                            <div class="text  text-dark"> <i class="fa fa-pencil text-primary" aria-hidden="true" onclick="appointmentGen({{ $Rec->JAId }})"style="font-size: 16px;cursor: pointer; display: ">Generate </i> </div> 
+                                            <div class="title" style="width: 150px;"> Appointment Letter <span
+                                                    style="float: right">:</span> </div>
+                                            <div class="text  text-dark"> <i class="fa fa-pencil text-primary"
+                                                    aria-hidden="true" onclick="appointmentGen({{ $Rec->JAId }})"
+                                                    style="font-size: 16px;cursor: pointer; display: ">Generate </i> </div>
                                         </li>
                                         <li>
-                                            <div class="title" style="width: 150px;">  Service Agreement <span style="float: right">:</span> </div>
-                                            <div class="text  text-dark"> <i class="fa fa-pencil text-primary" aria-hidden="true" onclick="appointmentGen({{ $Rec->JAId }})"style="font-size: 16px;cursor: pointer; display: ">Generate </i> </div> 
+                                            <div class="title" style="width: 150px;"> Service Agreement <span
+                                                    style="float: right">:</span> </div>
+                                            <div class="text  text-dark"> <i class="fa fa-pencil text-primary"
+                                                    aria-hidden="true" onclick="appointmentGen({{ $Rec->JAId }})"
+                                                    style="font-size: 16px;cursor: pointer; display: ">Generate </i> </div>
                                         </li>
                                         <li>
-                                            <div class="title" style="width: 150px;">  Service Bond <span style="float: right">:</span> </div>
-                                            <div class="text  text-dark"> <i class="fa fa-pencil text-primary" aria-hidden="true" onclick="appointmentGen({{ $Rec->JAId }})"style="font-size: 16px;cursor: pointer; display: ">Generate </i> </div> 
+                                            <div class="title" style="width: 150px;"> Service Bond <span
+                                                    style="float: right">:</span> </div>
+                                            <div class="text  text-dark"> <i class="fa fa-pencil text-primary"
+                                                    aria-hidden="true" onclick="appointmentGen({{ $Rec->JAId }})"
+                                                    style="font-size: 16px;cursor: pointer; display: ">Generate </i> </div>
                                         </li>
                                     </ul>
                                 </div>
@@ -1671,7 +1662,7 @@ $count = count($sql);
                                             <option value="{{ $key }}">{{ $value }}</option>
                                         @endforeach
                                     </select>
-                                    </select>
+
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -2421,61 +2412,77 @@ $count = count($sql);
         </div>
     </div>
 
-    <div id="strength_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static"
+    <div id="language_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static"
         data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered " role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title">Strength & Areas of Improvement</h6>
+                    <h6 class="modal-title">Language Proficiency</h6>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="StrengthForm" action="{{ route('Candidate_Strength_Save') }}" method="POST">
-                        <input type="hidden" name="S_JCId" id="S_JCId">
-                        <p class="mb-1 fw-bold">Strengths ---------------------------</p>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="Strength1">1:</label>
-                                    <input type="text" name="Strength1" id="Strength1"
-                                        class="form-control form-control-sm">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
 
-                                    2: <input type="text" name="Strength2" id="Strength2"
-                                        class="form-control form-control-sm">
-                                </div>
-                            </div>
-                        </div>
-                        <p class="mb-1 fw-bold mt-2">Area of Improvement ----------------------</p>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="Improvement1">1</label>
-                                    <input type="text" name="Improvement1" id="Improvement1"
-                                        class="form-control form-control-sm">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="Improvement2">2</label>
-                                    <input type="text" name="Improvement2" id="Improvement2"
-                                        class="form-control form-control-sm">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="submit-section">
-                            <button class="btn btn-primary submit-btn">Submit</button>
-                        </div>
-                    </form>
+                    <input type="hidden" name="Language_JCId" id="Language_JCId">
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-center" style="vertical-align: middle">
+                            <thead class="text-center">
+                                <tr>
+                                    <td>Language</td>
+                                    <td>Reading</td>
+                                    <td>Writing</td>
+                                    <td>Speaking</td>
+                                    <td style="width:30px;"></td>
+                                </tr>
+                            </thead>
+                            <tbody id="LanguageData">
+                                <tr>
+                                    <td>
+                                        <input type="text" id="Language1" class="form-control form-control-sm"
+                                            value="Hindi" readonly>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" id="Read1" value="0">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" id="Write1" value="0">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" id="Speak1" value="0">
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input type="text" id="Language2" class="form-control form-control-sm"
+                                            value="English" readonly>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" id="Read2" value="0">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" id="Write2" value="0">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" id="Speak2" value="0">
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <input type="button" value="Add Language" id="addLanguage" class="btn btn-primary btn-sm">
+                    <div class="submit-section">
+                        <button class="btn btn-primary" id="save_language">Submit</button>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
+
 
     <div class="modal fade" id="OfferLtrModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
         data-bs-keyboard="false">
@@ -3150,6 +3157,7 @@ $count = count($sql);
         var TrainingCount = 1;
         var RefCount = 1;
         var VRefCount = 1;
+        var LanguageCount = 2;
         var EducationList = '';
         var SpecializationList = '';
         var CollegeList = '';
@@ -3158,6 +3166,7 @@ $count = count($sql);
         getAllSP();
         getCollegeList();
         getYearList();
+
 
 
         function getEducationList() {
@@ -3521,6 +3530,65 @@ $count = count($sql);
             $('#VNRRefData').append(b);
         } //VNRReference
 
+
+        function getLanguageProficiency() {
+            $('#Language_JCId').val($('#JCId').val());
+            var JCId = $('#JCId').val();
+            $.ajax({
+                url: "{{ route('Candidate_Language') }}",
+                type: "POST",
+                data: {
+                    JCId: JCId
+                },
+                dataType: "json",
+                success: function(data) {
+
+                    LanguageCount = data.data.length;
+
+                    for (var i = 1; i <= LanguageCount; i++) {
+
+                        if (i > 2) {
+                            LaguageProficiency(i);
+                        }
+
+                        $('#Language' + i).val(data.data[i - 1].language);
+
+                        if (data.data[i - 1].read == 1) {
+                            $('#Read' + i).prop('checked', true);
+                            $('#Read' + i).val(1);
+                        }
+                        if (data.data[i - 1].write == 1) {
+                            $('#Write' + i).prop('checked', true);
+                            $('#Write' + i).val(1);
+                        }
+                        if (data.data[i - 1].speak == 1) {
+                            $('#Speak' + i).prop('checked', true);
+                            $('#Speak' + i).val(1);
+                        }
+
+
+                    }
+                }
+            });
+        } //getLanguageProficiency
+
+        function LaguageProficiency(num) {
+            var b = '';
+            b += '<tr class="text-center">';
+            b += '<td>' + '<input type="text" name="Language[]" id="Language' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="checkbox" name="Read[]" id="Read' + num + '" value="0">' + '</td>' +
+                '<td>' + '<input type="checkbox" name="Write[]" id="Write' + num + '" value="0">' + '</td>' +
+                '<td>' + '<input type="checkbox" name="Speak[]" id="Speak' + num + '" value="0">' + '</td>' +
+                '<td>' +
+
+                '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removeLanguage"><i class="bx bxs-trash text-danger"></i></a></div>' +
+                '</td>';
+
+            b += '</tr>';
+            $('#LanguageData').append(b);
+        } //LanguageProficiency
+
         function getSpecialization(EducationId, No) {
             var EducationId = EducationId;
             var No = No;
@@ -3769,6 +3837,18 @@ $count = count($sql);
             if (confirm('Are you sure you want to delete this record?')) {
                 $(this).closest('tr').remove();
                 VRefCount--;
+            }
+        });
+
+        $(document).on('click', '#addLanguage', function() {
+            LanguageCount++;
+            LaguageProficiency(LanguageCount);
+        });
+
+        $(document).on('click', '#removeLanguage', function() {
+            if (confirm('Are you sure you want to delete this record?')) {
+                $(this).closest('tr').remove();
+                LanguageCount--;
             }
         });
 
@@ -4123,6 +4203,9 @@ $count = count($sql);
             });
         });
 
+
+
+
         $('#SendMailForm').on('submit', function(e) {
             e.preventDefault();
             var form = this;
@@ -4150,7 +4233,7 @@ $count = count($sql);
 
         function printInterviewForm(url) {
             $("<iframe>") // create a new iframe element
-                .hide() // make it invisible
+                // make it invisible
                 .attr("src", url) // point the iframe to the page you want to print
                 .appendTo("body");
         }
@@ -4616,6 +4699,14 @@ $count = count($sql);
             alert("Copied Link: " + copyText.value);
         }
 
+        function copyJIntFrmLink() {
+            var copyText = document.getElementById("interviewlink");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999)
+            document.execCommand("copy");
+            alert("Copied Link: " + copyText.value);
+        }
+
         function sendOfferLtr(JAId) {
             var JAId = JAId;
             $.ajax({
@@ -4705,5 +4796,67 @@ $count = count($sql);
                 }
             }, 'json');
         }
+
+        for (i = 1; i <= 10; i++) {
+
+            $(document).on('change', '#Read' + i, function() {
+
+                if ($(this).prop('checked')) {
+                    $(this).val('1');
+                } else {
+                    $(this).val('0');
+                }
+            });
+
+            $(document).on('change', '#Write' + i, function() {
+                if ($(this).prop('checked')) {
+                    $(this).val('1');
+                } else {
+                    $(this).val('0');
+                }
+            });
+
+
+
+            $(document).on('change', '#Speak' + i, function() {
+                if ($(this).prop('checked')) {
+                    $(this).val('1');
+                } else {
+                    $(this).val('0');
+                }
+            });
+
+
+        }
+
+        $(document).on('click', '#save_language', function() {
+            var language_array = [];
+            for (i = 1; i <= 10; i++) {
+                var lang = $('#Language' + i).val();
+                var read = $('#Read' + i).val();
+                var write = $('#Write' + i).val();
+                var speak = $('#Speak' + i).val();
+                language_array.push({
+                    'language': lang,
+                    'read': read,
+                    'write': write,
+                    'speak': speak
+                });
+            }
+
+            var url = '<?= route('Candidate_Language_Save') ?>';
+            $.post(url, {
+                language_array: language_array,
+                JCId: $('#JCId').val()
+            }, function(data) {
+                if (data.status == 200) {
+                    toastr.success(data.msg);
+                    window.location.reload();
+                } else {
+                    toastr.error(data.msg);
+                }
+            }, 'json');
+
+        });
     </script>
 @endsection

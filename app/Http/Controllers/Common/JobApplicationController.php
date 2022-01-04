@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\CandidateActivityLog;
+use Doctrine\DBAL\Query\QueryException;
 
 use function App\Helpers\getCompanyCode;
 use function App\Helpers\getDepartment;
@@ -454,8 +455,707 @@ class JobApplicationController extends Controller
         }
     }
 
+
+    public function candidate_interview_form()
+    {
+        $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
+        $district_list = DB::table("master_district")->orderBy('DistrictName', 'asc')->pluck("DistrictName", "DistrictId");
+        $education_list = DB::table("master_education")->orderBy('EducationCode', 'asc')->pluck("EducationCode", "EducationId");
+        $specialization_list = DB::table("master_specialization")->orderBy('Specialization', 'asc')->pluck("Specialization", "SpId");
+        $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+        return view('jobportal.candidate_interview_form', compact('state_list', 'district_list', 'education_list', 'specialization_list', 'institute_list'));
+    }
+
+
     public function CandidateJoiningForm(Request $Request)
     {
-        return 'Candidate Joining Form';
+        return view('jobportal.candidate_joining_form');
+    }
+
+    public function onboarding(Request $request)
+    {
+        $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
+        $district_list = DB::table("master_district")->orderBy('DistrictName', 'asc')->pluck("DistrictName", "DistrictId");
+        $education_list = DB::table("master_education")->orderBy('EducationCode', 'asc')->pluck("EducationCode", "EducationId");
+        $specialization_list = DB::table("master_specialization")->orderBy('Specialization', 'asc')->pluck("Specialization", "SpId");
+        $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+        return view('jobportal.onboarding', compact('state_list', 'district_list', 'education_list', 'specialization_list', 'institute_list'));
+    }
+
+    public function SavePersonalInfo(Request $request)
+    {
+        $JCId   = $request->JCId;
+        $Title = $request->Title;
+        $FName = $request->FName;
+        $MName = $request->MName ?? null;
+        $LName = $request->LName ?? null;
+        $DOB = $request->DOB;
+        $Gender = $request->Gender;
+        $Nationality = $request->Nationality;
+        $Religion = $request->Religion;
+        $OtherReligion = $request->OtherReligion ?? null;
+        $Category = $request->Category;
+        $OtherCategory = $request->OtherCategory ?? null;
+        $MaritalStatus = $request->MaritalStatus;
+        $MarriageDate = $request->MarriageDate ?? null;
+        $SpouseName = $request->SpouseName ?? null;
+        $CandidateImage = $request->old_image ?? null;
+
+        if ($request->old_image == '' || $request->old_image == null) {
+            $CandidateImage = $JCId . '.' . $request->CandidateImage->extension();
+            $request->CandidateImage->move(public_path('uploads/Picture'), $CandidateImage);
+        }
+
+
+        $query = DB::table('jobcandidates')
+            ->where('JCId', $JCId)
+            ->update(
+                [
+                    'Title' => $Title,
+                    'FName' => $FName,
+                    'MName' => $MName,
+                    'LName' => $LName,
+                    'DOB' => $DOB,
+                    'Gender' => $Gender,
+                    'Nationality' => $Nationality,
+                    'Religion' => $Religion,
+                    'OtherReligion' => $OtherReligion,
+                    'Caste' => $Category,
+                    'OtherCaste' => $OtherCategory,
+                    'MaritalStatus' => $MaritalStatus,
+                    'MarriageDate' => $MarriageDate,
+                    'SpouseName' => $SpouseName,
+                    'CandidateImage' => $CandidateImage,
+                    'LastUpdated' => now(),
+
+                ]
+            );
+
+
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
+    }
+
+    public function SaveContact(Request $request)
+    {
+        $JCId = $request->JCId;
+        $Email = $request->Email1;
+        $Email2 = $request->Email2 ?? null;
+        $Contact = $request->Contact1;
+        $Contact2 = $request->Contact2 ?? null;
+        $PreAddress = $request->PreAddress;
+        $PreState = $request->PreState;
+        $PreDistrict = $request->PreDistrict;
+        $PreCity = $request->PreCity;
+        $PrePin = $request->PrePin;
+        $PermAddress = $request->PermAddress;
+        $PermState = $request->PermState;
+        $PermDistrict = $request->PermDistrict;
+        $PermCity = $request->PermCity;
+        $PermPin = $request->PermPin;
+
+        $query = DB::table('jobcandidates')
+            ->where('JCId', $JCId)
+            ->update(
+                [
+                    'Email' => $Email,
+                    'Email2' => $Email2,
+                    'Phone' => $Contact,
+                    'Phone2' => $Contact2,
+                    'LastUpdated' => now(),
+
+                ]
+            );
+
+        $chk = DB::table('jf_contact_det')->where('JCId', $JCId)->first();
+
+        if ($chk == null) {
+            $query1 = DB::table('jf_contact_det')
+                ->insert(
+                    [
+                        'JCId' => $JCId,
+                        'pre_address' => $PreAddress,
+                        'pre_state' => $PreState,
+                        'pre_dist' => $PreDistrict,
+                        'pre_city' => $PreCity,
+                        'pre_pin' => $PrePin,
+                        'perm_address' => $PermAddress,
+                        'perm_state' => $PermState,
+                        'perm_dist' => $PermDistrict,
+                        'perm_city' => $PermCity,
+                        'perm_pin' => $PermPin,
+                        'LastUpdated' => now(),
+
+                    ]
+                );
+        } else {
+            $query1 = DB::table('jf_contact_det')
+                ->where('JCId', $JCId)
+                ->update(
+                    [
+                        'pre_address' => $PreAddress,
+                        'pre_state' => $PreState,
+                        'pre_dist' => $PreDistrict,
+                        'pre_city' => $PreCity,
+                        'pre_pin' => $PrePin,
+                        'perm_address' => $PermAddress,
+                        'perm_state' => $PermState,
+                        'perm_dist' => $PermDistrict,
+                        'perm_city' => $PermCity,
+                        'perm_pin' => $PermPin,
+                        'LastUpdated' => now(),
+
+                    ]
+                );
+        }
+
+        if (!$query || !$query1) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
+    }
+
+    public function SaveEducation(Request $request)
+    {
+        $JCId = $request->JCId;
+        $Qualification = $request->Qualification;
+        $Course = $request->Course;
+        $Specialization = $request->Specialization;
+        $Institute = $request->Collage;
+        $PassingYear = $request->PassingYear;
+        $CGPA = $request->Percentage;
+
+        $query = DB::table('candidateeducation')->where('JCId', $JCId)->delete();
+
+        $educationArray = array();
+        for ($i = 0; $i < count($Qualification); $i++) {
+            $educationArray[$i] = array(
+                'JCId' => $JCId,
+                'Qualification' => $Qualification[$i],
+                'Course' => $Course[$i],
+                'Specialization' => $Specialization[$i],
+                'Institute' => $Institute[$i],
+                'YearOfPassing' => $PassingYear[$i],
+                'CGPA' => $CGPA[$i],
+                'LastUpdated' => now()
+            );
+        }
+
+        $query1 = DB::table('candidateeducation')->insert($educationArray);
+        if (!$query1) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
+    }
+
+    public function SaveFamily(Request $request)
+    {
+
+        $JCId = $request->JCId;
+        $Relation = $request->Relation;
+        $RelationName = $request->RelationName;
+        $RelationDOB = $request->RelationDOB;
+        $RelationQualification = $request->RelationQualification;
+        $RelationOccupation = $request->RelationOccupation;
+
+        $query = DB::table('jf_family_det')->where('JCId', $JCId)->delete();
+
+        $FamilyArray = array();
+        for ($i = 0; $i < count($Relation); $i++) {
+            $FamilyArray[$i] = array(
+                'JCId' => $JCId,
+                'relation' => $Relation[$i],
+                'name' => $RelationName[$i],
+                'dob' => $RelationDOB[$i],
+                'qualification' => $RelationQualification[$i],
+                'occupation' => $RelationOccupation[$i],
+            );
+        }
+
+        $query1 = DB::table('jf_family_det')->insert($FamilyArray);
+        if (!$query1) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
+    }
+
+    public function SaveExperience(Request $request)
+    {
+        $JCId = $request->JCId;
+        $ProfCheck = $request->ProfCheck;
+        $CurrCompany = $request->CurrCompany ?? null;
+        $CurrDesignation = $request->CurrDesignation ?? null;
+        $CurrJoinDate = $request->CurrJoinDate ?? null;
+        $CurrCTC = $request->CurrCTC ?? null;
+        $CurrSalary = $request->CurrSalary ?? null;
+        $NoticePeriod = $request->NoticePeriod ?? null;
+        $ResignReason = $request->ResignReason ?? null;
+        $ExpCTC = $request->ExpCTC ?? null;
+        $JobResponsibility = $request->JobResponsibility ?? null;
+        $DAHeadquarter = $request->DAHeadquarter ?? null;
+        $DAOutsideHeadquarter = $request->DAOutsideHeadquarter ?? null;
+        $PetrolAllowances = $request->PetrolAllowances ?? null;
+        $PhoneAllowances = $request->PhoneAllowances  ?? null;
+        $HotelEligibility = $request->HotelEligibility ?? null;
+        $ToatalExpYears = $request->ToatalExpYears ?? null;
+        $TotalExpMonth = $request->TotalExpMonth ?? null;
+
+        $WorkExpCompany = $request->WorkExpCompany ?? null;
+        $WorkExpDesignation = $request->WorkExpDesignation ?? null;
+        $WorkExpGrossMonthlySalary = $request->WorkExpGrossMonthlySalary ?? null;
+        $WorkExpAnualCTC = $request->WorkExpAnualCTC ?? null;
+        $WorkExpJobStartDate = $request->WorkExpJobStartDate ?? null;
+        $WorkExpJobEndDate = $request->WorkExpJobEndDate ?? null;
+        $WorkExpReasonForLeaving = $request->WorkExpReasonForLeaving ?? null;
+
+        $TrainingNature = $request->TrainingNature ?? null;
+        $TrainingOrganization = $request->TrainingOrganization ?? null;
+        $TrainingFromDate = $request->TrainingFromDate ?? null;
+        $TrainingToDate = $request->TrainingToDate ?? null;
+
+        $query = DB::table('jobcandidates')->where('JCId', $JCId)->update(
+            [
+                'Professional' => $ProfCheck,
+                'PresentCompany' => $CurrCompany,
+                'Designation' => $CurrDesignation,
+                'JobStartDate' => $CurrJoinDate,
+                'JobResponsibility' => $JobResponsibility,
+                'ResignReason' => $ResignReason,
+                'NoticePeriod' => $NoticePeriod,
+                'DAHq' => $DAHeadquarter,
+                'GrossSalary' => $CurrSalary,
+                'DAOutHq' => $DAOutsideHeadquarter,
+                'PetrolAlw' => $PetrolAllowances,
+             //   'PhoneAlw' => $PhoneAllowances,
+                'HotelElg' => $HotelEligibility,
+                'ExpectedCTC' => $ExpCTC,
+                'CTC' => $CurrCTC,
+                'TotalYear' => $ToatalExpYears,
+                'TotalMonth' => $TotalExpMonth,
+                'Medical' => $request->Medical,
+                'GrpTermIns' => $request->GrpTermIns ?? null,
+                'GrpPersonalAccIns' => $request->GrpPersonalAccIns ?? null,
+                'MobileHandset' => $request->MobileHandset ?? null,
+                'MobileBill' => $request->MobileBill ?? null,
+                'TravelElg' => $request->TravelElg ?? null,
+                'LastUpdated' => now()
+            ]
+        );
+
+
+        $chk = DB::table('pre_job_details')->where('JCId', $JCId)->first();
+        if ($chk != null) {
+            $benefit = DB::table('pre_job_details')->where('JCId', $JCId)->update(
+                [
+                    'OnRollRepToMe' => $request->OnRollRepToMe ?? null,
+                    'ThirdPartyRepToMe' => $request->ThirdPartyRepToMe ?? null,
+                    'TerritoryDetails' => $request->TerritoryDetails ?? null,
+                    'VegCurrTurnOver' => $request->VegCurrTurnOver  ?? null,
+                    'VegPreTurnOver' => $request->VegPreTurnOver ?? null,
+                    'FieldCurrTurnOver' => $request->FieldCurrTurnOver ?? null,
+                    'FieldPreTurnOver' => $request->FieldPreTurnOver ?? null,
+                    'MonthlyIncentive' => $request->MonthlyIncentive ?? null,
+                    'QuarterlyIncentive' => $request->QuarterlyIncentive ?? null,
+                    'HalfYearlyIncentive' => $request->HalfYearlyIncentive ?? null,
+                    'AnnuallyIncentive' => $request->AnnuallyIncentive ?? null,
+                    'AnyOtheIncentive' => $request->AnyOtheIncentive ?? null,
+
+                    'TwoWheelChk' => (!isset($request->TwoWheelChk) || $request->TwoWheelChk == null) ? 0 : 1,
+                    'TwoWheelOwnerType' => $request->TwoWheelOwnerType ?? null,
+                    'TwoWheelAmount' => $request->TwoWheelAmount ?? null,
+                    'TwoWheelPetrol' => $request->TwoWheelPetrol ?? null,
+                    'TwoWheelPetrolTerm' => $request->TwoWheelPetrolTerm ?? null,
+                    'FourWheelChk' => (!isset($request->FourWheelChk) || $request->FourWheelChk == null) ? 0 : 1,
+                    'FourWheelOwnerType' => $request->FourWheelOwnerType ?? null,
+                    'FourWheelAmount' => $request->FourWheelAmount ?? null,
+                    'FourWheelPetrol' => $request->FourWheelPetrol ?? null,
+                    'FourWheelPetrolTerm' => $request->FourWheelPetrolTerm ?? null,
+                    'OtherBenifit' => $request->OtherBenifit ?? null,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $benefit = DB::table('pre_job_details')->insert(
+                [
+                    'JCId' => $JCId,
+                    'OnRollRepToMe' => $request->OnRollRepToMe ?? null,
+                    'ThirdPartyRepToMe' => $request->ThirdPartyRepToMe ?? null,
+                    'TerritoryDetails' => $request->TerritoryDetails ?? null,
+                    'VegCurrTurnOver' => $request->VegCurrTurnOver  ?? null,
+                    'VegPreTurnOver' => $request->VegPreTurnOver ?? null,
+                    'FieldCurrTurnOver' => $request->FieldCurrTurnOver ?? null,
+                    'FieldPreTurnOver' => $request->FieldPreTurnOver ?? null,
+                    'MonthlyIncentive' => $request->MonthlyIncentive ?? null,
+                    'QuarterlyIncentive' => $request->QuarterlyIncentive ?? null,
+                    'HalfYearlyIncentive' => $request->HalfYearlyIncentive ?? null,
+                    'AnnuallyIncentive' => $request->AnnuallyIncentive ?? null,
+                    'AnyOtheIncentive' => $request->AnyOtheIncentive ?? null,
+                    'TwoWheelChk' => (!isset($request->TwoWheelChk) || $request->TwoWheelChk == null) ? 0 : 1,
+                    'TwoWheelOwnerType' => $request->TwoWheelOwnerType ?? null,
+                    'TwoWheelAmount' => $request->TwoWheelAmount ?? null,
+                    'TwoWheelPetrol' => $request->TwoWheelPetrol ?? null,
+                    'TwoWheelPetrolTerm' => $request->TwoWheelPetrolTerm ?? null,
+                    'FourWheelChk' => (!isset($request->FourWheelChk) || $request->FourWheelChk == null) ? 0 : 1,
+                    'FourWheelOwnerType' => $request->FourWheelOwnerType ?? null,
+                    'FourWheelAmount' => $request->FourWheelAmount ?? null,
+                    'FourWheelPetrol' => $request->FourWheelPetrol ?? null,
+                    'FourWheelPetrolTerm' => $request->FourWheelPetrolTerm ?? null,
+                    'OtherBenifit' => $request->OtherBenifit ?? null,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+
+        if ($WorkExpCompany != null) {
+            $delete_work_exp = DB::table('jf_work_exp')->where('JCId', $JCId)->delete();
+            $experienceArray = array();
+            for ($i = 0; $i < count($WorkExpCompany); $i++) {
+                $experienceArray[$i] = array(
+                    'JCId' => $JCId,
+                    'company' => $WorkExpCompany[$i],
+                    'desgination' => $WorkExpDesignation[$i],
+                    'gross_mon_sal' => $WorkExpGrossMonthlySalary[$i],
+                    'annual_ctc' => $WorkExpAnualCTC[$i],
+                    'job_start' => $WorkExpJobStartDate[$i],
+                    'job_end' => $WorkExpJobEndDate[$i],
+                    'reason_fr_leaving' => $WorkExpReasonForLeaving[$i],
+                    'LastUpdated' => now()
+                );
+            }
+
+            $query1 = DB::table('jf_work_exp')->insert($experienceArray);
+        }
+
+        if ($TrainingNature != null) {
+            $del_training = DB::table('jf_tranprac')->where('JCId', $JCId)->delete();
+            $trainingArray = array();
+            for ($i = 0; $i < count($TrainingNature); $i++) {
+                $trainingArray[$i] = array(
+                    'JCId' => $JCId,
+                    'training' => $TrainingNature[$i],
+                    'organization' => $TrainingOrganization[$i],
+                    'from' => $TrainingFromDate[$i],
+                    'to' => $TrainingToDate[$i],
+                );
+            }
+            $query2 = DB::table('jf_tranprac')->insert($trainingArray);
+        }
+
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
+    }
+
+    public function SaveAbout(Request $request)
+    {
+
+        $JCId = $request->JCId;
+
+        $AboutAim  = $request->AboutAim;
+        $AboutHobbi = $request->AboutHobbi;
+        $About5Year = $request->About5Year;
+        $AboutAssets = $request->AboutAssets;
+        $AboutImprovement = $request->AboutImprovement;
+        $AboutStrength = $request->AboutStrength;
+        $AboutDeficiency = $request->AboutDeficiency;
+        $CriminalChk = $request->CriminalChk;
+        $AboutCriminal = $request->AboutCriminal ?? null;
+        $LicenseChk = $request->LicenseChk;
+        $DLNo = $request->DLNo ?? null;
+        $LValidity = $request->LValidity ?? null;
+
+        $chk = DB::table('about_answer')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $about = DB::table('about_answer')->insert(
+                [
+                    'JCId' => $JCId,
+                    'AboutAim' => $AboutAim,
+                    'AboutHobbi' => $AboutHobbi,
+                    'About5Year' => $About5Year,
+                    'AboutAssets' => $AboutAssets,
+                    'AboutImprovement' => $AboutImprovement,
+                    'AboutStrength' => $AboutStrength,
+                    'AboutDeficiency' => $AboutDeficiency,
+                    'CriminalChk' => $CriminalChk,
+                    'AboutCriminal' => $AboutCriminal,
+                    'LicenseChk' => $LicenseChk,
+                    'DLNo' => $DLNo,
+                    'LValidity' => $LValidity,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $about = DB::table('about_answer')->where('JCId', $JCId)->update(
+                [
+                    'AboutAim' => $AboutAim,
+                    'AboutHobbi' => $AboutHobbi,
+                    'About5Year' => $About5Year,
+                    'AboutAssets' => $AboutAssets,
+                    'AboutImprovement' => $AboutImprovement,
+                    'AboutStrength' => $AboutStrength,
+                    'AboutDeficiency' => $AboutDeficiency,
+                    'CriminalChk' => $CriminalChk,
+                    'AboutCriminal' => $AboutCriminal,
+                    'LicenseChk' => $LicenseChk,
+                    'DLNo' => $DLNo,
+                    'LValidity' => $LValidity,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+
+        if (!$about) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
+    }
+
+    public function SaveOther(Request $request)
+    {
+        //dd($request->all());
+        $JCId = $request->JCId;
+        $language_array = $request->language_array;
+        $PerOrgArray = $request->PerOrgArray;
+        $VnrRefArray = $request->VnrRefArray;
+
+
+        if ($language_array != null) {
+            $query = DB::table('jf_language')->where('JCId', $JCId)->delete();
+            foreach ($language_array as $key => $value) {
+
+                $lang = DB::table('jf_language')->insert(['JCId' => $JCId, 'language' => $value['language'], 'read' => $value['read'], 'write' => $value['write'], 'speak' => $value['speak']]);
+            }
+        }
+
+
+
+        if ($PerOrgArray != null) {
+            $query1 = DB::table('jf_reference')->where('JCId', $JCId)->where('from', 'Previous Organization')->delete();
+            foreach ($PerOrgArray as $key => $value) {
+                $preRef = DB::table('jf_reference')->insert(['JCId' => $JCId, 'from' => 'Previous Organization', 'name' => $value['PreOrgName'], 'company' => $value['PreOrgCompany'], 'designation' => $value['PreOrgDesignation'], 'email' => $value['PreOrgEmail'], 'contact' => $value['PreOrgContact']]);
+            }
+        }
+
+        if ($VnrRefArray != null) {
+            $query2 = DB::table('jf_reference')->where('JCId', $JCId)->where('from', 'VNR')->delete();
+            foreach ($VnrRefArray as $key => $value) {
+                $vnrRef = DB::table('jf_reference')->insert(['JCId' => $JCId, 'from' => 'VNR', 'name' => $value['VnrRefName'], 'rel_with_person' => $value['VnrRefRelWithPerson'], 'designation' => $value['VnrRefDesignation'], 'email' => $value['VnrRefEmail'], 'contact' => $value['VnrRefContact']]);
+            }
+        }
+
+        if (!$lang || !$preRef || !$vnrRef) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
+    }
+
+    public function OfferLtrFileUpload(Request $request)
+    {
+        $request->validate(['OfferLtr' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = $JCId . '_Previous_Offer_Letter' . '.' . $request->OfferLtr->extension();
+
+        if (\File::exists(public_path('uploads/Documents/' . $filename))) {
+            \File::delete(public_path('uploads/Documents/' . $filename));
+        }
+        $request->OfferLtr->move(public_path('uploads/Documents'), $filename);
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $offer = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'OfferLtr' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $offer = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'OfferLtr' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+
+        if (!$offer) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+
+    public function RelievingLtrFileUpload(Request $request)
+    {
+        $request->validate(['RelievingLtr' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = $JCId . '_Previous_Relieving_Letter' . '.' . $request->RelievingLtr->extension();
+        if (\File::exists(public_path('uploads/Documents/' . $filename))) {
+            \File::delete(public_path('uploads/Documents/' . $filename));
+        }
+        $request->RelievingLtr->move(public_path('uploads/Documents'), $filename);
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $offer = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'RelievingLtr' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $offer = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'RelievingLtr' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+
+        if (!$offer) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+
+    public function SalarySlipFileUpload(Request $request)
+    {
+        $request->validate(['SalarySlip' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = $JCId . '_Previous_Salaray_Slip' . '.' . $request->SalarySlip->extension();
+        if (\File::exists(public_path('uploads/Documents/' . $filename))) {
+            \File::delete(public_path('uploads/Documents/' . $filename));
+        }
+        $request->SalarySlip->move(public_path('uploads/Documents'), $filename);
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $offer = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'SalarySlip' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $offer = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'SalarySlip' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+
+        if (!$offer) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+
+    public function AppraisalLtrFileUpload(Request $request)
+    {
+        $request->validate(['AppraisalLtr' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = $JCId . '_Previous_Appraisal_Letter' . '.' . $request->AppraisalLtr->extension();
+        if (\File::exists(public_path('uploads/Documents/' . $filename))) {
+            \File::delete(public_path('uploads/Documents/' . $filename));
+        }
+        $request->AppraisalLtr->move(public_path('uploads/Documents'), $filename);
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $offer = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'AppraisalLtr' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $offer = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'AppraisalLtr' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+
+        if (!$offer) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+    public function VaccinationCertFileUpload(Request $request)
+    {
+        $request->validate(['VaccinationCert' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = $JCId . 'VaccinationCertificate' . '.' . $request->VaccinationCert->extension();
+        if (\File::exists(public_path('uploads/Documents/' . $filename))) {
+            \File::delete(public_path('uploads/Documents/' . $filename));
+        }
+        $request->VaccinationCert->move(public_path('uploads/Documents'), $filename);
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $offer = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'VaccinationCert' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $offer = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'VaccinationCert' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+
+        if (!$offer) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+
+    public function CheckDocumentUpload(Request $request)
+    {
+        $JCId = $request->JCId;
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk->OfferLtr == null || $chk->RelievingLtr == null || $chk->SalarySlip == null || $chk->AppraisalLtr == null || $chk->VaccinationCert == null) {
+            return response()->json(['status' => 400, 'msg' => 'Please upload all documents']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'All documents uploaded successfully']);
+        }
+    }
+
+    public function FinalSubmitInterviewApplicationForm(Request $request)
+    {
+        $JCId = $request->JCId;
+        $query = DB::table('jobcandidates')->where('JCId', $JCId)->update(
+            [
+                'InterviewSubmit' => '1',
+                'LastUpdated' => now()
+            ]
+        );
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Interview has been scheduled successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
     }
 }
