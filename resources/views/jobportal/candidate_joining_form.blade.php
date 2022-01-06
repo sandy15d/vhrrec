@@ -61,7 +61,7 @@ $query = DB::table('jobapply')
                     return false;
                 } else {
                     if (reference_no == Ref) {
-                        window.location.href = "{{ route('onboarding') }}";
+                        window.location.href = "{{ route('onboarding') }}?jaid={{ request()->query('jaid') }}";
                     } else {
                         toastr.error('Reference no. is not correct.');
                         return false;

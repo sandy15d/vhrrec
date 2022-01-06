@@ -1,21 +1,24 @@
 @component('mail::message')
-<strong>Congratulations,</strong> {{ $details['name']}},Reference No : {{ $details['reference_no']}}, Your application for the post of {{ $details['title']}} has been shortlisted.
+<strong>Congratulations,</strong> {{ $details['name']}},Reference No : <b style="color: blue">{{ $details['reference_no']}}</b>, Your application for the post of {{ $details['title']}} has been shortlisted.
 <p>We are sending you this interview call letter to attend an interview for the above mentioned post.</p>
 <p>The interview schedule details are mentioned below,</p>
 <p style="margin-bottom: 2px;">Date : {{ $details['interview_date'] }}</p>
 <p style="margin-bottom: 2px;">Time : {{ $details['interview_time'] }}</p>
 <p style="margin-bottom: 2px;">Venue : {{ $details['interview_venue'] }}</p>
 <p style="margin-bottom: 2px;">Contact Person: {{$details['contact_person'] }}</p>
+<p style="margin-bottom: 2px;">Phone: 0771- 4350005</p>
+
+<br>
 <p>Bring copy of all original certificates in support of you Salary (3 month's Payslip & Offer,Appointmnet letter,incentives -if any), if any, Travel Policy, experience,educational qualification,etc.</p>
 <p>Kindly fill the job application form and FIRO B Test online by clicking the bellow link, this will save your time and efforts on the interview date.</p>
 @component('mail::buttons', [
     'buttons' => [
         [
-            'url' => '',
+            'url' => $details['interview_form'],
             'slot' => 'Interview Application Form',
-            'color' => 'green' // This is the default
+            'color' => 'green'
         ],[
-            'url' => '',
+            'url' => $details['firob'],
             'slot' => 'FIRO - B',
             'color' => 'blue'
         ]

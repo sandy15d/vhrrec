@@ -67,7 +67,12 @@ if (!function_exists('getFullName')) {
 			return "";
 		} else {
 			$DepartmentCode = Db::table('master_department')->select('DepartmentCode')->where('DepartmentId', $DeptId)->first();
-			return $DepartmentCode->DepartmentCode;
+			if (is_null($DepartmentCode)) {
+				return '';
+			} else {
+				return $DepartmentCode->DepartmentCode;
+			}
+			
 		}
 	}
 
@@ -77,7 +82,12 @@ if (!function_exists('getFullName')) {
 			return "";
 		} else {
 			$Department = Db::table('master_department')->select('DepartmentName')->where('DepartmentId', $DeptId)->first();
-			return $Department->DepartmentName;
+			if (is_null($Department)) {
+				return '';
+			} else {
+				return $Department->DepartmentName;
+			}
+		
 		}
 	}
 

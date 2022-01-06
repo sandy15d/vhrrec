@@ -114,40 +114,99 @@ $sql = DB::table('jobpost')
                                                                                 ->where('jobpost.JPId', $sql[$i]->JPId)
                                                                                 ->orderBy('JPId', 'desc')
                                                                                 ->get();
+                                                                            
                                                                         @endphp
                                                                         @foreach ($res as $item)
                                                                             <tr>
                                                                                 <th style="width: 250px;">Department
                                                                                 </th>
-                                                                                <td></td>
+                                                                                <td>{{ getDepartment($item->DepartmentId) }}
+                                                                                </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <th>Job Description</th>
-                                                                                <td></td>
+                                                                                <td><?= $item->Description ?></td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <th>Required Qualification</th>
-                                                                                <td></td>
+                                                                                <td>
+                                                                                    @php
+                                                                                        $data = unserialize($item->EducationId);
+                                                                                    @endphp
+                                                                                    <ul>
+                                                                                        @foreach ($data as $item1)
+                                                                                            <li>{{ getEducationById($item1['e']) }}
+                                                                                                @if ($item1['s'] != 0)
+                                                                                                    {{ ' - ' . getSpecializationbyId($item1['s']) }}
+                                                                                                @endif
+                                                                                            </li>
+                                                                                        @endforeach
+                                                                                    </ul>
+                                                                                </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <th>Training Location</th>
-                                                                                <td></td>
+                                                                                @php
+                                                                                    $loc = unserialize($item->LocationIds);
+                                                                                @endphp
+                                                                                <td>
+                                                                                    @foreach ($loc as $item1)
+                                                                                        @if ($item1['city'] != '' || $item1['city'] != 0)
+                                                                                            {{ getDistrictName($item1['city']) . ' (' }}
+                                                                                        @endif
+                                                                                        @if ($item1['state'] != '')
+                                                                                            {{ getStateName($item1['state']) }}
+                                                                                        @endif
+                                                                                        @if ($item1['city'] != '' || $item1['city'] != 0)
+                                                                                            {{ ')' }}
+                                                                                        @endif
+
+                                                                                    @endforeach
+                                                                                </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <th>Training Duration</th>
-                                                                                <td></td>
+                                                                                <td>
+                                                                                    {{ date('d-m-Y', strtotime($item->Tr_Frm_Date)) }}
+                                                                                    - to -
+                                                                                    {{ date('d-m-Y', strtotime($item->Tr_To_Date)) }}
+                                                                                </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <th>Stipend(in Rs. Per Month)</th>
-                                                                                <td></td>
+                                                                                <td>
+                                                                                    {{ $item->Stipend }}
+                                                                                </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <th>Other Benifits</th>
-                                                                                <td></td>
+                                                                                <td>
+                                                                                    @if ($item->TwoWheeler != null)
+                                                                                        2 Wheeler reimbursement Rs.
+                                                                                        {{ $item->TwoWheeler }} per km.
+                                                                                        <br>
+                                                                                    @endif
+                                                                                    @if ($item->DA != null)
+                                                                                        DA Rs. {{ $item->DA }} per
+                                                                                        Day.
+                                                                                    @endif
+                                                                                </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <th>Any Other Information</th>
-                                                                                <td></td>
+                                                                                <td>
+                                                                                    @php
+                                                                                        echo $item->Info;
+                                                                                    @endphp
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="2" class="text-center">
+                                                                                    <button type="button"
+                                                                                        class="btn btn-sm btn-primary"
+                                                                                        onclick="traineeapply({{ $item->JPId }})">Apply
+                                                                                        Now
+                                                                                </td>
                                                                             </tr>
 
                                                                         @endforeach
@@ -189,7 +248,8 @@ $sql = DB::table('jobpost')
                                                             <td>{{ $i + 1 }}</td>
                                                             <td>{{ $regular_job[$i]->JobCode }}</td>
                                                             <td>{{ $regular_job[$i]->Title }}</td>
-                                                            <td>{{ getDepartment($regular_job[$i]->DepartmentId) }}</td>
+                                                            <td>{{ getDepartment($regular_job[$i]->DepartmentId) }}
+                                                            </td>
                                                             <td><a href="javascript:void(0);"
                                                                     style="color: #0008ff">View Details</a></td>
                                                         </tr>
@@ -336,9 +396,12 @@ $sql = DB::table('jobpost')
 <script>
     function jobapply(JPId) {
         var JPId = btoa(JPId);
-        // window.location.href = "{{ route('job_apply') }}?jpid=" + JPId;
+        window.open("{{ route('job_apply_form') }}?jpid=" + JPId, '_blank');
+    }
 
-        window.open("{{ route('job_apply_form') }}?jpid=" + JPId, '_blank')
+    function traineeapply(JPId) {
+        var JPId = btoa(JPId);
+        window.open("{{ route('trainee_apply_form') }}?jpid=" + JPId, '_blank');
     }
 
     function btnSip_Click() {

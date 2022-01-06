@@ -23,7 +23,7 @@ $Rec = DB::table('jobapply')
     ->first();
 
 $JCId = $Rec->JCId;
-
+$firobid = base64_encode($Rec->JCId);
 $OfBasic = DB::table('offerletterbasic')
     ->leftJoin('candjoining', 'candjoining.JAId', '=', 'offerletterbasic.JAId')
     ->select('offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.RejReason', 'candjoining.EmpCode', 'candjoining.RefCheck')
@@ -163,7 +163,7 @@ $count = count($sql);
                                                     </div>
                                                 @endif
 
-                                                @if ($OfBasic->OfferLtrGen == 1)
+                                                @if ($OfBasic != null && $OfBasic->OfferLtrGen == 1)
                                                     <div class="title">
                                                         <a href="javascript:void(0);" class="text-danger"
                                                             onclick="OfferLetterPrint('{{ route('offer_ltr_print') }}?jaid={{ $Rec->JAId }}');">Offer
@@ -875,7 +875,7 @@ $count = count($sql);
 
             <div class="tab-pane fade" id="cand_other">
                 <div class="row">
-                   
+
                     <div class="col-md-6 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
@@ -973,41 +973,62 @@ $count = count($sql);
                                     <li>
                                         <div class="title" style="width: 150px;">Department<span
                                                 style="float: right">:</span></div>
-                                        <div class="text">{{ getDepartment($OfBasic->Department) ?? '-' }}
-                                            ({{ getCompanyCode($OfBasic->Company) }})</div>
+                                        <div class="text">
+                                            @if ($OfBasic != null)
+                                                {{ getDepartment($OfBasic->Department) ?? '-' }}
+                                                ({{ getCompanyCode($OfBasic->Company) }})
+                                            @endif
+                                        </div>
                                     </li>
                                     <li>
                                         <div class="title" style="width: 150px;">Designation<span
                                                 style="float: right">:</span></div>
-                                        <div class="text">{{ getDesignation($OfBasic->Designation) ?? '-' }}
+                                        <div class="text">
+                                            @if ($OfBasic != null)
+                                                {{ getDesignation($OfBasic->Designation) ?? '-' }}
+                                            @endif
                                         </div>
                                     </li>
                                     <li>
                                         <div class="title" style="width: 150px;">Grade<span
                                                 style="float: right">:</span></div>
-                                        <div class="text">{{ getGradeValue($OfBasic->Grade) ?? '-' }}</div>
+                                        <div class="text">
+                                            @if ($OfBasic != null)
+                                                {{ getGradeValue($OfBasic->Grade) ?? '-' }}
+                                            @endif
+                                        </div>
                                     </li>
                                     <li>
                                         <div class="title" style="width: 150px;">Reporting Mgr.<span
                                                 style="float: right">:</span></div>
                                         <div class="text">
-                                            {{ getFullName($OfBasic->A_ReportingManager) ?? '-' }}</div>
+                                            @if ($OfBasic != null)
+                                                {{ getFullName($OfBasic->A_ReportingManager) ?? '-' }}
+                                            @endif
+                                        </div>
                                     </li>
                                     <li>
                                         <div class="title" style="width: 150px;">CTC<span
                                                 style="float: right">:</span></div>
-                                        <div class="text">{{ $OfBasic->CTC ?? '-' }}</div>
+                                        <div class="text">
+                                            @if ($OfBasic != null)
+                                                {{ $OfBasic->CTC ?? '-' }}
+                                            @endif
+                                        </div>
                                     </li>
                                     <li>
                                         <div class="title" style="width: 150px;">Service Condition<span
                                                 style="float: right">:</span></div>
                                         <div class="text">
-                                            @if ($OfBasic->ServiceCondition == 'Training')
-                                                Training
-                                            @elseif($OfBasic->ServiceCondition == 'Probation')
-                                                Probation
-                                            @else
-                                                No Probation No Training
+                                            @if ($OfBasic != null)
+
+                                                @if ($OfBasic->ServiceCondition == 'Training')
+                                                    Training
+                                                @elseif($OfBasic->ServiceCondition == 'Probation')
+                                                    Probation
+                                                @else
+                                                    No Probation No Training
+                                                @endif
                                             @endif
                                         </div>
                                     </li>
@@ -1030,7 +1051,7 @@ $count = count($sql);
                                         <div class="title" style="width: 150px;">Offer Letter Generate<span
                                                 style="float: right">:</span></div>
                                         <div class="text">
-                                            @if ($OfBasic->OfferLtrGen == 1)
+                                            @if ($OfBasic != null && $OfBasic->OfferLtrGen == 1)
                                                 <span class="text-dark">Yes</span>
                                             @else
                                                 <span class="text-danger">No</span>
@@ -1047,7 +1068,7 @@ $count = count($sql);
                                         <div class="title" style="width: 150px;">Offer Letter Send<span
                                                 style="float: right">:</span></div>
                                         <div class="text">
-                                            @if ($OfBasic->OfferLetterSent != null)
+                                            @if ($OfBasic != null && $OfBasic->OfferLetterSent != null)
                                                 <span class="text-dark">Yes</span>
                                             @else
                                                 <span class="text-danger">No</span> ( <a href="javascript:void(0);"
@@ -1061,18 +1082,19 @@ $count = count($sql);
                                                 style="float: right">:</span></div>
                                         <div class="text"> <span
                                                 class="text-danger">{{ $OfBasic->Answer ?? '-' }}</span>
-                                            @if ($OfBasic->Answer == 'Rejected')
+                                            @if ($OfBasic != null && $OfBasic->Answer == 'Rejected')
                                                 ( <a href="javascript:void(0);" class=""
                                                     onclick="offerReopen({{ $Rec->JAId }});"> Offer Reopen</a>)
                                             @endif
                                         </div>
                                     </li>
 
-                                    @if ($OfBasic->Answer == 'Rejected')
+                                    @if ($OfBasic != null && $OfBasic->Answer == 'Rejected')
                                         <li>
                                             <div class="title" style="width: 150px;">Rejection Reason<span
                                                     style="float: right">:</span></div>
-                                            <div class="text text-danger">{{ $OfBasic->RejReason ?? '-' }}</div>
+                                            <div class="text text-danger">
+                                                {{ $OfBasic != null && $OfBasic->RejReason ?? '-' }}</div>
                                         </li>
 
                                     @endif
@@ -1082,7 +1104,7 @@ $count = count($sql);
                                         <div class="text">
                                             <input type="date" class="form-control frminp form-control-sm d-inline-block"
                                                 id="dateofJoin" name="" readonly="" style="width: 130px;"
-                                                value="{{ $OfBasic->JoinOnDt }}">
+                                                value="{{ $OfBasic->JoinOnDt ?? '' }}">
                                             <i class="fa fa-pencil text-primary" aria-hidden="true" id="joindtenable"
                                                 onclick="joinDateEnbl()"
                                                 style="font-size: 16px;cursor: pointer; display: "></i>
@@ -1097,7 +1119,7 @@ $count = count($sql);
                                         <div class="title" style="width: 150px;">Joining Form Sent<span
                                                 style="float: right">:</span></div>
                                         <div class="text">
-                                            @if ($OfBasic->JoiningFormSent != null)
+                                            @if ($OfBasic != null && $OfBasic->JoiningFormSent != null)
                                                 <span class="text-dark">Yes</span>
                                             @else
                                                 <span class="text-danger">No</span> ( <a href="javascript:void(0);"
@@ -1109,7 +1131,7 @@ $count = count($sql);
                                         <div class="title" style="width: 150px;">Send for Review<span
                                                 style="float: right">:</span></div>
                                         <div class="text">
-                                            @if ($OfBasic->SendReview == 1)
+                                            @if ($OfBasic != null && $OfBasic->SendReview == 1)
                                                 <span class="text-dark">Yes</span> ( <a href="javascript:void(0);"
                                                     onclick="viewReview({{ $Rec->JAId }});" data-bs-toggle="modal"
                                                     data-bs-target="#view_review">View</a>)
@@ -1121,44 +1143,15 @@ $count = count($sql);
                                                 Send Now</a>)
                                         </div>
                                     </li>
-                                    <li>
-                                        <div class="title" style="width: 150px;">Offer Letter View<span
-                                                style="float: right">:</span></div>
-                                        <div class="text"><input type="text" name="" id="oflink"
-                                                class="frminp d-inline"
-                                                value="{{ route('candidate-offer-letter') }}?jaid={{ $sendingId }}">
-                                            <button class="frmbtn btn btn-sm btn-secondary" onclick="copyOfLink();">Copy
-                                                Link</button>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="title" style="width: 150px;">Interview Form View<span
-                                                style="float: right">:</span></div>
-                                        <div class="text"><input type="text" name="" id="interviewlink"
-                                                class="frminp d-inline"
-                                                value="{{ route('candidate-interview-form') }}?jaid={{ $sendingId }}">
-                                            <button class="frmbtn btn btn-sm btn-secondary"
-                                                onclick="copyJIntFrmLink();">Copy
-                                                Link</button>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="title" style="width: 150px;">Joining Form View<span
-                                                style="float: right">:</span></div>
-                                        <div class="text"><input type="text" name="" id="jflink"
-                                                class="frminp d-inline"
-                                                value="{{ route('candidate-joining-form') }}?jaid={{ $sendingId }}">
-                                            <button class="frmbtn btn btn-sm btn-secondary" onclick="copyJFrmLink();">Copy
-                                                Link</button>
-                                        </div>
-                                    </li>
+
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </div>
-                @if ($OfBasic->Answer == 'Accepted')
-                    <div class="row">
+
+                <div class="row">
+                    @if ($OfBasic != null && $OfBasic->Answer == 'Accepted')
                         <div class="col-md-5 d-flex">
                             <div class="card profile-box flex-fill">
                                 <div class="card-body">
@@ -1225,9 +1218,75 @@ $count = count($sql);
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-7 d-flex">
+                            <div class="card profile-box flex-fill">
+                                <div class="card-body">
+                                    <h6 class="card-title">Links
 
-                    </div>
-                @endif
+                                    </h6>
+                                    <ul class="personal-info">
+                                        <li>
+                                            <div class="title" style="width: 150px;">Offer Letter<span
+                                                    style="float: right">:</span></div>
+                                            <div class="text"><input type="text" name="" id="oflink"
+                                                    class="frminp d-inline"
+                                                    value="{{ route('candidate-offer-letter') }}?jaid={{ $sendingId }}">
+                                                <button class="frmbtn btn btn-sm btn-secondary"
+                                                    onclick="copyOfLink();">Copy
+                                                    Link</button>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="title" style="width: 150px;">Interview Form<span
+                                                    style="float: right">:</span></div>
+                                            <div class="text"><input type="text" name="" id="interviewlink"
+                                                    class="frminp d-inline"
+                                                    value="{{ route('candidate-interview-form') }}?jaid={{ $sendingId }}">
+                                                <button class="frmbtn btn btn-sm btn-secondary"
+                                                    onclick="copyJIntFrmLink();">Copy
+                                                    Link</button>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="title" style="width: 150px;">Joining Form<span
+                                                    style="float: right">:</span></div>
+                                            <div class="text"><input type="text" name="" id="jflink"
+                                                    class="frminp d-inline"
+                                                    value="{{ route('candidate-joining-form') }}?jaid={{ $sendingId }}">
+                                                <button class="frmbtn btn btn-sm btn-secondary"
+                                                    onclick="copyJFrmLink();">Copy
+                                                    Link</button>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="title" style="width: 150px;">FIRO B Test<span
+                                                    style="float: right">:</span></div>
+                                            <div class="text">
+                                                @if ($Rec->FIROB_Test == 1)
+                                                    <input type="text" name="" id="firoblink" class="frminp d-inline"
+                                                        value="{{ route('firo_b') }}?jcid={{ $firobid }}">
+                                                    <button class="frmbtn btn btn-sm btn-secondary"
+                                                        onclick="copyFiroBlink();">Copy
+                                                        Link</button>
+                                                @endif
+
+
+                                                @if ($Rec->FIROB_Test == 1)
+                                                    <span style="margin-left: 20px;"><a href="javascript:void(0);"
+                                                            onclick='window.open("{{ route('firob_result') }}?jcid={{ $JCId }}", "", "width=750,height=900");'>Result
+                                                            1</a> </span> |  <span style="margin-left: 20px;"><a href="javascript:void(0);"
+                                                                onclick='window.open("{{ route('firob_result_summery') }}?jcid={{ $JCId }}", "", "width=750,height=900");'>Result
+                                                                2</a> </span>
+                                                @endif
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
 
             </div>
         </div>
@@ -4233,7 +4292,7 @@ $count = count($sql);
 
         function printInterviewForm(url) {
             $("<iframe>") // create a new iframe element
-                // make it invisible
+                .hide() // make it invisible
                 .attr("src", url) // point the iframe to the page you want to print
                 .appendTo("body");
         }
@@ -4701,6 +4760,14 @@ $count = count($sql);
 
         function copyJIntFrmLink() {
             var copyText = document.getElementById("interviewlink");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999)
+            document.execCommand("copy");
+            alert("Copied Link: " + copyText.value);
+        }
+
+        function copyFiroBlink() {
+            var copyText = document.getElementById("firoblink");
             copyText.select();
             copyText.setSelectionRange(0, 99999)
             document.execCommand("copy");

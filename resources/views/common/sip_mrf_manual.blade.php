@@ -605,7 +605,7 @@
                         $(form)[0].reset();
                         $('#loader').modal('hide');
                         toastr.success(data.msg);
-                        window.location.href = "{{ route('mrf') }}";
+                        window.location.reload();
                     }
                 }
             });

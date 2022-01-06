@@ -19,7 +19,8 @@
 
                     </div>
                     <hr>
-                    <form action="{{ route('add_new_mrf_manual') }}" method="POST" id="addNewMrfForm" name="addNewMrfForm">
+                    <form action="{{ route('add_new_mrf_manual') }}" method="POST" id="addNewMrfForm"
+                        name="addNewMrfForm">
                         @csrf
                         <div class="modal-body">
                             <table class="table borderless">
@@ -28,10 +29,10 @@
                                         <th>On Behalf of HOD<font class="text-danger">*</font>
                                         </th>
                                         <td><select id="OnBehalf" name="OnBehalf"
-                                                class="form-control form-select form-select-sm" >
-                                                <option value="" selected >Select HOD</option>
+                                                class="form-control form-select form-select-sm">
+                                                <option value="" selected>Select HOD</option>
                                                 @foreach ($params['userlist'] as $key => $value)
-                                                    <option value="{{ $key }}" >{{ $value }}</option>
+                                                    <option value="{{ $key }}">{{ $value }}</option>
                                                 @endforeach
                                             </select>
 
@@ -584,7 +585,7 @@
                         $(form)[0].reset();
                         $('#loader').modal('hide');
                         toastr.success(data.msg);
-                        window.location.href = "{{ route('mrf') }}";
+                        window.location.reload();
                     }
                 }
             });

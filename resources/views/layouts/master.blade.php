@@ -39,19 +39,14 @@ $CompanyQry = DB::table('master_company')
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/sweetalert2.min.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/toastr.min.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/BsMultiSelect.css" />
-
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
         rel="stylesheet">
-
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTablesButtons.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
-
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/jquery.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
-
     <title>HR Recruitment | @yield('title')</title>
     <style>
         .btn--red {
@@ -83,8 +78,6 @@ $CompanyQry = DB::table('master_company')
             background: linear-gradient(to right, #56ab2f, #a8e063);
 
         }
-
-
 
         .btn-xs {
             padding: .35rem .4rem;
@@ -374,13 +367,19 @@ $CompanyQry = DB::table('master_company')
                         </a>
                     </li>
 
+                    
                     <li>
-                        <a href="/">
+                        <a href="javascript:;" class="has-arrow">
                             <div class="parent-icon"><i class='lni lni-slack' style="color: crimson"></i>
                             </div>
                             <div class="menu-title">Reports</div>
                         </a>
+                        <ul>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>FIRO B Test</a></li>
+                           
+                        </ul>
                     </li>
+
                     <li>
                         <a href="/admin/userlogs">
                             <div class="parent-icon"><i class='bx bx-news text-success'></i>

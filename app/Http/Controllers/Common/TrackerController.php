@@ -106,6 +106,7 @@ class TrackerController extends Controller
     public function CandidateTechnicalScreening(Request $request)
     {
         $JAId = $request->JAId;
+        $sendingId = base64_encode($JAId);
         $TechScreenStatus = $request->TechScreenStatus;
         $InterviewSchedule = $request->InterviewSchedule;
         $RejectRemark = $request->RejectRemark;
@@ -125,6 +126,7 @@ class TrackerController extends Controller
 
         $jobapply = jobapply::find($JAId);
         $JCId = $jobapply->JCId;
+        $firobid = base64_encode($JCId);
         $JPId = $jobapply->JPId;
 
         $jobpost = jobpost::find($JPId);
@@ -152,8 +154,12 @@ class TrackerController extends Controller
                 "interview_date"   => $InterviewDate,
                 "interview_time" => $InterviewTime,
                 "interview_venue" => $InterviewLocation,
-                "contact_person" => 'Ajay Kumar Dewangana',
+                "contact_person" => getFullName(Auth::user()->id),
+                'interview_form' => route("candidate-interview-form","jaid=$sendingId"),
+                'firob' =>  route("firo_b","jcid=$firobid")
             ];
+        
+      
             if ($request->va != 'New') {
                 Mail::to($CandidateEmail)->send(new InterviewMail($details));
             }

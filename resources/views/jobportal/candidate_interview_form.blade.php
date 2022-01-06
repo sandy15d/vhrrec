@@ -2750,8 +2750,8 @@ $Docs = DB::table('jf_docs')
                 },
                 toolbarSettings: {
                     toolbarPosition: 'bottom', // none, top, bottom, both
-                    showNextButton: false, // show/hide a Next button
-                    showPreviousButton: false, // show/hide a Previous button  
+                    showNextButton: true, // show/hide a Next button
+                    showPreviousButton: true, // show/hide a Previous button  
                 },
                 keyboardSettings: {
                     keyNavigation: false, // Enable/Disable keyboard navigation(left and right keys are used if enabled)

@@ -51,10 +51,22 @@ Route::group(['prefix' => 'jobportal'], function () {
     Route::post('job_apply_manual', [JobController::class, 'job_apply_manual'])->name('job_apply_manual');
     Route::get('campus_apply_form', [JobController::class, 'campus_apply_form'])->name('campus_apply_form');
     Route::post('campus_apply', [JobController::class, 'campus_apply'])->name('campus_apply');
+
+    Route::get('trainee_apply_form', [JobController::class, 'trainee_apply_form'])->name('trainee_apply_form');
+    Route::post('trainee_apply', [JobController::class, 'trainee_apply'])->name('trainee_apply');
+   
+   
     Route::get('verification', [JobController::class, 'verification'])->name('verification');
     Route::post('otpverify', [JobController::class, 'otpverify'])->name('otpverify');
     Route::get('confirmation', [JobController::class, 'confirmation'])->name('confirmation');
     Route::get('campus_placement_registration', [JobController::class, 'campus_placement_registration'])->name('campus_placement_registration');
+    Route::get('firo_b', [JobController::class, 'firo_b'])->name('firo_b');
+    Route::get('firo_b_instruction', [JobController::class, 'firo_b_instruction'])->name('firo_b_instruction');
+    Route::get('firob_test', [JobController::class, 'firob_test'])->name('firob_test');
+    Route::post('firob_save_answer', [JobController::class, 'firob_save_answer'])->name('firob_save_answer');
+    Route::post('firob_submit_exam', [JobController::class, 'firob_submit_exam'])->name('firob_submit_exam');
+    Route::get('firob_result', [JobController::class, 'firob_result'])->name('firob_result');
+    Route::get('firob_result_summery', [JobController::class, 'firob_result_summery'])->name('firob_result_summery');
 });
 
 Route::post('setTheme', [CommonController::class, 'setTheme'])->name('setTheme');

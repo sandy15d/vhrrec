@@ -33,6 +33,7 @@ class AdminController extends Controller
     {
         return view('admin.settings');
     }
+    
     function mrf()
     {
         $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
