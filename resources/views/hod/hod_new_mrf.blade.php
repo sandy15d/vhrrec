@@ -201,6 +201,7 @@
         $(document).on('click', '#Cancle', function() {
             location.reload();
         });
+
         $("#KpChk").change(function() {
             if (!this.checked) {
                 $("#tblkp").addClass("d-none");
@@ -210,9 +211,11 @@
                 $("#addKP").removeClass("d-none");
             }
         });
+
         $(document).ready(function() {
             CKEDITOR.replace('JobInfo');
         });
+
         var StateList = '';
         var DistrictList = '';
         var EducationList = '';
@@ -377,6 +380,7 @@
                 $('#MulKP').html(x);
             }
         }
+
         $(document).on('click', '#addKP', function() {
             KPCount++;
             mulKP(KPCount);
@@ -386,6 +390,7 @@
             KPCount--;
             $(this).closest("tr").remove();
         });
+
         //=====================End KP========================
         function getLocation(StateId, No) {
             var StateId = StateId;
@@ -455,6 +460,7 @@
                 }
             });
         }
+
         //==================================Get Department List on Change Company========================//
         $('#Company').change(function() {
             var CompanyId = $(this).val();
@@ -575,5 +581,6 @@
                 }
             });
         });
+        
     </script>
 @endsection

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\LogActivity;
 use App\Http\Controllers\Controller;
 use App\Models\ThemeDetail;
 use App\Providers\RouteServiceProvider;
@@ -9,6 +10,8 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+
+use function App\Helpers\getFullName;
 
 class LoginController extends Controller
 {
@@ -71,9 +74,8 @@ class LoginController extends Controller
                 $request->session()->put('ThemeStyle', $themedetail[0]->ThemeStyle);
                 $request->session()->put('SidebarColor', $themedetail[0]->SidebarColor);
             }
-
+            LogActivity::addToLog('User Login - ' . getFullName(Auth::user()->id), 'Login');
             if (auth()->user()->role == 'A') {
-
                 return redirect()->route('admin.dashboard');
             } elseif (auth()->user()->role == 'R') {
                 return redirect()->route('recruiter.dashboard');

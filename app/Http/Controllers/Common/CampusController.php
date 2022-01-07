@@ -745,6 +745,7 @@ class CampusController extends Controller
             return response()->json(['status' => 200, 'msg' => '1st Interview Data has been changed successfully.']);
         }
     }
+    
     public function SaveSecondInterview_Campus(Request $request)
     {
         $sql = new screen2ndround;

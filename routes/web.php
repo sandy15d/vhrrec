@@ -1,38 +1,39 @@
 <?php
 
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\CompanyController;
-use App\Http\Controllers\Admin\CountryController;
-use App\Http\Controllers\Admin\DepartmentController;
-use App\Http\Controllers\Admin\DesignationController;
-use App\Http\Controllers\Admin\DistrictController;
-use App\Http\Controllers\Admin\EmployeeController;
-use App\Http\Controllers\Admin\GradeController;
-use App\Http\Controllers\Admin\HeadquarterController;
-use App\Http\Controllers\Admin\StateController;
-use App\Http\Controllers\Admin\EducationController;
-use App\Http\Controllers\Admin\EduSpecialController;
-use App\Http\Controllers\Admin\InstituteController;
-use App\Http\Controllers\Admin\ResumeSourcController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\CommunicationController;
-use App\Http\Controllers\Recruiter\RecruiterController;
-use App\Http\Controllers\Recruiter\MrfAllocatedController;
+use App\Http\Controllers\JobController;
 use App\Http\Controllers\Hod\HodController;
 use App\Http\Controllers\Hod\MrfController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Hod\MyTeamController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\GradeController;
+use App\Http\Controllers\Admin\StateController;
+use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Common\CampusController;
-use App\Http\Controllers\Common\ManualEntryController;
 use App\Http\Controllers\Common\CommonController;
-use App\Http\Controllers\Common\JobApplicationController;
-use App\Http\Controllers\Common\OfferLtrController;
+use App\Http\Controllers\Admin\DistrictController;
+use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Common\TrackerController;
+use App\Http\Controllers\Common\TraineeController;
+use App\Http\Controllers\Admin\EducationController;
+use App\Http\Controllers\Admin\InstituteController;
+use App\Http\Controllers\Common\OfferLtrController;
+use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\Admin\EduSpecialController;
+use App\Http\Controllers\Admin\DesignationController;
+use App\Http\Controllers\Admin\HeadquarterController;
+use App\Http\Controllers\Admin\ResumeSourcController;
+use App\Http\Controllers\Common\ManualEntryController;
+use App\Http\Controllers\Admin\CommunicationController;
+use App\Http\Controllers\Recruiter\RecruiterController;
 use App\Http\Controllers\Common\AboutCandidateController;
-use App\Http\Controllers\JobController;
+use App\Http\Controllers\Common\JobApplicationController;
+use App\Http\Controllers\Recruiter\MrfAllocatedController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -244,6 +245,9 @@ Route::post('SaveFirstInterview_Campus', [CampusController::class, 'SaveFirstInt
 Route::post('SaveSecondInterview_Campus', [CampusController::class, 'SaveSecondInterview_Campus'])->name('SaveSecondInterview_Campus');
 Route::post('Save_Cmp_Dpt_Campus', [CampusController::class, 'Save_Cmp_Dpt_Campus'])->name('Save_Cmp_Dpt_Campus');
 
+Route::get('trainee_mrf_allocated', [TraineeController::class, 'trainee_mrf_allocated'])->name('trainee_mrf_allocated');
+Route::post('getAllTraineeAllocatedMrf', [TraineeController::class, 'getAllTraineeAllocatedMrf'])->name('getAllTraineeAllocatedMrf');
+
 Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('mrf', [AdminController::class, 'mrf'])->name('admin.mrf');
@@ -257,6 +261,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('getTaskList', [AdminController::class, 'getTaskList'])->name('getTaskList');
     Route::post('getRecruiterName', [AdminController::class, 'getRecruiterName'])->name('getRecruiterName');
     Route::get('setting', [AdminController::class, 'setting'])->name('admin.setting');
+    Route::get('userlogs', [AdminController::class, 'userlogs'])->name('admin.userlogs');
 
 
     // ! ======================Master Company ========================//

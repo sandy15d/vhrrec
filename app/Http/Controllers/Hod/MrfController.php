@@ -99,7 +99,6 @@ class MrfController extends Controller
             $Education = $request->Education;
             $Specialization = $request->Specialization;
             $KeyPosition = $request->KeyPosition;
-
             $locArray = array();
             if ($State != '') {
                 for ($lc = 0; $lc < Count($State); $lc++) {
@@ -112,7 +111,6 @@ class MrfController extends Controller
                 }
             }
             $locArray_str = serialize($locArray);
-
             $Eduarray = array();
             if ($Education != '') {
                 for ($count = 0; $count < Count($Education); $count++) {
@@ -125,7 +123,6 @@ class MrfController extends Controller
                 }
             }
             $EduArray_str = serialize($Eduarray);
-
             $KpArray = array();
             if ($KeyPosition != '') {
                 for ($i = 0; $i < Count($KeyPosition); $i++) {
@@ -135,8 +132,6 @@ class MrfController extends Controller
             }
 
             $KpArray_str = serialize($KpArray);
-
-
             $UniversityArray = array();
             if ($request->University != '') {
                 $UniversityArray = serialize($request->University);
@@ -159,9 +154,8 @@ class MrfController extends Controller
             $MRF->KeyPositionCriteria = $KpArray_str;
             $MRF->CreatedBy =  Auth::user()->id;
             $MRF->Status = 'New';
-
             $MRF->save();
-
+            
             $InsertId = $MRF->MRFId;
 
             $jobCode = getCompanyCode($request->Company) . '/' . getDepartmentCode($request->Department) . '/' . getDesignationCode($request->Designation) . '/' . $InsertId . '-' . date('Y');

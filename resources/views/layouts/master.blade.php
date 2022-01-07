@@ -280,9 +280,7 @@ $CompanyQry = DB::table('master_company')
                             <li> <a href="/job_applications"><i class="bx bx-right-arrow-alt"></i>Job Application
                                     (Resume Databank)</a>
                             </li>
-                            {{-- <li> <a href="/job_application_manual_entry_form"><i class="bx bx-right-arrow-alt"></i>Job
-                                    Application Form (Manual
-                                    Entry)</a></li> --}}
+                        
                         </ul>
                     </li>
                     <li>
@@ -336,7 +334,8 @@ $CompanyQry = DB::table('master_company')
                             <div class="menu-title">Trainee</div>
                         </a>
                         <ul>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Trainee Details</a></li>
+                            <li> <a href="/trainee_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Trainee MRF</a>
+                            </li>
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Trainee Costing</a></li>
                         </ul>
                     </li>

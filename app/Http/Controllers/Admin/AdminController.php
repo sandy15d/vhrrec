@@ -11,6 +11,7 @@ use App\Helpers\UserNotification;
 use App\Mail\MrfStatusChangeMail;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\LogBookActivity;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
@@ -518,5 +519,11 @@ class AdminController extends Controller
         return response()->json(['details' => $result]);
     }
 
+    public function userlogs()
+    {
+        $logs = DB::table('logbook')->orderBy('id', 'desc')->get();
+      
+        return view('admin.userlogs', compact('logs'));
+    }
 
 }
