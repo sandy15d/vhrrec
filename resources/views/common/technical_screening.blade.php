@@ -80,20 +80,15 @@
 
         </div>
         <!--end breadcrumb-->
-        <div class="card border-top border-0 border-4 border-primary mb-2">
-            <div class="card-body table-responsive">
-
-            </div>
-        </div>
+      
 
         <div class="card border-top border-0 border-4 border-primary">
             <div class="card-body table-responsive">
-                <table class="table table-striped table-condensed text-center" id="candidate_table"
+                <table class="table  table-condensed text-center" id="candidate_table"
                     style="width: 100%; margin-right:20px; ">
                     <thead class="text-center bg-primary bg-gradient text-light">
                         <tr class="text-center">
                             <th style="width:30px;"></th>
-                            <td>#</td>
                             <td>S.No</td>
                             <td>Ref. No</td>
                             <td>Candidate Name</td>
@@ -571,10 +566,10 @@
                     "data": null,
                     "defaultContent": ''
                 },
-                {
+               /*  {
                     data: 'chk',
                     name: 'chk'
-                },
+                }, */
                 {
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex'

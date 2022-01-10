@@ -39,6 +39,8 @@ class MrfAllocatedController extends Controller
         $CloseActive = DB::table('manpowerrequisition')
             ->where('Type', '!=', 'Campus')
             ->where('Type', '!=', 'Campus_HrManual')
+            ->where('Type', '!=', 'SIP')
+            ->where('Type', '!=', 'SIP_HrManual')
             ->where('Allocated', Auth::user()->id)
             ->where('Status', 'Close')
             ->get();
@@ -47,6 +49,8 @@ class MrfAllocatedController extends Controller
         $OpenMRFSQL = DB::table('manpowerrequisition')
             ->where('Type', '!=', 'Campus')
             ->where('Type', '!=', 'Campus_HrManual')
+            ->where('Type', '!=', 'SIP')
+            ->where('Type', '!=', 'SIP_HrManual')
             ->where('Allocated', Auth::user()->id)
             ->where('Status', '!=', 'Close')
 
@@ -93,7 +97,9 @@ class MrfAllocatedController extends Controller
             ->Join('master_department', 'manpowerrequisition.DepartmentId', '=', 'master_department.DepartmentId')
             ->where('Allocated', Auth::user()->id)
             ->where('Type', '!=', 'Campus')
-            ->where('Type', '!=', 'Campus_HrManual');
+            ->where('Type', '!=', 'Campus_HrManual')
+            ->where('Type', '!=', 'SIP')
+            ->where('Type', '!=', 'SIP_HrManual');
 
         return datatables()->of($mrf)
             ->addIndexColumn()

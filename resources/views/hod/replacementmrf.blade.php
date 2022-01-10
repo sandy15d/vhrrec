@@ -402,7 +402,7 @@ $institute_list = DB::table('master_institute')
                         } else {
                             $(form)[0].reset();
                             toastr.success(data.msg);
-                            window.location.href = "{{ route('hod.dashboard') }}";
+                            window.location.href = "{{ route('manpowerrequisition') }}";
                         }
                     }
                 });

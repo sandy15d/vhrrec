@@ -4,9 +4,21 @@ $sql = DB::table('master_employee')
     ->where('Empstatus', 'A')
     ->get();
 $ActiveMember = $sql->count();
+$query = DB::table('screening')
+    ->Join('jobapply', 'screening.JAId', '=', 'jobapply.JAId')
+    ->Join('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
+    ->Join('manpowerrequisition', 'jobpost.MRFId', '=', 'manpowerrequisition.MRFId')
+    ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+    ->where('jobpost.Status', 'Open')
+    ->whereNull('screening.IntervStatus')
+    ->where(function ($query) {
+        $query->where('manpowerrequisition.CreatedBy', Auth::user()->id)->orWhere('manpowerrequisition.OnBehalf', Auth::user()->id);
+    })
+    ->orderBy('screening.IntervDt', 'asc')
+    ->count();
 @endphp
 @extends('layouts.master')
-@section('title', 'Education')
+@section('title', 'Dashboard')
 @section('PageContent')
     <style>
         .table>:not(caption)>*>* {
@@ -39,7 +51,7 @@ $ActiveMember = $sql->count();
                         <div class="d-flex align-items-center">
                             <div>
                                 <p class="mb-0 text-secondary">Interview Schedule</p>
-                                <h3 class="my-1 text-danger">9</h3>
+                                <h3 class="my-1 text-danger">{{ $query }}</h3>
                             </div>
                             <div class="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto"><i
                                     class="fadeIn animated bx bx-network-chart"></i>
@@ -59,8 +71,8 @@ $ActiveMember = $sql->count();
                         <h6 class="mb-0 text-primary">MRF Summary</h6>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover display compact table-bordered text-center" id="mrfsummarytable"
-                            style="width: 100%">
+                        <table class="table table-striped table-hover display compact table-bordered text-center"
+                            id="mrfsummarytable" style="width: 100%">
                             <thead class="bg-primary text-light">
                                 <tr>
                                     <th></th>
@@ -354,9 +366,9 @@ $ActiveMember = $sql->count();
 
         $('#mrfsummarytable').DataTable({
             processing: true,
-            searching:false,
-            lengthChange:false,
-            ordering:false,
+            searching: false,
+            lengthChange: false,
+            ordering: false,
             info: true,
             ajax: "{{ route('getAllMRFCreatedByMe') }}",
             columns: [
@@ -527,9 +539,9 @@ $ActiveMember = $sql->count();
             $.post('<?= route('getMRFDetails') ?>', {
                 MRFId: MRFId
             }, function(data) {
-                if(data.MRFDetails.Status =='New'){
+                if (data.MRFDetails.Status == 'New') {
                     $('#edit_mrf_btn').removeClass('d-none');
-                }else{
+                } else {
                     $('#edit_mrf_btn').addClass('d-none');
                 }
                 $('#editMRFModal').find('input[name="MRFId"]').val(data.MRFDetails.MRFId);
@@ -1029,7 +1041,7 @@ $ActiveMember = $sql->count();
                     $.post(url, {
                         MRFId: MRFId
                     }, function(data) {
-                        if (data.status==200) {
+                        if (data.status == 200) {
                             $('#mrfsummarytable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
 

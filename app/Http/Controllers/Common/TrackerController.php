@@ -66,7 +66,8 @@ class TrackerController extends Controller
                 return '<input type="checkbox" class="japchks" data-id="' . $data->JAId . '" name="selectCand" id="selectCand" value="' . $data->JAId . '">';
             })
             ->addColumn('Name', function ($data) {
-                return $data->FName . ' ' . $data->MName . ' ' . $data->LName;
+                $sendingId = base64_encode($data->JAId);
+                return '<a href="' . route("candidate_detail", "jaid=$sendingId") . '" target="_blank">' . $data->FName . ' ' . $data->MName . ' ' . $data->LName . '</a>';
             })
             ->editColumn('Department', function ($data) {
                 return getDepartmentCode($data->ScrDpt);
@@ -90,7 +91,7 @@ class TrackerController extends Controller
             ->editColumn('interviewTime', function ($data) {
                 return date('h:i a', strtotime($data->IntervTime));
             })
-            ->rawColumns(['chk', 'InterviewMail', 'Action'])
+            ->rawColumns(['chk','Name', 'InterviewMail', 'Action'])
             ->make(true);
     }
 
@@ -155,11 +156,11 @@ class TrackerController extends Controller
                 "interview_time" => $InterviewTime,
                 "interview_venue" => $InterviewLocation,
                 "contact_person" => getFullName(Auth::user()->id),
-                'interview_form' => route("candidate-interview-form","jaid=$sendingId"),
-                'firob' =>  route("firo_b","jcid=$firobid")
+                'interview_form' => route("candidate-interview-form", "jaid=$sendingId"),
+                'firob' =>  route("firo_b", "jcid=$firobid")
             ];
-        
-      
+
+
             if ($request->va != 'New') {
                 Mail::to($CandidateEmail)->send(new InterviewMail($details));
             }
@@ -216,12 +217,13 @@ class TrackerController extends Controller
                 return '<input type="checkbox" class="select_all">';
             })
             ->editColumn('Department', function ($data) {
-                return getDepartment($data->ScrDpt);
+                return getDepartmentCode($data->ScrDpt);
             })
 
 
             ->addColumn('Name', function ($data) {
-                return $data->FName . ' ' . $data->MName . ' ' . $data->LName;
+                $sendingId = base64_encode($data->JAId);
+                return '<a href="' . route("candidate_detail", "jaid=$sendingId") . '" target="_blank">' . $data->FName . ' ' . $data->MName . ' ' . $data->LName . '</a>';
             })
 
             ->editColumn('IntervEdit', function ($data) {
@@ -284,7 +286,7 @@ class TrackerController extends Controller
                     return '';
                 }
             })
-            ->rawColumns(['chk',  'IntervEdit', 'IntervEdit2', 'CompanyEdit'])
+            ->rawColumns(['chk', 'Name', 'IntervEdit', 'IntervEdit2', 'CompanyEdit'])
             ->make(true);
     }
 

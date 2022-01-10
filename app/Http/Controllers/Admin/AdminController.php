@@ -15,6 +15,7 @@ use App\Models\LogBookActivity;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
+use function App\Helpers\CheckCommControl;
 use function App\Helpers\getFullName;
 use function App\Helpers\getStateCode;
 use function App\Helpers\getDistrictName;
@@ -34,7 +35,7 @@ class AdminController extends Controller
     {
         return view('admin.settings');
     }
-    
+
     function mrf()
     {
         $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
@@ -61,8 +62,8 @@ class AdminController extends Controller
             ->where('EmpStatus', 'A')
             ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
             ->pluck("FullName", "EmployeeID");
-            $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
-        return view('admin.activemrf', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list','months'));
+        $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
+        return view('admin.activemrf', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list', 'months'));
     }
 
     function closedmrf()
@@ -76,8 +77,8 @@ class AdminController extends Controller
             ->where('EmpStatus', 'A')
             ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
             ->pluck("FullName", "EmployeeID");
-            $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
-        return view('admin.closedmrf', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list','months'));
+        $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
+        return view('admin.closedmrf', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list', 'months'));
     }
 
     function getNewMrf(Request $request)
@@ -327,7 +328,7 @@ class AdminController extends Controller
 
     function getCloseMrf(Request $request)
     {
-       
+
         $usersQuery = master_mrf::query();
         $Company = $request->Company;
         $Department = $request->Department;
@@ -355,7 +356,7 @@ class AdminController extends Controller
         $mrf = $usersQuery->select('*')
             ->where('Status', 'Close')
             ->orderBy('CreatedTime', 'DESC');
-            
+
         return datatables()->of($mrf)
             ->addIndexColumn()
             ->addColumn('chk', function () {
@@ -432,6 +433,7 @@ class AdminController extends Controller
             LogActivity::addToLog('MRF ' . $jobCode . ' is ' . $request->va, 'Update');
             $CreatedBy = $MRF->CreatedBy;
 
+
             if ($MRF->Type == 'N' || $MRF->Type == 'N_HrManual') {
                 $type = 'New';
             } elseif ($MRF->Type == 'SIP' || $MRF->Type == 'SIP_HrManual') {
@@ -442,16 +444,17 @@ class AdminController extends Controller
                 $type = 'Replacement';
             }
 
-
-
             $details = [
                 "subject" => 'MRF (' . $type . ') - ' . $jobCode . ', Status - ' . $request->va,
                 "Status" => $request->va,
                 "Type" => $type,
             ];
             if ($request->va != 'New') {
-                // Mail::to(getEmailID($CreatedBy))->send(new MrfStatusChangeMail($details)); // Need to active when s/w is live
-                Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfStatusChangeMail($details));
+                if (CheckCommControl(4) == 1 ||  CheckCommControl(4) == 1) {  //Action taken by admin on MRF 
+                    // Mail::to(getEmailID($CreatedBy))->send(new MrfStatusChangeMail($details)); // Need to active when s/w is live
+                    Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfStatusChangeMail($details));
+                    UserNotification::notifyUser($CreatedBy, 'MRF Status Change', 'MRF (' . $type . ') - ' . $jobCode . ', Status - ' . $request->va,);
+                }
             }
             return response()->json(['status' => 200, 'msg' => 'MRF Status has been changed successfully.']);
         }
@@ -469,7 +472,7 @@ class AdminController extends Controller
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
             $jobCode = $MRF->JobCode;
-            LogActivity::addToLog('MRF ' . $jobCode . ' is allocated to ' . $request->va, 'Update');
+            LogActivity::addToLog('MRF ' . $jobCode . ' is allocated to ' . getFullName($request->va), 'Update');
             UserNotification::notifyUser($request->va, 'MRF Allocated',  $jobCode);
             return response()->json(['status' => 200, 'msg' => 'Task has been allocated to recruiter successfully.']);
         }
@@ -522,8 +525,7 @@ class AdminController extends Controller
     public function userlogs()
     {
         $logs = DB::table('logbook')->orderBy('id', 'desc')->get();
-      
+
         return view('admin.userlogs', compact('logs'));
     }
-
 }

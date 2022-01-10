@@ -128,7 +128,7 @@
                                     </th>
                                     <td>
                                         <input type="text" name="PayPackage" id="PayPackage"
-                                            class="form-control form-control-sm">
+                                            class="form-control form-control-sm" required>
                                     </td>
                                 </tr>
                                 <tr>
@@ -172,7 +172,7 @@
                                     <th>Last Date for Online Registration</th>
                                     <td>
                                         <input type="date" name="LastDate" id="LastDate"
-                                            class="form-control form-control-sm">
+                                            class="form-control form-control-sm" required>
                                     </td>
                                 </tr>
 

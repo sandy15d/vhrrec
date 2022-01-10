@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'New MRF')
+@section('title', 'MRF')
 @section('PageContent')
 
     <style>

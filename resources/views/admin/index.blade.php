@@ -20,6 +20,20 @@ $sql = DB::table('users')
     ->get();
 $TotalCandidate = DB::table('jobcandidates')->count();
 
+$upcomming_interview = DB::table('screening')
+    ->Join('jobapply', 'screening.JAId', '=', 'jobapply.JAId')
+    ->Join('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
+    ->Join('manpowerrequisition', 'jobpost.MRFId', '=', 'manpowerrequisition.MRFId')
+    ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+    ->where('jobpost.Status', 'Open')
+    ->whereNull('screening.IntervStatus')
+   ->count();
+
+   $total_available = DB::table('jobapply')
+            ->where('Type', '!=', 'Campus')
+            ->where('Status', null)
+            ->count();
+       
 @endphp
 @extends('layouts.master')
 @section('title', 'Dashboard')
@@ -110,7 +124,7 @@ $TotalCandidate = DB::table('jobcandidates')->count();
                                     <p class="mb-0 text-primary">Resume Pending for Tech. Screening</p>
                                 </div>
                                 <div class="ms-auto">
-                                    <h4 class="my-1 text-danger">23</h4>
+                                    <h4 class="my-1 text-danger">{{$total_available}}</h4>
                                 </div>
                             </div>
                         </div>
@@ -118,6 +132,7 @@ $TotalCandidate = DB::table('jobcandidates')->count();
                 </a>
             </div>
             <div class="col">
+                <a href="/interview_tracker">
                 <div class="card radius-10">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
@@ -125,12 +140,13 @@ $TotalCandidate = DB::table('jobcandidates')->count();
                                 <p class="mb-0 text-primary">Upcoming Interviews</p>
                             </div>
                             <div class="ms-auto">
-                                <h4 class="my-1 text-success">23</h4>
+                                <h4 class="my-1 text-success">{{$upcomming_interview}}</h4>
                             </div>
 
                         </div>
                     </div>
                 </div>
+                </a>
             </div>
             <div class="col">
                 <div class="card radius-10">

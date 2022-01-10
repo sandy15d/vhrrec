@@ -71,4 +71,9 @@ class HodController extends Controller
             ->rawColumns(['actions', 'chk'])
             ->make(true);
     }
+
+    public function interviewschedule()
+    {
+       return view('hod.interviewschedule');
+    }
 }

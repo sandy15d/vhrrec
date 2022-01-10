@@ -11,14 +11,17 @@ class RecruiterController extends Controller
 {
     function index()
     {
-        $allocatedMrf = DB::table('manpowerrequisition')->where('Allocated', Auth::user()->id)->get();
-        $AlCount = $allocatedMrf->count();
-
-        $CreatePost = DB::table('jobpost')->where('CreatedBy', Auth::user()->id)->get();
-        $allCreated = $CreatePost->count();
-        return view('recruiter.index', ["allocatedmrf" => $AlCount,"JobPosting"=>$allCreated]);
+        $AlCount = DB::table('manpowerrequisition')->where('Allocated', Auth::user()->id)->count();
+        $allCreated = DB::table('jobpost')->where('CreatedBy', Auth::user()->id)->count();
+        $PendingTechScr = DB::table('jobapply')
+            ->Join('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
+            ->Join('manpowerrequisition', 'jobpost.MRFId', '=', 'manpowerrequisition.MRFId')
+            ->Join('screening', 'jobapply.JAId', '=', 'screening.JAId')
+            ->where('manpowerrequisition.Allocated', Auth::user()->id)
+            ->where('jobpost.Status', 'Open')
+            ->where('jobapply.Status', 'Selected')
+            ->whereNull('screening.ScreenStatus')
+            ->count();
+        return view('recruiter.index', ["allocatedmrf" => $AlCount, "JobPosting" => $allCreated,'PendingTechScr'=>$PendingTechScr]);
     }
-
-
-
 }

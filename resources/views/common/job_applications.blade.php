@@ -1,6 +1,6 @@
 @php
 use function App\Helpers\getDesignation;
-use function App\Helpers\getEducationById;
+use function App\Helpers\getEducationCodeById;
 use function App\Helpers\getSpecializationbyId;
 use function App\Helpers\getResumeSourceById;
 use function App\Helpers\getStateName;
@@ -20,6 +20,20 @@ use function App\Helpers\getStateName;
             font-size: 11px;
             font-weight: 550;
         }
+
+        #applications {
+            height: 1000px;
+            overflow-y: scroll;
+        }
+        #applications::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+#applications {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
 
     </style>
     <div class="page-content">
@@ -99,208 +113,217 @@ use function App\Helpers\getStateName;
                                     class="bx bx-user mr-1"></i>New Application</button></span>
                     </div>
                 </div>
-                @foreach ($candidate_list as $row)
-                    @php
-                        $bg_color = '';
-                        if ($row->Status == 'Rejected' || $row->BlackList == 1) {
-                            $bg_color = '#fe36501f';
-                        } else {
-                            if ($row->FwdTechScr == 'Yes') {
-                                $bg_color = '#dbffdacc';
+                <div id="applications">
+                    @foreach ($candidate_list as $row)
+                        @php
+                            $bg_color = '';
+                            if ($row->Status == 'Rejected' || $row->BlackList == 1) {
+                                $bg_color = '#fe36501f';
+                            } else {
+                                if ($row->FwdTechScr == 'Yes') {
+                                    $bg_color = '#dbffdacc';
+                                }
                             }
-                        }
-                    @endphp
-                    <div class="card mb-3" style="background-color:<?= $bg_color ?>">
-                        <div class="card-body" style="padding: 5px;">
-                            <div class="row  p-2 py-2">
-                                <div style="width: 80%;float: left;">
-                                    <table class="jatbl table borderless" style="margin-bottom: 0px !important;">
-                                        <tbody>
-                                            <tr>
-                                                <td colspan="3">
-                                                    <label>
-                                                        @if ($row->Status == 'Selected' && $row->FwdTechScr == 'No' && $row->BlackList == 0)
-                                                            <input type="checkbox" name="selectCand" class="japchks"
-                                                                onclick="checkAllorNot()" value="{{ $row->JAId }}">
-                                                        @endif
-                                                        <span
-                                                            style="color: #275A72;font-weight: bold;padding-bottom: 10px;">
-                                                            {{ $row->FName }} {{ $row->MName }} {{ $row->LName }}
-                                                            (Ref.No {{ $row->ReferenceNo }} ) </span>
-                                                    </label>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="text-align: left">Applied For<span
-                                                        class="text-right">:</span></td>
-                                                <td colspan="3" style="text-align: left">
-                                                    <?= $row->DesigId != null ? getDesignation($row->DesigId) : "<i class='fa fa-pencil-square-o text-primary' aria-hidden='true' style='cursor: pointer;' id='AddToJobPost' data-id='$row->JAId'></i>" ?>
-                                                </td>
-                                            </tr>
-                                            <tr class="">
-                                                <td>Experience<span class="pull-right" style="width: 25%">:</span></td>
-                                                <td style="text-align: right">
-                                                    @php
-                                                        if ($row->Professional == 'F') {
-                                                            echo 'Fresher';
-                                                        } else {
-                                                            if ($row->JobStartDate != null) {
-                                                                $fdate = $row->JobStartDate;
-                                                                if ($row->JobEndDate == null) {
-                                                                    $tdate = Carbon\Carbon::now();
-                                                                } else {
-                                                                    $tdate = $row->JobEndDate;
-                                                                }
-                                                                $datetime1 = new DateTime($fdate);
-                                                                $datetime2 = new DateTime($tdate);
-                                                                $interval = $datetime1->diff($datetime2);
-                                                                $days = $interval->format('%a');
-                                                                $years_remaining = intval($days / 365); //divide by 365 and throw away the remainder
-                                                                $days_remaining = $days % 365;
-                                                                $month_remaining = $days_remaining % 12;
-                                                                echo $years_remaining . ' Year ' . $month_remaining . ' Months';
-                                                            } else {
-                                                                echo 'Experienced';
-                                                            }
-                                                        }
-                                                    @endphp
-                                                </td>
-                                                <td style="text-align: right;width:25%">Contact No:</td>
-                                                <td style="text-align:right"> {{ $row->Phone }}@if ($row->Verified == 'Y')
-                                                        <i class="fadeIn animated bx bx-badge-check text-success"></i>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                            <tr class="">
-                                                <td>Current Company<span class="pull-right">:</span></td>
-                                                <td style="text-align: right">
-                                                    <?= $row->PresentCompany == null ? '' : $row->PresentCompany ?></td>
-                                                <td style="text-align: right">Email ID<span class="pull-right">:</span>
-                                                </td>
-                                                <td style="text-align: right">{{ $row->Email }} @if ($row->Verified == 'Y')
-                                                        <i class="fadeIn animated bx bx-badge-check text-success"></i>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                            <tr class="">
-                                                <td>Current Designation<span class="pull-right">:</span></td>
-                                                <td style="text-align: right">
-                                                    <?= $row->Designation == null ? '' : $row->Designation ?></td>
-                                                <td style="text-align: right">Education<span class="pull-right">:</span>
-                                                </td>
-                                                <td style="text-align: right">
-                                                    <?= $row->Education == null ? '' : getEducationById($row->Education) ?>
-                                                    <?= $row->Specialization == null ? '' : '-' . getSpecializationbyId($row->Specialization) ?>
-                                                </td>
-                                            </tr>
-                                            <tr class="">
-                                                <td>Current Location<span class="pull-right">:</span></td>
-                                                <td style="text-align: right">{{ $row->City }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Applied on date:</td>
-                                                <td style="text-align: right">
-                                                    {{ date('d-m-Y', strtotime($row->ApplyDate)) }}</td>
-                                                <td style="text-align: right">HR Screening Status:</td>
-                                                <td style="text-align: right">
-                                                    @if ($row->JPId != 0)
-                                                        <?= $row->Status != null ? '<b>' . $row->Status . '</b>' : "<i class='fa fa-pencil-square-o text-primary' aria-hidden='true' style='font-size:14px;cursor: pointer;' id='HrScreening' data-id='$row->JAId'></i>" ?>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td> Source: </td>
-                                                <td style="text-align: right">
-                                                    {{ getResumeSourceById($row->ResumeSource) }}
-                                                </td>
-
-                                                <td class="text-danger fw-bold" style="text-align: center" colspan="2">
-                                                    @if ($row->BlackList == 0)
-                                                        <label class="text-danger" style=" cursor: pointer;"
-                                                            id="BlackListCandidate" data-id="{{ $row->JCId }}"><i
-                                                                class="fas fa-ban text-danger"></i>
-                                                            Blacklist Candidate
+                        @endphp
+                        <div class="card mb-3" style="background-color:<?= $bg_color ?>">
+                            <div class="card-body" style="padding: 5px;">
+                                <div class="row  p-2 py-2">
+                                    <div style="width: 80%;float: left;">
+                                        <table class="jatbl table borderless" style="margin-bottom: 0px !important;">
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="3">
+                                                        <label>
+                                                            @if ($row->Status == 'Selected' && $row->FwdTechScr == 'No' && $row->BlackList == 0)
+                                                                <input type="checkbox" name="selectCand"
+                                                                    class="japchks" onclick="checkAllorNot()"
+                                                                    value="{{ $row->JAId }}">
+                                                            @endif
+                                                            <span
+                                                                style="color: #275A72;font-weight: bold;padding-bottom: 10px;">
+                                                                {{ $row->FName }} {{ $row->MName }} {{ $row->LName }}
+                                                                (Ref.No {{ $row->ReferenceNo }} ) </span>
                                                         </label>
-                                                    @else
-                                                        @if (Auth::user()->role == 'A')
-                                                            <label class="text-primary" style=" cursor: pointer;"
-                                                                id="UnBlockCandidate" data-id="{{ $row->JCId }}"><i
-                                                                    class="fas fa-user text-primary"></i>
-                                                                Unblock Candidate
-                                                            </label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="text-align: left">Applied For<span
+                                                            class="text-right">:</span></td>
+                                                    <td colspan="3" style="text-align: left">
+                                                        <?= $row->DesigId != null ? getDesignation($row->DesigId) : "<i class='fa fa-pencil-square-o text-primary' aria-hidden='true' style='cursor: pointer;' id='AddToJobPost' data-id='$row->JAId'></i>" ?>
+                                                    </td>
+                                                </tr>
+                                                <tr class="">
+                                                    <td>Experience<span class="pull-right" style="width: 25%">:</span>
+                                                    </td>
+                                                    <td style="text-align: right">
+                                                        @php
+                                                            if ($row->Professional == 'F') {
+                                                                echo 'Fresher';
+                                                            } else {
+                                                                if ($row->JobStartDate != null) {
+                                                                    $fdate = $row->JobStartDate;
+                                                                    if ($row->JobEndDate == null) {
+                                                                        $tdate = Carbon\Carbon::now();
+                                                                    } else {
+                                                                        $tdate = $row->JobEndDate;
+                                                                    }
+                                                                    $datetime1 = new DateTime($fdate);
+                                                                    $datetime2 = new DateTime($tdate);
+                                                                    $interval = $datetime1->diff($datetime2);
+                                                                    $days = $interval->format('%a');
+                                                                    $years_remaining = intval($days / 365); //divide by 365 and throw away the remainder
+                                                                    $days_remaining = $days % 365;
+                                                                    $month_remaining = $days_remaining % 12;
+                                                                    echo $years_remaining . ' Year ' . $month_remaining . ' Months';
+                                                                } else {
+                                                                    echo 'Experienced';
+                                                                }
+                                                            }
+                                                        @endphp
+                                                    </td>
+                                                    <td style="text-align: right;width:25%">Contact No:</td>
+                                                    <td style="text-align:right"> {{ $row->Phone }}@if ($row->Verified == 'Y')
+                                                            <i class="fadeIn animated bx bx-badge-check text-success"></i>
                                                         @endif
-                                                    @endif
-
-                                                </td>
-                                            </tr>
-                                            @if ($row->BlackListRemark != null)
-                                                <tr>
-                                                    <td colspan="4" class="text-danger fw-bold">
-                                                        {{ $row->BlackListRemark }}
                                                     </td>
                                                 </tr>
-                                            @endif
-                                            @if ($row->UnBlockRemark != null)
-                                                <tr>
-                                                    <td colspan="4" class="text-success fw-bold">
-                                                        {{ $row->UnBlockRemark }}
+                                                <tr class="">
+                                                    <td>Current Company<span class="pull-right">:</span></td>
+                                                    <td style="text-align: right">
+                                                        <?= $row->PresentCompany == null ? '' : $row->PresentCompany ?></td>
+                                                    <td style="text-align: right">Email ID<span
+                                                            class="pull-right">:</span>
+                                                    </td>
+                                                    <td style="text-align: right">{{ $row->Email }} @if ($row->Verified == 'Y')
+                                                            <i class="fadeIn animated bx bx-badge-check text-success"></i>
+                                                        @endif
                                                     </td>
                                                 </tr>
-                                            @endif
-
-                                            @if ($row->Type == 'Manual Entry')
-                                                @php
-                                                    $JCId = base64_encode($row->JCId);
-                                                @endphp
-                                                <tr>
-                                                    <td>Link</td>
-                                                    <td colspan="3"><input type="text" id="link{{ $row->JCId }}"
-                                                            value="{{ url('jobportal/jobapply?jcid=' . $JCId . '') }}">
-                                                        <button onclick="copylink({{ $row->JCId }})"
-                                                            class="btn btn-xs btn-primary"> Copy</button></td>
+                                                <tr class="">
+                                                    <td>Current Designation<span class="pull-right">:</span></td>
+                                                    <td style="text-align: right">
+                                                        <?= $row->Designation == null ? '' : $row->Designation ?></td>
+                                                    <td style="text-align: right">Education<span
+                                                            class="pull-right">:</span>
+                                                    </td>
+                                                    <td style="text-align: right">
+                                                        <?= $row->Education == null ? '' : getEducationCodeById($row->Education) ?>
+                                                        <?= $row->Specialization == null ? '' : '-' . getSpecializationbyId($row->Specialization) ?>
+                                                    </td>
                                                 </tr>
-                                            @endif
+                                                <tr class="">
+                                                    <td>Current Location<span class="pull-right">:</span></td>
+                                                    <td style="text-align: right">{{ $row->City }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Applied on date:</td>
+                                                    <td style="text-align: right">
+                                                        {{ date('d-m-Y', strtotime($row->ApplyDate)) }}</td>
+                                                    <td style="text-align: right">HR Screening Status:</td>
+                                                    <td style="text-align: right">
+                                                        @if ($row->JPId != 0)
+                                                            <?= $row->Status != null ? '<b>' . $row->Status . '</b>' : "<i class='fa fa-pencil-square-o text-primary' aria-hidden='true' style='font-size:14px;cursor: pointer;' id='HrScreening' data-id='$row->JAId'></i>" ?>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td> Source: </td>
+                                                    <td style="text-align: right">
+                                                        {{ getResumeSourceById($row->ResumeSource) }}
+                                                    </td>
 
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="" style=" width: 20%;float: left;">
-                                    <center>
-                                        @if ($row->CandidateImage == null)
-                                            <img src="{{ URL::to('/') }}/assets/images/user1.png"
-                                                style="width: 130px; height: 130px;" class="img-fluid rounded" />
-                                        @else
-                                            <img src="{{ URL::to('/') }}/uploads/Picture/{{ $row->CandidateImage }}"
-                                                style="width: 130px; height: 130px;" class="img-fluid rounded" />
-                                        @endif
-                                    </center>
-                                    <center>
-                                        <small>
-                                            <span class="text-primary m-1 " style="cursor: pointer; font-size:14px;">
-                                                @php
-                                                    $sendingId = base64_encode($row->JAId);
-                                                @endphp
-                                                <a href="{{ route('candidate_detail') }}?jaid={{ $sendingId }}"
-                                                    target="_blank">View Details</a>
+                                                    <td class="text-danger fw-bold" style="text-align: center" colspan="2">
+                                                        @if ($row->BlackList == 0)
+                                                            <label class="text-danger" style=" cursor: pointer;"
+                                                                id="BlackListCandidate" data-id="{{ $row->JCId }}"><i
+                                                                    class="fas fa-ban text-danger"></i>
+                                                                Blacklist Candidate
+                                                            </label>
+                                                        @else
+                                                            @if (Auth::user()->role == 'A')
+                                                                <label class="text-primary" style=" cursor: pointer;"
+                                                                    id="UnBlockCandidate" data-id="{{ $row->JCId }}"><i
+                                                                        class="fas fa-user text-primary"></i>
+                                                                    Unblock Candidate
+                                                                </label>
+                                                            @endif
+                                                        @endif
+
+                                                    </td>
+                                                </tr>
+                                                @if ($row->BlackListRemark != null)
+                                                    <tr>
+                                                        <td colspan="4" class="text-danger fw-bold">
+                                                            {{ $row->BlackListRemark }}
+                                                        </td>
+                                                    </tr>
+                                                @endif
+                                                @if ($row->UnBlockRemark != null)
+                                                    <tr>
+                                                        <td colspan="4" class="text-success fw-bold">
+                                                            {{ $row->UnBlockRemark }}
+                                                        </td>
+                                                    </tr>
+                                                @endif
+
+                                                @if ($row->Type == 'Manual Entry')
+                                                    @php
+                                                        $JCId = base64_encode($row->JCId);
+                                                    @endphp
+                                                    <tr>
+                                                        <td>Link</td>
+                                                        <td colspan="3"><input type="text" id="link{{ $row->JCId }}"
+                                                                value="{{ url('jobportal/jobapply?jcid=' . $JCId . '') }}">
+                                                            <button onclick="copylink({{ $row->JCId }})"
+                                                                class="btn btn-xs btn-primary"> Copy</button>
+                                                        </td>
+                                                    </tr>
+                                                @endif
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="" style=" width: 20%;float: left;">
+                                        <center>
+                                            @if ($row->CandidateImage == null)
+                                                <img src="{{ URL::to('/') }}/assets/images/user1.png"
+                                                    style="width: 130px; height: 130px;" class="img-fluid rounded" />
+                                            @else
+                                                <img src="{{ URL::to('/') }}/uploads/Picture/{{ $row->CandidateImage }}"
+                                                    style="width: 130px; height: 130px;" class="img-fluid rounded" />
+                                            @endif
+                                        </center>
+                                        <center>
+                                            <small>
+                                                <span class="text-primary m-1 " style="cursor: pointer; font-size:14px;">
+                                                    @php
+                                                        $sendingId = base64_encode($row->JAId);
+                                                    @endphp
+                                                    <a href="{{ route('candidate_detail') }}?jaid={{ $sendingId }}"
+                                                        target="_blank">View Details</a>
+                                                </span>
+                                            </small>
+                                        </center>
+
+                                        <center class="mt-3 fw-bold">
+                                            <span class="d-inline">
+                                                <label class="text-success" style=" cursor: pointer;" id="MoveCandidate"
+                                                    data-id="{{ $row->JAId }}"><i
+                                                        class="fas fa-shekel-sign text-success"></i>
+                                                    Move to Other Co.
+                                                </label>
                                             </span>
-                                        </small>
-                                    </center>
+                                        </center>
+                                    </div>
 
-                                    <center class="mt-3 fw-bold">
-                                        <span class="d-inline">
-                                            <label class="text-success" style=" cursor: pointer;" id="MoveCandidate"
-                                                data-id="{{ $row->JAId }}"><i
-                                                    class="fas fa-shekel-sign text-success"></i>
-                                                Move to Other Co.
-                                            </label>
-                                        </span>
-                                    </center>
                                 </div>
-
                             </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                
+                </div>
+
                 {{ $candidate_list->links('vendor.pagination.custom') }}
             </div>
 
@@ -1029,7 +1052,7 @@ use function App\Helpers\getStateName;
                     $(this).removeClass('errorfield');
                 }
             });
-            
+
             $('#Aadhaar').focusout(function() {
                 var count = $(this).val().length;
                 if (count != 12) {
@@ -1196,6 +1219,7 @@ use function App\Helpers\getStateName;
                 $(this).removeClass('errorfield');
             }
         });
+
         $('#Aadhaar').focusout(function() {
             var count = $(this).val().length;
             if (count != 12) {

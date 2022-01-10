@@ -280,27 +280,10 @@ $CompanyQry = DB::table('master_company')
                             <li> <a href="/job_applications"><i class="bx bx-right-arrow-alt"></i>Job Application
                                     (Resume Databank)</a>
                             </li>
-                        
+
                         </ul>
                     </li>
-                    <li>
-                        <a href="javascript:;" class="has-arrow">
-                            <div class="parent-icon"><i class="lni lni-ux  text-primary"></i>
-                            </div>
-                            <div class="menu-title">Campus Hirings</div>
-                        </a>
-                        <ul>
-                            <li> <a href="/campus_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Campus MRF</a>
-                            </li>
-                            <li> <a href="/campus_applications"><i class="bx bx-right-arrow-alt"></i>Campus
-                                    Application</a></li>
-                            <li> <a href="/campus_screening_tracker"><i class="bx bx-right-arrow-alt"></i>Screening
-                                    Tracker</a></li>
-                            <li> <a href="/campus_hiring_tracker"><i class="bx bx-right-arrow-alt"></i>Hiring
-                                    Tracker</a></li>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Hiring Costing</a></li>
-                        </ul>
-                    </li>
+                   
                     <li>
                         <a href="javascript:;" class="has-arrow">
                             <div class="parent-icon"><i class="lni lni-timer  text-info"></i>
@@ -329,6 +312,24 @@ $CompanyQry = DB::table('master_company')
                     </li>
                     <li>
                         <a href="javascript:;" class="has-arrow">
+                            <div class="parent-icon"><i class="lni lni-ux  text-primary"></i>
+                            </div>
+                            <div class="menu-title">Campus Hirings</div>
+                        </a>
+                        <ul>
+                            <li> <a href="/campus_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Campus MRF</a>
+                            </li>
+                            <li> <a href="/campus_applications"><i class="bx bx-right-arrow-alt"></i>Campus
+                                    Application</a></li>
+                            <li> <a href="/campus_screening_tracker"><i class="bx bx-right-arrow-alt"></i>Screening
+                                    Tracker</a></li>
+                            <li> <a href="/campus_hiring_tracker"><i class="bx bx-right-arrow-alt"></i>Hiring
+                                    Tracker</a></li>
+                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Hiring Costing</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="has-arrow">
                             <div class="parent-icon"><i class="fadeIn animated bx bx-atom  text-danger"></i>
                             </div>
                             <div class="menu-title">Trainee</div>
@@ -336,16 +337,20 @@ $CompanyQry = DB::table('master_company')
                         <ul>
                             <li> <a href="/trainee_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Trainee MRF</a>
                             </li>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Trainee Costing</a></li>
+                            <li> <a href="/trainee_applications"><i class="bx bx-right-arrow-alt"></i>Trainee
+                                Application</a></li>
+                                <li> <a href="/trainee_screening_tracker"><i class="bx bx-right-arrow-alt"></i>SIP / Trainee Tracker</a></li>
+                            <li> <a href="/active_trainee"><i class="bx bx-right-arrow-alt"></i>Active Trainee</a></li>
+                            <li> <a href="/old_trainee"><i class="bx bx-right-arrow-alt"></i>Old Trainee</a></li>
                         </ul>
                     </li>
-                    <li>
+{{--                     <li>
                         <a href="/">
                             <div class="parent-icon"><i class="lni lni-target-customer" style="color: #6610f2"></i>
                             </div>
                             <div class="menu-title">Online Test Module</div>
                         </a>
-                    </li>
+                    </li> --}}
 
 
                 @endif
@@ -366,7 +371,7 @@ $CompanyQry = DB::table('master_company')
                         </a>
                     </li>
 
-                    
+
                     <li>
                         <a href="javascript:;" class="has-arrow">
                             <div class="parent-icon"><i class='lni lni-slack' style="color: crimson"></i>
@@ -375,7 +380,7 @@ $CompanyQry = DB::table('master_company')
                         </a>
                         <ul>
                             <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>FIRO B Test</a></li>
-                           
+
                         </ul>
                     </li>
 
@@ -444,7 +449,8 @@ $CompanyQry = DB::table('master_company')
                                                         @endif
 
                                                     </div>
-                                                    <div class="flex-grow-1">
+                                                    <div class="flex-grow-1"
+                                                        style="box-sizing: content-box; width: 100%; white-space: normal;">
                                                         <h6 class="msg-name">{{ $item->title }}
                                                             <span
                                                                 class="msg-time float-end">{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</span>

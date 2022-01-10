@@ -977,6 +977,8 @@ $count = count($sql);
                                             @if ($OfBasic != null)
                                                 {{ getDepartment($OfBasic->Department) ?? '-' }}
                                                 ({{ getCompanyCode($OfBasic->Company) }})
+                                            @else
+                                                -
                                             @endif
                                         </div>
                                     </li>
@@ -986,6 +988,8 @@ $count = count($sql);
                                         <div class="text">
                                             @if ($OfBasic != null)
                                                 {{ getDesignation($OfBasic->Designation) ?? '-' }}
+                                                @else
+                                                -
                                             @endif
                                         </div>
                                     </li>
@@ -995,6 +999,8 @@ $count = count($sql);
                                         <div class="text">
                                             @if ($OfBasic != null)
                                                 {{ getGradeValue($OfBasic->Grade) ?? '-' }}
+                                                @else
+                                                -
                                             @endif
                                         </div>
                                     </li>
@@ -1004,6 +1010,8 @@ $count = count($sql);
                                         <div class="text">
                                             @if ($OfBasic != null)
                                                 {{ getFullName($OfBasic->A_ReportingManager) ?? '-' }}
+                                                @else
+                                                -
                                             @endif
                                         </div>
                                     </li>
@@ -1013,6 +1021,8 @@ $count = count($sql);
                                         <div class="text">
                                             @if ($OfBasic != null)
                                                 {{ $OfBasic->CTC ?? '-' }}
+                                                @else
+                                                -
                                             @endif
                                         </div>
                                     </li>
@@ -1218,73 +1228,78 @@ $count = count($sql);
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-7 d-flex">
-                            <div class="card profile-box flex-fill">
-                                <div class="card-body">
-                                    <h6 class="card-title">Links
+                    @endif
+                    <div class="col-md-7 d-flex">
+                        <div class="card profile-box flex-fill">
+                            <div class="card-body">
+                                <h6 class="card-title">Links
 
-                                    </h6>
-                                    <ul class="personal-info">
-                                        <li>
-                                            <div class="title" style="width: 150px;">Offer Letter<span
-                                                    style="float: right">:</span></div>
-                                            <div class="text"><input type="text" name="" id="oflink"
-                                                    class="frminp d-inline"
-                                                    value="{{ route('candidate-offer-letter') }}?jaid={{ $sendingId }}">
+                                </h6>
+                                <ul class="personal-info">
+                                    @if ($OfBasic != null && $OfBasic->OfferLtrGen == '1')
+                                    <li>
+                                        <div class="title" style="width: 150px;">Offer Letter<span
+                                                style="float: right">:</span></div>
+                                        <div class="text"><input type="text" name="" id="oflink"
+                                                class="frminp d-inline"
+                                                value="{{ route('candidate-offer-letter') }}?jaid={{ $sendingId }}">
+                                            <button class="frmbtn btn btn-sm btn-secondary" onclick="copyOfLink();">Copy
+                                                Link</button>
+                                        </div>
+                                    </li>
+                                    @endif
+                                   
+                                    <li>
+                                        <div class="title" style="width: 150px;">Interview Form<span
+                                                style="float: right">:</span></div>
+                                        <div class="text"><input type="text" name="" id="interviewlink"
+                                                class="frminp d-inline"
+                                                value="{{ route('candidate-interview-form') }}?jaid={{ $sendingId }}">
+                                            <button class="frmbtn btn btn-sm btn-secondary"
+                                                onclick="copyJIntFrmLink();">Copy
+                                                Link</button>
+                                        </div>
+                                    </li>
+                                    @if($Rec->InterviewSubmit ==1)
+                                    <li>
+                                        <div class="title" style="width: 150px;">Joining Form<span
+                                                style="float: right">:</span></div>
+                                        <div class="text"><input type="text" name="" id="jflink"
+                                                class="frminp d-inline"
+                                                value="{{ route('candidate-joining-form') }}?jaid={{ $sendingId }}">
+                                            <button class="frmbtn btn btn-sm btn-secondary" onclick="copyJFrmLink();">Copy
+                                                Link</button>
+                                        </div>
+                                    </li>
+                                    @endif
+                                    <li>
+                                        <div class="title" style="width: 150px;">FIRO B Test<span
+                                                style="float: right">:</span></div>
+                                        <div class="text">
+                                        
+                                                <input type="text" name="" id="firoblink" class="frminp d-inline"
+                                                    value="{{ route('firo_b') }}?jcid={{ $firobid }}">
                                                 <button class="frmbtn btn btn-sm btn-secondary"
-                                                    onclick="copyOfLink();">Copy
+                                                    onclick="copyFiroBlink();">Copy
                                                     Link</button>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="title" style="width: 150px;">Interview Form<span
-                                                    style="float: right">:</span></div>
-                                            <div class="text"><input type="text" name="" id="interviewlink"
-                                                    class="frminp d-inline"
-                                                    value="{{ route('candidate-interview-form') }}?jaid={{ $sendingId }}">
-                                                <button class="frmbtn btn btn-sm btn-secondary"
-                                                    onclick="copyJIntFrmLink();">Copy
-                                                    Link</button>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="title" style="width: 150px;">Joining Form<span
-                                                    style="float: right">:</span></div>
-                                            <div class="text"><input type="text" name="" id="jflink"
-                                                    class="frminp d-inline"
-                                                    value="{{ route('candidate-joining-form') }}?jaid={{ $sendingId }}">
-                                                <button class="frmbtn btn btn-sm btn-secondary"
-                                                    onclick="copyJFrmLink();">Copy
-                                                    Link</button>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="title" style="width: 150px;">FIRO B Test<span
-                                                    style="float: right">:</span></div>
-                                            <div class="text">
-                                                @if ($Rec->FIROB_Test == 1)
-                                                    <input type="text" name="" id="firoblink" class="frminp d-inline"
-                                                        value="{{ route('firo_b') }}?jcid={{ $firobid }}">
-                                                    <button class="frmbtn btn btn-sm btn-secondary"
-                                                        onclick="copyFiroBlink();">Copy
-                                                        Link</button>
-                                                @endif
+                                      
 
 
-                                                @if ($Rec->FIROB_Test == 1)
-                                                    <span style="margin-left: 20px;"><a href="javascript:void(0);"
-                                                            onclick='window.open("{{ route('firob_result') }}?jcid={{ $JCId }}", "", "width=750,height=900");'>Result
-                                                            1</a> </span> |  <span style="margin-left: 20px;"><a href="javascript:void(0);"
-                                                                onclick='window.open("{{ route('firob_result_summery') }}?jcid={{ $JCId }}", "", "width=750,height=900");'>Result
-                                                                2</a> </span>
-                                                @endif
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
+                                            @if ($Rec->FIROB_Test == 1)
+                                                <span style="margin-left: 20px;"><a href="javascript:void(0);"
+                                                        onclick='window.open("{{ route('firob_result') }}?jcid={{ $JCId }}", "", "width=750,height=900");'>Result
+                                                        1</a> </span> | <span style="margin-left: 20px;"><a
+                                                        href="javascript:void(0);"
+                                                        onclick='window.open("{{ route('firob_result_summery') }}?jcid={{ $JCId }}", "", "width=750,height=900");'>Result
+                                                        2</a> </span>
+                                            @endif
+                                        </div>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
-                    @endif
+                    </div>
+
                 </div>
 
 

@@ -43,7 +43,7 @@
                         <div class="d-flex align-items-center">
                             <div>
                                 <p class="mb-0 text-secondary">Pending Tech Scr.</p>
-                                <h4 class="my-1 text-info">6</h4>
+                                <h4 class="my-1 text-info">{{$PendingTechScr}}</h4>
 
                             </div>
                             <div class="widgets-icons-2 rounded-circle bg-gradient-scooter text-white ms-auto"><i

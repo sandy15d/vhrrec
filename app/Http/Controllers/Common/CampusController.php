@@ -421,7 +421,12 @@ class CampusController extends Controller
     public function getPostTitle(Request $request)
     {
         $sql = jobpost::find($request->JPId);
-        return (getDesignation($sql->DesigId));
+        if($sql->DesigId == 0 || $sql->DesigId == null){
+            return $sql->JobCode;
+        }else{
+            return (getDesignation($sql->DesigId));
+        }
+       
     }
 
     public function SendForScreening(Request $request)

@@ -84,12 +84,12 @@
 
         <div class="card border-top border-0 border-4 border-primary">
             <div class="card-body table-responsive">
-                <table class="table table-striped table-condensed text-center" id="candidate_table"
+                <table class="table table-condensed text-center" id="candidate_table"
                     style="width: 100%; margin-right:20px; ">
                     <thead class="text-center bg-primary bg-gradient text-light">
                         <tr class="text-center">
                             <th style="width:30px;" rowspan="2"></th>
-                            <td rowspan="2">#</td>
+                         {{--    <td rowspan="2">#</td> --}}
                             <td rowspan="2">S.no</td>
                             <td rowspan="2">Ref.No</td>
                             <td rowspan="2">Candidate</td>
@@ -350,7 +350,7 @@
             function format(d) {
                 x = '';
                 x = x +
-                    '<table class="table" style="background-color:#f3cfbfb5">' +
+                    '<table class="table" style="background-color:">' +
                     '<tr><td colspan="6" class="fw-bold">1st Interview</td></tr>' +
                     '<tr>' +
                     '<td style="text-align:left;">Interview Date:</td>' +
@@ -375,7 +375,7 @@
                         '</tr>';
                 }
 
-                x = x + '<tr><td colspan="6" class="fw-bold">Other Details</td></tr>' +
+               /*  x = x + '<tr><td colspan="6" class="fw-bold">Other Details</td></tr>' +
                         '<tr>' +
                         '<td style="text-align:left;">Interview Assessment<br> Record:</td>' +
                         '<td style="text-align:left;">' + d.IntervDt2.split("-").reverse().join("-") +
@@ -384,7 +384,7 @@
                         '<td style="text-align:left;">' + d.IntervLoc2 + '</td>' +
                         '<td style="text-align:left;">Interview <br>Application Form</td>' +
                         '<td style="text-align:left;">' + d.IntervPanel2 + '</td>' +
-                        '</tr>';
+                        '</tr>'; */
                 x = x + '</table>';
                 return x;
             }
@@ -431,10 +431,10 @@
                         "data": null,
                         "defaultContent": ''
                     },
-                    {
+                   /*  {
                         data: 'chk',
                         name: 'chk'
-                    },
+                    }, */
                     {
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex'

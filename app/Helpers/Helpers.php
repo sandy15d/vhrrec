@@ -231,6 +231,21 @@ if (!function_exists('getFullName')) {
 		}
 	}
 
+	function getEducationCodeById($eid)
+	{
+		if ($eid == null) {
+			return "";
+		} else {
+			$Education = Db::table('master_education')->select('EducationCode')->where('EducationId', $eid)->first();
+			
+			if (is_null($Education)) {
+				return '';
+			} else {
+				return $Education->EducationCode;
+			}
+		}
+	}
+
 	function getSpecializationbyId($sid)
 	{
 
@@ -310,5 +325,16 @@ if (!function_exists('getFullName')) {
 	{
 		$StateCode = Db::table('master_state')->select('StateCode')->where('StateId', $StateId)->first();
 		return $StateCode->StateCode;
+	}
+
+	function CheckCommControl($Id)
+	{
+		$sql = Db::table('communication_control')->select('is_active')->where('id', $Id)->first();
+		if ($sql->is_active == '1') {
+			return '1';
+		} else {
+			return '0';
+		}
+		
 	}
 }

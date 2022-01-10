@@ -13,6 +13,7 @@ $regular_job = DB::table('jobpost')
     ->Where('jobpost.JobPostType', 'Regular')
     ->orderBy('JPId', 'desc')
     ->get();
+
 $sql = DB::table('jobpost')
     ->Join('manpowerrequisition', 'manpowerrequisition.MRFId', '=', 'jobpost.MRFId')
     ->where('manpowerrequisition.CompanyId', 1)
@@ -96,7 +97,7 @@ $sql = DB::table('jobpost')
                                                             style="cursor: pointer">
                                                             <td>{{ $i + 1 }}</td>
                                                             <td>{{ $sql[$i]->JobCode }}</td>
-                                                            <td>{{ $sql[$i]->Title }}</td>
+                                                            <td>{{ $sql[$i]->Title ?? 'SIP/Trainee' }}</td>
                                                             <td>{{ getDepartment($sql[$i]->DepartmentId) }}</td>
                                                             <td><a href="javascript:void(0);"
                                                                     style="color: #0008ff">View Details</a></td>

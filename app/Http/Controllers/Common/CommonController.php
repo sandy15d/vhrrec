@@ -116,7 +116,6 @@ class CommonController extends Controller
         return response()->json($Hq);
     }
 
-
     public function getEducation()
     {
         $Education = DB::table("master_education")->orderBy('EducationName', 'asc')->pluck("EducationId", "EducationCode");
@@ -128,6 +127,7 @@ class CommonController extends Controller
         $Education = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteId", "InstituteName");
         return response()->json($Education);
     }
+
     public function getSpecialization(Request $request)
     {
         $Specialization = DB::table("master_specialization")->orderBy('Specialization', 'asc')
@@ -237,7 +237,6 @@ class CommonController extends Controller
             return response()->json(['status' => 200]);
         }
     }
-
 
     public function updateMRF(Request $request)
     {
@@ -389,4 +388,6 @@ class CommonController extends Controller
             return response()->json(['status' => 200, 'msg' => 'Password has been changed successfully.']);
         }
     }
+
+  
 }

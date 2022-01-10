@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Common;
 
 use App\Models\master_mrf;
 use App\Helpers\LogActivity;
+use App\Helpers\UserNotification;
 use Illuminate\Http\Request;
 use App\Mail\MrfCreationMail;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+
+use function App\Helpers\CheckCommControl;
 use function App\Helpers\convertData;
 
 use function App\Helpers\getFullName;
@@ -237,11 +240,14 @@ class ManualEntryController extends Controller
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
                 LogActivity::addToLog('New Manual MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id), 'Create');
+                UserNotification::notifyUser(1, 'MRF', 'New Manual MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id));
                 $details = [
                     "subject" => 'New Manual MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id),
                     "Employee" => getFullName(Auth::user()->id),
                 ];
-                Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+                if (CheckCommControl(3) == 1) {  //if MRF created by Recruiter  communication control is on
+                    Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+                }
                 return response()->json(['status' => 200, 'msg' => 'New Manual MRF has been successfully created.']);
             }
         }
@@ -345,11 +351,14 @@ class ManualEntryController extends Controller
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
                 LogActivity::addToLog('Manual SIP MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id), 'Create');
+                UserNotification::notifyUser(1, 'MRF', 'SIP Manual MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id));
                 $details = [
                     "subject" => 'Manual SIP MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id),
                     "Employee" => getFullName(Auth::user()->id),
                 ];
-                Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+                if (CheckCommControl(3) == 1) {  //if MRF created by Recruiter  communication control is on
+                    Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+                }
                 return response()->json(['status' => 200, 'msg' => 'SIP/Internship MRF has been successfully created.']);
             }
         }
@@ -447,11 +456,14 @@ class ManualEntryController extends Controller
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
             LogActivity::addToLog('Manual Replacement MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id), 'Create');
+            UserNotification::notifyUser(1, 'MRF', 'Replacement Manual MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id));
             $details = [
                 "subject" => 'Manual Replacement MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id),
                 "Employee" => getFullName(Auth::user()->id),
             ];
-            Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+            if (CheckCommControl(3) == 1) {  //if MRF created by Recruiter  communication control is on
+                Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+            }
             return response()->json(['status' => 200, 'msg' => 'Manual Replacement MRF has been successfully created.']);
         }
     }
@@ -550,11 +562,14 @@ class ManualEntryController extends Controller
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
                 LogActivity::addToLog('Manual Campus Hiring MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id), 'Create');
+                UserNotification::notifyUser(1, 'MRF', 'Campus Manual MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id));
                 $details = [
                     "subject" => 'Manual Campus Hiring MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id),
                     "Employee" => getFullName(Auth::user()->id),
                 ];
-                Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+                if (CheckCommControl(3) == 1) {  //if MRF created by Recruiter  communication control is on
+                    Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+                }
                 return response()->json(['status' => 200, 'msg' => 'Manual Campus Hiring MRF has been successfully created.']);
             }
         }

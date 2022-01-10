@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Hod;
 
 use App\Helpers\LogActivity;
+use App\Helpers\UserNotification;
 use App\Http\Controllers\Controller;
 use App\Mail\MrfCreationMail;
 use App\Models\master_mrf;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
+use function App\Helpers\CheckCommControl;
 use function App\Helpers\convertData;
 use function App\Helpers\getCompanyCode;
 use function App\Helpers\getDepartmentCode;
@@ -155,7 +157,7 @@ class MrfController extends Controller
             $MRF->CreatedBy =  Auth::user()->id;
             $MRF->Status = 'New';
             $MRF->save();
-            
+
             $InsertId = $MRF->MRFId;
 
             $jobCode = getCompanyCode($request->Company) . '/' . getDepartmentCode($request->Department) . '/' . getDesignationCode($request->Designation) . '/' . $InsertId . '-' . date('Y');
@@ -167,11 +169,17 @@ class MrfController extends Controller
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
                 LogActivity::addToLog('New MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id), 'Create');
+                UserNotification::notifyUser(1, 'MRF', 'New MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id));
                 $details = [
                     "subject" => 'New MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id),
                     "Employee" => getFullName(Auth::user()->id),
                 ];
-                Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+
+                if (CheckCommControl(2) == 1) {  //if MRF created by employee communication control is on
+                    Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+                }
+
+
                 return response()->json(['status' => 200, 'msg' => 'New MRF has been successfully created.']);
             }
         }
@@ -273,11 +281,15 @@ class MrfController extends Controller
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
                 LogActivity::addToLog('SIP MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id), 'Create');
+                UserNotification::notifyUser(1, 'MRF', 'SIP MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id));
                 $details = [
                     "subject" => 'SIP MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id),
                     "Employee" => getFullName(Auth::user()->id),
                 ];
-                Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+                if (CheckCommControl(2) == 1) {  //if MRF created by employee communication control is on
+                    Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+                }
+             
                 return response()->json(['status' => 200, 'msg' => 'SIP/Internship MRF has been successfully created.']);
             }
         }
@@ -375,11 +387,15 @@ class MrfController extends Controller
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
             LogActivity::addToLog('Replacement MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id), 'Create');
+            UserNotification::notifyUser(1, 'MRF', 'Replacement MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id));
             $details = [
                 "subject" => 'Replacement MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id),
                 "Employee" => getFullName(Auth::user()->id),
             ];
-            Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+
+            if (CheckCommControl(2) == 1) {  //if MRF created by employee communication control is on
+                Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+            }
             return response()->json(['status' => 200, 'msg' => 'New MRF has been successfully created.']);
         }
     }
@@ -477,11 +493,14 @@ class MrfController extends Controller
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
                 LogActivity::addToLog('Campus Hiring MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id), 'Create');
+                UserNotification::notifyUser(1, 'MRF', 'Campus MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id));
                 $details = [
                     "subject" => 'Campus Hiring MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id),
                     "Employee" => getFullName(Auth::user()->id),
                 ];
-                Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+                if (CheckCommControl(2) == 1) {  //if MRF created by employee communication control is on
+                    Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+                }
                 return response()->json(['status' => 200, 'msg' => 'Campus Hiring MRF has been successfully created.']);
             }
         }
@@ -492,7 +511,7 @@ class MrfController extends Controller
         $mrf = DB::table('manpowerrequisition')
             ->Join('master_designation', 'manpowerrequisition.DesigId', '=', 'master_designation.DesigId', 'left')
             ->where('CreatedBy', Auth::user()->id)
-            ->orWhere('onBehalf',Auth::user()->id)
+            ->orWhere('onBehalf', Auth::user()->id)
             ->select('manpowerrequisition.MRFId', 'manpowerrequisition.Type', 'manpowerrequisition.JobCode', 'manpowerrequisition.CreatedBy', 'master_designation.DesigName', 'manpowerrequisition.Status', 'manpowerrequisition.CreatedTime');
         return datatables()->of($mrf)
             ->addIndexColumn()
@@ -500,7 +519,7 @@ class MrfController extends Controller
                 return date('d-m-Y', strtotime($mrf->CreatedTime));
             })
             ->addColumn('CreatedBy', function ($mrf) {
-                if ($mrf->Type == 'N_HrManual' || $mrf->Type == 'R_HrManual' || $mrf->Type=='SIP_HrManual'|| $mrf->Type=='Campus_HrManual') {
+                if ($mrf->Type == 'N_HrManual' || $mrf->Type == 'R_HrManual' || $mrf->Type == 'SIP_HrManual' || $mrf->Type == 'Campus_HrManual') {
                     return 'HR';
                 } else {
                     return getFullName($mrf->CreatedBy);

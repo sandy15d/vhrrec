@@ -3,18 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\CandidateActivityLog;
+use App\Helpers\UserNotification;
 use App\Http\Controllers\Controller;
 use App\Mail\AppSubOTPMail;
 use App\Mail\AppSuccessMaill;
 use App\Models\jobapply;
 use App\Models\jobcandidate;
-
+use App\Models\jobpost;
 use App\Models\Recruiter\master_post;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
+use function App\Helpers\CheckCommControl;
 use function App\Helpers\getCompanyCode;
 use function App\Helpers\getDesignation;
 use function App\Helpers\SendOTP;
@@ -517,9 +519,6 @@ class JobController extends Controller
         $query1->CandidateImage = $CandidateImage;
         $query1->save();
 
-
-
-
         $jobApply = DB::table('trainee_apply')->insert(['JCId' => $JCId,'JPId'=>$JPId,'Company'=>$CompanyId,'Department'=>$DepartmentId,'ApplyDate'=>now() ]);
 
         if (!$jobApply) {
@@ -530,8 +529,14 @@ class JobController extends Controller
                 "Candidate" => $request->Title . ' ' . $request->FName . ' ' . $request->LName,
                 "EmailOTP" => $EmailOTP,
             ];
-            Mail::to($request->Email)->send(new AppSubOTPMail($details));
+            if (CheckCommControl(7) == 1) {  // OPT Mail
+                Mail::to($request->Email)->send(new AppSubOTPMail($details));
+            }
+          
             SendOTP($request->Phone, $SmsOTP);
+            $jobCreatedBy = jobpost::find($JPId);
+            $jobCreatedBy = $jobCreatedBy->CreatedBy;
+            UserNotification::notifyUser($jobCreatedBy, 'Candidate Applied', $request->Title . ' ' . $request->FName . ' ' . $request->LName . ' applied for SIP/Trainee');
             return response()->json(['status' => 200, 'msg' => ' successfully created.', 'jcid' => $JCId]);
         }
     }

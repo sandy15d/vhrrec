@@ -72,15 +72,15 @@
                             <tr class="text-center">
                                 <td></td>
                                 <td class="th-sm">S.No</td>
-                               
+
                                 <td>JobCode</td>
                                 <td>Department</td>
                                 <td>Designation</td>
                                 <td>Position</td>
                                 <td>Location</td>
                                 <td>Job Posting</td>
+                                <td>View on Site</td>
                                 <td>Details</td>
-                             
                             </tr>
                         </thead>
                         <tbody>
@@ -98,7 +98,7 @@
                     <h5 class="modal-title text-white">Create Job Post</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('createJobPost_Campus') }}" method="POST" id="createJobPostForm">
+                <form action="{{ route('createJobPost') }}" method="POST" id="createJobPostForm">
                     @csrf
                     <div class="modal-body">
                         <table class="table borderless">
@@ -166,13 +166,6 @@
                                         </table>
                                         <button type="button" name="addKP" id="addKP"
                                             class="btn btn-warning btn-sm mb-2 mt-2"><i class="bx bx-plus"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Last Date for Online Registration</th>
-                                    <td>
-                                        <input type="date" name="LastDate" id="LastDate"
-                                            class="form-control form-control-sm">
                                     </td>
                                 </tr>
 
@@ -417,7 +410,7 @@
             serverSide: true,
             info: true,
             searching: false,
-            dom: 'Bfrtip',
+            //  dom: 'Bfrtip',
             lengthChange: false,
             ordering: false,
             buttons: [
@@ -515,7 +508,7 @@
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex'
                 },
-               
+
                 {
                     data: 'JobCode',
                     name: 'JobCode'
@@ -541,20 +534,23 @@
                     data: 'JobPost',
                     name: 'JobPost'
                 },
-
+                {
+                    data: 'JobShow',
+                    name: 'JobShow'
+                },
 
                 {
                     data: 'details',
                     name: 'details'
                 },
-                
+
             ],
 
         });
 
         function GetAllocatedMrf() {
             $('#MRFTable').DataTable().draw(true);
-          
+
         }
 
 
@@ -1180,6 +1176,31 @@
             copyText.setSelectionRange(0, 99999)
             document.execCommand("copy");
             alert("Copied Link: " + copyText.value);
+        }
+
+        function ChngPostingView(JPId, va) {
+
+            $.ajax({
+                url: "{{ route('ChngPostingView') }}",
+                type: 'POST',
+                data: {
+                    JPId: JPId,
+                    va: va
+                },
+                dataType: 'json',
+                beforeSend: function() {
+                    $("#loader").modal('show');
+                },
+                success: function(data) {
+                    if (data.status == 200) {
+                        $("#loader").modal('hide');
+                        $('#MRFTable').DataTable().ajax.reload(null, false);
+                        toastr.success(data.msg);
+                    } else {
+                        toastr.error(data.msg);
+                    }
+                }
+            });
         }
     </script>
 @endsection

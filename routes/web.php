@@ -247,6 +247,27 @@ Route::post('Save_Cmp_Dpt_Campus', [CampusController::class, 'Save_Cmp_Dpt_Campu
 
 Route::get('trainee_mrf_allocated', [TraineeController::class, 'trainee_mrf_allocated'])->name('trainee_mrf_allocated');
 Route::post('getAllTraineeAllocatedMrf', [TraineeController::class, 'getAllTraineeAllocatedMrf'])->name('getAllTraineeAllocatedMrf');
+Route::get('trainee_applications', [TraineeController::class, 'trainee_applications'])->name('trainee_applications');
+Route::post('getTraineeSummary', [TraineeController::class, 'getTraineeSummary'])->name('getTraineeSummary');
+Route::post('getTraieeCandidates', [TraineeController::class, 'getTraieeCandidates'])->name('getTraieeCandidates');
+Route::post('SendTraineeForScreening', [TraineeController::class, 'SendTraineeForScreening'])->name('SendTraineeForScreening');
+Route::get('trainee_screening_tracker', [TraineeController::class, 'trainee_screening_tracker'])->name('trainee_screening_tracker');
+Route::post('getTraineeScreeningCandidates', [TraineeController::class, 'getTraineeScreeningCandidates'])->name('getTraineeScreeningCandidates');
+Route::post('ChngTraineeScreenStatus', [TraineeController::class, 'ChngTraineeScreenStatus'])->name('ChngTraineeScreenStatus');
+Route::post('getTraineeName', [TraineeController::class, 'getTraineeName'])->name('getTraineeName');
+Route::post('SaveTraineeInterview', [TraineeController::class, 'SaveTraineeInterview'])->name('SaveTraineeInterview');
+Route::get('active_trainee', [TraineeController::class, 'active_trainee'])->name('active_trainee');
+Route::post('get_active_trainee', [TraineeController::class, 'get_active_trainee'])->name('get_active_trainee');
+Route::get('old_trainee', [TraineeController::class, 'old_trainee'])->name('old_trainee');
+Route::post('get_old_trainee', [TraineeController::class, 'get_old_trainee'])->name('get_old_trainee');
+Route::post('getTraineeDetail', [TraineeController::class, 'getTraineeDetail'])->name('getTraineeDetail');
+Route::post('save_trainee_detail', [TraineeController::class, 'save_trainee_detail'])->name('save_trainee_detail');
+Route::post('get_expense_list', [TraineeController::class, 'get_expense_list'])->name('get_expense_list');
+Route::post('add_expense', [TraineeController::class, 'add_expense'])->name('add_expense');
+Route::post('map_trainee_to_job', [TraineeController::class, 'map_trainee_to_job'])->name('map_trainee_to_job');
+
+
+
 
 Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
@@ -399,6 +420,7 @@ Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackH
     Route::get('dashboard', [HodController::class, 'index'])->name('hod.dashboard');
 
     Route::get('mrfbyme', [HodController::class, 'mrfbyme'])->name('mrfbyme');
+    Route::get('interviewschedule', [HodController::class, 'interviewschedule'])->name('interviewschedule');
     //**========================My Team =========================================== */
     Route::get('myteam', [MyTeamController::class, 'myteam'])->name('myteam');
     Route::get('getAllMyTeamMember', [MyTeamController::class, 'getAllMyTeamMember'])->name('getAllMyTeamMember');
