@@ -134,6 +134,13 @@ Route::post('Candidate_PreOrgRef_Save', [AboutCandidateController::class, 'Candi
 Route::post('Candidate_VnrRef', [AboutCandidateController::class, 'Candidate_VnrRef'])->name('Candidate_VnrRef');
 Route::post('Candidate_VnrRef_Save', [AboutCandidateController::class, 'Candidate_VnrRef_Save'])->name('Candidate_VnrRef_Save');
 
+
+Route::post('Candidate_VnrRef_Business', [AboutCandidateController::class, 'Candidate_VnrRef_Business'])->name('Candidate_VnrRef_Business');
+Route::post('Candidate_VnrRef_Business_Save', [AboutCandidateController::class, 'Candidate_VnrRef_Business_Save'])->name('Candidate_VnrRef_Business_Save');
+
+Route::post('Candidate_Other_Seed_Relation', [AboutCandidateController::class, 'Candidate_Other_Seed_Relation'])->name('Candidate_Other_Seed_Relation');
+Route::post('Candidate_Other_Seed_Relation_Save', [AboutCandidateController::class, 'Candidate_Other_Seed_Relation_Save'])->name('Candidate_Other_Seed_Relation_Save');
+
 Route::post('Candidate_Strength', [AboutCandidateController::class, 'Candidate_Strength'])->name('Candidate_Strength');
 Route::post('Candidate_Strength_Save', [AboutCandidateController::class, 'Candidate_Strength_Save'])->name('Candidate_Strength_Save');
 
@@ -174,7 +181,21 @@ Route::post('VaccinationCertFileUpload', [JobApplicationController::class, 'Vacc
 Route::post('CheckDocumentUpload', [JobApplicationController::class, 'CheckDocumentUpload'])->name('CheckDocumentUpload');
 Route::post('FinalSubmitInterviewApplicationForm', [JobApplicationController::class, 'FinalSubmitInterviewApplicationForm'])->name('FinalSubmitInterviewApplicationForm');
 
-
+Route::post('AadhaarUpload', [JobApplicationController::class, 'AadhaarUpload'])->name('AadhaarUpload');
+Route::post('PanCardUpload', [JobApplicationController::class, 'PanCardUpload'])->name('PanCardUpload');
+Route::post('PassportUpload', [JobApplicationController::class, 'PassportUpload'])->name('PassportUpload');
+Route::post('DlUpload', [JobApplicationController::class, 'DlUpload'])->name('DlUpload');
+Route::post('PF_Form2Upload', [JobApplicationController::class, 'PF_Form2Upload'])->name('PF_Form2Upload');
+Route::post('PF_Form11Upload', [JobApplicationController::class, 'PF_Form11Upload'])->name('PF_Form11Upload');
+Route::post('GratuityUpload', [JobApplicationController::class, 'GratuityUpload'])->name('GratuityUpload');
+Route::post('ESICUpload', [JobApplicationController::class, 'ESICUpload'])->name('ESICUpload');
+Route::post('FamilyUpload', [JobApplicationController::class, 'FamilyUpload'])->name('FamilyUpload');
+Route::post('HealthUpload', [JobApplicationController::class, 'HealthUpload'])->name('HealthUpload');
+Route::post('EthicalUpload', [JobApplicationController::class, 'EthicalUpload'])->name('EthicalUpload');
+Route::post('BloodGroupUpload', [JobApplicationController::class, 'BloodGroupUpload'])->name('BloodGroupUpload');
+Route::post('BankUpload', [JobApplicationController::class, 'BankUpload'])->name('BankUpload');
+Route::post('CheckDocumentUpload_JoiningForm', [JobApplicationController::class, 'CheckDocumentUpload_JoiningForm'])->name('CheckDocumentUpload_JoiningForm');
+Route::post('JoiningFormSubmit', [JobApplicationController::class, 'JoiningFormSubmit'])->name('JoiningFormSubmit');
 
 
 Route::get('TechnicalScreening', [TrackerController::class, 'TechnicalScreening'])->name('TechnicalScreening');

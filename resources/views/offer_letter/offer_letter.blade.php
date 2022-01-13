@@ -3,7 +3,7 @@ use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getCompanyCode;
 $Year = date('Y');
 $LtrIssue = DB::table('offerletterbasic')->where('OfferLtrGen',1)->where('Year',$Year)->count();
-$pending = DB::table('offerletterbasic')->where('Answer',null)->where('Year',$Year)->count();
+$pending = DB::table('offerletterbasic')->where('OfferLtrGen',1)->where('Answer',null)->where('Year',$Year)->count();
 $accepted = DB::table('offerletterbasic')->where('Answer','Accepted')->where('Year',$Year)->count();
 $rejected = DB::table('offerletterbasic')->where('Answer','Rejected')->where('Year',$Year)->count();
 
@@ -176,7 +176,7 @@ $rejected = DB::table('offerletterbasic')->where('Answer','Rejected')->where('Ye
             <div class="card border-top border-0 border-4 border-primary mb-1">
                 <div class="card-body">
                     <table class="table table-bordered text-center table-striped table-light">
-                        <thead class="table-dark">
+                        <thead class="table-light">
                             <tr>
                                 <th scope="col">Reference No</th>
                                 <th scope="col">Candidate</th>

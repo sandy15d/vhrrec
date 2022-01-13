@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\CandidateActivityLog;
+use App\Helpers\UserNotification;
 use Doctrine\DBAL\Query\QueryException;
 
 use function App\Helpers\getCompanyCode;
@@ -613,6 +614,28 @@ class JobApplicationController extends Controller
                 );
         }
 
+        if (isset($request->EmgName1)) {
+            $EmgName1 = $request->EmgName1;
+            $EmgRel1 = $request->EmgRel1;
+            $EmgContact1 = $request->EmgContact1;
+
+            $EmgName2 = $request->EmgName2 ?? null;
+            $EmgRel2 = $request->EmgRel2 ?? null;
+            $EmgContact2 = $request->EmgContact2 ?? null;
+            $sql = DB::table('jf_contact_det')->where('JCId', $JCId)->update(
+                [
+                    'cont_one_name' => $EmgName1,
+                    'cont_one_relation' => $EmgRel1,
+                    'cont_one_number' => $EmgContact1,
+                    'cont_two_name' => $EmgName2,
+                    'cont_two_relation' => $EmgRel2,
+                    'cont_two_number' => $EmgContact2,
+                    'LastUpdated' => now(),
+
+                ]
+            );
+        }
+
         if (!$query || !$query1) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
@@ -704,7 +727,9 @@ class JobApplicationController extends Controller
         $DAHeadquarter = $request->DAHeadquarter ?? null;
         $DAOutsideHeadquarter = $request->DAOutsideHeadquarter ?? null;
         $PetrolAllowances = $request->PetrolAllowances ?? null;
-        $PhoneAllowances = $request->PhoneAllowances  ?? null;
+        $ReportingManager = $request->ReportingManager ?? null;
+        $RepDesignation = $request->RepDesignation ?? null;
+
         $HotelEligibility = $request->HotelEligibility ?? null;
         $ToatalExpYears = $request->ToatalExpYears ?? null;
         $TotalExpMonth = $request->TotalExpMonth ?? null;
@@ -735,7 +760,8 @@ class JobApplicationController extends Controller
                 'GrossSalary' => $CurrSalary,
                 'DAOutHq' => $DAOutsideHeadquarter,
                 'PetrolAlw' => $PetrolAllowances,
-             //   'PhoneAlw' => $PhoneAllowances,
+                'Reporting' => $ReportingManager,
+                'RepDesig' => $RepDesignation,
                 'HotelElg' => $HotelEligibility,
                 'ExpectedCTC' => $ExpCTC,
                 'CTC' => $CurrCTC,
@@ -924,38 +950,69 @@ class JobApplicationController extends Controller
 
     public function SaveOther(Request $request)
     {
-        //dd($request->all());
+
+        // dd($request->all());
         $JCId = $request->JCId;
         $language_array = $request->language_array;
         $PerOrgArray = $request->PerOrgArray;
         $VnrRefArray = $request->VnrRefArray;
+        $VnrBusinessRefArray = $request->VnrBusinessRefArray;
+        $VnrOtherSeedArray = $request->VnrOtherSeedArray;
 
-
-        if ($language_array != null) {
+        if ($language_array[0]['language'] != null) {
             $query = DB::table('jf_language')->where('JCId', $JCId)->delete();
             foreach ($language_array as $key => $value) {
-
                 $lang = DB::table('jf_language')->insert(['JCId' => $JCId, 'language' => $value['language'], 'read' => $value['read'], 'write' => $value['write'], 'speak' => $value['speak']]);
             }
         }
 
-
-
-        if ($PerOrgArray != null) {
-            $query1 = DB::table('jf_reference')->where('JCId', $JCId)->where('from', 'Previous Organization')->delete();
-            foreach ($PerOrgArray as $key => $value) {
-                $preRef = DB::table('jf_reference')->insert(['JCId' => $JCId, 'from' => 'Previous Organization', 'name' => $value['PreOrgName'], 'company' => $value['PreOrgCompany'], 'designation' => $value['PreOrgDesignation'], 'email' => $value['PreOrgEmail'], 'contact' => $value['PreOrgContact']]);
+        if (isset($PerOrgArray)) {
+            if ($PerOrgArray[0]['PreOrgName'] != null || $PerOrgArray[0]['PreOrgName'] != '') {
+                $query1 = DB::table('jf_reference')->where('JCId', $JCId)->where('from', 'Previous Organization')->delete();
+                foreach ($PerOrgArray as $key => $value) {
+                    $preRef = DB::table('jf_reference')->insert(['JCId' => $JCId, 'from' => 'Previous Organization', 'name' => $value['PreOrgName'], 'company' => $value['PreOrgCompany'], 'designation' => $value['PreOrgDesignation'], 'email' => $value['PreOrgEmail'], 'contact' => $value['PreOrgContact']]);
+                }
             }
         }
 
-        if ($VnrRefArray != null) {
-            $query2 = DB::table('jf_reference')->where('JCId', $JCId)->where('from', 'VNR')->delete();
-            foreach ($VnrRefArray as $key => $value) {
-                $vnrRef = DB::table('jf_reference')->insert(['JCId' => $JCId, 'from' => 'VNR', 'name' => $value['VnrRefName'], 'rel_with_person' => $value['VnrRefRelWithPerson'], 'designation' => $value['VnrRefDesignation'], 'email' => $value['VnrRefEmail'], 'contact' => $value['VnrRefContact']]);
+        if (isset($VnrRefArray)) {
+            if ($VnrRefArray[0]['VnrRefName'] != null && $VnrRefArray[0]['VnrRefName'] != '') {
+                $query2 = DB::table('jf_reference')->where('JCId', $JCId)->where('from', 'VNR')->delete();
+                foreach ($VnrRefArray as $key => $value) {
+                    $vnrRef = DB::table('jf_reference')->insert(['JCId' => $JCId, 'from' => 'VNR', 'name' => $value['VnrRefName'], 'rel_with_person' => $value['VnrRefRelWithPerson'], 'designation' => $value['VnrRefDesignation'], 'email' => $value['VnrRefEmail'], 'contact' => $value['VnrRefContact'], 'company' => $value['VnrRefCompany'], 'other_company' => $value['OtherCompany'], 'location' => $value['VnrRefLocation']]);
+                }
             }
         }
 
-        if (!$lang || !$preRef || !$vnrRef) {
+        if (isset($VnrBusinessRefArray)) {
+            if ($VnrBusinessRefArray[0]['VnrRefBusiness_Name'] != null && $VnrBusinessRefArray[0]['VnrRefBusiness_Name'] != '') {
+                $query2 = DB::table('vnr_business_ref')->where('JCId', $JCId)->delete();
+                foreach ($VnrBusinessRefArray as $key => $value) {
+                    $vnrRef = DB::table('vnr_business_ref')->insert(['JCId' => $JCId, 'Name' => $value['VnrRefBusiness_Name'], 'Mobile' => $value['VnrRefBusiness_Contact'], 'Email' => $value['VnrRefBusiness_Email'], 'BusinessRelation' => $value['VnrRefBusinessRelation'], 'Location' => $value['VnrRefBusiness_Location'], 'PersonRelation' => $value['VnrRefBusiness_RelWithPerson']]);
+                }
+            }
+        }
+
+        if (isset($VnrOtherSeedArray)) {
+            if ($VnrOtherSeedArray[0]['OtherSeedName'] != null && $VnrOtherSeedArray[0]['OtherSeedName'] != '') {
+                $query2 = DB::table('relation_other_seed_cmp')->where('JCId', $JCId)->delete();
+                foreach ($VnrOtherSeedArray as $key => $value) {
+                    $vnrRef = DB::table('relation_other_seed_cmp')->insert(['JCId' => $JCId, 'Name' => $value['OtherSeedName'], 'Mobile' => $value['OtherSeedMobile'], 'Email' => $value['OtherSeedEMail'], 'CompanyName' => $value['OtherSeedCompany'], 'Designation' => $value['OtherSeedDesignation'], 'Location' => $value['OtherSeedLocation'], 'Relation' => $value['OtherSeedRelation']]);
+                }
+            }
+        }
+
+        if (isset($request->UAN)) {
+            $chk = DB::table('jf_pf_esic')->where('JCId', $JCId)->first();
+            if ($chk != null) {
+                $query3 = DB::table('jf_pf_esic')->where('JCId', $JCId)->update(['UAN' => $request->UAN, 'ESIC_Chk' => $request->ESIC_Chk, 'PFNumber' => $request->PF, 'ESICNumber' => $request->ESIC ?? null, 'LastUpdated' => now()]);
+            } else {
+                $query3 = DB::table('jf_pf_esic')->insert(['JCId' => $JCId, 'UAN' => $request->UAN, 'ESIC_Chk' => $request->ESIC_Chk, 'PFNumber' => $request->PF, 'ESICNumber' => $request->ESIC ?? null, 'LastUpdated' => now()]);
+            }
+        }
+
+        $sql = DB::table('jobcandidates')->where('JCId', $JCId)->update(['VNR_Acq' => $request->VNR_Acq, 'VNR_Acq_Business' => $request->VNR_Acq_Business, 'OtherSeedRelation' => $request->OtherSeedRelation, 'LastUpdated' => now()]);
+        if (!$lang) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
             return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
@@ -966,7 +1023,7 @@ class JobApplicationController extends Controller
     {
         $request->validate(['OfferLtr' => 'required|mimes:pdf|max:2048']);
         $JCId = $request->JCId;
-        $filename = $JCId . '_Previous_Offer_Letter' . '.' . $request->OfferLtr->extension();
+        $filename = $JCId . 'Previous_Offer_Letter_' . $JCId  . '.' . $request->OfferLtr->extension();
 
         if (\File::exists(public_path('uploads/Documents/' . $filename))) {
             \File::delete(public_path('uploads/Documents/' . $filename));
@@ -1001,7 +1058,7 @@ class JobApplicationController extends Controller
     {
         $request->validate(['RelievingLtr' => 'required|mimes:pdf|max:2048']);
         $JCId = $request->JCId;
-        $filename = $JCId . '_Previous_Relieving_Letter' . '.' . $request->RelievingLtr->extension();
+        $filename = $JCId . 'Previous_Relieving_Letter_' . $JCId  . '.' . $request->RelievingLtr->extension();
         if (\File::exists(public_path('uploads/Documents/' . $filename))) {
             \File::delete(public_path('uploads/Documents/' . $filename));
         }
@@ -1035,7 +1092,7 @@ class JobApplicationController extends Controller
     {
         $request->validate(['SalarySlip' => 'required|mimes:pdf|max:2048']);
         $JCId = $request->JCId;
-        $filename = $JCId . '_Previous_Salaray_Slip' . '.' . $request->SalarySlip->extension();
+        $filename = $JCId . 'Previous_Salaray_Slip_' . $JCId  . '.' . $request->SalarySlip->extension();
         if (\File::exists(public_path('uploads/Documents/' . $filename))) {
             \File::delete(public_path('uploads/Documents/' . $filename));
         }
@@ -1069,7 +1126,7 @@ class JobApplicationController extends Controller
     {
         $request->validate(['AppraisalLtr' => 'required|mimes:pdf|max:2048']);
         $JCId = $request->JCId;
-        $filename = $JCId . '_Previous_Appraisal_Letter' . '.' . $request->AppraisalLtr->extension();
+        $filename = 'Previous_Appraisal_Letter_' . $JCId . '.' . $request->AppraisalLtr->extension();
         if (\File::exists(public_path('uploads/Documents/' . $filename))) {
             \File::delete(public_path('uploads/Documents/' . $filename));
         }
@@ -1098,11 +1155,12 @@ class JobApplicationController extends Controller
             return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
         }
     }
+
     public function VaccinationCertFileUpload(Request $request)
     {
         $request->validate(['VaccinationCert' => 'required|mimes:pdf|max:2048']);
         $JCId = $request->JCId;
-        $filename = $JCId . 'VaccinationCertificate' . '.' . $request->VaccinationCert->extension();
+        $filename = 'VaccinationCertificate_' . $JCId . '.' . $request->VaccinationCert->extension();
         if (\File::exists(public_path('uploads/Documents/' . $filename))) {
             \File::delete(public_path('uploads/Documents/' . $filename));
         }
@@ -1136,10 +1194,20 @@ class JobApplicationController extends Controller
     {
         $JCId = $request->JCId;
         $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
-        if ($chk->OfferLtr == null || $chk->RelievingLtr == null || $chk->SalarySlip == null || $chk->AppraisalLtr == null || $chk->VaccinationCert == null) {
-            return response()->json(['status' => 400, 'msg' => 'Please upload all documents']);
+        $query = jobcandidate::find($JCId);
+        $Professional = $query->Professional;
+        if ($Professional == 'P') {
+            if ($chk->OfferLtr == null || $chk->RelievingLtr == null || $chk->SalarySlip == null || $chk->AppraisalLtr == null || $chk->VaccinationCert == null) {
+                return response()->json(['status' => 400, 'msg' => 'Please upload all documents']);
+            } else {
+                return response()->json(['status' => 200, 'msg' => 'All documents uploaded successfully']);
+            }
         } else {
-            return response()->json(['status' => 200, 'msg' => 'All documents uploaded successfully']);
+            if ($chk->VaccinationCert == null) {
+                return response()->json(['status' => 400, 'msg' => 'Please upload all documents']);
+            } else {
+                return response()->json(['status' => 200, 'msg' => 'All documents uploaded successfully']);
+            }
         }
     }
 
@@ -1152,10 +1220,532 @@ class JobApplicationController extends Controller
                 'LastUpdated' => now()
             ]
         );
+
+        $sql = DB::table('jobcandidates')
+            ->Join('jobapply', 'jobcandidates.JCId', '=', 'jobapply.JCId')
+            ->Join('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
+            ->where('jobcandidates.JCId', $JCId)
+            ->select('jobpost.CreatedBy', 'jobcandidates.FName')->first();
+        $CreatedBy = $sql->CreatedBy;
+        $FName = $sql->FName;
+        UserNotification::notifyUser($CreatedBy, 'Pre Interview Form', $FName . ' has submitted the pre interview form');
         if ($query) {
-            return response()->json(['status' => 200, 'msg' => 'Interview has been scheduled successfully']);
+            return response()->json(['status' => 200, 'msg' => 'Interview Form has been submitted successfully']);
         } else {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+
+    public function JoiningFormSubmit(Request $request)
+    {
+        $JCId = $request->JCId;
+        $query = DB::table('jobcandidates')->where('JCId', $JCId)->update(
+            [
+                'FinalSubmit' => '1',
+                'LastUpdated' => now()
+            ]
+        );
+        $sql = DB::table('jobcandidates')
+            ->Join('jobapply', 'jobcandidates.JCId', '=', 'jobapply.JCId')
+            ->Join('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
+            ->where('jobcandidates.JCId', $JCId)
+            ->select('jobpost.CreatedBy', 'jobcandidates.FName')->first();
+        $CreatedBy = $sql->CreatedBy;
+        $FName = $sql->FName;
+        UserNotification::notifyUser($CreatedBy, 'Joining Form', $FName . ' has submitted the joining form');
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Joining Form has been submitted successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function AadhaarUpload(Request $request)
+    {
+        $request->validate(['AadhaarCard' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = 'Aadhar_' . $JCId . '.' . $request->AadhaarCard->extension();
+
+        if (\File::exists(public_path('uploads/Documents/' . $filename))) {
+            \File::delete(public_path('uploads/Documents/' . $filename));
+        }
+        $request->AadhaarCard->move(public_path('uploads/Documents'), $filename);
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $query = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'Aadhar' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'Aadhar' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+
+    public function PanCardUpload(Request $request)
+    {
+        $request->validate(['PANCard' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = 'PanCard_' . $JCId . '.' . $request->PANCard->extension();
+
+        if (\File::exists(public_path('uploads/Documents/' . $filename))) {
+            \File::delete(public_path('uploads/Documents/' . $filename));
+        }
+        $request->PANCard->move(public_path('uploads/Documents'), $filename);
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $query = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'PanCard' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'PanCard' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+        $query1 = DB::table('jf_pf_esic')->where('JCId', $JCId)->update(
+            [
+                'PAN' => $request->PanCardNumber,
+                'LastUpdated' => now()
+            ]
+        );
+
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+
+    public function PassportUpload(Request $request)
+    {
+        $request->validate(['Passport' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = 'Passport_' . $JCId . '.' . $request->Passport->extension();
+
+        if (\File::exists(public_path('uploads/Documents/' . $filename))) {
+            \File::delete(public_path('uploads/Documents/' . $filename));
+        }
+        $request->Passport->move(public_path('uploads/Documents'), $filename);
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $query = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'Passport' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'Passport' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+        $query1 = DB::table('jf_pf_esic')->where('JCId', $JCId)->update(
+            [
+                'Passport' => $request->PassportNumber,
+                'LastUpdated' => now()
+            ]
+        );
+
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+
+    public function DlUpload(Request $request)
+    {
+        $request->validate(['DLCard' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = 'DL_' . $JCId . '.' . $request->DLCard->extension();
+
+        if (\File::exists(public_path('uploads/Documents/' . $filename))) {
+            \File::delete(public_path('uploads/Documents/' . $filename));
+        }
+        $request->DLCard->move(public_path('uploads/Documents'), $filename);
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $query = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'DL' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'DL' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+
+    public function PF_Form2Upload(Request $request)
+    {
+        $request->validate(['PFForm2' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = 'PF_Form2_' . $JCId . '.' . $request->PFForm2->extension();
+
+        if (\File::exists(public_path('uploads/Documents/' . $filename))) {
+            \File::delete(public_path('uploads/Documents/' . $filename));
+        }
+        $request->PFForm2->move(public_path('uploads/Documents'), $filename);
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $query = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'PF_Form2' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'PF_Form2' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+
+    public function PF_Form11Upload(Request $request)
+    {
+        $request->validate(['PF_Form11' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = 'PF_Form11_' . $JCId . '.' . $request->PF_Form11->extension();
+
+        if (\File::exists(public_path('uploads/Documents/' . $filename))) {
+            \File::delete(public_path('uploads/Documents/' . $filename));
+        }
+        $request->PF_Form11->move(public_path('uploads/Documents'), $filename);
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $query = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'PF_Form11' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'PF_Form11' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+
+    public function GratuityUpload(Request $request)
+    {
+        $request->validate(['GratuityForm' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = 'Gratuity_' . $JCId . '.' . $request->GratuityForm->extension();
+
+        if (\File::exists(public_path('uploads/Documents/' . $filename))) {
+            \File::delete(public_path('uploads/Documents/' . $filename));
+        }
+        $request->GratuityForm->move(public_path('uploads/Documents'), $filename);
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $query = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'Gratutity' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'Gratutity' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+
+    public function ESICUpload(Request $request)
+    {
+        $request->validate(['ESICForm' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = 'ESIC_' . $JCId . '.' . $request->ESICForm->extension();
+
+        if (\File::exists(public_path('uploads/Documents/' . $filename))) {
+            \File::delete(public_path('uploads/Documents/' . $filename));
+        }
+        $request->ESICForm->move(public_path('uploads/Documents'), $filename);
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $query = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'ESIC' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'ESIC' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+
+    public function FamilyUpload(Request $request)
+    {
+        $request->validate(['ESIC_Family' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = 'ESIC_Family_' . $JCId . '.' . $request->ESIC_Family->extension();
+
+        if (\File::exists(public_path('uploads/Documents/' . $filename))) {
+            \File::delete(public_path('uploads/Documents/' . $filename));
+        }
+        $request->ESIC_Family->move(public_path('uploads/Documents'), $filename);
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $query = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'ESIC_Family' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'ESIC_Family' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+
+    public function HealthUpload(Request $request)
+    {
+        $request->validate(['Health' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = 'Health_' . $JCId . '.' . $request->Health->extension();
+
+        if (\File::exists(public_path('uploads/Documents/' . $filename))) {
+            \File::delete(public_path('uploads/Documents/' . $filename));
+        }
+        $request->Health->move(public_path('uploads/Documents'), $filename);
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $query = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'Health' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'Health' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+
+    public function EthicalUpload(Request $request)
+    {
+        $request->validate(['Ethical' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = 'Ethical_' . $JCId . '.' . $request->Ethical->extension();
+
+        if (\File::exists(public_path('uploads/Documents/' . $filename))) {
+            \File::delete(public_path('uploads/Documents/' . $filename));
+        }
+        $request->Ethical->move(public_path('uploads/Documents'), $filename);
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $query = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'Ethical' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'Ethical' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+
+    public function BloodGroupUpload(Request $request)
+    {
+        $request->validate(['BloodGroup' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = 'BloodGroup_' . $JCId . '.' . $request->BloodGroup->extension();
+
+        if (\File::exists(public_path('uploads/Documents/' . $filename))) {
+            \File::delete(public_path('uploads/Documents/' . $filename));
+        }
+        $request->BloodGroup->move(public_path('uploads/Documents'), $filename);
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $query = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'BloodGroup' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'BloodGroup' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+
+    public function BankUpload(Request $request)
+    {
+        $request->validate(['BankPassBook' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = 'BankDoc_' . $JCId . '.' . $request->BankPassBook->extension();
+
+        if (\File::exists(public_path('uploads/Documents/' . $filename))) {
+            \File::delete(public_path('uploads/Documents/' . $filename));
+        }
+        $request->BankPassBook->move(public_path('uploads/Documents'), $filename);
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $query = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'BankDoc' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'BankDoc' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+
+        $query1 = DB::table('jf_pf_esic')->where('JCId', $JCId)->update(
+            [
+                'BankName' => $request->BankName,
+                'BranchName' => $request->BranchName,
+                'AccountNumber' => $request->AccNumber,
+                'IFSCCode' => $request->IFSC,
+                'LastUpdated' => now()
+            ]
+        );
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+
+
+    public function CheckDocumentUpload_JoiningForm(Request $request)
+    {
+        $JCId = $request->JCId;
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk->Aadhar == null || $chk->BankDoc == null || $chk->PF_Form2 == null || $chk->PF_Form11 == null || $chk->Gratutity == null || $chk->Health == null || $chk->BloodGroup == null || $chk->Ethical == null) {
+            return response()->json(['status' => 400, 'msg' => 'Please upload all documents']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'All documents uploaded successfully']);
         }
     }
 }

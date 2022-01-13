@@ -38,7 +38,7 @@ class OfferLtrController extends Controller
 
         if (Auth::user()->role == 'R') {
 
-            $usersQuery->where('screening.CreatedBy', Auth::user()->id);
+            $usersQuery->where('jobpost.CreatedBy', Auth::user()->id);
         }
 
         if ($Company != '') {
@@ -256,6 +256,13 @@ class OfferLtrController extends Controller
             ]
         );
 
+        $query = DB::table('offerletterbasic')->where('JAId', $jaid)->update(
+            [
+                'CTC' => $total_ctc,
+                'LastUpdated' => now(),
+                'UpdatedBy' => Auth::user()->id
+            ]
+        );
         if ($query1) {
             return response()->json(['status' => 200, 'msg' => 'CTC Data has been changed successfully']);
         } else {
@@ -343,15 +350,15 @@ class OfferLtrController extends Controller
         if ($seq == 0) {
             $postfix_ltr = '';
         } elseif ($seq == 1) {
-            $postfix_ltr = '-A';
+            $postfix_ltr = 'A';
         } elseif ($seq == 2) {
-            $postfix_ltr = '-B';
+            $postfix_ltr = 'B';
         } elseif ($seq == 3) {
-            $postfix_ltr = '-C';
+            $postfix_ltr = 'C';
         } elseif ($seq == 4) {
-            $postfix_ltr = '-D';
+            $postfix_ltr = 'D';
         } elseif ($seq == 5) {
-            $postfix_ltr = '-E';
+            $postfix_ltr = 'E';
         }
 
         $Month = date('M');
@@ -592,6 +599,7 @@ class OfferLtrController extends Controller
         $query = DB::table('offerletterbasic')->where('JAId', $JAId)->update(
             [
                 'Answer' => $Answer,
+                'RejReason' => $RejReason,
                 'LastUpdated' => now()
             ]
         );

@@ -335,7 +335,7 @@ $count = count($sql);
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6 d-flex">
+                    <div class="col-md-5 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Bank Informations <a href="#" class="edit-icon"
@@ -380,7 +380,7 @@ $count = count($sql);
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 d-flex">
+                    <div class="col-md-7 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Family Informations <a href="#" class="edit-icon"
@@ -1104,7 +1104,11 @@ $count = count($sql);
                                             <div class="title" style="width: 150px;">Rejection Reason<span
                                                     style="float: right">:</span></div>
                                             <div class="text text-danger">
-                                                {{ $OfBasic != null && $OfBasic->RejReason ?? '-' }}</div>
+                                                @if ($OfBasic != null)
+                                                    {{ $OfBasic->RejReason ?? '-' }}
+                                                    
+                                                @endif
+                                              </div>
                                         </li>
 
                                     @endif

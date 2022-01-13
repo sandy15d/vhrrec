@@ -360,12 +360,18 @@ $Year = Carbon::now()->year;
 
 
                 <div class="row">
-                    <p style="margin-bottom: 0px;"><b>Total Experience: &emsp;&emsp; {{ $Rec->TotalYear }}
-                            Years {{ $Rec->TotalMonth }} Months
-
+                    <p style="margin-bottom: 0px;"><b>Total Experience: &emsp;&emsp;
+                            @if ($Rec->Professional == 'P')
+                                {{ $Rec->TotalYear }}
+                                Years {{ $Rec->TotalMonth }} Months
+                            @else
+                                Fresher
+                            @endif
                         </b> </p>
                     <p>कुल कार्य अनुभव : &emsp;&emsp; &emsp;&emsp;
-                        {{ $Rec->TotalYear }} साल {{ $Rec->TotalMonth }} महीना
+                        @if ($Rec->Professional == 'P')
+                            {{ $Rec->TotalYear }} साल {{ $Rec->TotalMonth }} महीना
+                        @endif
                     </p>
                 </div>
 
@@ -460,7 +466,11 @@ $Year = Carbon::now()->year;
 
                                 </td>
                                 <td> <b>
-                                        {{ $Rec->PresentCompany }}
+                                        @if ($Rec->Professional == 'P')
+                                            {{ $Rec->PresentCompany }}
+                                        @else
+                                            Fresher
+                                        @endif
                                     </b></td>
                             </tr>
                             <tr>
@@ -469,7 +479,11 @@ $Year = Carbon::now()->year;
 
                                 </td>
                                 <td> <b>
-                                        {{ date('d-m-Y', strtotime($Rec->JobStartDate)) }}
+                                        @if ($Rec->Professional == 'P')
+                                            {{ date('d-m-Y', strtotime($Rec->JobStartDate)) }}
+
+                                        @endif
+
                                     </b></td>
                             </tr>
                             <tr>
@@ -969,257 +983,261 @@ $Year = Carbon::now()->year;
                 </center>
             </div>
         </div>
-
-        <div class="page">
-            <div class="subpage">
-                <center>
-                    <img src="https://www.vnrseeds.com/wp-content/uploads/2018/12/vnr-logo-69x90.png" width="30px">
-                </center>
-                <div class="row">
-                    <div class="col text-left"><b>Version 1.5</b></div>
-                    <div class="col text-center"><b>Application Form</b></div>
-                    <div class="col ">&emsp;&nbsp;<b>VNR Seeds Pvt. Ltd.</b></div>
-                </div>
-                <hr style="margin-top: 0px; ">
-
-                <div class="row" style="margin-bottom:0px; marign-top:50px;">
+        @if ($Rec->Professional == 'P')
+            <div class="page">
+                <div class="subpage">
+                    <center>
+                        <img src="https://www.vnrseeds.com/wp-content/uploads/2018/12/vnr-logo-69x90.png" width="30px">
+                    </center>
                     <div class="row">
-                        <div class="col-lg-12">
-                            <p class="fw-bold mb-0">Reporting Details:</p>
-                            <table class="table">
-                                <tr>
-                                    <td class="fw-bold" style="width: 50%">Reporting Manager Name</td>
-                                    <td>{{ $Rec->Reporting ?? '' }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="fw-bold">Reporting Manager's Designation</td>
-                                    <td>{{ $Rec->RepDesig ?? '' }}</td>
-                                </tr>
-                            </table>
-
-                            <table class="table">
-                                <tr>
-                                    <td rowspan="2" style="width: 50%" class="fw-bold">No of employees <br>
-                                        directly reporting to you</td>
-                                    <td class="fw-bold">On roll employees</td>
-                                    <td class="fw-bold">Third party employees</td>
-                                </tr>
-                                <tr>
-
-                                    <td class="text-center"> {{ $OtherDetail->OnRollRepToMe ?? '' }}</td>
-                                    <td class="text-center"> {{ $OtherDetail->ThirdPartyRepToMe ?? '' }}</td>
-
-                                </tr>
-
-                            </table>
-                        </div>
+                        <div class="col text-left"><b>Version 1.5</b></div>
+                        <div class="col text-center"><b>Application Form</b></div>
+                        <div class="col ">&emsp;&nbsp;<b>VNR Seeds Pvt. Ltd.</b></div>
                     </div>
+                    <hr style="margin-top: 0px; ">
 
-                    <div class="col-lg-12">
-                        <p class="fw-bold mb-0">Working Territory Details (mention the name of District or Area's
-                            Covered)</p>
-                        <p>{{ $OtherDetail->TerritoryDetails ?? '' }}</p>
-                    </div>
-
-                    <div class="col-lg-12">
-                        <p class="fw-bold mb-0">Business Turnover Details:</p>
-                        <table class="table text-center">
-                            <tr>
-                                <th>Business Turnover</th>
-                                <th>Current Year <br>(in lakh's)</th>
-                                <th>Previous Year <br>(in lakh's)</th>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Vegetable Business</td>
-                                <td>{{ $OtherDetail->VegCurrTurnOver ?? '' }}</td>
-                                <td>{{ $OtherDetail->VegPreTurnOver ?? '' }}</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Field Crop Business</td>
-                                <td>{{ $OtherDetail->FieldCurrTurnOver ?? '' }}</td>
-                                <td>{{ $OtherDetail->FieldPreTurnOver ?? '' }}</td>
-                            </tr>
-                        </table>
-                    </div>
-
-                    <div class="col-lg-12">
-                        <p class="fw-bold mb-0">Incentive Plan Details:</p>
-                        <table class="table text-center">
-                            <tr>
-                                <th>Incentive Payment Duration</th>
-                                <th>Incentive Amount (in Rs.)</th>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Monthly</td>
-                                <td>{{ $OtherDetail->MonthlyIncentive ?? '' }}</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Quarterly</td>
-                                <td>{{ $OtherDetail->QuarterlyIncentive ?? '' }}</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Half Yearly</td>
-                                <td>{{ $OtherDetail->HalfYearlyIncentive ?? '' }}</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Annually</td>
-                                <td>{{ $OtherDetail->AnnuallyIncentive ?? '' }}</td>
-                            </tr>
-                        </table>
-                    </div>
-
-                    <p class="fw-bold mb-0">Any other details related to incentive plan:</p>
-                    <p>{{ $OtherDetail->AnyOtheIncentive }}</p>
-
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <p class="fw-bold mb-1">Company Vehicle Policy (select whichever is appliable to you):
-                            </p>
-
-                            @if ($OtherDetail->TwoWheelChk != null && $OtherDetail->TwoWheelChk == '1')
-                                <input type="checkbox" name="" id="" checked> 2 Wheeler
+                    <div class="row" style="margin-bottom:0px; marign-top:50px;">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <p class="fw-bold mb-0">Reporting Details:</p>
                                 <table class="table">
                                     <tr>
-                                        <td>Ownership Type</td>
-                                        <td>{{ $OtherDetail->TwoWheelOwnerType == 'W' ? 'Own' : 'Provided by Company' }}
-                                            @if ($OtherDetail->TwoWheelOwnerType == 'C')
-                                                - Rs. {{ $OtherDetail->TwoWheelAmount ?? '' }}
-                                            @endif
-                                        </td>
+                                        <td class="fw-bold" style="width: 50%">Reporting Manager Name</td>
+                                        <td>{{ $Rec->Reporting ?? '' }}</td>
                                     </tr>
-
                                     <tr>
-                                        <td>Petrol Allowances</td>
-                                        <td>
-                                            Rs. {{ $OtherDetail->TwoWheelPetrol ?? '' }}
-                                            {{ $OtherDetail->TwoWheelPetrolTerm ?? '' }}
-                                        </td>
+                                        <td class="fw-bold">Reporting Manager's Designation</td>
+                                        <td>{{ $Rec->RepDesig ?? '' }}</td>
                                     </tr>
                                 </table>
-                            @endif
 
-                            @if ($OtherDetail->FourWheelChk != null && $OtherDetail->FourWheelChk == '1')
-                                <input type="checkbox" name="" id="" checked> 4 Wheeler
                                 <table class="table">
                                     <tr>
-                                        <td>Ownership Type</td>
-                                        <td>{{ $OtherDetail->FourWheelOwnerType == 'W' ? 'Own' : 'Provided by Company' }}
-                                            @if ($OtherDetail->FourWheelOwnerType == 'C')
-                                                - Rs. {{ $OtherDetail->FourWheelAmount ?? '' }}
-                                            @endif
-                                        </td>
+                                        <td rowspan="2" style="width: 50%" class="fw-bold">No of employees <br>
+                                            directly reporting to you</td>
+                                        <td class="fw-bold">On roll employees</td>
+                                        <td class="fw-bold">Third party employees</td>
                                     </tr>
-
                                     <tr>
-                                        <td>Petrol Allowances</td>
-                                        <td>
-                                            Rs. {{ $OtherDetail->FourWheelPetrol ?? '' }}
-                                            {{ $OtherDetail->FourWheelPetrolTerm ?? '' }}
-                                        </td>
+
+                                        <td class="text-center"> {{ $OtherDetail->OnRollRepToMe ?? '' }}</td>
+                                        <td class="text-center"> {{ $OtherDetail->ThirdPartyRepToMe ?? '' }}</td>
+
                                     </tr>
+
                                 </table>
-                            @endif
-
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-
-                <hr style="margin-bottom: 0px; margin-top:20px;">
-                <center>
-                    <p class="row" style="margin-top: 0px;">
-                        Date of Release: 09 September 2019 &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;Released by
-                        HRD
-                        &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;Page 4
-                    </p>
-                </center>
-            </div>
-        </div>
-
-        <div class="page">
-            <div class="subpage">
-                <center>
-                    <img src="https://www.vnrseeds.com/wp-content/uploads/2018/12/vnr-logo-69x90.png" width="30px">
-                </center>
-                <div class="row">
-                    <div class="col text-left"><b>Version 1.5</b></div>
-                    <div class="col text-center"><b>Application Form</b></div>
-                    <div class="col ">&emsp;&nbsp;<b>VNR Seeds Pvt. Ltd.</b></div>
-                </div>
-                <hr style="margin-top: 0px; ">
-
-                <div class="row" style="margin-bottom:0px; marign-top:50px;">
-                    <div class="row">
                         <div class="col-lg-12">
-                            <p class="fw-bold mb-0">Other Benefit details (select whichever is applicable and mention
-                                the details):</p>
+                            <p class="fw-bold mb-0">Working Territory Details (mention the name of District or Area's
+                                Covered)</p>
+                            <p>{{ $OtherDetail->TerritoryDetails ?? '' }}</p>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <p class="fw-bold mb-0">Business Turnover Details:</p>
                             <table class="table text-center">
                                 <tr>
-                                    <th>Particulars</th>
-                                    <th>Amount</th>
+                                    <th>Business Turnover</th>
+                                    <th>Current Year <br>(in lakh's)</th>
+                                    <th>Previous Year <br>(in lakh's)</th>
                                 </tr>
                                 <tr>
-                                    <td>DA @ Headquarter</td>
-                                    <td>Rs. {{ $Rec->DAHq ?? '' }}/- Per Day </td>
+                                    <td class="fw-bold">Vegetable Business</td>
+                                    <td>{{ $OtherDetail->VegCurrTurnOver ?? '' }}</td>
+                                    <td>{{ $OtherDetail->VegPreTurnOver ?? '' }}</td>
                                 </tr>
                                 <tr>
-                                    <td>DA outside Headquarter</td>
-                                    <td>Rs. {{ $Rec->DAOutHq ?? '' }}/- Per Day </td>
-                                </tr>
-                                <tr>
-                                    <td>Lodging eligibility</td>
-                                    <td>Rs. {{ $Rec->HotelElg ?? '' }}/- Per Day </td>
-                                </tr>
-                                <tr>
-                                    <td>Medical Insurance</td>
-                                    <td>Rs. {{ $Rec->Medical ?? '' }} </td>
-                                </tr>
-                                <tr>
-                                    <td>Group Term Insurance</td>
-                                    <td>Rs. {{ $Rec->GrpTermIns ?? '' }} </td>
-                                </tr>
-                                <tr>
-                                    <td>Group Personal Accident Insurance</td>
-                                    <td>Rs. {{ $Rec->GrpPersonalAccIns ?? '' }} </td>
-                                </tr>
-                                <tr>
-                                    <td>Mobile Handset</td>
-                                    <td>Rs. {{ $Rec->MobileHandset ?? '' }} </td>
-                                </tr>
-                                <tr>
-                                    <td>Mobile Bill reimbursement</td>
-                                    <td>Rs. {{ $Rec->MobileBill ?? '' }} </td>
-                                </tr>
-                                <tr>
-                                    <td>Travel eligibilities</td>
-                                    <td>{{ $Rec->TravelElg ?? '' }} </td>
+                                    <td class="fw-bold">Field Crop Business</td>
+                                    <td>{{ $OtherDetail->FieldCurrTurnOver ?? '' }}</td>
+                                    <td>{{ $OtherDetail->FieldPreTurnOver ?? '' }}</td>
                                 </tr>
                             </table>
-
-
                         </div>
 
                         <div class="col-lg-12">
-                            <p class="fw-bold mb-1">Any other benefit:</p>
-                            <p>{{$OtherDetail->OtherBenifit ?? ''}}</p>
+                            <p class="fw-bold mb-0">Incentive Plan Details:</p>
+                            <table class="table text-center">
+                                <tr>
+                                    <th>Incentive Payment Duration</th>
+                                    <th>Incentive Amount (in Rs.)</th>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Monthly</td>
+                                    <td>{{ $OtherDetail->MonthlyIncentive ?? '' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Quarterly</td>
+                                    <td>{{ $OtherDetail->QuarterlyIncentive ?? '' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Half Yearly</td>
+                                    <td>{{ $OtherDetail->HalfYearlyIncentive ?? '' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold">Annually</td>
+                                    <td>{{ $OtherDetail->AnnuallyIncentive ?? '' }}</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <p class="fw-bold mb-0">Any other details related to incentive plan:</p>
+                        <p>{{ $OtherDetail->AnyOtheIncentive }}</p>
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <p class="fw-bold mb-1">Company Vehicle Policy (select whichever is appliable to
+                                    you):
+                                </p>
+
+                                @if ($OtherDetail->TwoWheelChk != null && $OtherDetail->TwoWheelChk == '1')
+                                    <input type="checkbox" name="" id="" checked> 2 Wheeler
+                                    <table class="table">
+                                        <tr>
+                                            <td>Ownership Type</td>
+                                            <td>{{ $OtherDetail->TwoWheelOwnerType == 'W' ? 'Own' : 'Provided by Company' }}
+                                                @if ($OtherDetail->TwoWheelOwnerType == 'C')
+                                                    - Rs. {{ $OtherDetail->TwoWheelAmount ?? '' }}
+                                                @endif
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Petrol Allowances</td>
+                                            <td>
+                                                Rs. {{ $OtherDetail->TwoWheelPetrol ?? '' }}
+                                                {{ $OtherDetail->TwoWheelPetrolTerm ?? '' }}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                @endif
+
+                                @if ($OtherDetail->FourWheelChk != null && $OtherDetail->FourWheelChk == '1')
+                                    <input type="checkbox" name="" id="" checked> 4 Wheeler
+                                    <table class="table">
+                                        <tr>
+                                            <td>Ownership Type</td>
+                                            <td>{{ $OtherDetail->FourWheelOwnerType == 'W' ? 'Own' : 'Provided by Company' }}
+                                                @if ($OtherDetail->FourWheelOwnerType == 'C')
+                                                    - Rs. {{ $OtherDetail->FourWheelAmount ?? '' }}
+                                                @endif
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Petrol Allowances</td>
+                                            <td>
+                                                Rs. {{ $OtherDetail->FourWheelPetrol ?? '' }}
+                                                {{ $OtherDetail->FourWheelPetrolTerm ?? '' }}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                @endif
+
+                            </div>
                         </div>
                     </div>
 
 
+                    <hr style="margin-bottom: 0px; margin-top:20px;">
+                    <center>
+                        <p class="row" style="margin-top: 0px;">
+                            Date of Release: 09 September 2019 &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;Released
+                            by
+                            HRD
+                            &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;Page 4
+                        </p>
+                    </center>
                 </div>
-
-
-                <hr style="margin-bottom: 0px; margin-top:20px;">
-                <center>
-                    <p class="row" style="margin-top: 0px;">
-                        Date of Release: 09 September 2019 &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;Released by
-                        HRD
-                        &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;Page 4
-                    </p>
-                </center>
             </div>
-        </div>
 
+            <div class="page">
+                <div class="subpage">
+                    <center>
+                        <img src="https://www.vnrseeds.com/wp-content/uploads/2018/12/vnr-logo-69x90.png" width="30px">
+                    </center>
+                    <div class="row">
+                        <div class="col text-left"><b>Version 1.5</b></div>
+                        <div class="col text-center"><b>Application Form</b></div>
+                        <div class="col ">&emsp;&nbsp;<b>VNR Seeds Pvt. Ltd.</b></div>
+                    </div>
+                    <hr style="margin-top: 0px; ">
+
+                    <div class="row" style="margin-bottom:0px; marign-top:50px;">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <p class="fw-bold mb-0">Other Benefit details (select whichever is applicable and
+                                    mention
+                                    the details):</p>
+                                <table class="table text-center">
+                                    <tr>
+                                        <th>Particulars</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                    <tr>
+                                        <td>DA @ Headquarter</td>
+                                        <td>Rs. {{ $Rec->DAHq ?? '' }}/- Per Day </td>
+                                    </tr>
+                                    <tr>
+                                        <td>DA outside Headquarter</td>
+                                        <td>Rs. {{ $Rec->DAOutHq ?? '' }}/- Per Day </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lodging eligibility</td>
+                                        <td>Rs. {{ $Rec->HotelElg ?? '' }}/- Per Day </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Medical Insurance</td>
+                                        <td>Rs. {{ $Rec->Medical ?? '' }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Group Term Insurance</td>
+                                        <td>Rs. {{ $Rec->GrpTermIns ?? '' }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Group Personal Accident Insurance</td>
+                                        <td>Rs. {{ $Rec->GrpPersonalAccIns ?? '' }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mobile Handset</td>
+                                        <td>Rs. {{ $Rec->MobileHandset ?? '' }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mobile Bill reimbursement</td>
+                                        <td>Rs. {{ $Rec->MobileBill ?? '' }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Travel eligibilities</td>
+                                        <td>{{ $Rec->TravelElg ?? '' }} </td>
+                                    </tr>
+                                </table>
+
+
+                            </div>
+
+                            <div class="col-lg-12">
+                                <p class="fw-bold mb-1">Any other benefit:</p>
+                                <p>{{ $OtherDetail->OtherBenifit ?? '' }}</p>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+                    <hr style="margin-bottom: 0px; margin-top:20px;">
+                    <center>
+                        <p class="row" style="margin-top: 0px;">
+                            Date of Release: 09 September 2019 &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;Released
+                            by
+                            HRD
+                            &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;Page 4
+                        </p>
+                    </center>
+                </div>
+            </div>
+        @endif
     </div>
 </body>
 <script>

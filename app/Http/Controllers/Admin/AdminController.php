@@ -468,6 +468,14 @@ class AdminController extends Controller
         $MRF->AllocatedDt = now();
         $MRF->LastUpdated = now();
         $query = $MRF->save();
+
+        $query1 = DB::table('jobpost')->where('MRFId', $request->MRFId)->update([
+            'CreatedBy' => $request->va,
+            'LastUpdated' => now(),
+            'UpdatedBy' => Auth::user()->id,
+        ]);
+
+
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {

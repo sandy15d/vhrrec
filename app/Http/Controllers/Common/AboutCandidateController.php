@@ -654,24 +654,54 @@ class AboutCandidateController extends Controller
 
     public function Candidate_Language_Save(Request $request)
     {
-       
-     
+
+
         $JCId = $request->JCId;
         $languagearray = $request->language_array;
 
 
-       $query = DB::table('jf_language')->where('JCId', $JCId)->delete();
-       foreach ($languagearray as $key => $value) {
-        $query1 = DB::table('jf_language')->insert(['JCId' => $JCId, 'language' => $value['language'], 'read' => $value['read'], 'write' => $value['write'], 'speak' => $value['speak']]);
-       }
+        $query = DB::table('jf_language')->where('JCId', $JCId)->delete();
+        foreach ($languagearray as $key => $value) {
+            $query1 = DB::table('jf_language')->insert(['JCId' => $JCId, 'language' => $value['language'], 'read' => $value['read'], 'write' => $value['write'], 'speak' => $value['speak']]);
+        }
         if (!$query1) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
 
             return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
-        }   
+        }
+    }
 
+    public function Candidate_VnrRef_Business(Request $request)
+    {
+        $JCId = $request->JCId;
+        $query = "SELECT * FROM vnr_business_ref WHERE JCId='$JCId'";
+        $result = DB::select($query);
+        if (!$result) {
+            return response()->json(['status' => 400, 'msg' => 'No Record Found..!!']);
+        } else {
 
-       
+            return response()->json(['status' => 200, 'data' => $result]);
+        }
+    }
+    public function Candidate_VnrRef_Business_Save(Request $request)
+    {
+    }
+
+    public function Candidate_Other_Seed_Relation(Request $request)
+    {
+        $JCId = $request->JCId;
+        $query = "SELECT * FROM relation_other_seed_cmp WHERE JCId='$JCId'";
+        $result = DB::select($query);
+        if (!$result) {
+            return response()->json(['status' => 400, 'msg' => 'No Record Found..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'data' => $result]);
+        }
+    }
+
+    public function Candidate_Other_Seed_Relation_Save(Request $request)
+    {
     }
 }

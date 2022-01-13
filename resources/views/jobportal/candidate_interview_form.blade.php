@@ -53,6 +53,7 @@ $Docs = DB::table('jf_docs')
 @endphp
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -79,6 +80,7 @@ $Docs = DB::table('jf_docs')
 
     </style>
 </head>
+
 <body>
     <div class="wrapper">
         <div class="page-content">
@@ -145,18 +147,19 @@ $Docs = DB::table('jf_docs')
                                                 <strong>Other</strong></a>
                                         </li>
 
-                                        @if ($Rec->Professional == 'P')
-                                            <li class="nav-item">
-                                                <a class="nav-link inactive done" href="#document">
-                                                    <strong>Documents</strong></a>
-                                            </li>
-                                        @endif
+
+                                        <li class="nav-item">
+                                            <a class="nav-link inactive done" href="#document">
+                                                <strong>Documents</strong></a>
+                                        </li>
+
                                         <li class="nav-item">
                                             <a class="nav-link inactive active" href="#final"> <strong>Final
                                                     Submit</strong></a>
                                         </li>
                                     </ul>
                                     <div class="tab-content">
+
                                         <div id="personal" class="tab-pane" role="tabpanel"
                                             aria-labelledby="step-1"
                                             style="position: static; left: auto; width: 1019px; display: none;">
@@ -435,7 +438,8 @@ $Docs = DB::table('jf_docs')
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <hr>
+                                                            <hr class="mt-2"
+                                                                style="border-top: 3px dotted #2d0eb3;background-color: transparent;" />
 
                                                             <div class="row">
                                                                 <div class="col-md-12">
@@ -510,7 +514,8 @@ $Docs = DB::table('jf_docs')
                                                                     </div>
 
                                                                 </div>
-                                                                <p><input type="checkbox" name="AddChk" id="AddChk">
+                                                                <p><input type="checkbox" name="AddChk" id="AddChk"
+                                                                        onchange="ticksameadd()">
                                                                     Tick if your
                                                                     Present address and Permanent address are the
                                                                     same
@@ -1175,9 +1180,9 @@ $Docs = DB::table('jf_docs')
                                                             <div class="form-check form-check-inline">
                                                                 <input class="form-check-input" type="radio"
                                                                     name="ProfCheck" id="Fresher" value="F"
+                                                                    onclick="showProFromOrNot('fres')"
                                                                     {{ $Rec->Professional == 'F' ? 'checked' : '' }}>
-                                                                <label class="form-check-label" for="Fresher"
-                                                                    onclick="showProFromOrNot('fres')"> I am
+                                                                <label class="form-check-label" for="Fresher"> I am
                                                                     a
                                                                     Fresher</label>
                                                             </div>
@@ -1275,7 +1280,8 @@ $Docs = DB::table('jf_docs')
                                                                     </div>
                                                                 </div>
                                                             </div>
-
+                                                            <hr class="mt-2"
+                                                                style="border-top: 3px dotted #2d0eb3;background-color: transparent;" />
                                                             <div class="row">
                                                                 <p class="fw-bold mt-2">Present Job
                                                                     Responsibility:
@@ -1357,7 +1363,8 @@ $Docs = DB::table('jf_docs')
                                                                     </div>
                                                                 </div>
                                                             </div>
-
+                                                            <hr class="mt-2"
+                                                                style="border-top: 3px dotted #2d0eb3;background-color: transparent;" />
                                                             <div class="row">
                                                                 <p class="fw-bold mt-2">Business Turnover
                                                                     Details:
@@ -1496,7 +1503,8 @@ $Docs = DB::table('jf_docs')
                                                                     </div>
                                                                 </div>
                                                             </div>
-
+                                                            <hr class="mt-2"
+                                                                style="border-top: 3px dotted #2d0eb3;background-color: transparent;" />
                                                             <div class="row">
                                                                 <p class="fw-bold mt-2">Company Vehicle Policy
                                                                     (select whichever is applicable to you):
@@ -1759,7 +1767,8 @@ $Docs = DB::table('jf_docs')
                                                                     </div>
                                                                 </div>
                                                             </div>
-
+                                                            <hr class="mt-2"
+                                                                style="border-top: 3px dotted #2d0eb3;background-color: transparent;" />
                                                             <div class="row">
                                                                 <div class="col-lg-12">
                                                                     <p class="fw-bold mt-3">Other Benefit details
@@ -1838,7 +1847,7 @@ $Docs = DB::table('jf_docs')
                                                                                 </div>
                                                                             </div>
                                                                             <div class="form-group row">
-                                                                               {{--  <label class="col-form-label col-md-2">
+                                                                                {{-- <label class="col-form-label col-md-2">
                                                                                     <input type="checkbox"
                                                                                         name="PhoneChk" id="PhoneChk"
                                                                                         class="otherbenefit"
@@ -1887,7 +1896,7 @@ $Docs = DB::table('jf_docs')
                                                                             </div>
 
                                                                             <div class="form-group row">
-                                                                              
+
                                                                                 <label class="col-form-label col-md-2">
                                                                                     <input type="checkbox"
                                                                                         name="GrpAccChk" id="GrpAccChk"
@@ -1968,7 +1977,7 @@ $Docs = DB::table('jf_docs')
                                                                                 </div>
                                                                             </div>
                                                                             <div class="form-group row">
-                                                                           
+
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -1988,7 +1997,8 @@ $Docs = DB::table('jf_docs')
                                                                     </div>
                                                                 </div>
                                                             </div>
-
+                                                            <hr class="mt-2"
+                                                                style="border-top: 3px dotted #2d0eb3;background-color: transparent;" />
                                                             <div class="row">
                                                                 <div class="col-lg-12">
 
@@ -2015,7 +2025,8 @@ $Docs = DB::table('jf_docs')
                                                                     </div>
                                                                 </div>
                                                             </div>
-
+                                                            <hr class="mt-2"
+                                                                style="border-top: 3px dotted #2d0eb3;background-color: transparent;" />
                                                             <div class="row">
                                                                 <p class="fw-bold mt-3">Previous Employement
                                                                     Records
@@ -2091,6 +2102,8 @@ $Docs = DB::table('jf_docs')
                                                                         class="btn btn-warning btn-sm">
                                                                 </div>
                                                             </div>
+                                                            <hr class="mt-2"
+                                                                style="border-top: 3px dotted #2d0eb3;background-color: transparent;" />
                                                         </div>
 
                                                         <div class="row" id="training_div">
@@ -2352,197 +2365,446 @@ $Docs = DB::table('jf_docs')
                                             <form action="{{ route('SaveOther') }}" method="POST" id="OtherForm">
                                                 @if ($Rec->Professional == 'P')
                                                     <div class="row">
-                                                        <p class="fw-bold mb-3">Please give reference who had
-                                                            worked
-                                                            with you
-                                                            in the previous organization: </p>
-                                                        <div class="table-responsive">
+                                                        <div class="col-lg-12">
+                                                            <p class="fw-bold mb-3">Please give reference who had
+                                                                worked
+                                                                with you
+                                                                in the previous organization: </p>
+                                                            <div class="table-responsive">
+                                                                <table class="table table-bordered">
+                                                                    <thead class="text-center">
+                                                                        <tr>
+                                                                            <td>Name</td>
+                                                                            <td>Name of Company</td>
+                                                                            <td>Designation</td>
+                                                                            <td>Email Id</td>
+                                                                            <td>Contact No</td>
+                                                                            <td></td>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="PreOrgRefData">
+                                                                        <tr>
+                                                                            <td>
+                                                                                <input type="text" name="PreOrgName[]"
+                                                                                    id="PreOrgName1"
+                                                                                    class="form-control form-control-sm reqinp_other">
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="text"
+                                                                                    name="PreOrgCompany[]"
+                                                                                    id="PreOrgCompany1"
+                                                                                    class="form-control form-control-sm reqinp_other">
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="text"
+                                                                                    name="PreOrgDesignation[]"
+                                                                                    id="PreOrgDesignation1"
+                                                                                    class="form-control form-control-sm reqinp_other">
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="text" name="PreOrgEmail[]"
+                                                                                    id="PreOrgEmail1"
+                                                                                    class="form-control form-control-sm reqinp_other">
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="text"
+                                                                                    name="PreOrgContact[]"
+                                                                                    id="PreOrgContact1"
+                                                                                    class="form-control form-control-sm reqinp_other">
+                                                                            </td>
+
+                                                                            <td>
+                                                                                <div class="d-flex order-actions"><a
+                                                                                        href="javascript:;"
+                                                                                        class="ms-3"
+                                                                                        id="removePreOrgRef"><i
+                                                                                            class="bx bxs-trash text-danger"></i></a>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                                <input type="button" value="Add" id="addPreOrgRef"
+                                                                    class="btn btn-warning btn-sm">
+                                                            </div>
+                                                        </div>
+                                                        <hr class="mt-2"
+                                                            style="border-top: 3px dotted #2d0eb3;background-color: transparent;" />
+                                                    </div>
+                                                @endif
+
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <p class="fw-bold mt-3">Do you have any acquaintances or
+                                                            relatives working with VNR Group Companies?</p>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="AcqChk"
+                                                                id="AcqYes" value="Y" onclick="showAcqOrNot('Y')"
+                                                                {{ $Rec->VNR_Acq == 'Y' ? 'checked' : '' }}>
+                                                            <label class="form-check-label" for="AcqYes">Yes</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="AcqChk"
+                                                                id="AcqNo" value="N"
+                                                                {{ $Rec->VNR_Acq == 'N' ? 'checked' : '' }}
+                                                                onclick="showAcqOrNot('N')">
+                                                            <label class="form-check-label" for="AcqNo"> No</label>
+                                                        </div>
+                                                        <div class="table-responsive {{ $Rec->VNR_Acq == 'N' ? 'd-none' : '' }}"
+                                                            id="AcqDiv">
                                                             <table class="table table-bordered">
                                                                 <thead class="text-center">
                                                                     <tr>
                                                                         <td>Name</td>
-                                                                        <td>Name of Company</td>
+                                                                        <td>Mobile No</td>
+                                                                        <td>Email</td>
+                                                                        <td>VNR Group <br>Company Name</td>
                                                                         <td>Designation</td>
-                                                                        <td>Email Id</td>
-                                                                        <td>Contact No</td>
+                                                                        <td>Location</td>
+                                                                        <td>Your Relationship <br>with person mentioned
+                                                                        </td>
                                                                         <td></td>
                                                                     </tr>
                                                                 </thead>
-                                                                <tbody id="PreOrgRefData">
+                                                                <tbody id="VNRRefData">
                                                                     <tr>
                                                                         <td>
-                                                                            <input type="text" name="PreOrgName[]"
-                                                                                id="PreOrgName1"
-                                                                                class="form-control form-control-sm reqinp_other">
+                                                                            <input type="text" name="VnrRefName[]"
+                                                                                id="VnrRefName1"
+                                                                                class="form-control form-control-sm">
                                                                         </td>
                                                                         <td>
-                                                                            <input type="text" name="PreOrgCompany[]"
-                                                                                id="PreOrgCompany1"
-                                                                                class="form-control form-control-sm reqinp_other">
+                                                                            <input type="text" name="VnrRefContact[]"
+                                                                                id="VnrRefContact1"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
+
+                                                                        <td>
+                                                                            <input type="text" name="VnrRefEmail[]"
+                                                                                id="VnrRefEmail1"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
+                                                                        <td>
+                                                                            <select name="VnrRefCompany[]"
+                                                                                id="VnrRefCompany1"
+                                                                                class="form-select form-select-sm"
+                                                                                onchange="GetOtherCompany(1);">
+                                                                                <option value="">Select</option>
+                                                                                <option value="VNR Seeds Pvt. Ltd.">VNR
+                                                                                    Seeds Pvt. Ltd.</option>
+                                                                                <option value="VNR Nursery Pvt. Ltd.">
+                                                                                    VNR Nursery Pvt. Ltd.</option>
+                                                                                <option value="Other">Other</option>
+                                                                            </select>
+                                                                            <br>
+                                                                            <input type="text" name="OtherCompany[]"
+                                                                                id="OtherCompany1"
+                                                                                class="d-none form-control form-control-sm"
+                                                                                placeholder="Other Company Name">
                                                                         </td>
                                                                         <td>
                                                                             <input type="text"
-                                                                                name="PreOrgDesignation[]"
-                                                                                id="PreOrgDesignation1"
-                                                                                class="form-control form-control-sm reqinp_other">
+                                                                                name="VnrRefDesignation[]"
+                                                                                id="VnrRefDesignation1"
+                                                                                class="form-control form-control-sm">
                                                                         </td>
                                                                         <td>
-                                                                            <input type="text" name="PreOrgEmail[]"
-                                                                                id="PreOrgEmail1"
-                                                                                class="form-control form-control-sm reqinp_other">
+                                                                            <input type="text" name="VnrRefLocation[]"
+                                                                                id="VnrRefLocation1"
+                                                                                class="form-control form-control-sm">
                                                                         </td>
                                                                         <td>
-                                                                            <input type="text" name="PreOrgContact[]"
-                                                                                id="PreOrgContact1"
-                                                                                class="form-control form-control-sm reqinp_other">
+                                                                            <input type="text"
+                                                                                name="VnrRefRelWithPerson[]"
+                                                                                id="VnrRefRelWithPerson1"
+                                                                                class="form-control form-control-sm">
                                                                         </td>
+
 
                                                                         <td>
                                                                             <div class="d-flex order-actions"><a
                                                                                     href="javascript:;"
                                                                                     class="ms-3"
-                                                                                    id="removePreOrgRef"><i
+                                                                                    id="removeVnrRef"><i
                                                                                         class="bx bxs-trash text-danger"></i></a>
                                                                             </div>
                                                                         </td>
                                                                     </tr>
                                                                 </tbody>
                                                             </table>
-                                                            <input type="button" value="Add Reference" id="addPreOrgRef"
+                                                            <input type="button" value="Add" id="addVnrRef"
                                                                 class="btn btn-warning btn-sm">
+
                                                         </div>
+                                                        <hr class="mt-2"
+                                                            style="border-top: 3px dotted #2d0eb3;background-color: transparent;" />
                                                     </div>
-                                                @endif
 
-                                                <div class="row mb-2">
-                                                    <p class="fw-bold mt-3 mb-0">Acquaintances/Relatives: </p>
-                                                    <p>Do you have any acquaintances or relatives associated with
-                                                        the
-                                                        VNR
-                                                        Group Companies?</p>
-                                                    <div class="table-responsive">
-                                                        <table class="table table-bordered">
-                                                            <thead class="text-center">
-                                                                <tr>
-                                                                    <td>Name</td>
-                                                                    <td>Designation</td>
-                                                                    <td>Relation</td>
-                                                                    <td>Email</td>
-                                                                    <td>Contact No</td>
-                                                                    <td></td>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody id="VNRRefData">
-                                                                <tr>
-                                                                    <td>
-                                                                        <input type="text" name="VnrRefName[]"
-                                                                            id="VnrRefName1"
-                                                                            class="form-control form-control-sm">
-                                                                    </td>
-                                                                    <td>
-                                                                        <input type="text" name="VnrRefDesignation[]"
-                                                                            id="VnrRefDesignation1"
-                                                                            class="form-control form-control-sm">
-                                                                    </td>
-                                                                    <td>
-                                                                        <input type="text" name="VnrRefRelWithPerson[]"
-                                                                            id="VnrRefRelWithPerson1"
-                                                                            class="form-control form-control-sm">
-                                                                    </td>
-                                                                    <td>
-                                                                        <input type="text" name="VnrRefEmail[]"
-                                                                            id="VnrRefEmail1"
-                                                                            class="form-control form-control-sm">
-                                                                    </td>
-                                                                    <td>
-                                                                        <input type="text" name="VnrRefContact[]"
-                                                                            id="VnrRefContact1"
-                                                                            class="form-control form-control-sm">
-                                                                    </td>
+                                                    <div class="col-lg-12">
+                                                        <p class="fw-bold mt-3">Do you have any acquaintances or
+                                                            relatives associated with VNR as business associates (like
+                                                            Dealer, Distributor, Retailer, Organizer, Vendor etc.)?</p>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="AcqChkBusiness" id="Acq_Business_Yes" value="Y"
+                                                                onclick="showAcqBusiness('Y')"
+                                                                {{ $Rec->VNR_Acq_Business == 'Y' ? 'checked' : '' }}>
+                                                            <label class="form-check-label"
+                                                                for="Acq_Business_Yes">Yes</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="AcqChkBusiness" id="Acq_Business_No" value="N"
+                                                                {{ $Rec->VNR_Acq_Business == 'N' ? 'checked' : '' }}
+                                                                onclick="showAcqBusiness('N')">
+                                                            <label class="form-check-label" for="Acq_Business_No">
+                                                                No</label>
+                                                        </div>
+                                                        <div class="table-responsive {{ $Rec->VNR_Acq_Business == 'N' ? 'd-none' : '' }}"
+                                                            id="AcqBusinessDiv">
+                                                            <table class="table table-bordered">
+                                                                <thead class="text-center">
+                                                                    <tr>
+                                                                        <td>Name</td>
+                                                                        <td>Mobile No</td>
+                                                                        <td>Email</td>
+                                                                        <td>Business relation with <br>VNR</td>
+                                                                        <td>Location of Business / <br>acquaintances
+                                                                        </td>
 
-                                                                    <td>
+                                                                        <td>Your Relationship <br>with person mentioned
+                                                                        </td>
+                                                                        <td></td>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="VNR_Business_AcqData">
+                                                                    <tr>
+                                                                        <td>
+                                                                            <input type="text"
+                                                                                name="VnrRefBusiness_Name[]"
+                                                                                id="VnrRefBusiness_Name1"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text"
+                                                                                name="VnrRefBusiness_Contact[]"
+                                                                                id="VnrRefBusiness_Contact1"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
 
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                        <input type="button" value="Add Reference" id="addVnrRef"
+                                                                        <td>
+                                                                            <input type="text"
+                                                                                name="VnrRefBusiness_Email[]"
+                                                                                id="VnrRefBusiness_Email1"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
+                                                                        <td>
+                                                                            <select name="VnrRefBusinessRelation[]"
+                                                                                id="VnrRefBusinessRelation1"
+                                                                                class="form-select form-select-sm">
+                                                                                <option value="">Select</option>
+                                                                                <option value="Dealer">Dealer</option>
+                                                                                <option value="Distributor">Distributor
+                                                                                </option>
+                                                                                <option value="Retailer">Retailer
+                                                                                </option>
+                                                                                <option value="Organizer">Organizer
+                                                                                </option>
+                                                                                <option value="Vendor">Vendor</option>
+
+                                                                            </select>
+                                                                            <br>
+                                                                        </td>
+
+                                                                        <td>
+                                                                            <input type="text"
+                                                                                name="VnrRefBusiness_Location[]"
+                                                                                id="VnrRefBusiness_Location1"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text"
+                                                                                name="VnrRefBusiness_RelWithPerson[]"
+                                                                                id="VnrRefBusiness_RelWithPerson1"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
+
+
+                                                                        <td>
+                                                                            <div class="d-flex order-actions"><a
+                                                                                    href="javascript:;"
+                                                                                    class="ms-3"
+                                                                                    id="removeVnrRef_Business"><i
+                                                                                        class="bx bxs-trash text-danger"></i></a>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                            <input type="button" value="Add" id="addVnrRef_Business"
+                                                                class="btn btn-warning btn-sm">
+
+                                                        </div>
+                                                        <hr class="mt-2"
+                                                            style="border-top: 3px dotted #2d0eb3;background-color: transparent;" />
+                                                    </div>
+
+
+                                                    <div class="col-lg-12">
+                                                        <p class="fw-bold mt-3">Is any of your relatives or
+                                                            acquaintances is/are working or associated with any other
+                                                            Seed Company?</p>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="OtherSeedRelation" id="OtherSeedYes" value="Y"
+                                                                onclick="showOtherSeed('Y')"
+                                                                {{ $Rec->OtherSeedRelation == 'Y' ? 'checked' : '' }}>
+                                                            <label class="form-check-label"
+                                                                for="OtherSeedYes">Yes</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="OtherSeedRelation" id="OtherSeedNo" value="N"
+                                                                {{ $Rec->OtherSeedRelation == 'N' ? 'checked' : '' }}
+                                                                onclick="showOtherSeed('N')">
+                                                            <label class="form-check-label" for="OtherSeedNo">
+                                                                No</label>
+                                                        </div>
+                                                        <div class="table-responsive {{ $Rec->OtherSeedRelation == 'N' ? 'd-none' : '' }}"
+                                                            id="OtherSeedDiv">
+                                                            <table class="table table-bordered">
+                                                                <thead class="text-center">
+                                                                    <tr>
+                                                                        <td>Name</td>
+                                                                        <td>Mobile No</td>
+                                                                        <td>Email</td>
+                                                                        <td>Company Name</td>
+                                                                        <td>Designation</td>
+                                                                        <td>Location </td>
+                                                                        <td>Your Relationship <br>with person mentioned
+                                                                        </td>
+                                                                        <td></td>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="OtherSeed">
+                                                                    <tr>
+                                                                        <td><input type="text" name="OtherSeedName[]"
+                                                                                id="OtherSeedName1"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
+                                                                        <td><input type="text" name="OtherSeedMobile[]"
+                                                                                id="OtherSeedMobile1"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
+                                                                        <td><input type="text" name="OtherSeedEMail[]"
+                                                                                id="OtherSeedEMail1"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
+                                                                        <td><input type="text" name="OtherSeedCompany[]"
+                                                                                id="OtherSeedCompany1"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
+                                                                        <td><input type="text"
+                                                                                name="OtherSeedDesignation[]"
+                                                                                id="OtherSeedDesignation1"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
+                                                                        <td><input type="text"
+                                                                                name="OtherSeedLocation[]"
+                                                                                id="OtherSeedLocation1"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
+                                                                        <td><input type="text"
+                                                                                name="OtherSeedRelation[]"
+                                                                                id="OtherSeedRelation1"
+                                                                                class="form-control form-control-sm">
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="d-flex order-actions"><a
+                                                                                    href="javascript:;"
+                                                                                    class="ms-3"
+                                                                                    id="removeOtherSeed"><i
+                                                                                        class="bx bxs-trash text-danger"></i></a>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                            <input type="button" value="Add" id="addOtherSeed"
+                                                                class="btn btn-warning btn-sm">
+
+                                                        </div>
+                                                        <hr class="mt-2"
+                                                            style="border-top: 3px dotted #2d0eb3;background-color: transparent;" />
+                                                    </div>
+
+                                                    <div class="col-7 mt-4">
+                                                        <p class="fw-bold">Language Proficiency</p>
+                                                        <div class="table-responsive">
+                                                            <table class="table table-bordered text-center"
+                                                                style="vertical-align: middle">
+                                                                <thead class="text-center">
+                                                                    <tr>
+                                                                        <td>Language</td>
+                                                                        <td>Reading</td>
+                                                                        <td>Writing</td>
+                                                                        <td>Speaking</td>
+                                                                        <td style="width:30px;"></td>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="LanguageData">
+                                                                    <tr>
+                                                                        <td>
+                                                                            <input type="text" id="Language1"
+                                                                                class="form-control form-control-sm"
+                                                                                value="Hindi" readonly>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="checkbox" id="Read1" value="0">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="checkbox" id="Write1"
+                                                                                value="0">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="checkbox" id="Speak1"
+                                                                                value="0">
+                                                                        </td>
+                                                                        <td></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <input type="text" id="Language2"
+                                                                                class="form-control form-control-sm"
+                                                                                value="English" readonly>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="checkbox" id="Read2" value="0">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="checkbox" id="Write2"
+                                                                                value="0">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="checkbox" id="Speak2"
+                                                                                value="0">
+                                                                        </td>
+                                                                        <td></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <input type="button" value="Add Language" id="addLanguage"
                                                             class="btn btn-warning btn-sm">
-
-
-
-                                                        <div class="col-7 mt-4">
-                                                            <p class="fw-bold">Language Proficiency</p>
-                                                            <div class="table-responsive">
-                                                                <table class="table table-bordered text-center"
-                                                                    style="vertical-align: middle">
-                                                                    <thead class="text-center">
-                                                                        <tr>
-                                                                            <td>Language</td>
-                                                                            <td>Reading</td>
-                                                                            <td>Writing</td>
-                                                                            <td>Speaking</td>
-                                                                            <td style="width:30px;"></td>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody id="LanguageData">
-                                                                        <tr>
-                                                                            <td>
-                                                                                <input type="text" id="Language1"
-                                                                                    class="form-control form-control-sm"
-                                                                                    value="Hindi" readonly>
-                                                                            </td>
-                                                                            <td>
-                                                                                <input type="checkbox" id="Read1"
-                                                                                    value="0">
-                                                                            </td>
-                                                                            <td>
-                                                                                <input type="checkbox" id="Write1"
-                                                                                    value="0">
-                                                                            </td>
-                                                                            <td>
-                                                                                <input type="checkbox" id="Speak1"
-                                                                                    value="0">
-                                                                            </td>
-                                                                            <td></td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td>
-                                                                                <input type="text" id="Language2"
-                                                                                    class="form-control form-control-sm"
-                                                                                    value="English" readonly>
-                                                                            </td>
-                                                                            <td>
-                                                                                <input type="checkbox" id="Read2"
-                                                                                    value="0">
-                                                                            </td>
-                                                                            <td>
-                                                                                <input type="checkbox" id="Write2"
-                                                                                    value="0">
-                                                                            </td>
-                                                                            <td>
-                                                                                <input type="checkbox" id="Speak2"
-                                                                                    value="0">
-                                                                            </td>
-                                                                            <td></td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                            <input type="button" value="Add Language" id="addLanguage"
-                                                                class="btn btn-warning btn-sm">
-                                                        </div>
-
-
-                                                        <div class="submit-section text-center">
-                                                            <button class="btn btn-primary submit-btn"
-                                                                id="save_other">Save
-                                                                Details</button>
-                                                        </div>
                                                     </div>
+
+
+                                                    <div class="submit-section text-center">
+                                                        <button class="btn btn-primary submit-btn" id="save_other">Save
+                                                            Details</button>
+                                                    </div>
+
                                                 </div>
-
-
                                             </form>
                                         </div>
 
@@ -2556,93 +2818,94 @@ $Docs = DB::table('jf_docs')
                                                 <div class="col-lg-9 table-responsive">
                                                     <table class="table table-bordered">
                                                         <thead class="text-center">
-                                                            <th>S.No</th>
+
                                                             <th>Document Name</th>
                                                             <th>Upload Document</th>
                                                             <th>View</th>
                                                         </thead>
                                                         <tbody>
+                                                            @if ($Rec->Professional == 'P')
+                                                                <tr>
+                                                                    <td style="width: 25%">Offer or appointment letter
+                                                                        (previous company)</td>
+                                                                    <td style="width: 60%">
+                                                                        <input type="file" name="OfferLtr" id="OfferLtr"
+                                                                            class="form-control form-control-sm d-inline"
+                                                                            style="width: 50%" accept="application/pdf">
+                                                                        <button class="btn btn-warning btn-sm d-inline"
+                                                                            id="OfferLtrUpload">Upload</button>
+                                                                    </td>
+                                                                    <td style="width: 10%; text-align:center">
+                                                                        @if ($Docs != null && $Docs->OfferLtr != null)
+                                                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->OfferLtr }}"
+                                                                                target="_blank"
+                                                                                class="btn btn-primary btn-sm">View</a>
+                                                                        @endif
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+
+                                                                    <td>Resignation or Relieving Letter (previous
+                                                                        company)
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="file" name="RelievingLtr"
+                                                                            id="RelievingLtr"
+                                                                            class="form-control form-control-sm d-inline"
+                                                                            style="width: 50%" accept="application/pdf">
+                                                                        <button class="btn btn-warning btn-sm d-inline"
+                                                                            id="RelievingLtrUpload">Upload</button>
+                                                                    </td>
+                                                                    <td style="width: 10%; text-align:center">
+                                                                        @if ($Docs != null && $Docs->RelievingLtr != null)
+                                                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->RelievingLtr }}"
+                                                                                target="_blank"
+                                                                                class="btn btn-primary btn-sm">View</a>
+                                                                        @endif
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Last drawn salary pay slip (previous company)
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="file" name="SalarySlip"
+                                                                            id="SalarySlip"
+                                                                            class="form-control form-control-sm d-inline"
+                                                                            style="width: 50%" accept="application/pdf">
+                                                                        <button class="btn btn-warning btn-sm d-inline"
+                                                                            id="SalarySlipUpload">Upload</button>
+                                                                    </td>
+                                                                    <td style="width: 10%; text-align:center">
+                                                                        @if ($Docs != null && $Docs->SalarySlip != null)
+                                                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->SalarySlip }}"
+                                                                                target="_blank"
+                                                                                class="btn btn-primary btn-sm">View</a>
+                                                                        @endif
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+
+                                                                    <td>Increment or appraisal letter with revised CTC
+                                                                        details</td>
+                                                                    <td>
+                                                                        <input type="file" name="AppraisalLtr"
+                                                                            id="AppraisalLtr"
+                                                                            class="form-control form-control-sm d-inline"
+                                                                            style="width: 50%" accept="application/pdf">
+                                                                        <button class="btn btn-warning btn-sm d-inline"
+                                                                            id="AppraisalLtrUpload">Upload</button>
+                                                                    </td>
+                                                                    <td style="width: 10%; text-align:center">
+                                                                        @if ($Docs != null && $Docs->AppraisalLtr != null)
+                                                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->AppraisalLtr }}"
+                                                                                target="_blank"
+                                                                                class="btn btn-primary btn-sm">View</a>
+                                                                        @endif
+                                                                    </td>
+                                                                </tr>
+                                                            @endif
                                                             <tr>
-                                                                <td style="width: 5%">1</td>
-                                                                <td style="width: 25%">Offer or appointment letter
-                                                                    (previous company)</td>
-                                                                <td style="width: 60%">
-                                                                    <input type="file" name="OfferLtr" id="OfferLtr"
-                                                                        class="form-control form-control-sm d-inline"
-                                                                        style="width: 50%" accept="application/pdf">
-                                                                    <button class="btn btn-warning btn-sm d-inline"
-                                                                        id="OfferLtrUpload">Upload</button>
-                                                                </td>
-                                                                <td style="width: 10%; text-align:center">
-                                                                    @if ($Docs != null && $Docs->OfferLtr != null)
-                                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->OfferLtr }}"
-                                                                            target="_blank"
-                                                                            class="btn btn-primary btn-sm">View</a>
-                                                                    @endif
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>2</td>
-                                                                <td>Resignation or Relieving Letter (previous
-                                                                    company)
-                                                                </td>
-                                                                <td>
-                                                                    <input type="file" name="RelievingLtr"
-                                                                        id="RelievingLtr"
-                                                                        class="form-control form-control-sm d-inline"
-                                                                        style="width: 50%" accept="application/pdf">
-                                                                    <button class="btn btn-warning btn-sm d-inline"
-                                                                        id="RelievingLtrUpload">Upload</button>
-                                                                </td>
-                                                                <td style="width: 10%; text-align:center">
-                                                                    @if ($Docs != null && $Docs->RelievingLtr != null)
-                                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->RelievingLtr }}"
-                                                                            target="_blank"
-                                                                            class="btn btn-primary btn-sm">View</a>
-                                                                    @endif
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>3</td>
-                                                                <td>Last drawn salary pay slip (previous company)
-                                                                </td>
-                                                                <td>
-                                                                    <input type="file" name="SalarySlip" id="SalarySlip"
-                                                                        class="form-control form-control-sm d-inline"
-                                                                        style="width: 50%" accept="application/pdf">
-                                                                    <button class="btn btn-warning btn-sm d-inline"
-                                                                        id="SalarySlipUpload">Upload</button>
-                                                                </td>
-                                                                <td style="width: 10%; text-align:center">
-                                                                    @if ($Docs != null && $Docs->SalarySlip != null)
-                                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->SalarySlip }}"
-                                                                            target="_blank"
-                                                                            class="btn btn-primary btn-sm">View</a>
-                                                                    @endif
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>4</td>
-                                                                <td>Increment or appraisal letter with revised CTC
-                                                                    details</td>
-                                                                <td>
-                                                                    <input type="file" name="AppraisalLtr"
-                                                                        id="AppraisalLtr"
-                                                                        class="form-control form-control-sm d-inline"
-                                                                        style="width: 50%" accept="application/pdf">
-                                                                    <button class="btn btn-warning btn-sm d-inline"
-                                                                        id="AppraisalLtrUpload">Upload</button>
-                                                                </td>
-                                                                <td style="width: 10%; text-align:center">
-                                                                    @if ($Docs != null && $Docs->AppraisalLtr != null)
-                                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->AppraisalLtr }}"
-                                                                            target="_blank"
-                                                                            class="btn btn-primary btn-sm">View</a>
-                                                                    @endif
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>5</td>
+
                                                                 <td>COVID Vaccine Certificate (Final Certificate)
                                                                 </td>
                                                                 <td>
@@ -2731,7 +2994,7 @@ $Docs = DB::table('jf_docs')
         </div>
     </div>
     <script src="{{ URL::to('/') }}/assets/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
+    {{-- <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script> --}}
     <script src="{{ URL::to('/') }}/assets/plugins/select2/js/select2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
@@ -2739,11 +3002,11 @@ $Docs = DB::table('jf_docs')
     <script src="{{ URL::to('/') }}/assets/plugins/smart-wizard/js/jquery.smartWizard.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Smart Wizard
             $('#smartwizard').smartWizard({
                 selected: 0,
                 theme: 'default',
                 autoAdjustHeight: true,
+                justified: true,
                 backButtonSupport: true,
                 transition: {
                     animation: 'slide-horizontal', // Effect on navigation, none/fade/slide-horizontal/slide-vertical/slide-swing
@@ -2770,6 +3033,8 @@ $Docs = DB::table('jf_docs')
             getWorkExp();
             getPreOrgRef();
             getVnrRef();
+            getVnrRef_Business();
+            getOtherSeed();
             getEducationList();
             getAllSP();
             getCollegeList();
@@ -2782,18 +3047,20 @@ $Docs = DB::table('jf_docs')
                     img1.src = URL.createObjectURL(file);
                 }
             });
-
+            $(".tab-content").height('auto');
 
         });
     </script>
-    <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
+    {{-- <script src="{{ URL::to('/') }}/assets/js/app.js"></script> --}}
     <script>
         var MemberCount = 1;
         var EducationCount = 6;
         var WorkExpCount = 1;
         var TrainingCount = 1;
         var RefCount = 1;
-        var VRefCount = 0;
+        var VRefCount = 1;
+        var VRef_Business_Count = 1;
+        var OtherSeedCount = 1;
         var LanguageCount = 2;
         var EducationList = '';
         var SpecializationList = '';
@@ -2966,18 +3233,18 @@ $Docs = DB::table('jf_docs')
                 },
                 dataType: "json",
                 success: function(data) {
+                    if (data.status == 200) {
+                        TrainingCount = data.data.length;
+                        for (var i = 1; i <= TrainingCount; i++) {
+                            if (i >= 2) {
+                                Training(i);
+                            }
+                            $('#TrainingNature' + i).val(data.data[i - 1].training);
+                            $('#TrainingOrganization' + i).val(data.data[i - 1].organization);
+                            $('#TrainingFromDate' + i).val(data.data[i - 1].from);
+                            $('#TrainingToDate' + i).val(data.data[i - 1].to);
 
-                    TrainingCount = data.data.length;
-                    for (var i = 1; i <= TrainingCount; i++) {
-                        if (i >= 2) {
-                            Training(i);
                         }
-                        $('#TrainingNature' + i).val(data.data[i - 1].training);
-                        $('#TrainingOrganization' + i).val(data.data[i - 1].organization);
-                        $('#TrainingFromDate' + i).val(data.data[i - 1].from);
-                        $('#TrainingToDate' + i).val(data.data[i - 1].to);
-
-
                     }
                 }
             });
@@ -3199,19 +3466,21 @@ $Docs = DB::table('jf_docs')
                 },
                 dataType: "json",
                 success: function(data) {
-                    $('#Edu_JCId').val($('#JCId').val());
-                    EducationCount = data.data.length;
-                    for (var i = 1; i <= EducationCount; i++) {
-                        if (i >= 7) {
-                            Qualification(i);
-                        }
-                        $('#Qualification' + i).val(data.data[i - 1].Qualification);
-                        $('#Course' + i).val(data.data[i - 1].Course);
-                        $('#Specialization' + i).val(data.data[i - 1].Specialization);
-                        $('#Collage' + i).val(data.data[i - 1].Institute);
-                        $('#PassingYear' + i).val(data.data[i - 1].YearOfPassing);
-                        $('#Percentage' + i).val(data.data[i - 1].CGPA);
+                    if (data.status == 200) {
+                        $('#Edu_JCId').val($('#JCId').val());
+                        EducationCount = data.data.length;
+                        for (var i = 1; i <= EducationCount; i++) {
+                            if (i >= 7) {
+                                Qualification(i);
+                            }
+                            $('#Qualification' + i).val(data.data[i - 1].Qualification);
+                            $('#Course' + i).val(data.data[i - 1].Course);
+                            $('#Specialization' + i).val(data.data[i - 1].Specialization);
+                            $('#Collage' + i).val(data.data[i - 1].Institute);
+                            $('#PassingYear' + i).val(data.data[i - 1].YearOfPassing);
+                            $('#Percentage' + i).val(data.data[i - 1].CGPA);
 
+                        }
                     }
                 }
             });
@@ -3227,18 +3496,20 @@ $Docs = DB::table('jf_docs')
                 },
                 dataType: "json",
                 success: function(data) {
-                    $('#Family_JCId').val($('#JCId').val());
-                    MemberCount = data.data.length;
-                    for (var i = 1; i <= MemberCount; i++) {
-                        if (i >= 3) {
-                            familymember(i);
-                        }
+                    if (data.status == 200) {
+                        $('#Family_JCId').val($('#JCId').val());
+                        MemberCount = data.data.length;
+                        for (var i = 1; i <= MemberCount; i++) {
+                            if (i >= 3) {
+                                familymember(i);
+                            }
 
-                        $('#Relation' + i).val(data.data[i - 1].relation);
-                        $('#RelationName' + i).val(data.data[i - 1].name);
-                        $('#RelationDOB' + i).val(data.data[i - 1].dob);
-                        $('#RelationQualification' + i).val(data.data[i - 1].qualification);
-                        $('#RelationOccupation' + i).val(data.data[i - 1].occupation);
+                            $('#Relation' + i).val(data.data[i - 1].relation);
+                            $('#RelationName' + i).val(data.data[i - 1].name);
+                            $('#RelationDOB' + i).val(data.data[i - 1].dob);
+                            $('#RelationQualification' + i).val(data.data[i - 1].qualification);
+                            $('#RelationOccupation' + i).val(data.data[i - 1].occupation);
+                        }
                     }
                 }
             });
@@ -3254,20 +3525,22 @@ $Docs = DB::table('jf_docs')
                 },
                 dataType: "json",
                 success: function(data) {
-                    $('#Work_JCId').val($('#JCId').val());
-                    WorkExpCount = data.data.length;
-                    for (var i = 1; i <= WorkExpCount; i++) {
-                        if (i >= 2) {
-                            WorkExperience(i);
-                        }
-                        $('#WorkExpCompany' + i).val(data.data[i - 1].company);
-                        $('#WorkExpDesignation' + i).val(data.data[i - 1].desgination);
-                        $('#WorkExpGrossMonthlySalary' + i).val(data.data[i - 1].gross_mon_sal);
-                        $('#WorkExpAnualCTC' + i).val(data.data[i - 1].annual_ctc);
-                        $('#WorkExpJobStartDate' + i).val(data.data[i - 1].job_start);
-                        $('#WorkExpJobEndDate' + i).val(data.data[i - 1].job_end);
-                        $('#WorkExpReasonForLeaving' + i).val(data.data[i - 1].reason_fr_leaving);
+                    if (data.status == 200) {
+                        $('#Work_JCId').val($('#JCId').val());
+                        WorkExpCount = data.data.length;
+                        for (var i = 1; i <= WorkExpCount; i++) {
+                            if (i >= 2) {
+                                WorkExperience(i);
+                            }
+                            $('#WorkExpCompany' + i).val(data.data[i - 1].company);
+                            $('#WorkExpDesignation' + i).val(data.data[i - 1].desgination);
+                            $('#WorkExpGrossMonthlySalary' + i).val(data.data[i - 1].gross_mon_sal);
+                            $('#WorkExpAnualCTC' + i).val(data.data[i - 1].annual_ctc);
+                            $('#WorkExpJobStartDate' + i).val(data.data[i - 1].job_start);
+                            $('#WorkExpJobEndDate' + i).val(data.data[i - 1].job_end);
+                            $('#WorkExpReasonForLeaving' + i).val(data.data[i - 1].reason_fr_leaving);
 
+                        }
                     }
                 }
             });
@@ -3288,7 +3561,7 @@ $Docs = DB::table('jf_docs')
         });
 
         function getPreOrgRef() {
-            $('#PreOrgRef_JCId').val($('#JCId').val());
+
             var JCId = $('#JCId').val();
             $.ajax({
                 url: "{{ route('Candidate_PreOrgRef') }}",
@@ -3298,17 +3571,18 @@ $Docs = DB::table('jf_docs')
                 },
                 dataType: "json",
                 success: function(data) {
-
-                    RefCount = data.data.length;
-                    for (var i = 1; i <= RefCount; i++) {
-                        if (i >= 2) {
-                            PreviousOrgReference(i);
+                    if (data.status == 200) {
+                        RefCount = data.data.length;
+                        for (var i = 1; i <= RefCount; i++) {
+                            if (i >= 2) {
+                                PreviousOrgReference(i);
+                            }
+                            $('#PreOrgName' + i).val(data.data[i - 1].name);
+                            $('#PreOrgCompany' + i).val(data.data[i - 1].company);
+                            $('#PreOrgDesignation' + i).val(data.data[i - 1].designation);
+                            $('#PreOrgEmail' + i).val(data.data[i - 1].email);
+                            $('#PreOrgContact' + i).val(data.data[i - 1].contact);
                         }
-                        $('#PreOrgName' + i).val(data.data[i - 1].name);
-                        $('#PreOrgCompany' + i).val(data.data[i - 1].company);
-                        $('#PreOrgDesignation' + i).val(data.data[i - 1].designation);
-                        $('#PreOrgEmail' + i).val(data.data[i - 1].email);
-                        $('#PreOrgContact' + i).val(data.data[i - 1].contact);
                     }
                 }
             });
@@ -3350,7 +3624,6 @@ $Docs = DB::table('jf_docs')
         });
 
         function getVnrRef() {
-
             $('#Vnr_JCId').val($('#JCId').val());
             var JCId = $('#JCId').val();
             $.ajax({
@@ -3361,19 +3634,24 @@ $Docs = DB::table('jf_docs')
                 },
                 dataType: "json",
                 success: function(data) {
-
-                    RefCount = data.data.length;
-                    for (var i = 1; i <= RefCount; i++) {
-                        if (i >= 2) {
-                            VNRReference(i);
+                    if (data.status == 200) {
+                        VRefCount = data.data.length;
+                        for (var i = 1; i <= VRefCount; i++) {
+                            if (i >= 2) {
+                                VNRReference(i);
+                            }
+                            $('#VnrRefName' + i).val(data.data[i - 1].name);
+                            $('#VnrRefRelWithPerson' + i).val(data.data[i - 1].rel_with_person);
+                            $('#VnrRefEmail' + i).val(data.data[i - 1].email);
+                            $('#VnrRefContact' + i).val(data.data[i - 1].contact);
+                            $('#VnrRefDesignation' + i).val(data.data[i - 1].designation);
+                            $('#VnrRefCompany' + i).val(data.data[i - 1].company);
+                            $('#OtherCompany' + i).val(data.data[i - 1].other_company);
+                            $('#VnrRefLocation' + i).val(data.data[i - 1].location);
+                            if(data.data[i - 1].company == 'Other'){
+                                $('#OtherCompany' + i).removeClass('d-none');
+                            }
                         }
-                        $('#VnrRefName' + i).val(data.data[i - 1].name);
-                        $('#VnrRefRelWithPerson' + i).val(data.data[i - 1].rel_with_person);
-                        $('#VnrRefEmail' + i).val(data.data[i - 1].email);
-                        $('#VnrRefContact' + i).val(data.data[i - 1].contact);
-                        $('#VnrRefDesignation' + i).val(data.data[i - 1].designation);
-
-                        VRefCount++;
                     }
                 }
             });
@@ -3384,15 +3662,23 @@ $Docs = DB::table('jf_docs')
             b += '<tr>';
             b += '<td>' + '<input type="text" name="VnrRefName[]" id="VnrRefName' + num +
                 '" class="form-control form-control-sm">' + '</td>' +
-                '<td>' + '<input type="text" name="VnrRefDesignation[]" id="VnrRefDesignation' + num +
-                '" class="form-control form-control-sm">' + '</td>' +
-                '<td>' + '<input type="text" name="VnrRefRelWithPerson[]" id="VnrRefRelWithPerson' + num +
+                '<td>' + '<input type="text" name="VnrRefContact[]" id="VnrRefContact' + num +
                 '" class="form-control form-control-sm">' + '</td>' +
                 '<td>' + '<input type="text" name="VnrRefEmail[]" id="VnrRefEmail' + num +
                 '" class="form-control form-control-sm">' + '</td>' +
-                '<td>' + '<input type="text" name="VnrRefContact[]" id="VnrRefContact' + num +
+                '<td>' + '<select name="VnrRefCompany[]" id="VnrRefCompany' + num +
+                '" class="form-select form-select-sm" onchange="GetOtherCompany(' + num + ')">' +
+                '<option value="">Select</option>' + '<option value="VNR Seeds Pvt. Ltd.">VNR Seeds Pvt. Ltd.</option>' +
+                '<option value="VNR Nursery Pvt. Ltd.">VNR Nursery Pvt. Ltd.</option>' +
+                '<option value="Other">Other</option>' +
+                '</select> <br> <input type="text" name="OtherCompany[]" id="OtherCompany' + num +
+                '" class="d-none form-control form-control-sm" placeholder="Enter Other Company Name">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefDesignation[]" id="VnrRefDesignation' + num +
                 '" class="form-control form-control-sm">' + '</td>' +
-
+                '<td>' + '<input type="text" name="VnrRefLocation[]" id="VnrRefLocation' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefRelWithPerson[]" id="VnrRefRelWithPerson' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
                 '<td>' +
                 '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removeVnrRef"><i class="bx bxs-trash text-danger"></i></a></div>' +
                 '</td>';
@@ -3401,11 +3687,7 @@ $Docs = DB::table('jf_docs')
         } //VNRReference
 
         $(document).on('click', '#addVnrRef', function() {
-
-            debugger;
-            console.log(VRefCount);
             VRefCount++;
-            console.log(VRefCount);
             VNRReference(VRefCount);
             $(".tab-content").height('auto');
         });
@@ -3418,6 +3700,159 @@ $Docs = DB::table('jf_docs')
             }
         });
 
+        function getVnrRef_Business() {
+            $('#Vnr_JCId').val($('#JCId').val());
+            var JCId = $('#JCId').val();
+            $.ajax({
+                url: "{{ route('Candidate_VnrRef_Business') }}",
+                type: "POST",
+                data: {
+                    JCId: JCId
+                },
+                dataType: "json",
+                success: function(data) {
+                    if (data.status == 200) {
+                        VRef_Business_Count = data.data.length;
+                        for (var i = 1; i <= VRef_Business_Count; i++) {
+                            if (i >= 2) {
+                                VNRReference_Business(i);
+                            }
+                            $('#VnrRefBusiness_Name' + i).val(data.data[i - 1].Name);
+                            $('#VnrRefBusiness_Contact' + i).val(data.data[i - 1].Mobile);
+                            $('#VnrRefBusiness_Email' + i).val(data.data[i - 1].Email);
+                            $('#VnrRefBusinessRelation' + i).val(data.data[i - 1].BusinessRelation);
+                            $('#VnrRefBusiness_Location' + i).val(data.data[i - 1].Location);
+                            $('#VnrRefBusiness_RelWithPerson' + i).val(data.data[i - 1].PersonRelation);
+
+                        }
+                    }
+                }
+            });
+        } //getVnrRef
+
+        function VNRReference_Business(num) {
+            var b = '';
+            b += '<tr>';
+            b += '<td>' + '<input type="text" name="VnrRefBusiness_Name[]" id="VnrRefBusiness_Name' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefBusiness_Contact[]" id="VnrRefBusiness_Contact' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefBusiness_Email[]" id="VnrRefBusiness_Email' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<select name="VnrRefBusinessRelation[]" id="VnrRefBusinessRelation' + num +
+                '" class="form-select form-select-sm">' +
+                '<option value="">Select</option>' + '<option value="Dealer">Dealer</option>' +
+                '<option value="Distributor">Distributor</option>' +
+                '<option value="Retailer">Retailer</option>' +
+                '<option value="Organizer">Organizer</option>' +
+                '<option value="Vendor">Vendor</option>' +
+                '</select>' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefBusiness_Location[]" id="VnrRefBusiness_Location' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefBusiness_RelWithPerson[]" id="VnrRefBusiness_RelWithPerson' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' +
+                '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removeVnrRef"><i class="bx bxs-trash text-danger"></i></a></div>' +
+                '</td>';
+            b += '</tr>';
+            $('#VNR_Business_AcqData').append(b);
+        } //VNRReference
+
+
+        $(document).on('click', '#addVnrRef_Business', function() {
+            VRef_Business_Count++;
+
+            VNRReference_Business(VRef_Business_Count);
+            $(".tab-content").height('auto');
+        });
+
+        $(document).on('click', '#removeVnrRef_Business', function() {
+            if (confirm('Are you sure you want to delete this record?')) {
+                $(this).closest('tr').remove();
+                VRef_Business_Count--;
+                $(".tab-content").height('auto');
+            }
+        });
+
+
+        function getOtherSeed() {
+
+            var JCId = $('#JCId').val();
+            $.ajax({
+                url: "{{ route('Candidate_Other_Seed_Relation') }}",
+                type: "POST",
+                data: {
+                    JCId: JCId
+                },
+                dataType: "json",
+                success: function(data) {
+                    if (data.status == 200) {
+                        OtherSeedCount = data.data.length;
+                        for (var x = 1; x <= OtherSeedCount; x++) {
+                            if (x >= 2) {
+                                OtherSeed(x);
+                            }
+                            $('#OtherSeedName' + x).val(data.data[x - 1].Name);
+                            $('#OtherSeedMobile' + x).val(data.data[x - 1].Mobile);
+                            $('#OtherSeedEMail' + x).val(data.data[x - 1].Email);
+                            $('#OtherSeedCompany' + x).val(data.data[x - 1].CompanyName);
+                            $('#OtherSeedDesignation' + x).val(data.data[x - 1].Designation);
+                            $('#OtherSeedLocation' + x).val(data.data[x - 1].Location);
+                            $('#OtherSeedRelation' + x).val(data.data[x - 1].Relation);
+
+                        }
+                    }
+                }
+            });
+        }
+
+        function OtherSeed(num) {
+            var c = '';
+            c += '<tr>';
+            c += '<td>' + '<input type="text" name="OtherSeedName[]" id="OtherSeedName' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="OtherSeedMobile[]" id="OtherSeedMobile' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="OtherSeedEMail[]" id="OtherSeedEMail' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="OtherSeedCompany[]" id="OtherSeedCompany' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="OtherSeedDesignation[]" id="OtherSeedDesignation' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="OtherSeedLocation[]" id="OtherSeedLocation' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="OtherSeedRelation[]" id="OtherSeedRelation' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' +
+                '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removeOtherSeed"><i class="bx bxs-trash text-danger"></i></a></div>' +
+                '</td>';
+            c += '</tr>';
+            $('#OtherSeed').append(c);
+        }
+
+        $(document).on('click', '#addOtherSeed', function() {
+            OtherSeedCount++;
+
+            OtherSeed(OtherSeedCount);
+            $(".tab-content").height('auto');
+        });
+
+        $(document).on('click', '#removeOtherSeed', function() {
+            if (confirm('Are you sure you want to delete this record?')) {
+                $(this).closest('tr').remove();
+                OtherSeedCount--;
+                $(".tab-content").height('auto');
+            }
+        });
+
+        function GetOtherCompany(num) {
+            var VnrRefCompany = $('#VnrRefCompany' + num).val();
+            if (VnrRefCompany == 'Other') {
+                $('#OtherCompany' + num).removeClass('d-none');
+            } else {
+                $('#OtherCompany' + num).addClass('d-none');
+            }
+        }
 
         function getLanguageProficiency() {
             $('#Language_JCId').val($('#JCId').val());
@@ -3430,31 +3865,32 @@ $Docs = DB::table('jf_docs')
                 },
                 dataType: "json",
                 success: function(data) {
+                    if (data.status == 200) {
+                        LanguageCount = data.data.length;
 
-                    LanguageCount = data.data.length;
+                        for (var i = 1; i <= LanguageCount; i++) {
 
-                    for (var i = 1; i <= LanguageCount; i++) {
+                            if (i > 2) {
+                                LaguageProficiency(i);
+                            }
 
-                        if (i > 2) {
-                            LaguageProficiency(i);
+                            $('#Language' + i).val(data.data[i - 1].language);
+
+                            if (data.data[i - 1].read == 1) {
+                                $('#Read' + i).prop('checked', true);
+                                $('#Read' + i).val(1);
+                            }
+                            if (data.data[i - 1].write == 1) {
+                                $('#Write' + i).prop('checked', true);
+                                $('#Write' + i).val(1);
+                            }
+                            if (data.data[i - 1].speak == 1) {
+                                $('#Speak' + i).prop('checked', true);
+                                $('#Speak' + i).val(1);
+                            }
+
+
                         }
-
-                        $('#Language' + i).val(data.data[i - 1].language);
-
-                        if (data.data[i - 1].read == 1) {
-                            $('#Read' + i).prop('checked', true);
-                            $('#Read' + i).val(1);
-                        }
-                        if (data.data[i - 1].write == 1) {
-                            $('#Write' + i).prop('checked', true);
-                            $('#Write' + i).val(1);
-                        }
-                        if (data.data[i - 1].speak == 1) {
-                            $('#Speak' + i).prop('checked', true);
-                            $('#Speak' + i).val(1);
-                        }
-
-
                     }
                 }
             });
@@ -3524,6 +3960,71 @@ $Docs = DB::table('jf_docs')
                 $('#TotalExpMonth').removeClass('reqinp_exp');
                 $('#ReportingManager').removeClass('reqinp_exp');
                 $('#RepDesignation').removeClass('reqinp_exp');
+                $(".tab-content").height('auto');
+            }
+
+        }
+
+        function showAcqOrNot(val) {
+            if (val == 'Y') {
+                $('#AcqDiv').removeClass('d-none');
+                $("#VnrRefName1").addClass('reqinp_other');
+                $("#VnrRefContact1").addClass('reqinp_other');
+                $("#VnrRefCompany1").addClass('reqinp_other');
+                $("#VnrRefDesignation1").addClass('reqinp_other');
+                $("#VnrRefLocation1").addClass('reqinp_other');
+                $("#VnrRefRelWithPerson1").addClass('reqinp_other');
+                $(".tab-content").height('auto');
+            } else {
+                $('#AcqDiv').addClass('d-none');
+                $("#VnrRefName1").removeClass('reqinp_other');
+                $("#VnrRefContact1").removeClass('reqinp_other');
+                $("#VnrRefCompany1").removeClass('reqinp_other');
+                $("#VnrRefDesignation1").removeClass('reqinp_other');
+                $("#VnrRefLocation1").removeClass('reqinp_other');
+                $("#VnrRefRelWithPerson1").removeClass('reqinp_other');
+                $(".tab-content").height('auto');
+            }
+
+        }
+
+        function showAcqBusiness(val) {
+            if (val == 'Y') {
+                $('#AcqBusinessDiv').removeClass('d-none');
+                $("#VnrRefBusiness_Name1").addClass('reqinp_other');
+                $("#VnrRefBusiness_Contact1").addClass('reqinp_other');
+                $("#VnrRefBusinessRelation1").addClass('reqinp_other');
+                $("#VnrRefBusiness_Location1").addClass('reqinp_other');
+                $("#VnrRefBusiness_RelWithPerson1").addClass('reqinp_other');
+                $(".tab-content").height('auto');
+            } else {
+                $('#AcqBusinessDiv').addClass('d-none');
+                $("#VnrRefBusiness_Name1").removeClass('reqinp_other');
+                $("#VnrRefBusiness_Contact1").removeClass('reqinp_other');
+                $("#VnrRefBusinessRelation1").removeClass('reqinp_other');
+                $("#VnrRefBusiness_Location1").removeClass('reqinp_other');
+                $("#VnrRefBusiness_RelWithPerson1").removeClass('reqinp_other');
+                $(".tab-content").height('auto');
+            }
+
+        }
+
+        function showOtherSeed(val) {
+            if (val == 'Y') {
+                $('#OtherSeedDiv').removeClass('d-none');
+                $("#OtherSeedName1").addClass('reqinp_other');
+                $("#OtherSeedMobile1").addClass('reqinp_other');
+                $("#OtherSeedCompany1").addClass('reqinp_other');
+                $("#OtherSeedLocation1").addClass('reqinp_other');
+                $("#OtherSeedRelation1").addClass('reqinp_other');
+                $(".tab-content").height('auto');
+            } else {
+                $('#OtherSeedDiv').addClass('d-none');
+                $("#OtherSeedName1").removeClass('reqinp_other');
+                $("#OtherSeedMobile1").removeClass('reqinp_other');
+                $("#OtherSeedCompany1").removeClass('reqinp_other');
+                $("#OtherSeedLocation1").removeClass('reqinp_other');
+                $("#OtherSeedRelation1").removeClass('reqinp_other');
                 $(".tab-content").height('auto');
             }
 
@@ -3932,6 +4433,9 @@ $Docs = DB::table('jf_docs')
             var language_array = [];
             var PerOrgArray = [];
             var VnrRefArray = [];
+            var VnrBusinessRefArray = [];
+            var VnrOtherSeedArray = [];
+
             for (i = 1; i <= 10; i++) {
                 var lang = $('#Language' + i).val();
                 var read = $('#Read' + i).val();
@@ -3945,7 +4449,7 @@ $Docs = DB::table('jf_docs')
                 });
             }
 
-            for (j = 1; j <= 10; j++) {
+            for (j = 1; j <= 5; j++) {
                 var PreOrgName = $('#PreOrgName' + j).val();
                 var PreOrgCompany = $('#PreOrgCompany' + j).val();
                 var PreOrgDesignation = $('#PreOrgDesignation' + j).val();
@@ -3960,22 +4464,65 @@ $Docs = DB::table('jf_docs')
                 });
             }
 
-            for (k = 1; k <= 10; k++) {
+            for (k = 1; k <= 5; k++) {
                 var VnrRefName = $('#VnrRefName' + k).val();
-                var VnrRefDesignation = $('#VnrRefDesignation' + k).val();
-                var VnrRefRelWithPerson = $('#VnrRefRelWithPerson' + k).val();
-                var VnrRefEmail = $('#VnrRefEmail' + k).val();
                 var VnrRefContact = $('#VnrRefContact' + k).val();
+                var VnrRefEmail = $('#VnrRefEmail' + k).val();
+                var VnrRefCompany = $('#VnrRefCompany' + k).val();
+                var OtherCompany = $('#OtherCompany' + k).val();
+                var VnrRefDesignation = $('#VnrRefDesignation' + k).val();
+                var VnrRefLocation = $('#VnrRefLocation' + k).val();
+                var VnrRefRelWithPerson = $('#VnrRefRelWithPerson' + k).val();
                 VnrRefArray.push({
                     'VnrRefName': VnrRefName,
-                    'VnrRefDesignation': VnrRefDesignation,
-                    'VnrRefRelWithPerson': VnrRefRelWithPerson,
+                    'VnrRefContact': VnrRefContact,
                     'VnrRefEmail': VnrRefEmail,
-                    'VnrRefContact': VnrRefContact
+                    'VnrRefCompany': VnrRefCompany,
+                    'OtherCompany': OtherCompany,
+                    'VnrRefDesignation': VnrRefDesignation,
+                    'VnrRefLocation': VnrRefLocation,
+                    'VnrRefRelWithPerson': VnrRefRelWithPerson,
                 });
             }
 
+            for (a = 1; a <= 5; a++) {
+                var VnrRefBusiness_Name = $('#VnrRefBusiness_Name' + a).val();
+                var VnrRefBusiness_Contact = $('#VnrRefBusiness_Contact' + a).val();
+                var VnrRefBusiness_Email = $('#VnrRefBusiness_Email' + a).val();
+                var VnrRefBusinessRelation = $('#VnrRefBusinessRelation' + a).val();
+                var VnrRefBusiness_Location = $('#VnrRefBusiness_Location' + a).val();
+                var VnrRefBusiness_RelWithPerson = $('#VnrRefBusiness_RelWithPerson' + a).val();
 
+                VnrBusinessRefArray.push({
+                    'VnrRefBusiness_Name': VnrRefBusiness_Name,
+                    'VnrRefBusiness_Contact': VnrRefBusiness_Contact,
+                    'VnrRefBusiness_Email': VnrRefBusiness_Email,
+                    'VnrRefBusinessRelation': VnrRefBusinessRelation,
+                    'VnrRefBusiness_Location': VnrRefBusiness_Location,
+                    'VnrRefBusiness_RelWithPerson': VnrRefBusiness_RelWithPerson,
+                });
+            }
+
+            for (b = 1; b <= 5; b++) {
+                var OtherSeedName = $('#OtherSeedName' + b).val();
+                var OtherSeedMobile = $('#OtherSeedMobile' + b).val();
+                var OtherSeedEMail = $('#OtherSeedEMail' + b).val();
+                var OtherSeedCompany = $('#OtherSeedCompany' + b).val();
+                var OtherSeedDesignation = $('#OtherSeedDesignation' + b).val();
+                var OtherSeedLocation = $('#OtherSeedLocation' + b).val();
+                var OtherSeedRelation = $('#OtherSeedRelation' + b).val();
+
+                VnrOtherSeedArray.push({
+                    'OtherSeedName': OtherSeedName,
+                    'OtherSeedMobile': OtherSeedMobile,
+                    'OtherSeedEMail': OtherSeedEMail,
+                    'OtherSeedCompany': OtherSeedCompany,
+                    'OtherSeedDesignation': OtherSeedDesignation,
+                    'OtherSeedLocation': OtherSeedLocation,
+                    'OtherSeedRelation': OtherSeedRelation,
+
+                });
+            }
             var res = 0;
             var res = checkRequired_other();
             if (res == 0) {
@@ -3984,6 +4531,11 @@ $Docs = DB::table('jf_docs')
                         language_array: language_array,
                         PerOrgArray: PerOrgArray,
                         VnrRefArray: VnrRefArray,
+                        VnrBusinessRefArray: VnrBusinessRefArray,
+                        VnrOtherSeedArray: VnrOtherSeedArray,
+                        VNR_Acq: $("input[name='AcqChk']:checked").val(),
+                        VNR_Acq_Business: $("input[name='AcqChkBusiness']:checked").val(),
+                        OtherSeedRelation: $("input[name='OtherSeedRelation']:checked").val(),
                         JCId: $('#JCId').val()
                     },
 
@@ -4233,6 +4785,20 @@ $Docs = DB::table('jf_docs')
             }, 'json');
 
         });
+
+        function ticksameadd() {
+            if ($('#AddChk').prop("checked") == true) {
+                $("#PermAddress").val($("#PreAddress").val());
+                $("#PermState").val($("#PreState").val());
+                $("#PermDistrict").val($("#PreDistrict").val());
+                $("#PermCity").val($("#PreCity").val());
+                $("#PermPin").val($("#PrePin").val());
+            }
+
+        }
+        window.onload = (event) => {
+            $('.tab-content').height('auto');
+        };
     </script>
 </body>
 

@@ -456,7 +456,7 @@ $CompanyQry = DB::table('master_company')
                                                                 class="msg-time float-end">{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</span>
                                                         </h6>
                                                         <p class="msg-info">{{ $item->description }}
-                                                            <span class="user-online float-end mt-3"></span>
+                                                           {{--  <span class="user-online float-end mt-3"></span> --}}
                                                         </p>
                                                     </div>
                                                 </div>
