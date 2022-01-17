@@ -3236,7 +3236,7 @@ $Docs = DB::table('jf_docs')
         </div>
     </div>
     <script src="{{ URL::to('/') }}/assets/js/bootstrap.bundle.min.js"></script>
-   {{--  <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script> --}}
+    {{-- <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script> --}}
     <script src="{{ URL::to('/') }}/assets/plugins/select2/js/select2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
@@ -3293,7 +3293,7 @@ $Docs = DB::table('jf_docs')
 
         });
     </script>
-   {{--  <script src="{{ URL::to('/') }}/assets/js/app.js"></script> --}}
+    {{-- <script src="{{ URL::to('/') }}/assets/js/app.js"></script> --}}
     <script>
         var MemberCount = 1;
         var EducationCount = 6;
@@ -3798,503 +3798,503 @@ $Docs = DB::table('jf_docs')
 
         function getPreOrgRef() {
 
-var JCId = $('#JCId').val();
-$.ajax({
-    url: "{{ route('Candidate_PreOrgRef') }}",
-    type: "POST",
-    data: {
-        JCId: JCId
-    },
-    dataType: "json",
-    success: function(data) {
-        if (data.status == 200) {
-            RefCount = data.data.length;
-            for (var i = 1; i <= RefCount; i++) {
-                if (i >= 2) {
-                    PreviousOrgReference(i);
+            var JCId = $('#JCId').val();
+            $.ajax({
+                url: "{{ route('Candidate_PreOrgRef') }}",
+                type: "POST",
+                data: {
+                    JCId: JCId
+                },
+                dataType: "json",
+                success: function(data) {
+                    if (data.status == 200) {
+                        RefCount = data.data.length;
+                        for (var i = 1; i <= RefCount; i++) {
+                            if (i >= 2) {
+                                PreviousOrgReference(i);
+                            }
+                            $('#PreOrgName' + i).val(data.data[i - 1].name);
+                            $('#PreOrgCompany' + i).val(data.data[i - 1].company);
+                            $('#PreOrgDesignation' + i).val(data.data[i - 1].designation);
+                            $('#PreOrgEmail' + i).val(data.data[i - 1].email);
+                            $('#PreOrgContact' + i).val(data.data[i - 1].contact);
+                        }
+                    }
                 }
-                $('#PreOrgName' + i).val(data.data[i - 1].name);
-                $('#PreOrgCompany' + i).val(data.data[i - 1].company);
-                $('#PreOrgDesignation' + i).val(data.data[i - 1].designation);
-                $('#PreOrgEmail' + i).val(data.data[i - 1].email);
-                $('#PreOrgContact' + i).val(data.data[i - 1].contact);
+            });
+        } //getPreOrgRef
+
+        function PreviousOrgReference(num) {
+            var b = '';
+            b += '<tr>';
+            b += '<td>' + '<input type="text" name="PreOrgName[]" id="PreOrgName' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="PreOrgCompany[]" id="PreOrgCompany' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="PreOrgDesignation[]" id="PreOrgDesignation' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="PreOrgEmail[]" id="PreOrgEmail' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="PreOrgContact[]" id="PreOrgContact' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+
+                '<td>' +
+                '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removePreOrgRef"><i class="bx bxs-trash text-danger"></i></a></div>' +
+                '</td>';
+            b += '</tr>';
+            $('#PreOrgRefData').append(b);
+        } //PreviousOrgReference
+
+        $(document).on('click', '#addPreOrgRef', function() {
+            RefCount++;
+            PreviousOrgReference(RefCount);
+            $(".tab-content").height('auto');
+        });
+
+        $(document).on('click', '#removePreOrgRef', function() {
+            if (confirm('Are you sure you want to delete this record?')) {
+                $(this).closest('tr').remove();
+                RefCount--;
+                $(".tab-content").height('auto');
+            }
+        });
+
+        function getVnrRef() {
+            $('#Vnr_JCId').val($('#JCId').val());
+            var JCId = $('#JCId').val();
+            $.ajax({
+                url: "{{ route('Candidate_VnrRef') }}",
+                type: "POST",
+                data: {
+                    JCId: JCId
+                },
+                dataType: "json",
+                success: function(data) {
+                    if (data.status == 200) {
+                        VRefCount = data.data.length;
+                        for (var i = 1; i <= VRefCount; i++) {
+                            if (i >= 2) {
+                                VNRReference(i);
+                            }
+                            $('#VnrRefName' + i).val(data.data[i - 1].name);
+                            $('#VnrRefRelWithPerson' + i).val(data.data[i - 1].rel_with_person);
+                            $('#VnrRefEmail' + i).val(data.data[i - 1].email);
+                            $('#VnrRefContact' + i).val(data.data[i - 1].contact);
+                            $('#VnrRefDesignation' + i).val(data.data[i - 1].designation);
+                            $('#VnrRefCompany' + i).val(data.data[i - 1].company);
+                            $('#OtherCompany' + i).val(data.data[i - 1].other_company);
+                            $('#VnrRefLocation' + i).val(data.data[i - 1].location);
+                            if (data.data[i - 1].company == 'Other') {
+                                $('#OtherCompany' + i).removeClass('d-none');
+                            }
+                        }
+                    }
+                }
+            });
+        } //getVnrRef
+
+        function VNRReference(num) {
+            var b = '';
+            b += '<tr>';
+            b += '<td>' + '<input type="text" name="VnrRefName[]" id="VnrRefName' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefContact[]" id="VnrRefContact' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefEmail[]" id="VnrRefEmail' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<select name="VnrRefCompany[]" id="VnrRefCompany' + num +
+                '" class="form-select form-select-sm" onchange="GetOtherCompany(' + num + ')">' +
+                '<option value="">Select</option>' + '<option value="VNR Seeds Pvt. Ltd.">VNR Seeds Pvt. Ltd.</option>' +
+                '<option value="VNR Nursery Pvt. Ltd.">VNR Nursery Pvt. Ltd.</option>' +
+                '<option value="Other">Other</option>' +
+                '</select> <br> <input type="text" name="OtherCompany[]" id="OtherCompany' + num +
+                '" class="d-none form-control form-control-sm" placeholder="Enter Other Company Name">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefDesignation[]" id="VnrRefDesignation' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefLocation[]" id="VnrRefLocation' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefRelWithPerson[]" id="VnrRefRelWithPerson' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' +
+                '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removeVnrRef"><i class="bx bxs-trash text-danger"></i></a></div>' +
+                '</td>';
+            b += '</tr>';
+            $('#VNRRefData').append(b);
+        } //VNRReference
+
+        $(document).on('click', '#addVnrRef', function() {
+            VRefCount++;
+            VNRReference(VRefCount);
+            $(".tab-content").height('auto');
+        });
+
+        $(document).on('click', '#removeVnrRef', function() {
+            if (confirm('Are you sure you want to delete this record?')) {
+                $(this).closest('tr').remove();
+                VRefCount--;
+                $(".tab-content").height('auto');
+            }
+        });
+
+        function getVnrRef_Business() {
+            $('#Vnr_JCId').val($('#JCId').val());
+            var JCId = $('#JCId').val();
+            $.ajax({
+                url: "{{ route('Candidate_VnrRef_Business') }}",
+                type: "POST",
+                data: {
+                    JCId: JCId
+                },
+                dataType: "json",
+                success: function(data) {
+                    if (data.status == 200) {
+                        VRef_Business_Count = data.data.length;
+                        for (var i = 1; i <= VRef_Business_Count; i++) {
+                            if (i >= 2) {
+                                VNRReference_Business(i);
+                            }
+                            $('#VnrRefBusiness_Name' + i).val(data.data[i - 1].Name);
+                            $('#VnrRefBusiness_Contact' + i).val(data.data[i - 1].Mobile);
+                            $('#VnrRefBusiness_Email' + i).val(data.data[i - 1].Email);
+                            $('#VnrRefBusinessRelation' + i).val(data.data[i - 1].BusinessRelation);
+                            $('#VnrRefBusiness_Location' + i).val(data.data[i - 1].Location);
+                            $('#VnrRefBusiness_RelWithPerson' + i).val(data.data[i - 1].PersonRelation);
+
+                        }
+                    }
+                }
+            });
+        } //getVnrRef
+
+        function VNRReference_Business(num) {
+            var b = '';
+            b += '<tr>';
+            b += '<td>' + '<input type="text" name="VnrRefBusiness_Name[]" id="VnrRefBusiness_Name' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefBusiness_Contact[]" id="VnrRefBusiness_Contact' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefBusiness_Email[]" id="VnrRefBusiness_Email' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<select name="VnrRefBusinessRelation[]" id="VnrRefBusinessRelation' + num +
+                '" class="form-select form-select-sm">' +
+                '<option value="">Select</option>' + '<option value="Dealer">Dealer</option>' +
+                '<option value="Distributor">Distributor</option>' +
+                '<option value="Retailer">Retailer</option>' +
+                '<option value="Organizer">Organizer</option>' +
+                '<option value="Vendor">Vendor</option>' +
+                '</select>' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefBusiness_Location[]" id="VnrRefBusiness_Location' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefBusiness_RelWithPerson[]" id="VnrRefBusiness_RelWithPerson' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' +
+                '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removeVnrRef"><i class="bx bxs-trash text-danger"></i></a></div>' +
+                '</td>';
+            b += '</tr>';
+            $('#VNR_Business_AcqData').append(b);
+        } //VNRReference
+
+
+        $(document).on('click', '#addVnrRef_Business', function() {
+            VRef_Business_Count++;
+
+            VNRReference_Business(VRef_Business_Count);
+            $(".tab-content").height('auto');
+        });
+
+        $(document).on('click', '#removeVnrRef_Business', function() {
+            if (confirm('Are you sure you want to delete this record?')) {
+                $(this).closest('tr').remove();
+                VRef_Business_Count--;
+                $(".tab-content").height('auto');
+            }
+        });
+
+
+        function getOtherSeed() {
+
+            var JCId = $('#JCId').val();
+            $.ajax({
+                url: "{{ route('Candidate_Other_Seed_Relation') }}",
+                type: "POST",
+                data: {
+                    JCId: JCId
+                },
+                dataType: "json",
+                success: function(data) {
+                    if (data.status == 200) {
+                        OtherSeedCount = data.data.length;
+                        for (var x = 1; x <= OtherSeedCount; x++) {
+                            if (x >= 2) {
+                                OtherSeed(x);
+                            }
+                            $('#OtherSeedName' + x).val(data.data[x - 1].Name);
+                            $('#OtherSeedMobile' + x).val(data.data[x - 1].Mobile);
+                            $('#OtherSeedEMail' + x).val(data.data[x - 1].Email);
+                            $('#OtherSeedCompany' + x).val(data.data[x - 1].CompanyName);
+                            $('#OtherSeedDesignation' + x).val(data.data[x - 1].Designation);
+                            $('#OtherSeedLocation' + x).val(data.data[x - 1].Location);
+                            $('#OtherSeedRelation' + x).val(data.data[x - 1].Relation);
+
+                        }
+                    }
+                }
+            });
+        }
+
+        function OtherSeed(num) {
+            var c = '';
+            c += '<tr>';
+            c += '<td>' + '<input type="text" name="OtherSeedName[]" id="OtherSeedName' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="OtherSeedMobile[]" id="OtherSeedMobile' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="OtherSeedEMail[]" id="OtherSeedEMail' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="OtherSeedCompany[]" id="OtherSeedCompany' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="OtherSeedDesignation[]" id="OtherSeedDesignation' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="OtherSeedLocation[]" id="OtherSeedLocation' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="OtherSeedRelation[]" id="OtherSeedRelation' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' +
+                '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removeOtherSeed"><i class="bx bxs-trash text-danger"></i></a></div>' +
+                '</td>';
+            c += '</tr>';
+            $('#OtherSeed').append(c);
+        }
+
+        $(document).on('click', '#addOtherSeed', function() {
+            OtherSeedCount++;
+
+            OtherSeed(OtherSeedCount);
+            $(".tab-content").height('auto');
+        });
+
+        $(document).on('click', '#removeOtherSeed', function() {
+            if (confirm('Are you sure you want to delete this record?')) {
+                $(this).closest('tr').remove();
+                OtherSeedCount--;
+                $(".tab-content").height('auto');
+            }
+        });
+
+        function GetOtherCompany(num) {
+            var VnrRefCompany = $('#VnrRefCompany' + num).val();
+            if (VnrRefCompany == 'Other') {
+                $('#OtherCompany' + num).removeClass('d-none');
+            } else {
+                $('#OtherCompany' + num).addClass('d-none');
             }
         }
-    }
-});
-} //getPreOrgRef
 
-function PreviousOrgReference(num) {
-var b = '';
-b += '<tr>';
-b += '<td>' + '<input type="text" name="PreOrgName[]" id="PreOrgName' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<input type="text" name="PreOrgCompany[]" id="PreOrgCompany' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<input type="text" name="PreOrgDesignation[]" id="PreOrgDesignation' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<input type="text" name="PreOrgEmail[]" id="PreOrgEmail' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<input type="text" name="PreOrgContact[]" id="PreOrgContact' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
+        function getLanguageProficiency() {
+            $('#Language_JCId').val($('#JCId').val());
+            var JCId = $('#JCId').val();
+            $.ajax({
+                url: "{{ route('Candidate_Language') }}",
+                type: "POST",
+                data: {
+                    JCId: JCId
+                },
+                dataType: "json",
+                success: function(data) {
+                    if (data.status == 200) {
+                        LanguageCount = data.data.length;
 
-    '<td>' +
-    '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removePreOrgRef"><i class="bx bxs-trash text-danger"></i></a></div>' +
-    '</td>';
-b += '</tr>';
-$('#PreOrgRefData').append(b);
-} //PreviousOrgReference
+                        for (var i = 1; i <= LanguageCount; i++) {
 
-$(document).on('click', '#addPreOrgRef', function() {
-RefCount++;
-PreviousOrgReference(RefCount);
-$(".tab-content").height('auto');
-});
+                            if (i > 2) {
+                                LaguageProficiency(i);
+                            }
 
-$(document).on('click', '#removePreOrgRef', function() {
-if (confirm('Are you sure you want to delete this record?')) {
-    $(this).closest('tr').remove();
-    RefCount--;
-    $(".tab-content").height('auto');
-}
-});
+                            $('#Language' + i).val(data.data[i - 1].language);
 
-function getVnrRef() {
-$('#Vnr_JCId').val($('#JCId').val());
-var JCId = $('#JCId').val();
-$.ajax({
-    url: "{{ route('Candidate_VnrRef') }}",
-    type: "POST",
-    data: {
-        JCId: JCId
-    },
-    dataType: "json",
-    success: function(data) {
-        if (data.status == 200) {
-            VRefCount = data.data.length;
-            for (var i = 1; i <= VRefCount; i++) {
-                if (i >= 2) {
-                    VNRReference(i);
+                            if (data.data[i - 1].read == 1) {
+                                $('#Read' + i).prop('checked', true);
+                                $('#Read' + i).val(1);
+                            }
+                            if (data.data[i - 1].write == 1) {
+                                $('#Write' + i).prop('checked', true);
+                                $('#Write' + i).val(1);
+                            }
+                            if (data.data[i - 1].speak == 1) {
+                                $('#Speak' + i).prop('checked', true);
+                                $('#Speak' + i).val(1);
+                            }
+
+
+                        }
+                    }
                 }
-                $('#VnrRefName' + i).val(data.data[i - 1].name);
-                $('#VnrRefRelWithPerson' + i).val(data.data[i - 1].rel_with_person);
-                $('#VnrRefEmail' + i).val(data.data[i - 1].email);
-                $('#VnrRefContact' + i).val(data.data[i - 1].contact);
-                $('#VnrRefDesignation' + i).val(data.data[i - 1].designation);
-                $('#VnrRefCompany' + i).val(data.data[i - 1].company);
-                $('#OtherCompany' + i).val(data.data[i - 1].other_company);
-                $('#VnrRefLocation' + i).val(data.data[i - 1].location);
-                if(data.data[i - 1].company == 'Other'){
-                    $('#OtherCompany' + i).removeClass('d-none');
-                }
+            });
+        } //getLanguageProficiency
+
+        function LaguageProficiency(num) {
+            var b = '';
+            b += '<tr class="text-center">';
+            b += '<td>' + '<input type="text" name="Language[]" id="Language' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="checkbox" name="Read[]" id="Read' + num + '" value="0">' + '</td>' +
+                '<td>' + '<input type="checkbox" name="Write[]" id="Write' + num + '" value="0">' + '</td>' +
+                '<td>' + '<input type="checkbox" name="Speak[]" id="Speak' + num + '" value="0">' + '</td>' +
+                '<td>' +
+
+                '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removeLanguage"><i class="bx bxs-trash text-danger"></i></a></div>' +
+                '</td>';
+
+            b += '</tr>';
+            $('#LanguageData').append(b);
+        } //LanguageProficiency
+
+        $(document).on('click', '#addLanguage', function() {
+            LanguageCount++;
+            LaguageProficiency(LanguageCount);
+            $('.tab-content').height('auto');
+        });
+
+        $(document).on('click', '#removeLanguage', function() {
+            if (confirm('Are you sure you want to delete this record?')) {
+                $(this).closest('tr').remove();
+                LanguageCount--;
+                $('.tab-content').height('auto');
+            }
+        });
+
+        function showProFromOrNot(val) {
+
+            if (val == 'prof') {
+                $('#professional_div').removeClass('d-none');
+                $('#CurrCompany').addClass('reqinp_exp');
+                $('#CurrJoinDate').addClass('reqinp_exp');
+                $('#CurrDesignation').addClass('reqinp_exp');
+                $('#CurrCTC').addClass('reqinp_exp');
+                $('#CurrSalary').addClass('reqinp_exp');
+                $('#NoticePeriod').addClass('reqinp_exp');
+                $('#ExpCTC').addClass('reqinp_exp');
+                $('#JobResponsibility').addClass('reqinp_exp');
+                $('#ToatalExpYears').addClass('reqinp_exp');
+                $('#TotalExpMonth').addClass('reqinp_exp');
+                $('#ReportingManager').addClass('reqinp_exp');
+                $('#RepDesignation').addClass('reqinp_exp');
+
+                $(".tab-content").height('auto');
+            } else {
+
+                $('#professional_div').addClass('d-none');
+                $('#CurrCompany').removeClass('reqinp_exp');
+                $('#CurrJoinDate').removeClass('reqinp_exp');
+                $('#CurrDesignation').removeClass('reqinp_exp');
+                $('#CurrCTC').removeClass('reqinp_exp');
+                $('#CurrSalary').removeClass('reqinp_exp');
+                $('#NoticePeriod').removeClass('reqinp_exp');
+                $('#ExpCTC').removeClass('reqinp_exp');
+                $('#JobResponsibility').removeClass('reqinp_exp');
+                $('#ToatalExpYears').removeClass('reqinp_exp');
+                $('#TotalExpMonth').removeClass('reqinp_exp');
+                $('#ReportingManager').removeClass('reqinp_exp');
+                $('#RepDesignation').removeClass('reqinp_exp');
+                $(".tab-content").height('auto');
+            }
+
+        }
+
+        function showAcqOrNot(val) {
+            if (val == 'Y') {
+                $('#AcqDiv').removeClass('d-none');
+                $("#VnrRefName1").addClass('reqinp_other');
+                $("#VnrRefContact1").addClass('reqinp_other');
+                $("#VnrRefCompany1").addClass('reqinp_other');
+                $("#VnrRefDesignation1").addClass('reqinp_other');
+                $("#VnrRefLocation1").addClass('reqinp_other');
+                $("#VnrRefRelWithPerson1").addClass('reqinp_other');
+                $(".tab-content").height('auto');
+            } else {
+                $('#AcqDiv').addClass('d-none');
+                $("#VnrRefName1").removeClass('reqinp_other');
+                $("#VnrRefContact1").removeClass('reqinp_other');
+                $("#VnrRefCompany1").removeClass('reqinp_other');
+                $("#VnrRefDesignation1").removeClass('reqinp_other');
+                $("#VnrRefLocation1").removeClass('reqinp_other');
+                $("#VnrRefRelWithPerson1").removeClass('reqinp_other');
+                $(".tab-content").height('auto');
+            }
+
+        }
+
+        function showAcqBusiness(val) {
+            if (val == 'Y') {
+                $('#AcqBusinessDiv').removeClass('d-none');
+                $("#VnrRefBusiness_Name1").addClass('reqinp_other');
+                $("#VnrRefBusiness_Contact1").addClass('reqinp_other');
+                $("#VnrRefBusinessRelation1").addClass('reqinp_other');
+                $("#VnrRefBusiness_Location1").addClass('reqinp_other');
+                $("#VnrRefBusiness_RelWithPerson1").addClass('reqinp_other');
+                $(".tab-content").height('auto');
+            } else {
+                $('#AcqBusinessDiv').addClass('d-none');
+                $("#VnrRefBusiness_Name1").removeClass('reqinp_other');
+                $("#VnrRefBusiness_Contact1").removeClass('reqinp_other');
+                $("#VnrRefBusinessRelation1").removeClass('reqinp_other');
+                $("#VnrRefBusiness_Location1").removeClass('reqinp_other');
+                $("#VnrRefBusiness_RelWithPerson1").removeClass('reqinp_other');
+                $(".tab-content").height('auto');
+            }
+
+        }
+
+        function showOtherSeed(val) {
+            if (val == 'Y') {
+                $('#OtherSeedDiv').removeClass('d-none');
+                $("#OtherSeedName1").addClass('reqinp_other');
+                $("#OtherSeedMobile1").addClass('reqinp_other');
+                $("#OtherSeedCompany1").addClass('reqinp_other');
+                $("#OtherSeedLocation1").addClass('reqinp_other');
+                $("#OtherSeedRelation1").addClass('reqinp_other');
+                $(".tab-content").height('auto');
+            } else {
+                $('#OtherSeedDiv').addClass('d-none');
+                $("#OtherSeedName1").removeClass('reqinp_other');
+                $("#OtherSeedMobile1").removeClass('reqinp_other');
+                $("#OtherSeedCompany1").removeClass('reqinp_other');
+                $("#OtherSeedLocation1").removeClass('reqinp_other');
+                $("#OtherSeedRelation1").removeClass('reqinp_other');
+                $(".tab-content").height('auto');
+            }
+
+        }
+
+        function TwoWheel() {
+            if ($('#TwoWheelChk').prop('checked')) {
+                $('#twowheel').removeClass('d-none');
+                $('#TwoWheelChk').val('1');
+                $('#TwoWheelPetrol').addClass('reqinp_exp');
+                $('.tab-content').height('auto');
+            } else {
+                $('#twowheel').addClass('d-none');
+                $('#TwoWheelChk').val('0');
+                $('#TwoWheelPetrol').removeClass('reqinp_exp');
+                $('.tab-content').height('auto');
             }
         }
-    }
-});
-} //getVnrRef
 
-function VNRReference(num) {
-var b = '';
-b += '<tr>';
-b += '<td>' + '<input type="text" name="VnrRefName[]" id="VnrRefName' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<input type="text" name="VnrRefContact[]" id="VnrRefContact' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<input type="text" name="VnrRefEmail[]" id="VnrRefEmail' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<select name="VnrRefCompany[]" id="VnrRefCompany' + num +
-    '" class="form-select form-select-sm" onchange="GetOtherCompany(' + num + ')">' +
-    '<option value="">Select</option>' + '<option value="VNR Seeds Pvt. Ltd.">VNR Seeds Pvt. Ltd.</option>' +
-    '<option value="VNR Nursery Pvt. Ltd.">VNR Nursery Pvt. Ltd.</option>' +
-    '<option value="Other">Other</option>' +
-    '</select> <br> <input type="text" name="OtherCompany[]" id="OtherCompany' + num +
-    '" class="d-none form-control form-control-sm" placeholder="Enter Other Company Name">' + '</td>' +
-    '<td>' + '<input type="text" name="VnrRefDesignation[]" id="VnrRefDesignation' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<input type="text" name="VnrRefLocation[]" id="VnrRefLocation' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<input type="text" name="VnrRefRelWithPerson[]" id="VnrRefRelWithPerson' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' +
-    '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removeVnrRef"><i class="bx bxs-trash text-danger"></i></a></div>' +
-    '</td>';
-b += '</tr>';
-$('#VNRRefData').append(b);
-} //VNRReference
+        function FourWheel() {
 
-$(document).on('click', '#addVnrRef', function() {
-VRefCount++;
-VNRReference(VRefCount);
-$(".tab-content").height('auto');
-});
-
-$(document).on('click', '#removeVnrRef', function() {
-if (confirm('Are you sure you want to delete this record?')) {
-    $(this).closest('tr').remove();
-    VRefCount--;
-    $(".tab-content").height('auto');
-}
-});
-
-function getVnrRef_Business() {
-$('#Vnr_JCId').val($('#JCId').val());
-var JCId = $('#JCId').val();
-$.ajax({
-    url: "{{ route('Candidate_VnrRef_Business') }}",
-    type: "POST",
-    data: {
-        JCId: JCId
-    },
-    dataType: "json",
-    success: function(data) {
-        if (data.status == 200) {
-            VRef_Business_Count = data.data.length;
-            for (var i = 1; i <= VRef_Business_Count; i++) {
-                if (i >= 2) {
-                    VNRReference_Business(i);
-                }
-                $('#VnrRefBusiness_Name' + i).val(data.data[i - 1].Name);
-                $('#VnrRefBusiness_Contact' + i).val(data.data[i - 1].Mobile);
-                $('#VnrRefBusiness_Email' + i).val(data.data[i - 1].Email);
-                $('#VnrRefBusinessRelation' + i).val(data.data[i - 1].BusinessRelation);
-                $('#VnrRefBusiness_Location' + i).val(data.data[i - 1].Location);
-                $('#VnrRefBusiness_RelWithPerson' + i).val(data.data[i - 1].PersonRelation);
-
+            if ($('#FourWheelChk').prop('checked')) {
+                $('#fourwheel').removeClass('d-none');
+                $('#FourWheelChk').val('1');
+                $('#FourWheelPetrol').addClass('reqinp_exp');
+                $('.tab-content').height('auto');
+            } else {
+                $('#fourwheel').addClass('d-none');
+                $('#FourWheelChk').val('0');
+                $('#FourWheelPetrol').removeClass('reqinp_exp');
+                $('.tab-content').height('auto');
             }
+
         }
-    }
-});
-} //getVnrRef
-
-function VNRReference_Business(num) {
-var b = '';
-b += '<tr>';
-b += '<td>' + '<input type="text" name="VnrRefBusiness_Name[]" id="VnrRefBusiness_Name' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<input type="text" name="VnrRefBusiness_Contact[]" id="VnrRefBusiness_Contact' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<input type="text" name="VnrRefBusiness_Email[]" id="VnrRefBusiness_Email' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<select name="VnrRefBusinessRelation[]" id="VnrRefBusinessRelation' + num +
-    '" class="form-select form-select-sm">' +
-    '<option value="">Select</option>' + '<option value="Dealer">Dealer</option>' +
-    '<option value="Distributor">Distributor</option>' +
-    '<option value="Retailer">Retailer</option>' +
-    '<option value="Organizer">Organizer</option>' +
-    '<option value="Vendor">Vendor</option>' +
-    '</select>' + '</td>' +
-    '<td>' + '<input type="text" name="VnrRefBusiness_Location[]" id="VnrRefBusiness_Location' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<input type="text" name="VnrRefBusiness_RelWithPerson[]" id="VnrRefBusiness_RelWithPerson' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' +
-    '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removeVnrRef"><i class="bx bxs-trash text-danger"></i></a></div>' +
-    '</td>';
-b += '</tr>';
-$('#VNR_Business_AcqData').append(b);
-} //VNRReference
-
-
-$(document).on('click', '#addVnrRef_Business', function() {
-VRef_Business_Count++;
-
-VNRReference_Business(VRef_Business_Count);
-$(".tab-content").height('auto');
-});
-
-$(document).on('click', '#removeVnrRef_Business', function() {
-if (confirm('Are you sure you want to delete this record?')) {
-    $(this).closest('tr').remove();
-    VRef_Business_Count--;
-    $(".tab-content").height('auto');
-}
-});
-
-
-function getOtherSeed() {
-
-var JCId = $('#JCId').val();
-$.ajax({
-    url: "{{ route('Candidate_Other_Seed_Relation') }}",
-    type: "POST",
-    data: {
-        JCId: JCId
-    },
-    dataType: "json",
-    success: function(data) {
-        if (data.status == 200) {
-            OtherSeedCount = data.data.length;
-            for (var x = 1; x <= OtherSeedCount; x++) {
-                if (x >= 2) {
-                    OtherSeed(x);
-                }
-                $('#OtherSeedName' + x).val(data.data[x - 1].Name);
-                $('#OtherSeedMobile' + x).val(data.data[x - 1].Mobile);
-                $('#OtherSeedEMail' + x).val(data.data[x - 1].Email);
-                $('#OtherSeedCompany' + x).val(data.data[x - 1].CompanyName);
-                $('#OtherSeedDesignation' + x).val(data.data[x - 1].Designation);
-                $('#OtherSeedLocation' + x).val(data.data[x - 1].Location);
-                $('#OtherSeedRelation' + x).val(data.data[x - 1].Relation);
-
-            }
-        }
-    }
-});
-}
-
-function OtherSeed(num) {
-var c = '';
-c += '<tr>';
-c += '<td>' + '<input type="text" name="OtherSeedName[]" id="OtherSeedName' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<input type="text" name="OtherSeedMobile[]" id="OtherSeedMobile' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<input type="text" name="OtherSeedEMail[]" id="OtherSeedEMail' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<input type="text" name="OtherSeedCompany[]" id="OtherSeedCompany' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<input type="text" name="OtherSeedDesignation[]" id="OtherSeedDesignation' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<input type="text" name="OtherSeedLocation[]" id="OtherSeedLocation' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<input type="text" name="OtherSeedRelation[]" id="OtherSeedRelation' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' +
-    '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removeOtherSeed"><i class="bx bxs-trash text-danger"></i></a></div>' +
-    '</td>';
-c += '</tr>';
-$('#OtherSeed').append(c);
-}
-
-$(document).on('click', '#addOtherSeed', function() {
-OtherSeedCount++;
-
-OtherSeed(OtherSeedCount);
-$(".tab-content").height('auto');
-});
-
-$(document).on('click', '#removeOtherSeed', function() {
-if (confirm('Are you sure you want to delete this record?')) {
-    $(this).closest('tr').remove();
-    OtherSeedCount--;
-    $(".tab-content").height('auto');
-}
-});
-
-function GetOtherCompany(num) {
-var VnrRefCompany = $('#VnrRefCompany' + num).val();
-if (VnrRefCompany == 'Other') {
-    $('#OtherCompany' + num).removeClass('d-none');
-} else {
-    $('#OtherCompany' + num).addClass('d-none');
-}
-}
-
-function getLanguageProficiency() {
-$('#Language_JCId').val($('#JCId').val());
-var JCId = $('#JCId').val();
-$.ajax({
-    url: "{{ route('Candidate_Language') }}",
-    type: "POST",
-    data: {
-        JCId: JCId
-    },
-    dataType: "json",
-    success: function(data) {
-        if (data.status == 200) {
-            LanguageCount = data.data.length;
-
-            for (var i = 1; i <= LanguageCount; i++) {
-
-                if (i > 2) {
-                    LaguageProficiency(i);
-                }
-
-                $('#Language' + i).val(data.data[i - 1].language);
-
-                if (data.data[i - 1].read == 1) {
-                    $('#Read' + i).prop('checked', true);
-                    $('#Read' + i).val(1);
-                }
-                if (data.data[i - 1].write == 1) {
-                    $('#Write' + i).prop('checked', true);
-                    $('#Write' + i).val(1);
-                }
-                if (data.data[i - 1].speak == 1) {
-                    $('#Speak' + i).prop('checked', true);
-                    $('#Speak' + i).val(1);
-                }
-
-
-            }
-        }
-    }
-});
-} //getLanguageProficiency
-
-function LaguageProficiency(num) {
-var b = '';
-b += '<tr class="text-center">';
-b += '<td>' + '<input type="text" name="Language[]" id="Language' + num +
-    '" class="form-control form-control-sm">' + '</td>' +
-    '<td>' + '<input type="checkbox" name="Read[]" id="Read' + num + '" value="0">' + '</td>' +
-    '<td>' + '<input type="checkbox" name="Write[]" id="Write' + num + '" value="0">' + '</td>' +
-    '<td>' + '<input type="checkbox" name="Speak[]" id="Speak' + num + '" value="0">' + '</td>' +
-    '<td>' +
-
-    '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removeLanguage"><i class="bx bxs-trash text-danger"></i></a></div>' +
-    '</td>';
-
-b += '</tr>';
-$('#LanguageData').append(b);
-} //LanguageProficiency
-
-$(document).on('click', '#addLanguage', function() {
-LanguageCount++;
-LaguageProficiency(LanguageCount);
-$('.tab-content').height('auto');
-});
-
-$(document).on('click', '#removeLanguage', function() {
-if (confirm('Are you sure you want to delete this record?')) {
-    $(this).closest('tr').remove();
-    LanguageCount--;
-    $('.tab-content').height('auto');
-}
-});
-
-function showProFromOrNot(val) {
-
-if (val == 'prof') {
-    $('#professional_div').removeClass('d-none');
-    $('#CurrCompany').addClass('reqinp_exp');
-    $('#CurrJoinDate').addClass('reqinp_exp');
-    $('#CurrDesignation').addClass('reqinp_exp');
-    $('#CurrCTC').addClass('reqinp_exp');
-    $('#CurrSalary').addClass('reqinp_exp');
-    $('#NoticePeriod').addClass('reqinp_exp');
-    $('#ExpCTC').addClass('reqinp_exp');
-    $('#JobResponsibility').addClass('reqinp_exp');
-    $('#ToatalExpYears').addClass('reqinp_exp');
-    $('#TotalExpMonth').addClass('reqinp_exp');
-    $('#ReportingManager').addClass('reqinp_exp');
-    $('#RepDesignation').addClass('reqinp_exp');
-
-    $(".tab-content").height('auto');
-} else {
-
-    $('#professional_div').addClass('d-none');
-    $('#CurrCompany').removeClass('reqinp_exp');
-    $('#CurrJoinDate').removeClass('reqinp_exp');
-    $('#CurrDesignation').removeClass('reqinp_exp');
-    $('#CurrCTC').removeClass('reqinp_exp');
-    $('#CurrSalary').removeClass('reqinp_exp');
-    $('#NoticePeriod').removeClass('reqinp_exp');
-    $('#ExpCTC').removeClass('reqinp_exp');
-    $('#JobResponsibility').removeClass('reqinp_exp');
-    $('#ToatalExpYears').removeClass('reqinp_exp');
-    $('#TotalExpMonth').removeClass('reqinp_exp');
-    $('#ReportingManager').removeClass('reqinp_exp');
-    $('#RepDesignation').removeClass('reqinp_exp');
-    $(".tab-content").height('auto');
-}
-
-}
-
-function showAcqOrNot(val) {
-if (val == 'Y') {
-    $('#AcqDiv').removeClass('d-none');
-    $("#VnrRefName1").addClass('reqinp_other');
-    $("#VnrRefContact1").addClass('reqinp_other');
-    $("#VnrRefCompany1").addClass('reqinp_other');
-    $("#VnrRefDesignation1").addClass('reqinp_other');
-    $("#VnrRefLocation1").addClass('reqinp_other');
-    $("#VnrRefRelWithPerson1").addClass('reqinp_other');
-    $(".tab-content").height('auto');
-} else {
-    $('#AcqDiv').addClass('d-none');
-    $("#VnrRefName1").removeClass('reqinp_other');
-    $("#VnrRefContact1").removeClass('reqinp_other');
-    $("#VnrRefCompany1").removeClass('reqinp_other');
-    $("#VnrRefDesignation1").removeClass('reqinp_other');
-    $("#VnrRefLocation1").removeClass('reqinp_other');
-    $("#VnrRefRelWithPerson1").removeClass('reqinp_other');
-    $(".tab-content").height('auto');
-}
-
-}
-
-function showAcqBusiness(val) {
-if (val == 'Y') {
-    $('#AcqBusinessDiv').removeClass('d-none');
-    $("#VnrRefBusiness_Name1").addClass('reqinp_other');
-    $("#VnrRefBusiness_Contact1").addClass('reqinp_other');
-    $("#VnrRefBusinessRelation1").addClass('reqinp_other');
-    $("#VnrRefBusiness_Location1").addClass('reqinp_other');
-    $("#VnrRefBusiness_RelWithPerson1").addClass('reqinp_other');
-    $(".tab-content").height('auto');
-} else {
-    $('#AcqBusinessDiv').addClass('d-none');
-    $("#VnrRefBusiness_Name1").removeClass('reqinp_other');
-    $("#VnrRefBusiness_Contact1").removeClass('reqinp_other');
-    $("#VnrRefBusinessRelation1").removeClass('reqinp_other');
-    $("#VnrRefBusiness_Location1").removeClass('reqinp_other');
-    $("#VnrRefBusiness_RelWithPerson1").removeClass('reqinp_other');
-    $(".tab-content").height('auto');
-}
-
-}
-
-function showOtherSeed(val) {
-if (val == 'Y') {
-    $('#OtherSeedDiv').removeClass('d-none');
-    $("#OtherSeedName1").addClass('reqinp_other');
-    $("#OtherSeedMobile1").addClass('reqinp_other');
-    $("#OtherSeedCompany1").addClass('reqinp_other');
-    $("#OtherSeedLocation1").addClass('reqinp_other');
-    $("#OtherSeedRelation1").addClass('reqinp_other');
-    $(".tab-content").height('auto');
-} else {
-    $('#OtherSeedDiv').addClass('d-none');
-    $("#OtherSeedName1").removeClass('reqinp_other');
-    $("#OtherSeedMobile1").removeClass('reqinp_other');
-    $("#OtherSeedCompany1").removeClass('reqinp_other');
-    $("#OtherSeedLocation1").removeClass('reqinp_other');
-    $("#OtherSeedRelation1").removeClass('reqinp_other');
-    $(".tab-content").height('auto');
-}
-
-}
-
-function TwoWheel() {
-if ($('#TwoWheelChk').prop('checked')) {
-    $('#twowheel').removeClass('d-none');
-    $('#TwoWheelChk').val('1');
-    $('#TwoWheelPetrol').addClass('reqinp_exp');
-    $('.tab-content').height('auto');
-} else {
-    $('#twowheel').addClass('d-none');
-    $('#TwoWheelChk').val('0');
-    $('#TwoWheelPetrol').removeClass('reqinp_exp');
-    $('.tab-content').height('auto');
-}
-}
-
-function FourWheel() {
-
-if ($('#FourWheelChk').prop('checked')) {
-    $('#fourwheel').removeClass('d-none');
-    $('#FourWheelChk').val('1');
-    $('#FourWheelPetrol').addClass('reqinp_exp');
-    $('.tab-content').height('auto');
-} else {
-    $('#fourwheel').addClass('d-none');
-    $('#FourWheelChk').val('0');
-    $('#FourWheelPetrol').removeClass('reqinp_exp');
-    $('.tab-content').height('auto');
-}
-
-}
 
         $(document).on('click', '.otherbenefit', function() {
             if ($(this).prop('checked')) {

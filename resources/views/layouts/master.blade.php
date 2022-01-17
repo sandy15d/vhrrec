@@ -20,6 +20,7 @@ $CompanyQry = DB::table('master_company')
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ URL::to('/') }}/assets/js/jquery.min.js"></script>
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/mystyle.css" />
     <link rel="icon" href="{{ URL::to('/') }}/assets/images/favicon-32x32.png" type="image/png" />
     <link href="{{ URL::to('/') }}/assets/plugins/simplebar/css/simplebar.css" rel="stylesheet" />
@@ -45,7 +46,7 @@ $CompanyQry = DB::table('master_company')
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTablesButtons.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
-    <script src="{{ URL::to('/') }}/assets/js/jquery.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
     <title>HR Recruitment | @yield('title')</title>
     <style>

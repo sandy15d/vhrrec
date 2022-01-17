@@ -14,12 +14,14 @@ $sendingId = request()->query('jaid');
 $JAId = base64_decode($sendingId);
 $Rec = DB::table('jobapply')
     ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+    ->leftJoin('screening', 'screening.JAId', '=', 'jobapply.JAId')
+    ->leftJoin('screen2ndround', 'screen2ndround.ScId', '=', 'screening.ScId')
     ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
     ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
     ->leftJoin('jf_pf_esic', 'jobcandidates.JCId', '=', 'jf_pf_esic.JCId')
-    ->leftJoin('jf_strength', 'jobcandidates.JCId', '=', 'jf_strength.JCId')
-    ->where('JAId', $JAId)
-    ->select('jobapply.*', 'jobcandidates.*', 'jobpost.Title as JobTitle', 'jobpost.JobCode', 'jf_contact_det.pre_address', 'jf_contact_det.pre_city', 'jf_contact_det.pre_state', 'jf_contact_det.pre_pin', 'jf_contact_det.pre_dist', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin', 'jf_contact_det.perm_dist', 'jf_contact_det.cont_one_name', 'jf_contact_det.cont_one_relation', 'jf_contact_det.cont_one_number', 'jf_contact_det.cont_two_name', 'jf_contact_det.cont_two_relation', 'jf_contact_det.cont_two_number', 'jf_pf_esic.UAN', 'jf_pf_esic.PFNumber', 'jf_pf_esic.ESICNumber', 'jf_pf_esic.BankName', 'jf_pf_esic.BranchName', 'jf_pf_esic.IFSCCode', 'jf_pf_esic.AccountNumber', 'jf_pf_esic.PAN', 'jf_strength.Strength1', 'jf_strength.Strength2', 'jf_strength.Improvement1', 'jf_strength.Improvement2')
+
+    ->where('jobapply.JAId', $JAId)
+    ->select('jobapply.*', 'jobcandidates.*', 'screening.ReSentForScreen', 'screening.ScreenStatus', 'screening.IntervStatus', 'screening.IntervDt', 'screen2ndround.IntervDt2', 'screen2ndround.IntervStatus2', 'screening.SelectedForD','jobpost.Title as JobTitle', 'jobpost.JobCode', 'jf_contact_det.pre_address', 'jf_contact_det.pre_city', 'jf_contact_det.pre_state', 'jf_contact_det.pre_pin', 'jf_contact_det.pre_dist', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin', 'jf_contact_det.perm_dist', 'jf_contact_det.cont_one_name', 'jf_contact_det.cont_one_relation', 'jf_contact_det.cont_one_number', 'jf_contact_det.cont_two_name', 'jf_contact_det.cont_two_relation', 'jf_contact_det.cont_two_number', 'jf_pf_esic.UAN', 'jf_pf_esic.PFNumber', 'jf_pf_esic.ESICNumber', 'jf_pf_esic.BankName', 'jf_pf_esic.BranchName', 'jf_pf_esic.IFSCCode', 'jf_pf_esic.AccountNumber', 'jf_pf_esic.PAN', 'jf_pf_esic.Passport')
     ->first();
 
 $JCId = $Rec->JCId;
@@ -62,6 +64,18 @@ $lang = DB::table('jf_language')
     ->where('JCId', $JCId)
     ->get();
 $count = count($sql);
+$OtherSeed = DB::table('relation_other_seed_cmp')
+    ->where('JCId', $JCId)
+    ->get();
+$VnrBusinessRef = DB::table('vnr_business_ref')
+    ->where('JCId', $JCId)
+    ->get();
+$AboutAns = DB::table('about_answer')
+    ->where('JCId', $JCId)
+    ->first();
+$Docs = DB::table('jf_docs')
+    ->where('JCId', $JCId)
+    ->first();
 @endphp
 @extends('layouts.master')
 @section('title', 'Candidate Detail')
@@ -85,10 +99,28 @@ $count = count($sql);
             cursor: pointer;
         }
 
+        .iframe-container {
+            padding-bottom: 60%;
+            padding-top: 30px;
+            height: 0;
+            overflow: hidden;
+        }
+
+        .iframe-container iframe,
+        .iframe-container object,
+        .iframe-container embed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
     </style>
     <div class="page-content">
         <input type="hidden" name="JAId" id="JAId" value="{{ $JAId }}">
         <input type="hidden" name="JCId" id="JCId" value="{{ $JCId }}">
+
         <div class="card mb-0">
             <div class="card-body">
                 <div class="row">
@@ -158,7 +190,8 @@ $count = count($sql);
                                                 @endif
                                                 @if ($Rec->FinalSubmit == 1)
                                                     <div class=" title">
-                                                        <a class="text-danger" href="javascript:void(0);">Joining
+                                                        <a class="text-danger" href="javascript:void(0);"
+                                                            onclick="printJoiningForm('{{ route('joining_form_print') }}?jaid={{ $sendingId }}')">Joining
                                                             Form</a>
                                                     </div>
                                                 @endif
@@ -178,13 +211,15 @@ $count = count($sql);
                                     </div>
                                 </div>
                             </div>
-                            {{-- <div class="pro-edit"><a data-bs-target="#profile_info" data-bs-toggle="modal"
-                                    class="edit-icon" href="#"><i class="fa fa-pencil"></i></a></div> --}}
+                            <div class="pro-edit"><a data-bs-target="#profile_info" data-bs-toggle="modal"
+                                    class="edit-icon" onclick="GetProfileData();" href="javascript:void(0);"><i
+                                        class="fa fa-pencil"></i></a></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="card tab-box">
             <div class="row user-tabs">
                 <div class="col-lg-12 col-md-12 col-sm-12 line-tabs">
@@ -223,6 +258,7 @@ $count = count($sql);
         </div>
 
         <div class="tab-content">
+
             <div id="cand_profile" class=" tab-pane fade pro-overview show active">
                 <div class="row">
                     <div class="col-md-6 d-flex">
@@ -277,16 +313,7 @@ $count = count($sql);
                                         <div class="text">{{ $Rec->Caste ?? '-' }}@if ($Rec->Caste == 'Other')<span class="text-danger">({{ $Rec->OtherCaste }})</span> @endif
                                         </div>
                                     </li>
-                                    <li>
-                                        <div class="title">Driving License<span style="float: right">:</span></div>
-                                        <div class="text">{{ $Rec->DrivingLicense ?? '-' }}
-                                            @if ($Rec->DrivingLicense != null)
-                                                <br>Validity Upto
-                                                - <span>{{ date('d-M-Y', strtotime($Rec->LValidity)) }}</span>
-                                            @endif
-                                        </div>
 
-                                    </li>
 
                                 </ul>
                             </div>
@@ -375,6 +402,10 @@ $count = count($sql);
                                     <li>
                                         <div class="title">ESIC No<span style="float: right">:</span></div>
                                         <div class="text">{{ $Rec->ESICNumber ?? '-' }}</div>
+                                    </li>
+                                    <li>
+                                        <div class="title">Passport<span style="float: right">:</span></div>
+                                        <div class="text">{{ $Rec->Passport ?? '-' }}</div>
                                     </li>
                                 </ul>
                             </div>
@@ -607,11 +638,7 @@ $count = count($sql);
                                                 style="float: right">:</span></div>
                                         <div class="text">{{ $Rec->Designation ?? '-' }}</div>
                                     </li>
-                                    <li>
-                                        <div class="title" style="width: 150px;">Department <span
-                                                style="float: right">:</span></div>
-                                        <div class="text">{{ $Rec->PresentDepartment ?? '-' }}</div>
-                                    </li>
+
                                     <li>
                                         <div class="title" style="width: 150px;">Reporting to<span
                                                 style="float: right">:</span></div>
@@ -828,42 +855,125 @@ $count = count($sql);
                         </div>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col-md-12 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
-                                <h6 class="card-title">Acquaintances / Relatives associated with the VNR Group<a
-                                        href="#" class="edit-icon" data-bs-toggle="modal"
+                                <h6 class="card-title">Acquaintances or relatives working with
+                                    VNR Group Companies<a href="#" class="edit-icon" data-bs-toggle="modal"
                                         data-bs-target="#vnr_ref_modal" onclick="getVnrRef();"><i
+                                            class="fa fa-pencil"></i></a></h6>
+
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th>Name</th>
+                                            <th>Mobile </th>
+                                            <th>Email</th>
+                                            <th>VNR Group /<br>Company Name</th>
+                                            <th>Designation</th>
+                                            <th>Location</th>
+                                            <th>Your Relationship <br>with person mentioned</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-center">
+                                        @foreach ($VnrRef as $item)
+                                            <tr>
+                                                <td>{{ $item->name }}</td>
+                                                <td>{{ $item->contact }}</td>
+                                                <td>{{ $item->email }}</td>
+                                                <td>{{ $item->company }}
+                                                    {{ $item->company == 'Other' ? '/ ' . $item->other_company : '' }}
+                                                </td>
+                                                </td>
+                                                <td>{{ $item->designation }}</td>
+                                                <td>{{ $item->location }}</td>
+                                                <td>{{ $item->rel_with_person }}</td>
+
+
+
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 d-flex">
+                        <div class="card profile-box flex-fill">
+                            <div class="card-body">
+                                <h6 class="card-title">Acquaintances or relatives associated with
+                                    VNR as business associates<a href="#" class="edit-icon" data-bs-toggle="modal"
+                                        data-bs-target="#vnr_business_ref_modal" onclick="getVnrRef_Business();"><i
                                             class="fa fa-pencil"></i></a></h6>
 
                                 <table class="table">
                                     <thead>
-                                        <tr>
-                                            <td>S.No</td>
-                                            <td>Name</td>
-                                            <td>Relationship</td>
-                                            <td>Designation</td>
-                                            <td>Contact</td>
-                                            <td>Email</td>
+                                        <tr class="text-center">
+                                            <th>Name</th>
+                                            <th>Mobile </th>
+                                            <th>Email</th>
+                                            <th>Business Relation <br>With VNR</th>
+                                            <th>Location of Business /
+                                                acquaintances</th>
+                                            <th>Your Relationship <br>with person mentioned</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        @php
-                                            $i = 1;
-                                        @endphp
-                                        @foreach ($VnrRef as $item)
+                                    <tbody class="text-center">
+                                        @foreach ($VnrBusinessRef as $item)
                                             <tr>
-                                                <td>{{ $i }}</td>
-                                                <td>{{ $item->name }}</td>
-                                                <td>{{ $item->rel_with_person }}</td>
-                                                <td>{{ $item->designation }}</td>
-                                                <td>{{ $item->contact }}</td>
-                                                <td>{{ $item->email }}</td>
+                                                <td>{{ $item->Name ?? '' }}</td>
+                                                <td>{{ $item->Mobile ?? '' }}</td>
+                                                <td>{{ $item->Email ?? '' }}</td>
+                                                <td>{{ $item->BusinessRelation ?? '' }}</td>
+                                                </td>
+                                                <td>{{ $item->Location ?? '' }}</td>
+                                                <td>{{ $item->PersonRelation ?? '' }}</td>
                                             </tr>
-                                            @php
-                                                $i++;
-                                            @endphp
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 d-flex">
+                        <div class="card profile-box flex-fill">
+                            <div class="card-body">
+                                <h6 class="card-title">Relatives or acquaintances is/are working
+                                    or associated with any other Seed Company<a href="#" class="edit-icon"
+                                        data-bs-toggle="modal" data-bs-target="#other_seed_modal"
+                                        onclick="getOtherSeed();"><i class="fa fa-pencil"></i></a></h6>
+
+                                <table class="table">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th>Name</th>
+                                            <th>Mobile </th>
+                                            <th>Email</th>
+                                            <th>Company Name</th>
+                                            <th>Designation</th>
+                                            <th>Location</th>
+                                            <th>Your Relationship <br>with person mentioned</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-center">
+                                        @foreach ($OtherSeed as $item)
+                                            <tr>
+                                                <td>{{ $item->Name ?? '' }}</td>
+                                                <td>{{ $item->Mobile ?? '' }}</td>
+                                                <td>{{ $item->Email ?? '' }}</td>
+                                                <td>{{ $item->CompanyName ?? '' }}</td>
+                                                <td>{{ $item->Designation ?? '' }}</td>
+                                                <td>{{ $item->Location ?? '' }}</td>
+                                                <td>{{ $item->Relation ?? '' }}</td>
+                                            </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
@@ -875,8 +985,7 @@ $count = count($sql);
 
             <div class="tab-pane fade" id="cand_other">
                 <div class="row">
-
-                    <div class="col-md-6 d-flex">
+                    <div class="col-md-12 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Language Proficiency
@@ -924,21 +1033,311 @@ $count = count($sql);
                     <div class="col-md-12 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
+                                <h6 class="card-title">Documents
+                                    <a href="#" class="edit-icon" data-bs-toggle="modal"
+                                        data-bs-target="#document_modal">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                </h6>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 5%" class=" text-center">S.No</th>
+                                                <th class="text-center" style="width: 20%">Document Name</th>
+                                                <th class="text-center">View</th>
+                                                <th style="width: 5%" class=" text-center">S.No</th>
+                                                <th class="text-center" style="width: 20%">Document Name</th>
+                                                <th>View</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class=" text-center">1</td>
+                                                <td>Aadhaar Card</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->Aadhar != null)
+                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->Aadhar }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
+
+                                                <td class=" text-center">10</td>
+                                                <td>Ethical</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->Ethical != null)
+                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->Ethical }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class=" text-center">2</td>
+                                                <td>PAN Card</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->PanCard != null)
+                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->PanCard }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
+
+                                                <td class=" text-center">11</td>
+                                                <td>DL</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->DL != null)
+                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->DL }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class=" text-center">3</td>
+                                                <td>Passport</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->Passport != null)
+                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->Passport }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
+
+                                                <td class=" text-center">12</td>
+                                                <td>BloodGroup</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->BloodGroup != null)
+                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->BloodGroup }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class=" text-center">4</td>
+                                                <td>PF Form2</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->PF_Form2 != null)
+                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->PF_Form2 }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
+
+                                                <td class=" text-center">13</td>
+                                                <td>OfferLtr</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->OfferLtr != null)
+                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->OfferLtr }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class=" text-center">5</td>
+                                                <td>PF Form11</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->PF_Form11 != null)
+                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->PF_Form11 }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
+
+                                                <td class=" text-center">14</td>
+                                                <td>RelievingLtr</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->RelievingLtr != null)
+                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->RelievingLtr }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class=" text-center">6</td>
+                                                <td>Gratutity</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->Gratutity != null)
+                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->Gratutity }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
+
+                                                <td class=" text-center">15</td>
+                                                <td>SalarySlip</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->SalarySlip != null)
+                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->SalarySlip }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class=" text-center">7</td>
+                                                <td>ESIC</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->ESIC != null)
+                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->ESIC }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
+
+                                                <td class=" text-center">16</td>
+                                                <td>AppraisalLtr</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->AppraisalLtr != null)
+                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->AppraisalLtr }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class=" text-center">8</td>
+                                                <td>ESIC_Family</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->ESIC_Family != null)
+                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->ESIC_Family }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
+
+                                                <td class=" text-center">17</td>
+                                                <td>VaccinationCert</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->VaccinationCert != null)
+                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->VaccinationCert }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class=" text-center">9</td>
+                                                <td>Health</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->Health != null)
+                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->Health }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
+
+                                                <td class=" text-center">18</td>
+                                                <td>BankDoc</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->BankDoc != null)
+                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->BankDoc }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 d-flex">
+                        <div class="card profile-box flex-fill">
+                            <div class="card-body">
                                 <h6 class="card-title">About Yourself<a href="#" class="edit-icon"
-                                        data-bs-toggle="modal" data-bs-target="#family_info_modal"><i
+                                        data-bs-toggle="modal" data-bs-target="#about_modal"><i
                                             class="fa fa-pencil"></i></a></h6>
 
                                 <div class="table-responsive">
                                     <table class="table">
                                         <tbody>
                                             <tr style="background-color: #F1F8E9">
-                                                <td>
-                                                    What is your aim in life?
+                                                <td class="fw-bold">
+                                                    Q1. What is your aim in life?
                                                 </td>
                                             </tr>
                                             <tr style="background-color: #F9FBE7">
                                                 <td>
-                                                    &ensp;&ensp;&ensp;I am a good person.
+                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutAim ?? '' }}
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F1F8E9">
+                                                <td class="fw-bold">
+                                                    Q2. What are you hobbies and interest?
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F9FBE7">
+                                                <td>
+                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutHobbi ?? '' }}
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F1F8E9">
+                                                <td class="fw-bold">
+                                                    Q3. Where do you see yourself 5 Years from now?
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F9FBE7">
+                                                <td>
+                                                    &ensp;&ensp;&ensp;{{ $AboutAns->About5Year ?? '' }}
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F1F8E9">
+                                                <td class="fw-bold">
+                                                    Q4. What are your greatest personal assets (qualities, skills,
+                                                    abilities) which make you successful in the jobs you take up?
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F9FBE7">
+                                                <td>
+                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutAssets ?? '' }}
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F1F8E9">
+                                                <td class="fw-bold">
+                                                    Q5. What are your areas where you think you need to improve yourself?
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F9FBE7">
+                                                <td>
+                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutImprovement ?? '' }}
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F1F8E9">
+                                                <td class="fw-bold">
+                                                    Q6. What are your Strengths?
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F9FBE7">
+                                                <td>
+                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutStrength ?? '' }}
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F1F8E9">
+                                                <td class="fw-bold">
+                                                    Q7. In the past or at present, have/are you suffered /suffering from,
+                                                    any form of physical disability or any minor or major illness or
+                                                    deficiency?
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F9FBE7">
+                                                <td>
+                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutDeficiency ?? '' }}
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F1F8E9">
+                                                <td class="fw-bold">
+                                                    Q8. Have you Been criminally prosecuted? if so, give details separately.
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F9FBE7">
+                                                <td>
+                                                    &ensp;&ensp;&ensp;
+                                                    @if ($AboutAns != null)
+
+                                                        {{ $AboutAns->CriminalChk == 'Y' ? 'Yes' : 'No' }}
+                                                    @endif
+
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F1F8E9">
+                                                <td class="fw-bold">
+                                                    Q9. Do You have a valid driving licence?
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F9FBE7">
+                                                <td>
+                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutDeficiency ?? '' }}
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -951,9 +1350,103 @@ $count = count($sql);
             </div>
 
             <div class="tab-pane fade" id="cand_history">
-                <div class="card">
-                    <div class="card-body">
-                        History
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card profile-box flex-fill">
+                            <div class="card-body">
+                                <h6 class="card-title">Job Application History </h6>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered text-center">
+                                        <thead>
+                                            <th>Action</th>
+                                            <th>Date</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Job Applied</td>
+                                                <td> {{ date('d-M-Y', strtotime($Rec->ApplyDate)) }}</td>
+                                            </tr>
+                                            @if ($Rec->Status != null)
+                                                <tr>
+                                                    <td>HR Screening Status</td>
+                                                    <td>{{ $Rec->Status }}</td>
+                                                </tr>
+                                            @endif
+                                            @if ($Rec->Status == 'Selected')
+                                                <tr>
+                                                    <td>Forwarded for Technical Screening</td>
+                                                    <td>{{ $Rec->FwdTechScr }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Technical Screening Sent Date</td>
+                                                    <td> {{ date('d-M-Y', strtotime($Rec->ReSentForScreen)) }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Technical Screening Status</td>
+                                                    <td>{{ $Rec->ScreenStatus }}</td>
+                                                </tr>
+                                            @endif
+
+                                            @if ($Rec->ScreenStatus == 'Shortlist')
+                                                <tr>
+                                                    <td>Inderview Date</td>
+                                                    <td>{{ date('d-M-Y', strtotime($Rec->IntervDt)) }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Interview Status</td>
+                                                    <td>{{ $Rec->IntervStatus }}</td>
+                                                </tr>
+                                            @endif
+                                            @if ($Rec->IntervStatus == '2nd Round Interview')
+                                                <tr>
+                                                    <td>2nd Round Interview Date</td>
+                                                    <td>{{ date('d-M-Y', strtotime($Rec->IntervDt2)) }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2nd Round Interview Status</td>
+                                                    <td>{{ $Rec->IntervStatus2 }}</td>
+                                                </tr>
+                                            @endif
+                                            @if ($Rec->SelectedForD != null)
+                                            <tr>
+                                                <td>Offer Letter Sent</td>
+                                                <td>{{ $OfBasic->OfferLetterSent ?? '' }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Offer Letter Status</td>
+                                                <td>{{ $OfBasic->Answer ?? '' }}</td>
+                                            </tr>
+                                            @endif
+                                           
+                                            @if ($OfBasic != null && $OfBasic->Answer == 'Rejected')
+                                                <tr>
+                                                    <td>Offer Letter Rejected Reason</td>
+                                                    <td>{{ $OfBasic->RejReason }}</td>
+                                                </tr>
+                                            @endif
+                                            @if ($OfBasic != null && $OfBasic->Answer == 'Accepted')
+                                                <tr>
+                                                    <td>Joining Form Sent</td>
+                                                    <td>{{ $OfBasic->JoiningFormSent }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Joining Form Status</td>
+                                                    <td>{{ $Rec->FinalSubmit == 1 ? 'Submitted' : 'Not Submitted' }}
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h1>World</h1>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -988,7 +1481,7 @@ $count = count($sql);
                                         <div class="text">
                                             @if ($OfBasic != null)
                                                 {{ getDesignation($OfBasic->Designation) ?? '-' }}
-                                                @else
+                                            @else
                                                 -
                                             @endif
                                         </div>
@@ -999,7 +1492,7 @@ $count = count($sql);
                                         <div class="text">
                                             @if ($OfBasic != null)
                                                 {{ getGradeValue($OfBasic->Grade) ?? '-' }}
-                                                @else
+                                            @else
                                                 -
                                             @endif
                                         </div>
@@ -1010,7 +1503,7 @@ $count = count($sql);
                                         <div class="text">
                                             @if ($OfBasic != null)
                                                 {{ getFullName($OfBasic->A_ReportingManager) ?? '-' }}
-                                                @else
+                                            @else
                                                 -
                                             @endif
                                         </div>
@@ -1021,7 +1514,7 @@ $count = count($sql);
                                         <div class="text">
                                             @if ($OfBasic != null)
                                                 {{ $OfBasic->CTC ?? '-' }}
-                                                @else
+                                            @else
                                                 -
                                             @endif
                                         </div>
@@ -1106,9 +1599,9 @@ $count = count($sql);
                                             <div class="text text-danger">
                                                 @if ($OfBasic != null)
                                                     {{ $OfBasic->RejReason ?? '-' }}
-                                                    
+
                                                 @endif
-                                              </div>
+                                            </div>
                                         </li>
 
                                     @endif
@@ -1241,18 +1734,19 @@ $count = count($sql);
                                 </h6>
                                 <ul class="personal-info">
                                     @if ($OfBasic != null && $OfBasic->OfferLtrGen == '1')
-                                    <li>
-                                        <div class="title" style="width: 150px;">Offer Letter<span
-                                                style="float: right">:</span></div>
-                                        <div class="text"><input type="text" name="" id="oflink"
-                                                class="frminp d-inline"
-                                                value="{{ route('candidate-offer-letter') }}?jaid={{ $sendingId }}">
-                                            <button class="frmbtn btn btn-sm btn-secondary" onclick="copyOfLink();">Copy
-                                                Link</button>
-                                        </div>
-                                    </li>
+                                        <li>
+                                            <div class="title" style="width: 150px;">Offer Letter<span
+                                                    style="float: right">:</span></div>
+                                            <div class="text"><input type="text" name="" id="oflink"
+                                                    class="frminp d-inline"
+                                                    value="{{ route('candidate-offer-letter') }}?jaid={{ $sendingId }}">
+                                                <button class="frmbtn btn btn-sm btn-secondary"
+                                                    onclick="copyOfLink();">Copy
+                                                    Link</button>
+                                            </div>
+                                        </li>
                                     @endif
-                                   
+
                                     <li>
                                         <div class="title" style="width: 150px;">Interview Form<span
                                                 style="float: right">:</span></div>
@@ -1264,29 +1758,29 @@ $count = count($sql);
                                                 Link</button>
                                         </div>
                                     </li>
-                                    @if($Rec->InterviewSubmit ==1)
-                                    <li>
-                                        <div class="title" style="width: 150px;">Joining Form<span
-                                                style="float: right">:</span></div>
-                                        <div class="text"><input type="text" name="" id="jflink"
-                                                class="frminp d-inline"
-                                                value="{{ route('candidate-joining-form') }}?jaid={{ $sendingId }}">
-                                            <button class="frmbtn btn btn-sm btn-secondary" onclick="copyJFrmLink();">Copy
-                                                Link</button>
-                                        </div>
-                                    </li>
+                                    @if ($Rec->InterviewSubmit == 1)
+                                        <li>
+                                            <div class="title" style="width: 150px;">Joining Form<span
+                                                    style="float: right">:</span></div>
+                                            <div class="text"><input type="text" name="" id="jflink"
+                                                    class="frminp d-inline"
+                                                    value="{{ route('candidate-joining-form') }}?jaid={{ $sendingId }}">
+                                                <button class="frmbtn btn btn-sm btn-secondary"
+                                                    onclick="copyJFrmLink();">Copy
+                                                    Link</button>
+                                            </div>
+                                        </li>
                                     @endif
                                     <li>
                                         <div class="title" style="width: 150px;">FIRO B Test<span
                                                 style="float: right">:</span></div>
                                         <div class="text">
-                                        
-                                                <input type="text" name="" id="firoblink" class="frminp d-inline"
-                                                    value="{{ route('firo_b') }}?jcid={{ $firobid }}">
-                                                <button class="frmbtn btn btn-sm btn-secondary"
-                                                    onclick="copyFiroBlink();">Copy
-                                                    Link</button>
-                                      
+
+                                            <input type="text" name="" id="firoblink" class="frminp d-inline"
+                                                value="{{ route('firo_b') }}?jcid={{ $firobid }}">
+                                            <button class="frmbtn btn btn-sm btn-secondary" onclick="copyFiroBlink();">Copy
+                                                Link</button>
+
 
 
                                             @if ($Rec->FIROB_Test == 1)
@@ -1346,6 +1840,65 @@ $count = count($sql);
         </div>
     </div>
     <div class="overlay email-toggle-btn-mobile"></div>
+
+    <div id="profile_info" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">Profile Information</h6>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="CandidatePersonalForm" action="{{ route('Candidate_ProfileData_Save') }}" method="POST">
+                        <input type="hidden" name="Pro_JCId" id="Pro_JCId">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" name="FName" id="FName" class="form-control form-control-sm">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Middle Name</label>
+                            <input class="form-control form-control-sm" type="text" id="MName" name="MName">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" name="LName" id="LName" class="form-control form-control-sm">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Date of Birth</label>
+                            <input class="form-control form-control-sm" type="date" id="DOB" name="DOB">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Mobile</label>
+                            <input type="text" name="Mobile" id="Mobile" class="form-control form-control-sm">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email ID</label>
+                            <input type="text" name="EMail" id="EMail" class="form-control form-control-sm">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Candidate Image</label>
+
+                            <input type="file" name="CandidateImage" id="CandidateImage"
+                                class="form-control form-control-sm">
+                        </div>
+
+                        <div class="submit-section">
+                            <button class="btn btn-primary submit-btn">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="personal_info_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static"
         data-bs-keyboard="false">
@@ -1421,15 +1974,7 @@ $count = count($sql);
                             <input type="text" name="OtherCategory" id="OtherCategory"
                                 class="form-control form-control-sm d-none mt-2" placeholder="Other Category">
                         </div>
-                        <div class="form-group">
-                            <label for="DrivingLicense">Driving License</label>
-                            <input type="text" name="DrivingLicense" id="DrivingLicense"
-                                class="form-control form-control-sm">
-                        </div>
-                        <div class="form-group">
-                            <label for="LValidity">Driving License Validity</label>
-                            <input type="date" name="LValidity" id="LValidity" class="form-control form-control-sm">
-                        </div>
+
                         <div class="submit-section">
                             <button class="btn btn-primary submit-btn">Submit</button>
                         </div>
@@ -1576,6 +2121,12 @@ $count = count($sql);
                                     <label for="ESICNumber">ESIC Number</label>
                                     <input type="text" name="ESICNumber" id="ESICNumber"
                                         class="form-control form-control-sm">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="Passport">Passport</label>
+                                    <input type="text" name="Passport" id="Passport" class="form-control form-control-sm">
                                 </div>
                             </div>
                         </div>
@@ -2188,11 +2739,7 @@ $count = count($sql);
                             <input type="text" name="CurrCompanyName" id="CurrCompanyName"
                                 class="form-control form-control-sm">
                         </div>
-                        <div class="form-group">
-                            <label for="">Department</label>
-                            <input type="text" name="CurrDepartment" id="CurrDepartment"
-                                class="form-control form-control-sm">
-                        </div>
+
 
                         <div class="form-group">
                             <label for="">Designation</label>
@@ -2414,7 +2961,7 @@ $count = count($sql);
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title">Acquaintances/Relatives: (Associated with VNR Group)</h6>
+                    <h6 class="modal-title">Acquaintances or relatives working with VNR Group Companies</h6>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -2427,10 +2974,13 @@ $count = count($sql);
                                 <thead class="text-center">
                                     <tr>
                                         <td>Name</td>
-                                        <td>Relation</td>
+                                        <td>Mobile No</td>
                                         <td>Email</td>
-                                        <td>Contact No</td>
+                                        <td>VNR Group <br>Company Name</td>
                                         <td>Designation</td>
+                                        <td>Location</td>
+                                        <td>Your Relationship <br>with person mentioned
+                                        </td>
                                         <td></td>
                                     </tr>
                                 </thead>
@@ -2441,28 +2991,217 @@ $count = count($sql);
                                                 class="form-control form-control-sm">
                                         </td>
                                         <td>
-                                            <input type="text" name="VnrRefRelWithPerson[]" id="VnrRefRelWithPerson1"
+                                            <input type="text" name="VnrRefContact[]" id="VnrRefContact1"
                                                 class="form-control form-control-sm">
                                         </td>
+
                                         <td>
                                             <input type="text" name="VnrRefEmail[]" id="VnrRefEmail1"
                                                 class="form-control form-control-sm">
                                         </td>
                                         <td>
-                                            <input type="text" name="VnrRefContact[]" id="VnrRefContact1"
-                                                class="form-control form-control-sm">
+                                            <select name="VnrRefCompany[]" id="VnrRefCompany1"
+                                                class="form-select form-select-sm" onchange="GetOtherCompany(1);">
+                                                <option value="">Select</option>
+                                                <option value="VNR Seeds Pvt. Ltd.">VNR
+                                                    Seeds Pvt. Ltd.</option>
+                                                <option value="VNR Nursery Pvt. Ltd.">
+                                                    VNR Nursery Pvt. Ltd.</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+
+                                            <input type="text" name="OtherCompany[]" id="OtherCompany1"
+                                                class="d-none form-control form-control-sm"
+                                                placeholder="Other Company Name">
                                         </td>
                                         <td>
                                             <input type="text" name="VnrRefDesignation[]" id="VnrRefDesignation1"
                                                 class="form-control form-control-sm">
                                         </td>
-                                        <td></td>
+                                        <td>
+                                            <input type="text" name="VnrRefLocation[]" id="VnrRefLocation1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="VnrRefRelWithPerson[]" id="VnrRefRelWithPerson1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td>
+                                            <div class="d-flex order-actions"><a href="javascript:;"
+                                                    class="ms-3" id="removeVnrRef"><i
+                                                        class="bx bxs-trash text-danger"></i></a>
+                                            </div>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
                         <input type="button" value="Add Reference" id="addVnrRef" class="btn btn-primary btn-sm">
+                        <div class="submit-section">
+                            <button class="btn btn-primary submit-btn">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="vnr_business_ref_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">Acquaintances or relatives associated with VNR as business associates</h6>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="BusinessForm" action="{{ route('Candidate_VnrRef_Business_Save') }}" method="POST">
+                        <input type="hidden" name="Business_JCId" id="Business_JCId">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="text-center">
+                                    <tr>
+                                        <td>Name</td>
+                                        <td>Mobile No</td>
+                                        <td>Email</td>
+                                        <td>Business relation with <br>VNR</td>
+                                        <td>Location of Business / <br>acquaintances
+                                        </td>
+
+                                        <td>Your Relationship <br>with person mentioned
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </thead>
+                                <tbody id="VNR_Business_AcqData">
+                                    <tr>
+                                        <td>
+                                            <input type="text" name="VnrRefBusiness_Name[]" id="VnrRefBusiness_Name1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="VnrRefBusiness_Contact[]" id="VnrRefBusiness_Contact1"
+                                                class="form-control form-control-sm">
+                                        </td>
+
+                                        <td>
+                                            <input type="text" name="VnrRefBusiness_Email[]" id="VnrRefBusiness_Email1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td>
+                                            <select name="VnrRefBusinessRelation[]" id="VnrRefBusinessRelation1"
+                                                class="form-select form-select-sm">
+                                                <option value="">Select</option>
+                                                <option value="Dealer">Dealer</option>
+                                                <option value="Distributor">Distributor
+                                                </option>
+                                                <option value="Retailer">Retailer
+                                                </option>
+                                                <option value="Organizer">Organizer
+                                                </option>
+                                                <option value="Vendor">Vendor</option>
+
+                                            </select>
+                                        </td>
+
+                                        <td>
+                                            <input type="text" name="VnrRefBusiness_Location[]"
+                                                id="VnrRefBusiness_Location1" class="form-control form-control-sm">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="VnrRefBusiness_RelWithPerson[]"
+                                                id="VnrRefBusiness_RelWithPerson1" class="form-control form-control-sm">
+                                        </td>
+
+
+                                        <td>
+                                            <div class="d-flex order-actions"><a href="javascript:;"
+                                                    class="ms-3" id="removeVnrRef_Business"><i
+                                                        class="bx bxs-trash text-danger"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <input type="button" value="Add Reference" id="addVnrRef_Business" class="btn btn-primary btn-sm">
+                        <div class="submit-section">
+                            <button class="btn btn-primary submit-btn">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="other_seed_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">Relatives or acquaintances is/are working or associated with any other Seed
+                        Company</h6>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="OtherSeedForm" action="{{ route('Candidate_Other_Seed_Relation_Save') }}" method="POST">
+                        <input type="hidden" name="OtherSeed_JCId" id="OtherSeed_JCId">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="text-center">
+                                    <tr>
+                                        <td>Name</td>
+                                        <td>Mobile No</td>
+                                        <td>Email</td>
+                                        <td>Company Name</td>
+                                        <td>Designation</td>
+                                        <td>Location </td>
+                                        <td>Your Relationship <br>with person mentioned
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </thead>
+                                <tbody id="OtherSeed">
+                                    <tr>
+                                        <td><input type="text" name="OtherSeedName[]" id="OtherSeedName1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td><input type="text" name="OtherSeedMobile[]" id="OtherSeedMobile1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td><input type="text" name="OtherSeedEMail[]" id="OtherSeedEMail1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td><input type="text" name="OtherSeedCompany[]" id="OtherSeedCompany1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td><input type="text" name="OtherSeedDesignation[]" id="OtherSeedDesignation1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td><input type="text" name="OtherSeedLocation[]" id="OtherSeedLocation1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td><input type="text" name="OtherSeedRelation[]" id="OtherSeedRelation1"
+                                                class="form-control form-control-sm">
+                                        </td>
+                                        <td>
+                                            <div class="d-flex order-actions"><a href="javascript:;"
+                                                    class="ms-3" id="removeOtherSeed"><i
+                                                        class="bx bxs-trash text-danger"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <input type="button" value="Add Reference" id="addOtherSeed" class="btn btn-primary btn-sm">
                         <div class="submit-section">
                             <button class="btn btn-primary submit-btn">Submit</button>
                         </div>
@@ -2560,7 +3299,6 @@ $count = count($sql);
             </div>
         </div>
     </div>
-
 
     <div class="modal fade" id="OfferLtrModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
         data-bs-keyboard="false">
@@ -3071,9 +3809,513 @@ $count = count($sql);
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="about_modal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h6 class="modal-title text-light" id="exampleModalLabel">About Yourself </h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('SaveAbout') }}" id="about_form" method="POST">
+                        <div class="col-lg-12">
+                            <h6>Q1. What is your aim in life? </h6>
+                            <div class="form-group row mb-2">
+                                <div class="col-md-12">
+                                    <input type="text" name="AboutAim" id="AboutAim"
+                                        class="form-control form-control-sm reqinp_abt"
+                                        value="{{ $AboutAns->AboutAim ?? '' }}">
+                                </div>
+                            </div>
+                            <h6>Q2. What are you hobbies and interest? </h6>
+                            <div class="form-group row mb-2">
+                                <div class="col-md-12">
+
+                                    <input type="text" name="AboutHobbi" id="AboutHobbi"
+                                        class="form-control form-control-sm reqinp_abt"
+                                        value="{{ $AboutAns->AboutHobbi ?? '' }}">
+                                </div>
+                            </div>
+                            <h6>Q3. Where do you see yourself 5 Years from now? </h6>
+                            <div class="form-group row mb-2">
+                                <div class="col-md-12">
+
+                                    <input type="text" name="About5Year" id="About5Year"
+                                        class="form-control form-control-sm reqinp_abt"
+                                        value="{{ $AboutAns->About5Year ?? '' }}">
+                                </div>
+                            </div>
+                            <h6>Q4. What are your greatest personal assets (qualities,
+                                skills,
+                                abilities) which make you successful
+                                in the jobs you take up? </h6>
+                            <div class="form-group row mb-2">
+                                <div class="col-md-12">
+
+                                    <input type="text" name="AboutAssets" id="AboutAssets"
+                                        class="form-control form-control-sm reqinp_abt"
+                                        value="{{ $AboutAns->AboutAssets ?? '' }}">
+                                </div>
+                            </div>
+                            <h6>Q5. What are your areas where you think you need to improve
+                                yourself? </h6>
+                            <div class="form-group row mb-2">
+                                <div class="col-md-12">
+
+                                    <input type="text" name="AboutImprovement" id="AboutImprovement"
+                                        class="form-control form-control-sm reqinp_abt"
+                                        value="{{ $AboutAns->AboutImprovement ?? '' }}">
+                                </div>
+                            </div>
+                            <h6>Q6. What are your Strengths? </h6>
+                            <div class="form-group row mb-2">
+                                <div class="col-md-12">
+
+                                    <input type="text" name="AboutStrength" id="AboutStrength"
+                                        class="form-control form-control-sm reqinp_abt"
+                                        value="{{ $AboutAns->AboutStrength ?? '' }}">
+                                </div>
+                            </div>
+
+
+                            <h6>Q7. In the past or at present, have/are you suffered
+                                /suffering
+                                from, any form of physical disability
+                                or any minor or major illness or deficiency? </h6>
+                            <div class="form-group row mb-2">
+                                <div class="col-md-12">
+
+                                    <input type="text" name="AboutDeficiency" id="AboutDeficiency"
+                                        class="form-control form-control-sm reqinp_abt"
+                                        value="{{ $AboutAns->AboutDeficiency ?? '' }}">
+                                </div>
+                            </div>
+                            <h6>Q8. Have you Been criminally prosecuted? if so, give details
+                                separately. </h6>
+                            <div style="text-align: left">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input crime" type="radio" name="CriminalChk" id="YesCriminal"
+                                        value="Y" data-value="Y" @php
+                                            if ($AboutAns != null) {
+                                                if ($AboutAns->CriminalChk == 'Y') {
+                                                    echo 'checked';
+                                                }
+                                            }
+                                        @endphp>
+                                    <label class="form-check-label" for="YesCriminal">Yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input crime" type="radio" name="CriminalChk" id="NoCriminal"
+                                        value="N" data-value="N" @php
+                                            if ($AboutAns != null) {
+                                                if ($AboutAns->CriminalChk == 'N') {
+                                                    echo 'checked';
+                                                }
+                                            }
+                                        @endphp>
+                                    <label class="form-check-label" for="NoCriminal">
+                                        No</label>
+                                </div>
+                            </div>
+                            <div class="form-group row mb-2 
+                                 
+                                    @php
+                                        if($AboutAns != null){
+                                            if($AboutAns->CriminalChk == 'Y'){
+                                                echo '';
+                                            }else{
+                                                echo 'd-none';
+                                            }
+                                        }
+                                    @endphp "
+                                id="crime_div">
+                                <div class="col-md-12">
+                                    <input type="text" name="AboutCriminal" id="AboutCriminal"
+                                        class="form-control form-control-sm"
+                                        value="{{ $AboutAns->AboutCriminal ?? '' }}">
+                                </div>
+                            </div>
+
+                            <h6>Q9. Do You have a valid driving licence? </h6>
+                            <div style="text-align: left">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input dlchk" type="radio" name="LicenseChk" id="YesLicense"
+                                        value="Y" data-value="Y" @php
+                                            if ($AboutAns != null) {
+                                                if ($AboutAns->LicenseChk == 'Y') {
+                                                    echo 'checked';
+                                                }
+                                            }
+                                        @endphp>
+                                    <label class="form-check-label" for="YesLicense">Yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input dlchk" type="radio" name="LicenseChk" id="NoLicense"
+                                        value="N" data-value="N" @php
+                                            if ($AboutAns != null) {
+                                                if ($AboutAns->LicenseChk == 'N') {
+                                                    echo 'checked';
+                                                }
+                                            }
+                                        @endphp>
+                                    <label class="form-check-label" for="NoLicense">
+                                        No</label>
+                                </div>
+                            </div>
+                            <div class="form-group row mb-2">
+                                <div class="form-group row 
+                                     
+                                    @php
+                                        if($AboutAns != null){
+                                            if($AboutAns->LicenseChk == 'Y'){
+                                                echo '';
+                                            }else{
+                                                echo 'd-none';
+                                            }
+                                        }
+                                    @endphp "
+                                    id="dl_div">
+                                    <label class="col-form-label col-md-1">License
+                                        No:</label>
+                                    <div class="col-md-2 col-sm-12">
+                                        <input type="text" class="form-control form-control-sm" id="DLNo" name="DLNo"
+                                            value="{{ $AboutAns->DLNo ?? '' }}">
+                                    </div>
+                                    <label class="col-form-label col-md-1">Validity:</label>
+                                    <div class="col-md-2 col-sm-12">
+                                        <input type="date" class="form-control form-control-sm" name="LValidity"
+                                            id="LValidity" value="{{ $AboutAns->LValidity ?? '' }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="submit-section text-center">
+                            <button class="btn btn-primary submit-btn">Save Details
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="document_modal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h6 class="modal-title text-light" id="exampleModalLabel">Document Upload</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <thead class="text-center">
+
+                            <th>Document Name</th>
+                            <th>Upload Document</th>
+                            <th>View</th>
+                        </thead>
+                        <tbody>
+                            @if ($Rec->Professional == 'P')
+                                <tr>
+                                    <td style="width: 25%">Offer or appointment letter
+                                        (previous company)</td>
+                                    <td style="width: 60%">
+                                        <input type="file" name="OfferLtr" id="OfferLtr"
+                                            class="form-control form-control-sm d-inline" style="width: 80%"
+                                            accept="application/pdf">
+                                        <button class="btn btn-warning btn-sm d-inline"
+                                            id="OfferLtrUpload">Upload</button>
+                                    </td>
+                                    <td style="width: 10%; text-align:center">
+                                        @if ($Docs != null && $Docs->OfferLtr != null)
+                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->OfferLtr }}"
+                                                target="_blank" class="btn btn-primary btn-sm">View</a>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+
+                                    <td>Resignation or Relieving Letter (previous
+                                        company)
+                                    </td>
+                                    <td>
+                                        <input type="file" name="RelievingLtr" id="RelievingLtr"
+                                            class="form-control form-control-sm d-inline" style="width: 80%"
+                                            accept="application/pdf">
+                                        <button class="btn btn-warning btn-sm d-inline"
+                                            id="RelievingLtrUpload">Upload</button>
+                                    </td>
+                                    <td style="width: 10%; text-align:center">
+                                        @if ($Docs != null && $Docs->RelievingLtr != null)
+                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->RelievingLtr }}"
+                                                target="_blank" class="btn btn-primary btn-sm">View</a>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Last drawn salary pay slip (previous company)
+                                    </td>
+                                    <td>
+                                        <input type="file" name="SalarySlip" id="SalarySlip"
+                                            class="form-control form-control-sm d-inline" style="width: 80%"
+                                            accept="application/pdf">
+                                        <button class="btn btn-warning btn-sm d-inline"
+                                            id="SalarySlipUpload">Upload</button>
+                                    </td>
+                                    <td style="width: 10%; text-align:center">
+                                        @if ($Docs != null && $Docs->SalarySlip != null)
+                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->SalarySlip }}"
+                                                target="_blank" class="btn btn-primary btn-sm">View</a>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+
+                                    <td>Increment or appraisal letter with revised CTC
+                                        details</td>
+                                    <td>
+                                        <input type="file" name="AppraisalLtr" id="AppraisalLtr"
+                                            class="form-control form-control-sm d-inline" style="width: 80%"
+                                            accept="application/pdf">
+                                        <button class="btn btn-warning btn-sm d-inline"
+                                            id="AppraisalLtrUpload">Upload</button>
+                                    </td>
+                                    <td style="width: 10%; text-align:center">
+                                        @if ($Docs != null && $Docs->AppraisalLtr != null)
+                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->AppraisalLtr }}"
+                                                target="_blank" class="btn btn-primary btn-sm">View</a>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endif
+                            <tr>
+
+                                <td>COVID Vaccine Certificate (Final Certificate)
+                                </td>
+                                <td>
+                                    <input type="file" name="VaccinationCert" id="VaccinationCert"
+                                        class="form-control form-control-sm d-inline" style="width: 80%"
+                                        accept="application/pdf">
+                                    <button class="btn btn-warning btn-sm d-inline"
+                                        id="VaccinationCertUpload">Upload</button>
+                                </td>
+                                <td style="width: 10%; text-align:center">
+                                    @if ($Docs != null && $Docs->VaccinationCert != null)
+                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->VaccinationCert }}"
+                                            target="_blank" class="btn btn-primary btn-sm">View</a>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td style="width: 25%">Aadhaar Card</td>
+                                <td style="width: 60%">
+                                    <input type="file" name="AadhaarCard" id="AadhaarCard"
+                                        class="form-control form-control-sm d-inline" style="width: 80%"
+                                        accept="application/pdf">
+                                    <button class="btn btn-warning btn-sm d-inline" id="AadhaarUpload">Upload</button>
+                                </td>
+                                <td style="width: 10%; text-align:center">
+                                    @if ($Docs != null && $Docs->Aadhar != null)
+                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->Aadhar }}"
+                                            target="_blank" class="btn btn-primary btn-sm">View</a>
+                                    @endif
+                                </td>
+                            </tr>
+
+                            <tr>
+
+                                <td>Driving License</td>
+                                <td>
+                                    <input type="file" name="DLCard" id="DLCard"
+                                        class="form-control form-control-sm d-inline" style="width: 80%"
+                                        accept="application/pdf">
+                                    <button class="btn btn-warning btn-sm d-inline" id="DLCardUpload">Upload</button>
+                                </td>
+                                <td style="width: 10%; text-align:center">
+                                    @if ($Docs != null && $Docs->DL != null)
+                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->DL }}"
+                                            target="_blank" class="btn btn-primary btn-sm">View</a>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td>PF Nomination Form 2
+                                </td>
+                                <td>
+                                    <input type="file" name="PFForm2" id="PFForm2"
+                                        class="form-control form-control-sm d-inline" style="width: 80%"
+                                        accept="application/pdf">
+                                    <button class="btn btn-warning btn-sm d-inline" id="PFForm2Upload">Upload</button>
+                                </td>
+                                <td style="width: 10%; text-align:center">
+                                    @if ($Docs != null && $Docs->PF_Form2 != null)
+                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->PF_Form2 }}"
+                                            target="_blank" class="btn btn-primary btn-sm">View</a>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td>PF Declaration Form 11
+                                </td>
+                                <td>
+                                    <input type="file" name="PF_Form11" id="PF_Form11"
+                                        class="form-control form-control-sm d-inline" style="width: 80%"
+                                        accept="application/pdf">
+                                    <button class="btn btn-warning btn-sm d-inline" id="PFForm11Upload">Upload</button>
+                                </td>
+                                <td style="width: 10%; text-align:center">
+                                    @if ($Docs != null && $Docs->PF_Form2 != null)
+                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->PF_Form11 }}"
+                                            target="_blank" class="btn btn-primary btn-sm">View</a>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td>Gratuity Nomination Form
+                                </td>
+                                <td>
+                                    <input type="file" name="GratuityForm" id="GratuityForm"
+                                        class="form-control form-control-sm d-inline" style="width: 80%"
+                                        accept="application/pdf">
+                                    <button class="btn btn-warning btn-sm d-inline" id="GratuityUpload">Upload</button>
+                                </td>
+                                <td style="width: 10%; text-align:center">
+                                    @if ($Docs != null && $Docs->Gratutity != null)
+                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->Gratutity }}"
+                                            target="_blank" class="btn btn-primary btn-sm">View</a>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td>ESIC Declaration Form 1
+                                </td>
+                                <td>
+                                    <input type="file" name="ESICForm" id="ESICForm"
+                                        class="form-control form-control-sm d-inline" style="width: 80%"
+                                        accept="application/pdf">
+                                    <button class="btn btn-warning btn-sm d-inline" id="ESICFormUpload">Upload</button>
+                                </td>
+                                <td style="width: 10%; text-align:center">
+                                    @if ($Docs != null && $Docs->ESIC != null)
+                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->ESIC }}"
+                                            target="_blank" class="btn btn-primary btn-sm">View</a>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td>Family Declaration Form 1(A)
+                                </td>
+                                <td>
+                                    <input type="file" name="ESIC_Family" id="ESIC_Family"
+                                        class="form-control form-control-sm d-inline" style="width: 80%"
+                                        accept="application/pdf">
+                                    <button class="btn btn-warning btn-sm d-inline" id="ESIC_FamilyUpload">Upload</button>
+                                </td>
+                                <td style="width: 10%; text-align:center">
+                                    @if ($Docs != null && $Docs->ESIC_Family != null)
+                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->ESIC_Family }}"
+                                            target="_blank" class="btn btn-primary btn-sm">View</a>
+                                    @endif
+                                </td>
+                            </tr>
+
+                            <tr>
+
+                                <td>Health Declaration Form
+                                </td>
+                                <td>
+                                    <input type="file" name="Health" id="Health"
+                                        class="form-control form-control-sm d-inline" style="width: 80%"
+                                        accept="application/pdf">
+                                    <button class="btn btn-warning btn-sm d-inline" id="HealthUpload">Upload</button>
+                                </td>
+                                <td style="width: 10%; text-align:center">
+                                    @if ($Docs != null && $Docs->Health != null)
+                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->Health }}"
+                                            target="_blank" class="btn btn-primary btn-sm">View</a>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td>Declaration for Compliance to Ethical Financial
+                                    Dealings
+                                </td>
+                                <td>
+                                    <input type="file" name="Ethical" id="Ethical"
+                                        class="form-control form-control-sm d-inline" style="width: 80%"
+                                        accept="application/pdf">
+                                    <button class="btn btn-warning btn-sm d-inline" id="EthicalUpload">Upload</button>
+                                </td>
+                                <td style="width: 10%; text-align:center">
+                                    @if ($Docs != null && $Docs->Ethical != null)
+                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->Ethical }}"
+                                            target="_blank" class="btn btn-primary btn-sm">View</a>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td>Blood Group Certificate
+                                </td>
+                                <td>
+                                    <input type="file" name="BloodGroup" id="BloodGroup"
+                                        class="form-control form-control-sm d-inline" style="width: 80%"
+                                        accept="application/pdf">
+                                    <button class="btn btn-warning btn-sm d-inline" id="BloodGroupUpload">Upload</button>
+                                </td>
+                                <td style="width: 10%; text-align:center">
+                                    @if ($Docs != null && $Docs->BloodGroup != null)
+                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->BloodGroup }}"
+                                            target="_blank" class="btn btn-primary btn-sm">View</a>
+                                    @endif
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('scriptsection')
     <script>
+        function GetProfileData() {
+            var JCId = $('#JCId').val();
+            $.ajax({
+                url: "{{ route('Candidate_ProfileData') }}",
+                type: "POST",
+                data: {
+                    JCId: JCId
+                },
+                dataType: "json",
+                success: function(data) {
+                    if (data.status == 200) {
+                        $('#Pro_JCId').val(data.data.JCId);
+                        $('#FName').val(data.data.FName);
+                        $('#MName').val(data.data.MName);
+                        $('#LName').val(data.data.LName);
+                        $('#DOB').val(data.data.DOB);
+                        $('#Mobile').val(data.data.Phone);
+                        $('#EMail').val(data.data.Email);
+
+
+                    } else {
+                        alert('error');
+                    }
+                }
+            });
+        }
+
         function GetPersonalData() {
             var JCId = $('#JCId').val();
             $.ajax({
@@ -3172,6 +4414,7 @@ $count = count($sql);
                     $('#UAN').val(data.data.UAN);
                     $('#PFNumber').val(data.data.PFNumber);
                     $('#ESICNumber').val(data.data.ESICNumber);
+                    $('#Passport').val(data.data.Passport);
                 }
             });
         }
@@ -3581,6 +4824,12 @@ $count = count($sql);
                         $('#VnrRefEmail' + i).val(data.data[i - 1].email);
                         $('#VnrRefContact' + i).val(data.data[i - 1].contact);
                         $('#VnrRefDesignation' + i).val(data.data[i - 1].designation);
+                        $('#VnrRefCompany' + i).val(data.data[i - 1].company);
+                        $('#OtherCompany' + i).val(data.data[i - 1].other_company);
+                        $('#VnrRefLocation' + i).val(data.data[i - 1].location);
+                        if (data.data[i - 1].company == 'Other') {
+                            $('#OtherCompany' + i).removeClass('d-none');
+                        }
 
 
                     }
@@ -3593,13 +4842,22 @@ $count = count($sql);
             b += '<tr>';
             b += '<td>' + '<input type="text" name="VnrRefName[]" id="VnrRefName' + num +
                 '" class="form-control form-control-sm">' + '</td>' +
-                '<td>' + '<input type="text" name="VnrRefRelWithPerson[]" id="VnrRefRelWithPerson' + num +
+                '<td>' + '<input type="text" name="VnrRefContact[]" id="VnrRefContact' + num +
                 '" class="form-control form-control-sm">' + '</td>' +
                 '<td>' + '<input type="text" name="VnrRefEmail[]" id="VnrRefEmail' + num +
                 '" class="form-control form-control-sm">' + '</td>' +
-                '<td>' + '<input type="text" name="VnrRefContact[]" id="VnrRefContact' + num +
-                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<select name="VnrRefCompany[]" id="VnrRefCompany' + num +
+                '" class="form-select form-select-sm" onchange="GetOtherCompany(' + num + ')">' +
+                '<option value="">Select</option>' + '<option value="VNR Seeds Pvt. Ltd.">VNR Seeds Pvt. Ltd.</option>' +
+                '<option value="VNR Nursery Pvt. Ltd.">VNR Nursery Pvt. Ltd.</option>' +
+                '<option value="Other">Other</option>' +
+                '</select>  <input type="text" name="OtherCompany[]" id="OtherCompany' + num +
+                '" class="d-none form-control form-control-sm" placeholder="Enter Other Company Name">' + '</td>' +
                 '<td>' + '<input type="text" name="VnrRefDesignation[]" id="VnrRefDesignation' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefLocation[]" id="VnrRefLocation' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefRelWithPerson[]" id="VnrRefRelWithPerson' + num +
                 '" class="form-control form-control-sm">' + '</td>' +
                 '<td>' +
                 '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removeVnrRef"><i class="bx bxs-trash text-danger"></i></a></div>' +
@@ -3608,6 +4866,127 @@ $count = count($sql);
             $('#VNRRefData').append(b);
         } //VNRReference
 
+        function getVnrRef_Business() {
+            $('#Business_JCId').val($('#JCId').val());
+            var JCId = $('#JCId').val();
+            $.ajax({
+                url: "{{ route('Candidate_VnrRef_Business') }}",
+                type: "POST",
+                data: {
+                    JCId: JCId
+                },
+                dataType: "json",
+                success: function(data) {
+                    if (data.status == 200) {
+                        VRef_Business_Count = data.data.length;
+                        for (var i = 1; i <= VRef_Business_Count; i++) {
+                            if (i >= 2) {
+                                VNRReference_Business(i);
+                            }
+                            $('#VnrRefBusiness_Name' + i).val(data.data[i - 1].Name);
+                            $('#VnrRefBusiness_Contact' + i).val(data.data[i - 1].Mobile);
+                            $('#VnrRefBusiness_Email' + i).val(data.data[i - 1].Email);
+                            $('#VnrRefBusinessRelation' + i).val(data.data[i - 1].BusinessRelation);
+                            $('#VnrRefBusiness_Location' + i).val(data.data[i - 1].Location);
+                            $('#VnrRefBusiness_RelWithPerson' + i).val(data.data[i - 1].PersonRelation);
+
+                        }
+                    }
+                }
+            });
+        } //getVnrRef
+
+        function VNRReference_Business(num) {
+            var b = '';
+            b += '<tr>';
+            b += '<td>' + '<input type="text" name="VnrRefBusiness_Name[]" id="VnrRefBusiness_Name' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefBusiness_Contact[]" id="VnrRefBusiness_Contact' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefBusiness_Email[]" id="VnrRefBusiness_Email' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<select name="VnrRefBusinessRelation[]" id="VnrRefBusinessRelation' + num +
+                '" class="form-select form-select-sm">' +
+                '<option value="">Select</option>' + '<option value="Dealer">Dealer</option>' +
+                '<option value="Distributor">Distributor</option>' +
+                '<option value="Retailer">Retailer</option>' +
+                '<option value="Organizer">Organizer</option>' +
+                '<option value="Vendor">Vendor</option>' +
+                '</select>' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefBusiness_Location[]" id="VnrRefBusiness_Location' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="VnrRefBusiness_RelWithPerson[]" id="VnrRefBusiness_RelWithPerson' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' +
+                '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removeVnrRef"><i class="bx bxs-trash text-danger"></i></a></div>' +
+                '</td>';
+            b += '</tr>';
+            $('#VNR_Business_AcqData').append(b);
+        } //VNRReference
+
+        function getOtherSeed() {
+            var JCId = $('#JCId').val();
+            $('#OtherSeed_JCId').val(JCId);
+            $.ajax({
+                url: "{{ route('Candidate_Other_Seed_Relation') }}",
+                type: "POST",
+                data: {
+                    JCId: JCId
+                },
+                dataType: "json",
+                success: function(data) {
+                    if (data.status == 200) {
+                        OtherSeedCount = data.data.length;
+                        for (var x = 1; x <= OtherSeedCount; x++) {
+                            if (x >= 2) {
+                                OtherSeed(x);
+                            }
+                            $('#OtherSeedName' + x).val(data.data[x - 1].Name);
+                            $('#OtherSeedMobile' + x).val(data.data[x - 1].Mobile);
+                            $('#OtherSeedEMail' + x).val(data.data[x - 1].Email);
+                            $('#OtherSeedCompany' + x).val(data.data[x - 1].CompanyName);
+                            $('#OtherSeedDesignation' + x).val(data.data[x - 1].Designation);
+                            $('#OtherSeedLocation' + x).val(data.data[x - 1].Location);
+                            $('#OtherSeedRelation' + x).val(data.data[x - 1].Relation);
+
+                        }
+                    }
+                }
+            });
+        }
+
+        function OtherSeed(num) {
+            var c = '';
+            c += '<tr>';
+            c += '<td>' + '<input type="text" name="OtherSeedName[]" id="OtherSeedName' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="OtherSeedMobile[]" id="OtherSeedMobile' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="OtherSeedEMail[]" id="OtherSeedEMail' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="OtherSeedCompany[]" id="OtherSeedCompany' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="OtherSeedDesignation[]" id="OtherSeedDesignation' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="OtherSeedLocation[]" id="OtherSeedLocation' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' + '<input type="text" name="OtherSeedRelation[]" id="OtherSeedRelation' + num +
+                '" class="form-control form-control-sm">' + '</td>' +
+                '<td>' +
+                '<div class="d-flex order-actions"><a href="javascript:;" class="ms-3" id="removeOtherSeed"><i class="bx bxs-trash text-danger"></i></a></div>' +
+                '</td>';
+            c += '</tr>';
+            $('#OtherSeed').append(c);
+        }
+
+        function GetOtherCompany(num) {
+            var VnrRefCompany = $('#VnrRefCompany' + num).val();
+            if (VnrRefCompany == 'Other') {
+                $('#OtherCompany' + num).removeClass('d-none');
+            } else {
+                $('#OtherCompany' + num).addClass('d-none');
+            }
+        }
 
         function getLanguageProficiency() {
             $('#Language_JCId').val($('#JCId').val());
@@ -3846,6 +5225,35 @@ $count = count($sql);
             });
         } // GetPresentSalaryDetails
 
+
+        $(document).on('click', '.dlchk', function() {
+            var val = $(this).data('value');
+            // debugger;
+            if (val == 'Y') {
+                $('#dl_div').removeClass('d-none');
+                $('#DLNo').addClass('reqinp_abt');
+                $('#LValidity').addClass('reqinp_abt');
+                $('.tab-content').height('auto');
+            } else {
+                $('#dl_div').addClass('d-none');
+                $('#DLNo').removeClass('reqinp_abt');
+                $('#LValidity').removeClass('reqinp_abt');
+                $('.tab-content').height('auto');
+            }
+        });
+
+        $(document).on('click', '.crime', function() {
+            var val = $(this).data('value');
+            if (val == 'Y') {
+                $('#crime_div').removeClass('d-none');
+                $('#AboutCriminal').addClass('reqinp_abt');
+                $('.tab-content').height('auto');
+            } else {
+                $('#crime_div').addClass('d-none');
+                $('#AboutCriminal').removeClass('reqinp_abt');
+                $('.tab-content').height('auto');
+            }
+        });
         $(document).on('click', '#addMember', function() {
             MemberCount++;
             familymember(MemberCount);
@@ -3929,6 +5337,37 @@ $count = count($sql);
                 LanguageCount--;
             }
         });
+
+        $(document).on('click', '#addOtherSeed', function() {
+            OtherSeedCount++;
+
+            OtherSeed(OtherSeedCount);
+            $(".tab-content").height('auto');
+        });
+
+        $(document).on('click', '#removeOtherSeed', function() {
+            if (confirm('Are you sure you want to delete this record?')) {
+                $(this).closest('tr').remove();
+                OtherSeedCount--;
+                $(".tab-content").height('auto');
+            }
+        });
+
+        $(document).on('click', '#addVnrRef_Business', function() {
+            VRef_Business_Count++;
+
+            VNRReference_Business(VRef_Business_Count);
+            $(".tab-content").height('auto');
+        });
+
+        $(document).on('click', '#removeVnrRef_Business', function() {
+            if (confirm('Are you sure you want to delete this record?')) {
+                $(this).closest('tr').remove();
+                VRef_Business_Count--;
+                $(".tab-content").height('auto');
+            }
+        });
+
 
         $(document).on('change', '#Religion', function() {
             var Religion = $(this).val();
@@ -4258,7 +5697,7 @@ $count = count($sql);
             });
         });
 
-        $('#StrengthForm').on('submit', function(e) {
+        $('#OtherSeedForm').on('submit', function(e) {
             e.preventDefault();
             var form = this;
             $.ajax({
@@ -4273,7 +5712,7 @@ $count = count($sql);
                         toastr.error(data.msg);
                     } else {
                         $(form)[0].reset();
-                        $('#strength_modal').modal('hide');
+                        $('#other_seed_modal').modal('hide');
                         toastr.success(data.msg);
                         window.location.reload();
                     }
@@ -4281,8 +5720,53 @@ $count = count($sql);
             });
         });
 
+        $('#BusinessForm').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        $(form)[0].reset();
+                        $('#vnr_business_ref_modal').modal('hide');
+                        toastr.success(data.msg);
+                        window.location.reload();
+                    }
+                }
+            });
+        });
 
-
+        $('#about_form').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            var formData = new FormData(this);
+            formData.append('JCId', $('#JCId').val());
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: formData,
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        $(form)[0].reset();
+                        $('#vnr_business_ref_modal').modal('hide');
+                        toastr.success(data.msg);
+                        window.location.reload();
+                    }
+                }
+            });
+        });
 
         $('#SendMailForm').on('submit', function(e) {
             e.preventDefault();
@@ -4310,6 +5794,13 @@ $count = count($sql);
         });
 
         function printInterviewForm(url) {
+            $("<iframe>") // create a new iframe element
+                .hide() // make it invisible
+                .attr("src", url) // point the iframe to the page you want to print
+                .appendTo("body");
+        }
+
+        function printJoiningForm(url) {
             $("<iframe>") // create a new iframe element
                 .hide() // make it invisible
                 .attr("src", url) // point the iframe to the page you want to print
@@ -4943,6 +6434,708 @@ $count = count($sql);
                 }
             }, 'json');
 
+        });
+    </script>
+    <script>
+        /*
+         * This is the plugin
+         */
+        (function(a) {
+            a.createModal = function(b) {
+                defaults = {
+                    title: "",
+                    message: "Your Message Goes Here!",
+                    closeButton: true,
+                    scrollable: false
+                };
+                var b = a.extend({}, defaults, b);
+                var c = (b.scrollable === true) ? 'style="max-height: 420px;overflow-y: auto;"' : "";
+                html =
+                    '<div class="modal fade custom-modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false">';
+                html += '<div class="modal-dialog">';
+                html += '<div class="modal-content">';
+                html +=
+                    '<div class="modal-header"><button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>';
+                html += '<div class="modal-body" ' + c + ">";
+                html += b.message;
+                html += "</div>";
+                html += '<div class="modal-footer">';
+
+                html += "</div>";
+                html += "</div>";
+                html += "</div>";
+                html += "</div>";
+                a("body").prepend(html);
+                a("#myModal").modal('show').on("hidden.bs.modal", function() {
+                    a(this).remove()
+                })
+            }
+        })(jQuery);
+
+        /*
+         * Here is how you use it
+         */
+        $(function() {
+            $('.view-pdf').on('click', function() {
+                var pdf_link = $(this).attr('href');
+
+                var iframe = '<div class="iframe-container"><iframe src="' + pdf_link + '"></iframe></div>'
+                $.createModal({
+                    title: 'My Title',
+                    message: iframe,
+                    closeButton: true,
+                    scrollable: false
+                });
+                return false;
+            });
+        })
+    </script>
+
+    <script>
+        $(document).on('click', '#RelievingLtrUpload', function() {
+            var JCId = $('#JCId').val();
+            var url = '<?= route('RelievingLtrFileUpload') ?>';
+            var RelievingLtr = $('#RelievingLtr')[0].files;
+            var formData = new FormData();
+            formData.append('JCId', JCId);
+            formData.append('RelievingLtr', RelievingLtr[0]);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        toastr.success(data.msg);
+                        window.location.reload();
+
+                    }
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    var errorsHtml = '';
+                    $.each(errors.errors, function(key, value) {
+                        errorsHtml += value[0] + '<br>';
+                    });
+                    toastr.error(errorsHtml)
+                }
+            });
+        });
+
+        $(document).on('click', '#SalarySlipUpload', function() {
+            var JCId = $('#JCId').val();
+            var url = '<?= route('SalarySlipFileUpload') ?>';
+            var SalarySlip = $('#SalarySlip')[0].files;
+            var formData = new FormData();
+            formData.append('JCId', JCId);
+            formData.append('SalarySlip', SalarySlip[0]);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 200) {
+                        toastr.success(data.msg);
+                        window.location.reload();
+                    } else {
+                        toastr.error(data.msg);
+                    }
+
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    var errorsHtml = '';
+                    $.each(errors.errors, function(key, value) {
+                        errorsHtml += value[0] + '<br>';
+                    });
+                    toastr.error(errorsHtml)
+                }
+            });
+        });
+
+        $(document).on('click', '#AppraisalLtrUpload', function() {
+            var JCId = $('#JCId').val();
+            var url = '<?= route('AppraisalLtrFileUpload') ?>';
+            var AppraisalLtr = $('#AppraisalLtr')[0].files;
+            var formData = new FormData();
+            formData.append('JCId', JCId);
+            formData.append('AppraisalLtr', AppraisalLtr[0]);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        toastr.success(data.msg);
+                        window.location.reload();
+
+                    }
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    var errorsHtml = '';
+                    $.each(errors.errors, function(key, value) {
+                        errorsHtml += value[0] + '<br>';
+                    });
+                    toastr.error(errorsHtml)
+                }
+            });
+        });
+
+        $(document).on('click', '#VaccinationCertUpload', function() {
+            var JCId = $('#JCId').val();
+            var url = '<?= route('VaccinationCertFileUpload') ?>';
+            var VaccinationCert = $('#VaccinationCert')[0].files;
+            var formData = new FormData();
+            formData.append('JCId', JCId);
+            formData.append('VaccinationCert', VaccinationCert[0]);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        toastr.success(data.msg);
+                        window.location.reload();
+
+                    }
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    var errorsHtml = '';
+                    $.each(errors.errors, function(key, value) {
+                        errorsHtml += value[0] + '<br>';
+                    });
+                    toastr.error(errorsHtml)
+                }
+            });
+        });
+
+        $(document).on('click', '#AadhaarUpload', function() {
+            var JCId = $('#JCId').val();
+            var url = '<?= route('AadhaarUpload') ?>';
+            var AadhaarCard = $('#AadhaarCard')[0].files;
+            var formData = new FormData();
+            formData.append('JCId', JCId);
+            formData.append('AadhaarCard', AadhaarCard[0]);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+
+                    } else {
+
+                        toastr.success(data.msg);
+                        window.location.reload();
+
+                    }
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    var errorsHtml = '';
+                    $.each(errors.errors, function(key, value) {
+                        errorsHtml += value[0] + '<br>';
+                    });
+                    toastr.error(errorsHtml);
+
+                }
+            });
+        });
+
+        $(document).on('click', '#PANCardUpload', function() {
+            var JCId = $('#JCId').val();
+            var url = '<?= route('PanCardUpload') ?>';
+            var PANCard = $('#PANCard')[0].files;
+            var PanCardNumber = $('#PanCardNumber').val();
+            var formData = new FormData();
+            formData.append('JCId', JCId);
+            formData.append('PANCard', PANCard[0]);
+            formData.append('PanCardNumber', PanCardNumber);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+
+                    } else {
+
+                        toastr.success(data.msg);
+                        window.location.reload();
+
+                    }
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    var errorsHtml = '';
+                    $.each(errors.errors, function(key, value) {
+                        errorsHtml += value[0] + '<br>';
+                    });
+                    toastr.error(errorsHtml);
+
+                }
+            });
+        });
+
+        $(document).on('click', '#PassportUpload', function() {
+            var JCId = $('#JCId').val();
+            var url = '<?= route('PassportUpload') ?>';
+            var Passport = $('#Passport')[0].files;
+            var PassportNumber = $('#PassportNumber').val();
+            var formData = new FormData();
+            formData.append('JCId', JCId);
+            formData.append('Passport', Passport[0]);
+            formData.append('PassportNumber', PassportNumber);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 200) {
+
+                        toastr.success(data.msg);
+                        window.location.reload();
+                    } else {
+                        toastr.error(data.msg);
+
+                    }
+
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    var errorsHtml = '';
+                    $.each(errors.errors, function(key, value) {
+                        errorsHtml += value[0] + '<br>';
+                    });
+                    toastr.error(errorsHtml);
+
+                }
+            });
+        });
+
+        $(document).on('click', '#DLCardUpload', function() {
+            var JCId = $('#JCId').val();
+            var url = '<?= route('DlUpload') ?>';
+            var DLCard = $('#DLCard')[0].files;
+            var formData = new FormData();
+            formData.append('JCId', JCId);
+            formData.append('DLCard', DLCard[0]);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+
+                    } else {
+
+                        toastr.success(data.msg);
+                        window.location.reload();
+
+                    }
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    var errorsHtml = '';
+                    $.each(errors.errors, function(key, value) {
+                        errorsHtml += value[0] + '<br>';
+                    });
+                    toastr.error(errorsHtml);
+
+                }
+            });
+        });
+
+        $(document).on('click', '#PFForm2Upload', function() {
+            var JCId = $('#JCId').val();
+            var url = '<?= route('PF_Form2Upload') ?>';
+            var PFForm2 = $('#PFForm2')[0].files;
+            var formData = new FormData();
+            formData.append('JCId', JCId);
+            formData.append('PFForm2', PFForm2[0]);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+
+                    } else {
+
+                        toastr.success(data.msg);
+                        window.location.reload();
+
+                    }
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    var errorsHtml = '';
+                    $.each(errors.errors, function(key, value) {
+                        errorsHtml += value[0] + '<br>';
+                    });
+                    toastr.error(errorsHtml);
+
+                }
+            });
+        });
+
+        $(document).on('click', '#PFForm11Upload', function() {
+            var JCId = $('#JCId').val();
+            var url = '<?= route('PF_Form11Upload') ?>';
+            var PF_Form11 = $('#PF_Form11')[0].files;
+            var formData = new FormData();
+            formData.append('JCId', JCId);
+            formData.append('PF_Form11', PF_Form11[0]);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+
+                    } else {
+
+                        toastr.success(data.msg);
+                        window.location.reload();
+
+                    }
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    var errorsHtml = '';
+                    $.each(errors.errors, function(key, value) {
+                        errorsHtml += value[0] + '<br>';
+                    });
+                    toastr.error(errorsHtml);
+
+                }
+            });
+        });
+
+        $(document).on('click', '#GratuityUpload', function() {
+            var JCId = $('#JCId').val();
+            var url = '<?= route('GratuityUpload') ?>';
+            var GratuityForm = $('#GratuityForm')[0].files;
+            var formData = new FormData();
+            formData.append('JCId', JCId);
+            formData.append('GratuityForm', GratuityForm[0]);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+
+                    } else {
+
+                        toastr.success(data.msg);
+                        window.location.reload();
+
+                    }
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    var errorsHtml = '';
+                    $.each(errors.errors, function(key, value) {
+                        errorsHtml += value[0] + '<br>';
+                    });
+                    toastr.error(errorsHtml);
+
+                }
+            });
+        });
+
+        $(document).on('click', '#ESICFormUpload', function() {
+            var JCId = $('#JCId').val();
+            var url = '<?= route('ESICUpload') ?>';
+            var ESICForm = $('#ESICForm')[0].files;
+            var formData = new FormData();
+            formData.append('JCId', JCId);
+            formData.append('ESICForm', ESICForm[0]);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+
+                    } else {
+
+                        toastr.success(data.msg);
+                        window.location.reload();
+
+                    }
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    var errorsHtml = '';
+                    $.each(errors.errors, function(key, value) {
+                        errorsHtml += value[0] + '<br>';
+                    });
+                    toastr.error(errorsHtml);
+
+                }
+            });
+        });
+
+        $(document).on('click', '#ESIC_FamilyUpload', function() {
+            var JCId = $('#JCId').val();
+            var url = '<?= route('FamilyUpload') ?>';
+            var ESIC_Family = $('#ESIC_Family')[0].files;
+            var formData = new FormData();
+            formData.append('JCId', JCId);
+            formData.append('ESIC_Family', ESIC_Family[0]);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+
+                    } else {
+
+                        toastr.success(data.msg);
+                        window.location.reload();
+
+                    }
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    var errorsHtml = '';
+                    $.each(errors.errors, function(key, value) {
+                        errorsHtml += value[0] + '<br>';
+                    });
+                    toastr.error(errorsHtml);
+
+                }
+            });
+        });
+
+        $(document).on('click', '#HealthUpload', function() {
+            var JCId = $('#JCId').val();
+            var url = '<?= route('HealthUpload') ?>';
+            var Health = $('#Health')[0].files;
+            var formData = new FormData();
+            formData.append('JCId', JCId);
+            formData.append('Health', Health[0]);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+
+                    } else {
+
+                        toastr.success(data.msg);
+                        window.location.reload();
+
+                    }
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    var errorsHtml = '';
+                    $.each(errors.errors, function(key, value) {
+                        errorsHtml += value[0] + '<br>';
+                    });
+                    toastr.error(errorsHtml);
+
+                }
+            });
+        });
+
+        $(document).on('click', '#EthicalUpload', function() {
+            var JCId = $('#JCId').val();
+            var url = '<?= route('EthicalUpload') ?>';
+            var Ethical = $('#Ethical')[0].files;
+            var formData = new FormData();
+            formData.append('JCId', JCId);
+            formData.append('Ethical', Ethical[0]);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+
+                    } else {
+
+                        toastr.success(data.msg);
+                        window.location.reload();
+
+                    }
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    var errorsHtml = '';
+                    $.each(errors.errors, function(key, value) {
+                        errorsHtml += value[0] + '<br>';
+                    });
+                    toastr.error(errorsHtml);
+
+                }
+            });
+        });
+
+        $(document).on('click', '#BloodGroupUpload', function() {
+            var JCId = $('#JCId').val();
+            var url = '<?= route('BloodGroupUpload') ?>';
+            var BloodGroup = $('#BloodGroup')[0].files;
+            var formData = new FormData();
+            formData.append('JCId', JCId);
+            formData.append('BloodGroup', BloodGroup[0]);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+
+                    } else {
+
+                        toastr.success(data.msg);
+                        window.location.reload();
+
+                    }
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    var errorsHtml = '';
+                    $.each(errors.errors, function(key, value) {
+                        errorsHtml += value[0] + '<br>';
+                    });
+                    toastr.error(errorsHtml);
+
+                }
+            });
+        });
+
+        $(document).on('click', '#BankPassBookUpload', function() {
+            var JCId = $('#JCId').val();
+            var url = '<?= route('BankUpload') ?>';
+            var BankPassBook = $('#BankPassBook')[0].files;
+            var BankName = $('#BankName').val();
+            var AccNumber = $('#AccNumber').val();
+            var IFSC = $('#IFSC').val();
+            var BranchName = $('#BranchName').val();
+            var formData = new FormData();
+            formData.append('JCId', JCId);
+            formData.append('BankPassBook', BankPassBook[0]);
+            formData.append('BankName', BankName);
+            formData.append('AccNumber', AccNumber);
+            formData.append('IFSC', IFSC);
+            formData.append('BranchName', BranchName);
+            if (BankName == '') {
+                toastr.error('Please Enter Bank Name');
+                return false;
+            }
+            if (BranchName == '') {
+                toastr.error('Please Enter Branch Name');
+                return false;
+            }
+            if (AccNumber == '') {
+                toastr.error('Please Enter Account Number');
+                return false;
+            }
+            if (IFSC == '') {
+                toastr.error('Please Enter IFSC Code');
+                return false;
+            }
+
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+
+                    } else {
+
+                        toastr.success(data.msg);
+                        window.location.reload();
+
+                    }
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    var errorsHtml = '';
+                    $.each(errors.errors, function(key, value) {
+                        errorsHtml += value[0] + '<br>';
+                    });
+                    toastr.error(errorsHtml);
+
+                }
+            });
         });
     </script>
 @endsection

@@ -887,7 +887,6 @@ class JobApplicationController extends Controller
     {
 
         $JCId = $request->JCId;
-
         $AboutAim  = $request->AboutAim;
         $AboutHobbi = $request->AboutHobbi;
         $About5Year = $request->About5Year;

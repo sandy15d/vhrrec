@@ -136,7 +136,7 @@ class JobController extends Controller
 
         CandidateActivityLog::addToCandLog($JCId, $request->Aadhaar, 'Applied for ' . $Title . ' in ' . getCompanyCode($CompanyId));
         if (!$jobApply) {
-            //  return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
             $details = [
                 "subject" => 'OTP to verify your email address for Application submission',
@@ -145,7 +145,7 @@ class JobController extends Controller
             ];
             Mail::to($request->Email)->send(new AppSubOTPMail($details));
             SendOTP($request->Phone, $SmsOTP);
-            //   return response()->json(['status' => 200, 'msg' => ' successfully created.', 'jcid' => $JCId]);
+              return response()->json(['status' => 200, 'msg' => ' successfully created.', 'jcid' => $JCId]);
         }
     }
 

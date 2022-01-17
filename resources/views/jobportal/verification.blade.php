@@ -76,15 +76,11 @@ $jcid = base64_decode($jcid);
         </div>
     </div>
     <script src="{{ URL::to('/') }}/assets/js/bootstrap.bundle.min.js"></script>
- 
     <script src="{{ URL::to('/') }}/assets/js/jquery.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/simplebar/js/simplebar.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/metismenu/js/metisMenu.min.js"></script>
-    <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
-
-    <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
     <script>
         $('#OTPVerifyForm').on('submit', function(e) {
             e.preventDefault();

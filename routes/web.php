@@ -96,7 +96,13 @@ Route::get('change-password', [CommonController::class, 'changePassword'])->name
 Route::post('passwordChange', [CommonController::class, 'passwordChange'])->name('passwordChange');
 
 Route::get('candidate_detail', [AboutCandidateController::class, 'candidate_detail'])->name('candidate_detail');
+
 Route::get('interview_form_detail', [AboutCandidateController::class, 'interview_form_detail'])->name('interview_form_detail');
+Route::get('joining_form_print', [AboutCandidateController::class, 'joining_form_print'])->name('joining_form_print');
+
+Route::post('Candidate_ProfileData', [AboutCandidateController::class, 'Candidate_ProfileData'])->name('Candidate_ProfileData');
+Route::post('Candidate_ProfileData_Save', [AboutCandidateController::class, 'Candidate_ProfileData_Save'])->name('Candidate_ProfileData_Save');
+
 Route::post('Candidate_PersonalData', [AboutCandidateController::class, 'Candidate_PersonalData'])->name('Candidate_PersonalData');
 Route::post('Candidate_PersonalData_Save', [AboutCandidateController::class, 'Candidate_PersonalData_Save'])->name('Candidate_PersonalData_Save');
 

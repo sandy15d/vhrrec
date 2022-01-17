@@ -20,6 +20,7 @@ class AboutCandidateController extends Controller
         $company_list = DB::table("master_company")->orderBy('CompanyId', 'asc')->pluck("CompanyCode", "CompanyId");
         return view('common.candidate_detail', compact('state_list', 'district_list', 'education_list', 'institute_list', 'specialization_list', 'company_list'));
     }
+
     public function interview_form_detail()
     {
         $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
@@ -28,6 +29,16 @@ class AboutCandidateController extends Controller
         $specialization_list = DB::table("master_specialization")->orderBy('Specialization', 'asc')->pluck("Specialization", "SpId");
         $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
         return view('common.interview_form_detail', compact('state_list', 'district_list', 'education_list', 'institute_list', 'specialization_list'));
+    }
+
+    public function joining_form_print()
+    {
+        $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
+        $district_list = DB::table("master_district")->orderBy('DistrictName', 'asc')->pluck("DistrictName", "DistrictId");
+        $education_list = DB::table("master_education")->orderBy('EducationCode', 'asc')->pluck("EducationCode", "EducationId");
+        $specialization_list = DB::table("master_specialization")->orderBy('Specialization', 'asc')->pluck("Specialization", "SpId");
+        $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+        return view('common.joining_form_print', compact('state_list', 'district_list', 'education_list', 'institute_list', 'specialization_list'));
     }
 
     public function Candidate_PersonalData(Request $request)
@@ -56,8 +67,7 @@ class AboutCandidateController extends Controller
         $SpouseName = $request->SpouseName;
         $Category = $request->Category;
         $OtherCategory = $request->OtherCategory;
-        $DrivingLicense = $request->DrivingLicense;
-        $LValidity = $request->LValidity;
+
         $query = DB::table('jobcandidates')
             ->where('JCId', $JCId)
             ->update(
@@ -72,8 +82,6 @@ class AboutCandidateController extends Controller
                     'SpouseName' => $SpouseName,
                     'Caste' => $Category,
                     'OtherCaste' => $OtherCategory ?? null,
-                    'DrivingLicense' => $DrivingLicense,
-                    'LValidity' => $LValidity,
                     'LastUpdated' => now()
 
                 ]
@@ -85,6 +93,63 @@ class AboutCandidateController extends Controller
             return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
         }
     }
+
+
+    public function Candidate_ProfileData(Request $request)
+    {
+        $JCId   = $request->JCId;
+        $query  = "SELECT JCId,FName,LName,MName,DOB,Phone,Email,CandidateImage FROM `jobcandidates` WHERE `JCId` = '$JCId'";
+        $result = DB::select($query);
+        if (!$result) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'data' => $result[0]]);
+        }
+    }
+
+    public function Candidate_ProfileData_Save(Request $request)
+    {
+        $JCId   = $request->Pro_JCId;
+        $FName = $request->FName;
+        $MName = $request->MName;
+        $LName = $request->LName;
+        $DOB = $request->DOB;
+        $Phone = $request->Mobile;
+        $Email = $request->EMail;
+
+
+        if ($request->CandidateImage != '' || $request->CandidateImage != null) {
+            $filename = $JCId . '.' . $request->CandidateImage->extension();
+            if (\File::exists(public_path('uploads/Picture/' . $filename))) {
+                \File::delete(public_path('uploads/Picture/' . $filename));
+            }
+            $request->CandidateImage->move(public_path('uploads/Picture'), $filename);
+        }
+
+        $query = DB::table('jobcandidates')
+            ->where('JCId', $JCId)
+            ->update(
+                [
+                    'FName' => $FName,
+                    'MName' => $MName,
+                    'LName' => $LName,
+                    'DOB' => $DOB,
+                    'Phone' => $Phone,
+                    'Email' => $Email,
+                    'LastUpdated' => now()
+
+                ]
+            );
+
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
+    }
+
 
     public function Candidate_EmergencyContact(Request $request)
     {
@@ -152,6 +217,7 @@ class AboutCandidateController extends Controller
                 'PFNumber' => $request->PFNumber,
                 'ESICNumber' => $request->ESICNumber,
                 'PAN' => $request->PAN,
+                'Passport' => $request->Passport,
                 'LastUpdated' => now()
             ]);
         } else {
@@ -165,6 +231,7 @@ class AboutCandidateController extends Controller
             $query1->PFNumber = $request->PFNumber;
             $query1->ESICNumber = $request->ESICNumber;
             $query1->PAN = $request->PAN;
+            $query1->Passport = $request->Passport;
             $query1->LastUpdated = now();
             $query1->save();
         }
@@ -413,7 +480,7 @@ class AboutCandidateController extends Controller
     {
         $JCId   = $request->Curr_JCId;
         $PresentCompany = $request->CurrCompanyName;
-        $PresentDepartment = $request->CurrDepartment;
+
         $Designation = $request->CurrDesignation;
         $JobStartDate = $request->CurrDateOfJoining;
         $Reporting = $request->CurrReportingTo;
@@ -426,7 +493,7 @@ class AboutCandidateController extends Controller
             ->update(
                 [
                     'PresentCompany' => $PresentCompany,
-                    'PresentDepartment' => $PresentDepartment,
+
                     'Designation' => $Designation,
                     'JobStartDate' => $JobStartDate,
                     'Reporting' => $Reporting,
@@ -580,6 +647,7 @@ class AboutCandidateController extends Controller
 
     public function Candidate_VnrRef_Save(Request $request)
     {
+        //  dd($request->all());
         $JCId = $request->Vnr_JCId;
         $from = 'VNR';
         $name = $request->VnrRefName;
@@ -587,52 +655,34 @@ class AboutCandidateController extends Controller
         $email = $request->VnrRefEmail;
         $contact = $request->VnrRefContact;
         $rel_with_person = $request->VnrRefRelWithPerson;
+        $VnrRefCompany = $request->VnrRefCompany;
+        $OtherCompany = $request->OtherCompany;
+        $VnrRefLocation = $request->VnrRefLocation;
         $query = DB::table('jf_reference')->where('JCId', $JCId)->where('from', $from)->delete();
         $array = array();
         for ($i = 0; $i < count($name); $i++) {
             $array[$i] = array(
                 'JCId' => $JCId,
+
                 'from' => $from,
                 'name' => $name[$i],
                 'designation' => $designation[$i],
                 'email' => $email[$i],
                 'contact' => $contact[$i],
+                'company' => $VnrRefCompany[$i],
+                'other_company' => $OtherCompany[$i],
+                'location' => $VnrRefLocation[$i],
                 'rel_with_person' => $rel_with_person[$i],
             );
         }
 
         $query1 = DB::table('jf_reference')->insert($array);
+
+
+
+
         if (!$query1) {
             return response()->json(['status' => 400, ' msg' => 'Something went wrong..!!']);
-        } else {
-
-            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
-        }
-    }
-
-    function Candidate_Strength(Request $request)
-    {
-        $JCId = $request->JCId;
-        $query = "SELECT * FROM jf_strength WHERE JCId='$JCId'";
-        $result = DB::select($query);
-        if (!$result) {
-            return response()->json(['status' => 400, 'msg' => 'No Record Found..!!']);
-        } else {
-
-            return response()->json(['status' => 200, 'data' => $result]);
-        }
-    }
-    public function Candidate_Strength_Save(Request $request)
-    {
-        $JCId = $request->S_JCId;
-        $query = DB::table('jf_strength')->where('JCId', $JCId)->first();
-        if ($query !== null) {
-            $query1 = DB::table('jf_strength')->where('JCId', $JCId)->update(['Strength1' => $request->Strength1, 'Strength2' => $request->Strength2, 'Improvement1' => $request->Improvement1, 'Improvement2' => $request->Improvement2, 'LastUpdated' => now()]);
-        } else {
-            $query1 = DB::table('jf_strength')->insert(['JCId' => $JCId, 'Strength1' => $request->Strength1, 'Strength2' => $request->Strength2, 'Improvement1' => $request->Improvement1, 'Improvement2' => $request->Improvement2, 'LastUpdated' => now()]);
-        }
-        if (!$query1) {
-            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
 
             return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
@@ -684,8 +734,41 @@ class AboutCandidateController extends Controller
             return response()->json(['status' => 200, 'data' => $result]);
         }
     }
+
     public function Candidate_VnrRef_Business_Save(Request $request)
     {
+        $JCId = $request->Business_JCId;
+        $VnrRefBusiness_Name = $request->VnrRefBusiness_Name;
+        $VnrRefBusiness_Contact = $request->VnrRefBusiness_Contact;
+        $VnrRefBusiness_Email = $request->VnrRefBusiness_Email;
+        $VnrRefBusinessRelation = $request->VnrRefBusinessRelation;
+        $VnrRefBusiness_Location = $request->VnrRefBusiness_Location;
+        $VnrRefBusiness_RelWithPerson = $request->VnrRefBusiness_RelWithPerson;
+        $query = DB::table('vnr_business_ref')->where('JCId', $JCId)->delete();
+        $array = array();
+        for ($i = 0; $i < count($VnrRefBusiness_Name); $i++) {
+            $array[$i] = array(
+                'JCId' => $JCId,
+                'Name' => $VnrRefBusiness_Name[$i],
+                'Mobile' => $VnrRefBusiness_Contact[$i],
+                'Email' => $VnrRefBusiness_Email[$i],
+                'BusinessRelation' => $VnrRefBusinessRelation[$i],
+                'Location' => $VnrRefBusiness_Location[$i],
+                'PersonRelation' => $VnrRefBusiness_RelWithPerson[$i],
+
+            );
+        }
+        $query1 = DB::table('vnr_business_ref')->insert($array);
+
+        if (!$query1) {
+            return response()->json(['status' => 400, ' msg' => 'Something went wrong..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
+
+    
+
     }
 
     public function Candidate_Other_Seed_Relation(Request $request)
@@ -703,5 +786,37 @@ class AboutCandidateController extends Controller
 
     public function Candidate_Other_Seed_Relation_Save(Request $request)
     {
+        $JCId = $request->OtherSeed_JCId;
+        $OtherSeedName = $request->OtherSeedName;
+        $OtherSeedMobile = $request->OtherSeedMobile;
+        $OtherSeedEMail = $request->OtherSeedEMail;
+        $OtherSeedCompany = $request->OtherSeedCompany;
+        $OtherSeedDesignation = $request->OtherSeedDesignation;
+        $OtherSeedLocation = $request->OtherSeedLocation;
+        $OtherSeedRelation = $request->OtherSeedRelation;
+
+        $query = DB::table('relation_other_seed_cmp')->where('JCId', $JCId)->delete();
+        $array = array();
+        for ($i = 0; $i < count($OtherSeedName); $i++) {
+            $array[$i] = array(
+                'JCId' => $JCId,
+                'Name' => $OtherSeedName[$i],
+                'Mobile' => $OtherSeedMobile[$i],
+                'Email' => $OtherSeedEMail[$i],
+                'CompanyName' => $OtherSeedCompany[$i],
+                'Designation' => $OtherSeedDesignation[$i],
+                'Location' => $OtherSeedLocation[$i],
+                'Relation' => $OtherSeedRelation[$i],
+
+            );
+        }
+        $query1 = DB::table('relation_other_seed_cmp')->insert($array);
+
+        if (!$query1) {
+            return response()->json(['status' => 400, ' msg' => 'Something went wrong..!!']);
+        } else {
+
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
+        }
     }
 }

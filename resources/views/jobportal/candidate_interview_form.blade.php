@@ -2519,8 +2519,6 @@ $Docs = DB::table('jf_docs')
                                                                                 id="VnrRefRelWithPerson1"
                                                                                 class="form-control form-control-sm">
                                                                         </td>
-
-
                                                                         <td>
                                                                             <div class="d-flex order-actions"><a
                                                                                     href="javascript:;"

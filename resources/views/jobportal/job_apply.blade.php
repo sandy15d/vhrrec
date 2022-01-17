@@ -656,7 +656,9 @@ $query = DB::table('jobpost')
                                                         class=" mt-3 d-inline-block" style="width: 150; height: 150;">
                                                         <span id="preview">
                                                             <center>
-                                                                <img src="{{ URL::to('/') }}/assets/images/user.png" style="width: 150px; height: 150px;" id="img1" name="img1" class="img1" />
+                                                                <img src="{{ URL::to('/') }}/assets/images/user.png"
+                                                                    style="width: 150px; height: 150px;" id="img1"
+                                                                    name="img1" class="img1" />
                                                             </center>
                                                         </span>
                                                         <center>
@@ -705,12 +707,10 @@ $query = DB::table('jobpost')
     <script src="{{ URL::to('/') }}/assets/plugins/select2/js/select2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/simplebar/js/simplebar.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/metismenu/js/metisMenu.min.js"></script>
-    <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/ijaboCropTool.min.js"></script>
-    <!--app JS-->
-    <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
+
 
     <script>
         function isNumberKey(evt) {
@@ -746,19 +746,36 @@ $query = DB::table('jobpost')
             return res;
         }
 
-        
-        
+        function showProFromOrNot() {
+            if ($('#Professional').prop("checked") == true) {
+                $('#work_exp').removeClass('d-none');
+                $('#PresentCompany').addClass('reqinp');
+                $('#Designation').addClass('reqinp');
+                $('#JobStartDate').addClass('reqinp');
+                $('#GrossSalary').addClass('reqinp');
+                $('#CTC').addClass('reqinp');
+
+            } else if ($('#Professional').prop("checked") == false) {
+                $('#work_exp').addClass('d-none');
+                $('#PresentCompany').removeClass('reqinp');
+                $('#Designation').removeClass('reqinp');
+                $('#JobStartDate').removeClass('reqinp');
+                $('#GrossSalary').removeClass('reqinp');
+                $('#CTC').removeClass('reqinp');
+            }
+        }
+
 
         function showRefFormOrNot() {
             if ($('#YesRef').prop("checked") == true) {
                 $('#reference_tr').removeClass('d-none');
-                $('#PersonName').addClass('reqinp');
+                $('#RefPerson').addClass('reqinp');
                 $('#RefDesignation').addClass('reqinp');
                 $('#RefCompany').addClass('reqinp');
                 $('#RefMail').addClass('reqinp');
             } else if ($('#YesRef').prop("checked") == false) {
                 $('#reference_tr').addClass('d-none');
-                $('#PersonName').removeClass('reqinp');
+                $('#RefPerson').removeClass('reqinp');
                 $('#RefDesignation').removeClass('reqinp');
                 $('#RefCompany').removeClass('reqinp');
                 $('#RefMail').removeClass('reqinp');
@@ -858,30 +875,15 @@ $query = DB::table('jobpost')
                 allowClear: Boolean($(this).data('allow-clear')),
             });
 
-                $(document).on('change', '#CandidateImage', function(e) {
-                    const [file] = e.target.files;
-                    if (file) {
-                        img1.src = URL.createObjectURL(file);
-                    }
-                });
-
-
-    /*         $('#CandidateImage').ijaboCropTool({
-                preview: '.img1',
-                setRatio: 1,
-                allowedExtensions: ['jpg', 'jpeg', 'png'],
-                buttonsText: ['CROP', 'QUIT'],
-                buttonsColor: ['#30bf7d', '#ee5155', -15],
-                processUrl: '{{ route('cropImage') }}',
-                withCSRF: ['_token', '{{ csrf_token() }}'],
-                onSuccess: function(message, element, status) {
-                    alert(message);
-                    //console.log(element);
-                },
-                onError: function(message, element, status) {
-                    alert(message);
+            $(document).on('change', '#CandidateImage', function(e) {
+                const [file] = e.target.files;
+                if (file) {
+                    img1.src = URL.createObjectURL(file);
                 }
-            }); */
+            });
+
+
+
 
             $(function() {
                 var dtToday = new Date();
@@ -932,10 +934,11 @@ $query = DB::table('jobpost')
 
 
         $('#jobApplyForm').on('submit', function(e) {
+           // debugger;
             e.preventDefault();
             var form = this;
-            form.append('img1', $('.img1').attr('src'));
-            var reqcond =checkRequired();
+         //   form.append('img1', $('.img1').attr('src'));
+            var reqcond = checkRequired();
             if (reqcond == 1) {
                 alert('Please fill required field...!');
             } else {
@@ -947,13 +950,11 @@ $query = DB::table('jobpost')
                     dataType: 'json',
                     contentType: false,
                     beforeSend: function() {
-
                         $(form).find('span.error-text').text('');
                         $("#loader").modal('show');
                     },
                     success: function(data) {
                         if (data.status == 400) {
-
                             $("#loader").modal('hide');
                             $.each(data.error, function(prefix, val) {
                                 $(form).find('span.' + prefix + '_error').text(val[0]);

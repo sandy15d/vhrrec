@@ -13,7 +13,7 @@ $Rec = DB::table('jobapply')
     ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
     ->leftJoin('jf_pf_esic', 'jobcandidates.JCId', '=', 'jf_pf_esic.JCId')
     ->where('JAId', $JAId)
-    ->select('jobapply.*', 'jobcandidates.*', 'jobpost.Title as JobTitle', 'jobpost.JobCode', 'jf_contact_det.pre_address', 'jf_contact_det.pre_city', 'jf_contact_det.pre_state', 'jf_contact_det.pre_pin', 'jf_contact_det.pre_dist', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin', 'jf_contact_det.perm_dist', 'jf_contact_det.cont_one_name', 'jf_contact_det.cont_one_relation', 'jf_contact_det.cont_one_number', 'jf_contact_det.cont_two_name', 'jf_contact_det.cont_two_relation', 'jf_contact_det.cont_two_number', 'jf_pf_esic.UAN', 'jf_pf_esic.PFNumber', 'jf_pf_esic.ESICNumber', 'jf_pf_esic.BankName', 'jf_pf_esic.BranchName', 'jf_pf_esic.IFSCCode', 'jf_pf_esic.AccountNumber', 'jf_pf_esic.PAN')
+    ->select('jobapply.*', 'jobcandidates.*', 'jobpost.Title as JobTitle', 'jobpost.JobCode', 'jf_contact_det.pre_address', 'jf_contact_det.pre_city', 'jf_contact_det.pre_state', 'jf_contact_det.pre_pin', 'jf_contact_det.pre_dist', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin', 'jf_contact_det.perm_dist', 'jf_contact_det.cont_one_name', 'jf_contact_det.cont_one_relation', 'jf_contact_det.cont_one_number', 'jf_contact_det.cont_two_name', 'jf_contact_det.cont_two_relation', 'jf_contact_det.cont_two_number', 'jf_pf_esic.UAN', 'jf_pf_esic.PFNumber', 'jf_pf_esic.ESICNumber', 'jf_pf_esic.BankName', 'jf_pf_esic.BranchName', 'jf_pf_esic.IFSCCode', 'jf_pf_esic.AccountNumber', 'jf_pf_esic.PAN', 'jf_pf_esic.Passport')
     ->first();
 
 $JCId = $Rec->JCId;
@@ -70,7 +70,7 @@ $Year = Carbon::now()->year;
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interview Application Form</title>
+    <title>Interview Joining Form</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
     <link href="https://fonts.cdnfonts.com/css/roboto" rel="stylesheet">
@@ -164,8 +164,8 @@ $Year = Carbon::now()->year;
                     <img src="https://www.vnrseeds.com/wp-content/uploads/2018/12/vnr-logo-69x90.png" width="30px">
                 </center>
                 <div class="row">
-                    <div class="col text-left"><b>Version 1.5</b></div>
-                    <div class="col text-center"><b>Application Form</b></div>
+                    <div class="col text-left"><b>Version 1.2</b></div>
+                    <div class="col text-center"><b>Joining Form</b></div>
                     <div class="col ">&emsp;&nbsp;<b>VNR Seeds Pvt. Ltd.</b></div>
                 </div>
                 <hr style="margin-top: 0px; height:2px; color:red">
@@ -384,52 +384,28 @@ $Year = Carbon::now()->year;
 
 
                 <div class="row">
-                    <div class="col-12">
-                        <p style="margin-bottom: 0px;"><b>Please mention the source through which you came to know
-                                about this job opening:</b></p>
-                        <p style="marign-bottom:0px;">कृपया उस स्त्रोत का नाम बताये जहाँ से आपको इस नौकरी के विषय में
-                            पता चला:</p>
-                        <div class="row">
-                            <div class="col-4">
-                                <input type="checkbox" @if ($Rec->ResumeSource == 1)
-                                checked
-                                @endif> Company Career Site
-                            </div>
-                            <div class="col">
-                                <input type="checkbox" @if ($Rec->ResumeSource == 2)
-                                checked
-                                @endif> Naukari.com
-                            </div>
-                            <div class="col">
-                                <input type="checkbox" @if ($Rec->ResumeSource == 3)
-                                checked
-                                @endif> LinkedIn
-                            </div>
-                            <div class="col">
-                                <input type="checkbox" @if ($Rec->ResumeSource == 4)
-                                checked
-                                @endif> Walk-in
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-4">
-                                <input type="checkbox" @if ($Rec->ResumeSource == 5)
-                                checked
-                                @endif> Ref. from VNR Employee
-                            </div>
-                            <div class="col-4">
-                                <input type="checkbox" @if ($Rec->ResumeSource == 6)
-                                checked
-                                @endif> Placement Agencies
-                            </div>
-                            <div class="col-4" @if ($Rec->ResumeSource == 8)
-                                checked
-                                @endif>
-                                <input type="checkbox"> Any other
-                            </div>
-                        </div>
-                        <p>* Please provide Name & Contact nos. of person, if came through any referral or Consultancy:
-                        </p>
+                    <div class="col-lg-12">
+                        <p class="fw-bold">Emergency Contact Details (आपात्कालीन सम्पर्क विवरण):</p>
+                        <table class="table table-bordered text-center">
+                            <tr>
+                                <th>Contact Person</th>
+                                <th>Relationship</th>
+                                <th>Contact No.</th>
+                            </tr>
+                            <tbody>
+                                <tr>
+                                    <td>{{ $Rec->cont_one_name }}</td>
+                                    <td>{{ $Rec->cont_one_relation }}</td>
+                                    <td>{{ $Rec->cont_one_number }}</td>
+                                </tr>
+                                @if ($Rec->cont_two_name != null)
+                                    <tr>
+                                        <td>{{ $Rec->cont_two_name }}</td>
+                                        <td>{{ $Rec->cont_two_relation }}</td>
+                                        <td>{{ $Rec->cont_two_number }}</td>
+                                @endif
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -456,8 +432,8 @@ $Year = Carbon::now()->year;
                     <img src="https://www.vnrseeds.com/wp-content/uploads/2018/12/vnr-logo-69x90.png" width="30px">
                 </center>
                 <div class="row">
-                    <div class="col text-left"><b>Version 1.5</b></div>
-                    <div class="col text-center"><b>Application Form</b></div>
+                    <div class="col text-left"><b>Version 1.2</b></div>
+                    <div class="col text-center"><b>Joining Form</b></div>
                     <div class="col ">&emsp;&nbsp;<b>VNR Seeds Pvt. Ltd.</b></div>
                 </div>
                 <hr style="margin-top: 0px;">
@@ -560,46 +536,60 @@ $Year = Carbon::now()->year;
                     </div>
                 </div>
 
-                <div class="row mb-1">
-                    <p style="margin-bottom:5px;"><b>Present job responsibilities, in brief(वर्तमान कार्य का
-                            संक्षिप्त वर्णन):</b></p>
-                    <div class="col-12">
-                        <u> {{ $Rec->JobResponsibility }}</u>
-
-                    </div>
-                </div>
-
                 <div class="row">
-                    <p style="margin-bottom: 0px;"><b>Other allowances details (to be filled accurately)*</b></p>
-                    <p>अन्य भत्तों का वर्णन (कृपया सही विवरण दे)*</p>
-                    <div class="col-md-12 ">
-                        <table class="table tabler-borderless">
-
+                    <div class="col-lg-12">
+                        <p class="fw-bold">Social benefit details related to previous employment</p>
+                        <table class="table table-bordered text-center">
                             <tr>
-                                <td>DA@ headquarter</td>
-                                <td>DA Outside headquarter</td>
-                                <td>Petrol Allowances</td>
-
-                                <td>Hotel Eligibility</td>
+                                <td>UAN</td>
+                                <td>{{ $Rec->UAN ?? '' }}</td>
                             </tr>
-                            <tr style="height:30px;">
-                                <td>
-                                    {{ $Rec->DAHq }}
-                                </td>
-                                <td>
-                                    {{ $Rec->DAOutHq }}
-                                </td>
-                                <td>
-                                    {{ $Rec->PetrolAlw }}
-                                </td>
+                            <tr>
+                                <td>EPFO Code No</td>
+                                <td>{{ $Rec->PFNumber ?? '' }}</td>
+                            </tr>
+                            <tr>
 
-                                <td>
-                                    {{ $Rec->HotelElg }}
-                                </td>
+                                <td>ESIC</td>
+                                <td>{{ $Rec->ESICNumber ?? '' }}</td>
                             </tr>
                         </table>
                     </div>
                 </div>
+
+                <div class="row">
+                    <p style="margin-bottom: 0px;"><b>Training & Practical Experience (Other than regular jobs):</b>
+                        प्रशिक्षण और व्यावहारिक अनुभव (नियमित नौकरियों के अलावा)
+                    </p>
+                    <div class="col-md-12">
+
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th>Name of the Training</th>
+                                    <th>Training provided by <br>Organization/Institute</th>
+                                    <th>From Date</th>
+                                    <th>To Date</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($Training as $item)
+                                    <tr>
+                                        <td>{{ $item->training }}</td>
+                                        <td>{{ $item->organization }}</td>
+                                        <td>{{ $item->from }}</td>
+                                        <td>{{ $item->to }}</td>
+
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+
 
                 <div class="row">
                     <p style="margin-bottom: 0px;"><b>Previous Employment Records:</b> अन्य अन्य कार्योनुभव के विवरण
@@ -654,8 +644,8 @@ $Year = Carbon::now()->year;
                     <img src="https://www.vnrseeds.com/wp-content/uploads/2018/12/vnr-logo-69x90.png" width="30px">
                 </center>
                 <div class="row">
-                    <div class="col text-left"><b>Version 1.5</b></div>
-                    <div class="col text-center"><b>Application Form</b></div>
+                    <div class="col text-left"><b>Version 1.2</b></div>
+                    <div class="col text-center"><b>Joining Form</b></div>
                     <div class="col ">&emsp;&nbsp;<b>VNR Seeds Pvt. Ltd.</b></div>
                 </div>
                 <hr style="margin-top: 0px;">
@@ -783,94 +773,8 @@ $Year = Carbon::now()->year;
                     <img src="https://www.vnrseeds.com/wp-content/uploads/2018/12/vnr-logo-69x90.png" width="30px">
                 </center>
                 <div class="row">
-                    <div class="col text-left"><b>Version 1.5</b></div>
-                    <div class="col text-center"><b>Application Form</b></div>
-                    <div class="col ">&emsp;&nbsp;<b>VNR Seeds Pvt. Ltd.</b></div>
-                </div>
-                <hr style="margin-top: 0px; ">
-                <p class="fw-bold">About Yourself</p>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <p class="mb-0 fw-bold text-justify">a) What is your aim in life?</p>
-                        <p class="mb-0" style="margin-left: 20px;">{{ $AboutAns->AboutAim ?? '' }}</p>
-
-                        <p class="mb-0 fw-bold text-justify">b) What are your hobbies and interest?</p>
-                        <p class="mb-0" style="margin-left: 20px;">{{ $AboutAns->AboutHobbi ?? '' }}</p>
-
-                        <p class="mb-0 fw-bold text-justify">c) Where do you see yourself 5 Years from now?</p>
-                        <p class="mb-0" style="margin-left: 20px;">{{ $AboutAns->About5Year ?? '' }}</p>
-
-                        <p class="mb-0 fw-bold text-justify">d) What are your greatest personal assets (qualities,
-                            skills,
-                            abilities) which make you successful in the jobs you take up?</p>
-                        <p class="mb-0" style="margin-left: 20px;">{{ $AboutAns->AboutAssets ?? '' }}</p>
-
-                        <p class="mb-0 fw-bold">e) What are your Strengths?</p>
-                        <p class="mb-0" style="margin-left: 20px;">{{ $AboutAns->AboutStrength ?? '' }}
-                        </p>
-
-                        <p class="mb-0 fw-bold">f) What are your areas where you think you need to improve yourself?
-                        </p>
-                        <p class="mb-0" style="margin-left: 20px;">{{ $AboutAns->AboutImprovement ?? '' }}
-                        </p>
-
-                        <p class="mb-0 fw-bold text-justify">g) In the past or at present, have/are you suffered
-                            /suffering from,
-                            any form of physical disability or any minor or major illness or deficiency?</p>
-                        <p class="mb-0" style="margin-left: 20px;">{{ $AboutAns->AboutDeficiency ?? '' }}
-                        </p>
-
-                        <p class="mb-0 fw-bold">h) Have You Been criminally prosecuted? </p>
-                        <p class=" mb-0" style="margin-left: 20px;"> <input type="checkbox" @if ($AboutAns != null && $AboutAns->CriminalChk == 'Y')
-                            checked
-                            @endif> Yes &nbsp; &nbsp;&nbsp; <input type="checkbox" @if ($AboutAns != null && $AboutAns->CriminalChk == 'N')
-                            checked
-                            @endif> No</p>
-                        @if ($AboutAns != null && $AboutAns->AboutCriminal == 'Y')
-                            <p class="mb-0" style="margin-left: 20px;">
-                                {{ $AboutAns->AboutCriminal ?? '' }}
-                            </p>
-
-                        @endif
-
-
-                        <p class="mb-0 fw-bold">i) Do you have a valid driving licence? </p>
-                        <p class=" mb-0" style="margin-left: 20px;"> <input type="checkbox" @if ($AboutAns != null && $AboutAns->LicenseChk == 'Y')
-                            checked
-                            @endif> Yes &nbsp; &nbsp;&nbsp; <input type="checkbox" @if ($AboutAns != null && $AboutAns->LicenseChk == 'N')
-                            checked
-                            @endif> No</p>
-                        @if ($AboutAns != null && $AboutAns->LicenseChk == 'Y')
-                            <p class="mb-0" style="margin-left: 20px;"><span
-                                    class="fw-bold">Drivining
-                                    License:</span>
-                                {{ $AboutAns->DLNo ?? '' }} <span style="margin-left: 20px;"
-                                    class="fw-bold">Validity:
-                                    {{ $AboutAns->LValidity ?? '' }}</span></p>
-                        @endif
-
-                    </div>
-                </div>
-
-                <hr style="margin-bottom: 0px; margin-top:280px;">
-                <center>
-                    <p class="row" style="margin-top: 0px;">
-                        Date of Release: 09 September 2019 &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;Released by
-                        HRD
-                        &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;Page 4
-                    </p>
-                </center>
-            </div>
-        </div>
-
-        <div class="page">
-            <div class="subpage">
-                <center>
-                    <img src="https://www.vnrseeds.com/wp-content/uploads/2018/12/vnr-logo-69x90.png" width="30px">
-                </center>
-                <div class="row">
-                    <div class="col text-left"><b>Version 1.5</b></div>
-                    <div class="col text-center"><b>Application Form</b></div>
+                    <div class="col text-left"><b>Version 1.2</b></div>
+                    <div class="col text-center"><b>Joining Form</b></div>
                     <div class="col ">&emsp;&nbsp;<b>VNR Seeds Pvt. Ltd.</b></div>
                 </div>
                 <hr style="margin-top: 0px; ">
@@ -975,6 +879,7 @@ $Year = Carbon::now()->year;
                                         <th>Business Relation <br>With VNR</th>
                                         <th>Location of Business /
                                             acquaintances</th>
+
                                         <th>Your Relationship <br>with person mentioned</th>
                                     </tr>
                                 </thead>
@@ -1055,272 +960,14 @@ $Year = Carbon::now()->year;
             </div>
         </div>
 
-
-        @if ($Rec->Professional == 'P')
-            <div class="page">
-                <div class="subpage">
-                    <center>
-                        <img src="https://www.vnrseeds.com/wp-content/uploads/2018/12/vnr-logo-69x90.png" width="30px">
-                    </center>
-                    <div class="row">
-                        <div class="col text-left"><b>Version 1.5</b></div>
-                        <div class="col text-center"><b>Application Form</b></div>
-                        <div class="col ">&emsp;&nbsp;<b>VNR Seeds Pvt. Ltd.</b></div>
-                    </div>
-                    <hr style="margin-top: 0px; ">
-
-                    <div class="row" style="margin-bottom:0px; marign-top:50px;">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <p class="fw-bold mb-0">Reporting Details:</p>
-                                <table class="table">
-                                    <tr>
-                                        <td class="fw-bold" style="width: 50%">Reporting Manager Name</td>
-                                        <td>{{ $Rec->Reporting ?? '' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="fw-bold">Reporting Manager's Designation</td>
-                                        <td>{{ $Rec->RepDesig ?? '' }}</td>
-                                    </tr>
-                                </table>
-
-                                <table class="table">
-                                    <tr>
-                                        <td rowspan="2" style="width: 50%" class="fw-bold">No of employees <br>
-                                            directly reporting to you</td>
-                                        <td class="fw-bold">On roll employees</td>
-                                        <td class="fw-bold">Third party employees</td>
-                                    </tr>
-                                    <tr>
-
-                                        <td class="text-center"> {{ $OtherDetail->OnRollRepToMe ?? '' }}</td>
-                                        <td class="text-center"> {{ $OtherDetail->ThirdPartyRepToMe ?? '' }}
-                                        </td>
-
-                                    </tr>
-
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-12">
-                            <p class="fw-bold mb-0">Working Territory Details (mention the name of District or Area's
-                                Covered)</p>
-                            <p>{{ $OtherDetail->TerritoryDetails ?? '' }}</p>
-                        </div>
-
-                        <div class="col-lg-12">
-                            <p class="fw-bold mb-0">Business Turnover Details:</p>
-                            <table class="table text-center">
-                                <tr>
-                                    <th>Business Turnover</th>
-                                    <th>Current Year <br>(in lakh's)</th>
-                                    <th>Previous Year <br>(in lakh's)</th>
-                                </tr>
-                                <tr>
-                                    <td class="fw-bold">Vegetable Business</td>
-                                    <td>{{ $OtherDetail->VegCurrTurnOver ?? '' }}</td>
-                                    <td>{{ $OtherDetail->VegPreTurnOver ?? '' }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="fw-bold">Field Crop Business</td>
-                                    <td>{{ $OtherDetail->FieldCurrTurnOver ?? '' }}</td>
-                                    <td>{{ $OtherDetail->FieldPreTurnOver ?? '' }}</td>
-                                </tr>
-                            </table>
-                        </div>
-
-                        <div class="col-lg-12">
-                            <p class="fw-bold mb-0">Incentive Plan Details:</p>
-                            <table class="table text-center">
-                                <tr>
-                                    <th>Incentive Payment Duration</th>
-                                    <th>Incentive Amount (in Rs.)</th>
-                                </tr>
-                                <tr>
-                                    <td class="fw-bold">Monthly</td>
-                                    <td>{{ $OtherDetail->MonthlyIncentive ?? '' }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="fw-bold">Quarterly</td>
-                                    <td>{{ $OtherDetail->QuarterlyIncentive ?? '' }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="fw-bold">Half Yearly</td>
-                                    <td>{{ $OtherDetail->HalfYearlyIncentive ?? '' }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="fw-bold">Annually</td>
-                                    <td>{{ $OtherDetail->AnnuallyIncentive ?? '' }}</td>
-                                </tr>
-                            </table>
-                        </div>
-
-                        <p class="fw-bold mb-0">Any other details related to incentive plan:</p>
-                        <p>{{ $OtherDetail->AnyOtheIncentive }}</p>
-
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <p class="fw-bold mb-1">Company Vehicle Policy (select whichever is appliable to
-                                    you):
-                                </p>
-
-                                @if ($OtherDetail->TwoWheelChk != null && $OtherDetail->TwoWheelChk == '1')
-                                    <input type="checkbox" name="" id="" checked> 2 Wheeler
-                                    <table class="table">
-                                        <tr>
-                                            <td>Ownership Type</td>
-                                            <td>{{ $OtherDetail->TwoWheelOwnerType == 'W' ? 'Own' : 'Provided by Company' }}
-                                                @if ($OtherDetail->TwoWheelOwnerType == 'C')
-                                                    - Rs. {{ $OtherDetail->TwoWheelAmount ?? '' }}
-                                                @endif
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>Petrol Allowances</td>
-                                            <td>
-                                                Rs. {{ $OtherDetail->TwoWheelPetrol ?? '' }}
-                                                {{ $OtherDetail->TwoWheelPetrolTerm ?? '' }}
-                                            </td>
-                                        </tr>
-                                    </table>
-                                @endif
-
-                                @if ($OtherDetail->FourWheelChk != null && $OtherDetail->FourWheelChk == '1')
-                                    <input type="checkbox" name="" id="" checked> 4 Wheeler
-                                    <table class="table">
-                                        <tr>
-                                            <td>Ownership Type</td>
-                                            <td>{{ $OtherDetail->FourWheelOwnerType == 'W' ? 'Own' : 'Provided by Company' }}
-                                                @if ($OtherDetail->FourWheelOwnerType == 'C')
-                                                    - Rs. {{ $OtherDetail->FourWheelAmount ?? '' }}
-                                                @endif
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>Petrol Allowances</td>
-                                            <td>
-                                                Rs. {{ $OtherDetail->FourWheelPetrol ?? '' }}
-                                                {{ $OtherDetail->FourWheelPetrolTerm ?? '' }}
-                                            </td>
-                                        </tr>
-                                    </table>
-                                @endif
-
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <hr style="margin-bottom: 0px; margin-top:20px;">
-                    <center>
-                        <p class="row" style="margin-top: 0px;">
-                            Date of Release: 09 September 2019 &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;Released
-                            by
-                            HRD
-                            &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;Page 4
-                        </p>
-                    </center>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="subpage">
-                    <center>
-                        <img src="https://www.vnrseeds.com/wp-content/uploads/2018/12/vnr-logo-69x90.png" width="30px">
-                    </center>
-                    <div class="row">
-                        <div class="col text-left"><b>Version 1.5</b></div>
-                        <div class="col text-center"><b>Application Form</b></div>
-                        <div class="col ">&emsp;&nbsp;<b>VNR Seeds Pvt. Ltd.</b></div>
-                    </div>
-                    <hr style="margin-top: 0px; ">
-
-                    <div class="row" style="margin-bottom:0px; marign-top:50px;">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <p class="fw-bold mb-0">Other Benefit details (select whichever is applicable and
-                                    mention
-                                    the details):</p>
-                                <table class="table text-center">
-                                    <tr>
-                                        <th>Particulars</th>
-                                        <th>Amount</th>
-                                    </tr>
-                                    <tr>
-                                        <td>DA @ Headquarter</td>
-                                        <td>Rs. {{ $Rec->DAHq ?? '' }}/- Per Day </td>
-                                    </tr>
-                                    <tr>
-                                        <td>DA outside Headquarter</td>
-                                        <td>Rs. {{ $Rec->DAOutHq ?? '' }}/- Per Day </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Lodging eligibility</td>
-                                        <td>Rs. {{ $Rec->HotelElg ?? '' }}/- Per Day </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Medical Insurance</td>
-                                        <td>Rs. {{ $Rec->Medical ?? '' }} </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Group Term Insurance</td>
-                                        <td>Rs. {{ $Rec->GrpTermIns ?? '' }} </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Group Personal Accident Insurance</td>
-                                        <td>Rs. {{ $Rec->GrpPersonalAccIns ?? '' }} </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Mobile Handset</td>
-                                        <td>Rs. {{ $Rec->MobileHandset ?? '' }} </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Mobile Bill reimbursement</td>
-                                        <td>Rs. {{ $Rec->MobileBill ?? '' }} </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Travel eligibilities</td>
-                                        <td>{{ $Rec->TravelElg ?? '' }} </td>
-                                    </tr>
-                                </table>
-
-
-                            </div>
-
-                            <div class="col-lg-12">
-                                <p class="fw-bold mb-1">Any other benefit:</p>
-                                <p>{{ $OtherDetail->OtherBenifit ?? '' }}</p>
-                            </div>
-                        </div>
-
-
-                    </div>
-
-
-                    <hr style="margin-bottom: 0px; margin-top:20px;">
-                    <center>
-                        <p class="row" style="margin-top: 0px;">
-                            Date of Release: 09 September 2019 &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;Released
-                            by
-                            HRD
-                            &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;Page 4
-                        </p>
-                    </center>
-                </div>
-            </div>
-        @endif
-
         <div class="page">
             <div class="subpage">
                 <center>
                     <img src="https://www.vnrseeds.com/wp-content/uploads/2018/12/vnr-logo-69x90.png" width="30px">
                 </center>
                 <div class="row">
-                    <div class="col text-left"><b>Version 1.5</b></div>
-                    <div class="col text-center"><b>Application Form</b></div>
+                    <div class="col text-left"><b>Version 1.2</b></div>
+                    <div class="col text-center"><b>Joining Form</b></div>
                     <div class="col ">&emsp;&nbsp;<b>VNR Seeds Pvt. Ltd.</b></div>
                 </div>
                 <hr style="margin-top: 0px; ">
@@ -1335,14 +982,13 @@ $Year = Carbon::now()->year;
                         <p style="text-align: justify;">
                             I hereby declare that all the information’s and facts set forth in this application and any
                             supplemental information is true and complete to the best of my knowledge. I understand
-                            that, if employed, falsified statements on this application shall be considered sufficient
-                            cause for immediate discharge. I hereby authorize investigation of all statements contained
-                            herein and employers listed above to give you any and all information concerning my
-                            employment, and any pertinent information they may have, and release all parties from all
-                            liability for any damage that may result from furnishing same. I understand that neither the
-                            completion of this application nor any other part of my consideration for employment
-                            establishes any obligation for the company to hire me. I understand that I am required to
-                            abide by all rules and regulations of the company
+                            that, during my employment, any falsified statements on this application shall be considered
+                            sufficient cause for my immediate discharge from the employment of the Company. I hereby
+                            authorize investigation of all statements contained herein and employers listed above to
+                            give you any and all information concerning my employment, and any pertinent information
+                            they may have, and release all parties from all liability for any damage that may result
+                            from furnishing same. I understand that I am required to abide by all rules and regulations
+                            of the company.
                         </p>
                     </div>
                 </div>
@@ -1365,6 +1011,81 @@ $Year = Carbon::now()->year;
                         </table>
                     </div>
                 </div>
+                <hr style="margin-bottom: 0px; margin-top:380px;">
+                <center>
+                    <p class="row" style="margin-top: 0px;">
+                        Date of Release: 09 September 2019 &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;Released by
+                        HRD
+                        &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;Page 4
+                    </p>
+                </center>
+            </div>
+        </div>
+
+        <div class="page">
+            <div class="subpage">
+                <center>
+                    <img src="https://www.vnrseeds.com/wp-content/uploads/2018/12/vnr-logo-69x90.png" width="30px">
+                </center>
+                <div class="row">
+                    <div class="col text-left"><b>Version 1.2</b></div>
+                    <div class="col text-center"><b>Joining Form</b></div>
+                    <div class="col ">&emsp;&nbsp;<b>VNR Seeds Pvt. Ltd.</b></div>
+                </div>
+                <hr style="margin-top: 0px; ">
+
+
+                <center style="margin-top: 50px;">
+                    <p style="margin-bottom:0px;"><b>Dcoument Details:</b></p>
+
+                </center>
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table table-bordered">
+                            <tr>
+                                <td style="width: 2%">1</td>
+                                <td style="width: 20%">Bank Name</td>
+                                <td>{{ $Rec->BankName ?? '' }}</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Bank Branch</td>
+                                <td>{{ $Rec->BranchName ?? '' }}</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Account Number</td>
+                                <td>{{ $Rec->AccountNumber ?? '' }}</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>IFSC Code</td>
+                                <td>{{ $Rec->IFSCCode ?? '' }}</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>PAN Number</td>
+                                <td>{{ $Rec->PAN ?? '' }}</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>Aadhaar Card</td>
+                                <td>{{ $Rec->Aadhaar ?? '' }}</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>Passport</td>
+                                <td>{{ $Rec->Passport ?? '' }}</td>
+                            </tr>
+                           <tr>
+                               <td>8</td>
+                               <td>Driving License</td>
+                                 <td>{{ $AboutAns->DLNo ?? '' }}</td>
+                           </tr>
+                        </table>
+                    </div>
+                </div>
+
                 <hr style="margin-bottom: 0px; margin-top:380px;">
                 <center>
                     <p class="row" style="margin-top: 0px;">

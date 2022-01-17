@@ -97,7 +97,7 @@ use function App\Helpers\getStateName;
                             <td>Department</td>
                             <td>Designation</td>
                             <td>Responses</td>
-                           {{--  <td>Sources</td> --}}
+                            {{-- <td>Sources</td> --}}
                         </tr>
                     </thead>
                     <tbody>
@@ -434,7 +434,6 @@ use function App\Helpers\getStateName;
                             '<span style="color: #275A72;font-weight: bold;padding-bottom: 10px;">' +
                             value.FName + ' ' + (value.MName == null ? '' : value.MName) + ' ' + value
                             .LName +
-
                             '(Ref.No ' + value.ReferenceNo + ')</span>' +
                             ' </label>' +
                             '</td>' +
@@ -448,7 +447,6 @@ use function App\Helpers\getStateName;
                             '<tr>' +
                             '<td>Experience<span class="pull-right">:</span></td>' +
                             '<td style="text-align:right">';
-
                         if (value.Professional == 'F') {
                             x = x + 'Fresher';
                         } else {
@@ -472,15 +470,12 @@ use function App\Helpers\getStateName;
                             x = x + '<i class="fadeIn animated bx bx-badge-check text-success"></i>';
                         }
                         x = x + '<tr>' +
-
                             '<tr class=""><td>Current Company<span class="pull-right">:</span></td>' +
                             ' <td style="text-align: right">' + (value.PresentCompany == null ? '' :
                                 value
                                 .PresentCompany) +
-
                             '<td style="text-align: right">Email ID<span class="pull-right">:</span></td>' +
                             '<td style="text-align: right">' + value.Email;
-
                         if (value.Verified == 'Y') {
                             x = x + '<i class="fadeIn animated bx bx-badge-check text-success"></i>';
                         }
@@ -498,26 +493,20 @@ use function App\Helpers\getStateName;
                             '<td>Current Location<span class="pull-right">:</span></td>' +
                             '<td style="text-align: right">' + value.City + '</td>' +
                             ' </tr>' +
-
                             '<tr><td>Applied on date:</td>' +
                             ' <td style="text-align: right">' + value.ApplyDate + '</td>' +
                             ' <td style="text-align: right">HR Screening Status:</td>' +
                             '   <td style="text-align: right">';
-
                         if (value.JPId != 0) {
                             x = x + (value.Status != null ? '<b>' + value.Status + '<b>' :
                                 '<i class="fa fa-pencil-square-o text-primary" aria-hidden="true" style="font-size:14px;cursor: pointer;" id="HrScreening" data-id="' +
                                 value.JAId + '">'
                             );
                         }
-
-
-
                         x = x + '</td></tr>' +
                             '<tr><td> Source: </td><td style="text-align: right">' +
                             value.ResumeSource +
                             '</td>' +
-
                             '<td class="text-danger fw-bold" style="text-align: center" colspan="2">';
                         if (value.BlackList == 0) {
                             x = x +
@@ -530,7 +519,6 @@ use function App\Helpers\getStateName;
                                     '<label class="text-primary" style=" cursor: pointer;" id="UnBlockCandidate" data-id="' +
                                     value.JCId +
                                     '"><i class="fas fa-user text-primary"></i>Unblock Candidate</label>';
-
                             }
                         }
                         x = x + ' </td>' +
@@ -566,13 +554,11 @@ use function App\Helpers\getStateName;
                             '</span>' +
                             '</small>' +
                             '</center>' +
-
                             '<center class="mt-3 fw-bold"><span class="d-inline"><label class="text-success" style=" cursor: pointer;" id="MoveCandidate" data-id="' +
                             value.JAId +
                             '"><i class="fas fa-shekel-sign text-success"></i> Move to Other Co.' +
                             '</label></span></center>' +
                             '</div>' +
-
                             '</div>' +
                             '</div>' +
                             '</div>';
@@ -601,13 +587,11 @@ use function App\Helpers\getStateName;
         });
 
         function diff_year_month_day(dt1, dt2) {
-
             var time = (dt2.getTime() - dt1.getTime()) / 1000;
             var year = Math.abs(Math.round((time / (60 * 60 * 24)) / 365.25));
             var month = Math.abs(Math.round(time / (60 * 60 * 24 * 7 * 4)));
             var days = Math.abs(Math.round(time / (3600 * 24)));
             return "Year :- " + year + " Month :- " + month + " Days :-" + days;
-
         }
 
         $(document).on('change', '#MoveCompany', function() {
