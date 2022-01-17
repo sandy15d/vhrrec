@@ -1,26 +1,29 @@
 @extends('layouts.master')
-@section('title', 'District Master')
+@section('title', 'Master States (General Purpose)')
 @section('PageContent')
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">District Master</div>
+            <div class="breadcrumb-title pe-3">Master States (General Purpose)</div>
             <div class="ms-auto">
-                <button class="btn btn--new btn-sm" id="addDistrict" data-bs-toggle="modal"
-                    data-bs-target="#addDistrictModal">Add New</button>
+                <button class="btn btn--new btn-sm" id="addState" data-bs-toggle="modal" data-bs-target="#addStateModal">Add
+                    New</button>
+
             </div>
         </div>
         <!--end breadcrumb-->
+
         <hr />
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover table-condensed text-center" id="DistrictTable" style="width: 100%">
-                        <thead class="bg-primary text-light ">
+                    <table class="table table-striped table-hover table-condensed text-center" id="Statetable"
+                        style="width: 100%">
+                        <thead class="bg-primary text-light text-center">
                             <tr>
                                 <td class="td-sm">S.No</td>
-                                <td>District Name</td>
-                                <td>State</td>
+                                <td>State Name</td>
+                                <td>State Code</td>
                                 <td>Country</td>
                                 <td>Status</td>
                                 <td>Action</td>
@@ -35,30 +38,36 @@
     </div>
 
 
-    <div class="modal fade" id="addDistrictModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="addStateModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add New District</h5>
+                    <h5 class="modal-title">Add New State</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('addDistrict') }}" method="POST" id="addDistrictForm">
+                <form action="{{ route('addState_general') }}" method="POST" id="addStateForm">
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="DistrictName">District Name</label>
-                            <input type="text" class="form-control" name="DistrictName" placeholder="Enter State Name">
-                            <span class="text-danger error-text DistrictName_error"></span>
+                            <label for="StateName">State Name</label>
+                            <input type="text" class="form-control" name="StateName" placeholder="Enter State Name">
+                            <span class="text-danger error-text StateName_error"></span>
                         </div>
                         <div class="form-group">
-                            <label for="State">State</label>
-                            <select name="State" class="form-control form-select">
-                              <option value="" selected disabled>Select State</option>
-                              @foreach ($state_list as $key =>$state)
-                                  <option value="{{$key}}">{{$state}}</option>
-                              @endforeach
+                            <label for="StateCode">State Code</label>
+                            <input type="text" class="form-control" name="StateCode" placeholder="Enter State Code">
+                            <span class="text-danger error-text StateCode_error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="Country">Country</label>
+                            <select name="Country" class="form-control form-select">
+                                <option value="" selected disabled>Select Country</option>
+                                @foreach ($country_list as $key => $value)
+                                    <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
                             </select>
-                            <span class="text-danger error-text State_error"></span>
+                            <span class="text-danger error-text Country_error"></span>
                         </div>
                         <div class="form-group">
                             <label for="Status">Status</label>
@@ -71,37 +80,43 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="SaveDistrict">Save changes</button>
+                        <button type="submit" class="btn btn-primary" id="SaveState">Save changes</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="editDistrictModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="editStateModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Update District Details</h5>
+                    <h5 class="modal-title">Update State Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('editDistrict') }}" method="POST" id="editDistrictForm">
+                <form action="{{ route('editState_general') }}" method="POST" id="editStateForm">
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
-                            <input type="hidden" name="districtId" />
-                            <label for="editDistrict">District</label>
-                            <input type="text" class="form-control" name="editDistrict">
-                            <span class="text-danger error-text editDistrict_error"></span>
+                            <input type="hidden" name="stid" />
+                            <label for="editStateName">State Name</label>
+                            <input type="text" class="form-control" name="editStateName" placeholder="Enter State Name">
+                            <span class="text-danger error-text editStateName_error"></span>
                         </div>
                         <div class="form-group">
-                            <label for="editState">State</label>
-                           <select id="editState" name="editState" class="form-control form-select">
-                               @foreach ($state_list as $state=>$value)
-                                   <option value="{{$state}}">{{$value}}</option>
-                               @endforeach
-                           </select>
-                            <span class="text-danger error-text editState_error"></span>
+                            <label for="editStateCode">State Code</label>
+                            <input type="text" class="form-control" name="editStateCode" placeholder="Enter State Code">
+                            <span class="text-danger error-text editStateCode_error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="editCountry">Country</label>
+                            <select name="editCountry" id="editCountry" class="form-control form-select">
+                                @foreach ($country_list as $key => $value)
+                                    <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
+                            <span class="text-danger error-text editCountry_error"></span>
                         </div>
                         <div class="form-group">
                             <label for="editStatus">Status</label>
@@ -114,7 +129,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="UpdateDistrict">Update changes</button>
+                        <button type="submit" class="btn btn-primary" id="UpdateState">Update changes</button>
                     </div>
                 </form>
             </div>
@@ -124,81 +139,7 @@
 
 @section('scriptsection')
     <script>
-        $('#addDistrictForm').on('submit', function(e) {
-            e.preventDefault();
-            var form = this;
-            $.ajax({
-                url: $(form).attr('action'),
-                method: $(form).attr('method'),
-                data: new FormData(form),
-                processData: false,
-                dataType: 'json',
-                contentType: false,
-                beforeSend: function() {
-                    $(form).find('span.error-text').text('');
-                },
-                success: function(data) {
-                    if (data.status==400) {
-                        $.each(data.error, function(prefix, val) {
-                            $(form).find('span.' + prefix + '_error').text(val[0]);
-                        });
-                    } else {
-                        $(form)[0].reset();
-                        $('#addDistrictModal').modal('hide');
-                        $('#DistrictTable').DataTable().ajax.reload(null, false);
-                        toastr.success(data.msg);
-                    }
-                }
-            });
-        });
-
-        $('#DistrictTable').DataTable({
-            processing: true,
-            info: true,
-            ajax: "{{ route('getDistrictList') }}",
-            columns: [{
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex'
-                },
-                {
-                    data: 'DistrictName',
-                    name: 'DistrictName'
-                },
-                {
-                    data: 'StateName',
-                    name: 'StateName'
-                },
-                {
-                    data:'CountryName',
-                    name:'CountryName'
-                },
-                {
-                    data: 'Status',
-                    name: 'Status'
-                },
-                {
-                    data: 'actions',
-                    name: 'actions'
-                },
-            ],
-            
-        });
-        //===============Get District Record for Updation=================
-        $(document).on('click', '#editBtn', function() {
-            var DistrictId = $(this).data('id');
-            $.post('<?= route('getDistrictDetails') ?>', {
-                DistrictId: DistrictId
-            }, function(data) {
-                $('#editDistrictModal').find('input[name="districtId"]').val(data.DistrictDetails.DistrictId);
-                $('#editDistrictModal').find('input[name="editDistrict"]').val(data.DistrictDetails
-                    .DistrictName);
-                $('#editState').val(data.DistrictDetails.StateId);
-                $('#editStatus').val(data.DistrictDetails.Status);
-                $('#editDistrictModal').modal('show');
-            }, 'json');
-        });
-        //===============Update District Details================================
-        $('#editDistrictForm').on('submit', function(e) {
+        $('#addStateForm').on('submit', function(e) {
             e.preventDefault();
             var form = this;
             $.ajax({
@@ -217,21 +158,98 @@
                             $(form).find('span.' + prefix + '_error').text(val[0]);
                         });
                     } else {
-                        $('#editDistrictModal').modal('hide');
-                        // $('#editDistrictForm').find(form)[0].reset();
-                        $('#DistrictTable').DataTable().ajax.reload(null, false);
+                        $(form)[0].reset();
+                        $('#addStateModal').modal('hide');
+                        $('#Statetable').DataTable().ajax.reload(null, false);
                         toastr.success(data.msg);
                     }
                 }
             });
         });
-        // ?==============Delete District======================//
+
+        $('#Statetable').DataTable({
+            processing: true,
+            info: true,
+            ajax: "{{ route('getAllStateData_General') }}",
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex'
+                },
+                {
+                    data: 'StateName',
+                    name: 'StateName'
+                },
+                {
+                    data: 'StateCode',
+                    name: 'StateCode'
+                },
+                {
+                    data: 'CountryName',
+                    name: 'CountryName',
+
+                },
+                {
+                    data: 'Status',
+                    name: 'Status'
+                },
+                {
+                    data: 'actions',
+                    name: 'actions'
+                },
+            ],
+
+        });
+        //===============Get State Record for Updation=================
+        $(document).on('click', '#editBtn', function() {
+            var StateId = $(this).data('id');
+            $.post('<?= route('getStateDetails_general') ?>', {
+                StateId: StateId
+            }, function(data) {
+                $('#editStateModal').find('input[name="stid"]').val(data.StateDetails.StateId);
+                $('#editStateModal').find('input[name="editStateName"]').val(data.StateDetails
+                    .StateName);
+                $('#editStateModal').find('input[name="editStateCode"]').val(data.StateDetails
+                    .StateCode);
+                $('#editCountry').val(data.StateDetails.CountryId);
+                $('#editStatus').val(data.StateDetails.Status);
+                $('#editStateModal').modal('show');
+            }, 'json');
+        });
+        //===============Update State Details================================
+        $('#editStateForm').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                beforeSend: function() {
+                    $(form).find('span.error-text').text('');
+                },
+                success: function(data) {
+                    if (data.status == 400) {
+                        $.each(data.error, function(prefix, val) {
+                            $(form).find('span.' + prefix + '_error').text(val[0]);
+                        });
+                    } else {
+                        $('#editStateModal').modal('hide');
+                        // $('#editStateForm').find(form)[0].reset();
+                        $('#Statetable').DataTable().ajax.reload(null, false);
+                        toastr.success(data.msg);
+                    }
+                }
+            });
+        });
+        // ?==============Delete State======================//
         $(document).on('click', '#deleteBtn', function() {
-            var DistrictId = $(this).data('id');
-            var url = '<?= route('deleteDistrict') ?>';
+            var StateId = $(this).data('id');
+            var url = '<?= route('deleteState_general') ?>';
             swal.fire({
                 title: 'Are you sure?',
-                html: 'You want to <b>Delete</b> this District',
+                html: 'You want to <b>Delete</b> this State',
                 showCancelButton: true,
                 showCloseButton: true,
                 cancelButtonText: 'Cancel',
@@ -243,10 +261,10 @@
             }).then(function(result) {
                 if (result.value) {
                     $.post(url, {
-                        DistrictId: DistrictId
+                        StateId: StateId
                     }, function(data) {
                         if (data.status == 200) {
-                            $('#DistrictTable').DataTable().ajax.reload(null, false);
+                            $('#Statetable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
                         } else {
                             toastr.error(data.msg);
@@ -255,6 +273,5 @@
                 }
             });
         });
-       
     </script>
 @endsection

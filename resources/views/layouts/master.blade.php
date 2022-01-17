@@ -179,6 +179,8 @@ $CompanyQry = DB::table('master_company')
                             <li> <a href="/admin/department"><i class="bx bx-right-arrow-alt"></i>Department</a></li>
                             <li> <a href="/admin/designation"><i class="bx bx-right-arrow-alt"></i>Designation</a></li>
                             <li> <a href="/admin/grade"><i class="bx bx-right-arrow-alt"></i>Grade</a></li>
+
+                            <li> <a href="/admin/gen_states"><i class="bx bx-right-arrow-alt"></i>States(General Purpose)</a></li>
                             <li> <a href="/admin/district"><i class="bx bx-right-arrow-alt"></i>District</a></li>
                             <li> <a href="/admin/education"><i class="bx bx-right-arrow-alt"></i>Education</a></li>
                             <li> <a href="/admin/eduspecialization"><i class="bx bx-right-arrow-alt"></i>Education

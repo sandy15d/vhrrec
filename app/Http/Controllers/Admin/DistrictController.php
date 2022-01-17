@@ -35,7 +35,6 @@ class DistrictController extends Controller
             $district = new master_district;
             $district->DistrictName = $request->DistrictName;
             $district->StateId = $request->State;
-            $district->IsDeleted = '0';
             $district->Status = $request->Status;
             $query = $district->save();
 
@@ -52,8 +51,8 @@ class DistrictController extends Controller
 
     public function getDistrictList()
     {
-        $district = DB::table('master_district')->join('states', 'states.StateId', '=', 'master_district.StateId')
-            ->select(['master_district.*', 'states.StateName']);
+        $district = DB::table('master_district')->join('states', 'states.StateId', '=', 'master_district.StateId')->join('master_country', 'master_country.CountryId', '=', 'states.CountryId')->select('master_district.*', 'states.StateName', 'master_country.CountryName')
+            ->select(['master_district.*', 'states.StateName', 'master_country.CountryName']);
 
         return datatables()->of($district)
             ->addIndexColumn()

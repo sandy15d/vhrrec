@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
@@ -147,4 +148,100 @@ class StateController extends Controller
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         }
     }
+
+    //!==========================================================================================//
+    function gen_states()
+    {
+        $country_list = DB::table("master_country")->pluck("CountryName", "CountryId");
+        return view('admin.gen_states', compact('country_list'));
+    }
+
+    public function getAllStateData_General()
+    {
+        $state = DB::table('states')->join('master_country', 'states.CountryId', '=', 'master_country.CountryId')
+            ->select(['states.StateId', 'states.StateName', 'states.StateCode', 'master_country.CountryName', 'states.Status']);
+
+        return datatables()->of($state)
+            ->addIndexColumn()
+            ->addColumn('actions', function ($state) {
+                return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $state->StateId . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  
+                <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $state->StateId . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
+            })
+            ->rawColumns(['actions'])
+            ->make(true);
+    }
+
+    public function addState_general(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'StateName' => 'required',
+            'StateCode' => 'required',
+            'Country' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
+        } else {
+
+            $query = DB::table('states')
+                ->insert([
+                    'StateName' => $request->StateName,
+                    'StateCode' => $request->StateCode,
+                    'CountryId' => $request->Country,
+                    'Status' => $request->Status,
+
+                ]);
+            if (!$query) {
+                return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+            } else {
+                return response()->json(['status' => 200, 'msg' => 'New State has been successfully created.']);
+            }
+        }
+    }
+
+    public function getStateDetails_general(Request $request)
+    {
+        $StateId = $request->StateId;
+        $StateDetails = DB::table('states')->where('StateId', $StateId)->first();
+        return response()->json(['StateDetails' => $StateDetails]);
+    }
+
+    public function editState_general(Request $request)
+    {
+        $StateId = $request->stid;
+        $validator = Validator::make($request->all(), [
+            'editStateName' => 'required',
+            'editStateCode' => 'required',
+            'editCountry' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
+        } else {
+        
+            $query = DB::table('states')
+                ->where('StateId', $StateId)
+                ->update([
+                    'StateName' => $request->editStateName,
+                    'StateCode' => $request->editStateCode,
+                    'CountryId' => $request->editCountry,
+                    'Status' => $request->editStatus,
+                ]);
+            if (!$query) {
+                return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+            } else {
+                return response()->json(['status' => 200, 'msg' => 'State data has been changed successfully.']);
+            }
+        }
+    }
+    public function deleteState_general(Request $request)
+    {
+        $StateId = $request->StateId;
+       
+        $query = DB::table('states')->where('StateId', $StateId)->delete();
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'State data has been Deleted.']);
+        }
+    }
+
 }

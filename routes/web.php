@@ -55,8 +55,8 @@ Route::group(['prefix' => 'jobportal'], function () {
 
     Route::get('trainee_apply_form', [JobController::class, 'trainee_apply_form'])->name('trainee_apply_form');
     Route::post('trainee_apply', [JobController::class, 'trainee_apply'])->name('trainee_apply');
-   
-   
+
+
     Route::get('verification', [JobController::class, 'verification'])->name('verification');
     Route::post('otpverify', [JobController::class, 'otpverify'])->name('otpverify');
     Route::get('confirmation', [JobController::class, 'confirmation'])->name('confirmation');
@@ -219,24 +219,24 @@ Route::get('offer_letter', [OfferLtrController::class, 'offer_letter'])->name('o
 Route::post('update_offerletter_basic', [OfferLtrController::class, 'update_offerletter_basic'])->name('update_offerletter_basic');
 Route::get('get_offerltr_basic_detail', [OfferLtrController::class, 'get_offerltr_basic_detail'])->name('get_offerltr_basic_detail');
 Route::get('offer_letter_generate', [OfferLtrController::class, 'offer_letter_generate'])->name('offer_letter_generate');
-Route::post('insert_ctc', [OfferLtrController::class,'insert_ctc'])->name('insert_ctc');
-Route::post('insert_ent', [OfferLtrController::class,'insert_ent'])->name('insert_ent');
-Route::post('offer_ltr_gen', [OfferLtrController::class,'offer_ltr_gen'])->name('offer_ltr_gen');
-Route::get('offer_ltr_print', [OfferLtrController::class,'offer_ltr_print'])->name('offer_ltr_print');
-Route::get('candidate-offer-letter', [OfferLtrController::class,'candidate_offer_letter'])->name('candidate-offer-letter');
-Route::get('offerLtrHistory', [OfferLtrController::class,'offerLtrHistory'])->name('offerLtrHistory');
-Route::get('offer_ltr_history', [OfferLtrController::class,'offer_ltr_history'])->name('offer_ltr_history');
-Route::get('getDetailForReview', [OfferLtrController::class,'getDetailForReview'])->name('getDetailForReview');
-Route::post('saveJoinDate', [OfferLtrController::class,'saveJoinDate'])->name('saveJoinDate');
-Route::post('SendOfferLtr', [OfferLtrController::class,'SendOfferLtr'])->name('SendOfferLtr');
-Route::post('OfferResponse', [OfferLtrController::class,'OfferResponse'])->name('OfferResponse');
-Route::get('offer-letter-response', [OfferLtrController::class,'OfferLetterResponse'])->name('offer-letter-response');
-Route::post('offerReopen', [OfferLtrController::class,'offerReopen'])->name('offerReopen');
-Route::post('send_for_review', [OfferLtrController::class,'send_for_review'])->name('send_for_review');
-Route::get('offer-letter-review', [OfferLtrController::class,'offer_letter_review'])->name('offer-letter-review');
-Route::get('viewReview', [OfferLtrController::class,'viewReview'])->name('viewReview');
-Route::post('ReviewResponse', [OfferLtrController::class,'ReviewResponse'])->name('ReviewResponse');
-Route::post('saveEmpCode', [OfferLtrController::class,'saveEmpCode'])->name('saveEmpCode');
+Route::post('insert_ctc', [OfferLtrController::class, 'insert_ctc'])->name('insert_ctc');
+Route::post('insert_ent', [OfferLtrController::class, 'insert_ent'])->name('insert_ent');
+Route::post('offer_ltr_gen', [OfferLtrController::class, 'offer_ltr_gen'])->name('offer_ltr_gen');
+Route::get('offer_ltr_print', [OfferLtrController::class, 'offer_ltr_print'])->name('offer_ltr_print');
+Route::get('candidate-offer-letter', [OfferLtrController::class, 'candidate_offer_letter'])->name('candidate-offer-letter');
+Route::get('offerLtrHistory', [OfferLtrController::class, 'offerLtrHistory'])->name('offerLtrHistory');
+Route::get('offer_ltr_history', [OfferLtrController::class, 'offer_ltr_history'])->name('offer_ltr_history');
+Route::get('getDetailForReview', [OfferLtrController::class, 'getDetailForReview'])->name('getDetailForReview');
+Route::post('saveJoinDate', [OfferLtrController::class, 'saveJoinDate'])->name('saveJoinDate');
+Route::post('SendOfferLtr', [OfferLtrController::class, 'SendOfferLtr'])->name('SendOfferLtr');
+Route::post('OfferResponse', [OfferLtrController::class, 'OfferResponse'])->name('OfferResponse');
+Route::get('offer-letter-response', [OfferLtrController::class, 'OfferLetterResponse'])->name('offer-letter-response');
+Route::post('offerReopen', [OfferLtrController::class, 'offerReopen'])->name('offerReopen');
+Route::post('send_for_review', [OfferLtrController::class, 'send_for_review'])->name('send_for_review');
+Route::get('offer-letter-review', [OfferLtrController::class, 'offer_letter_review'])->name('offer-letter-review');
+Route::get('viewReview', [OfferLtrController::class, 'viewReview'])->name('viewReview');
+Route::post('ReviewResponse', [OfferLtrController::class, 'ReviewResponse'])->name('ReviewResponse');
+Route::post('saveEmpCode', [OfferLtrController::class, 'saveEmpCode'])->name('saveEmpCode');
 
 
 Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');
@@ -340,6 +340,16 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('editState', [StateController::class, 'editState'])->name('editState');
     Route::post('deleteState', [StateController::class, 'deleteState'])->name('deleteState');
     Route::post('syncState', [StateController::class, 'syncState'])->name('syncState');
+    // ?=========================================================================================//
+
+    // ?==========================Master State (General Purpose)==============================// 
+    Route::get('gen_states', [StateController::class, 'gen_states'])->name('admin.gen_states');
+    Route::get('getAllStateData_General', [StateController::class, 'getAllStateData_General'])->name('getAllStateData_General');
+    Route::post('addState_general', [StateController::class, 'addState_general'])->name('addState_general');
+    Route::post('editState_general', [StateController::class, 'editState_general'])->name('editState_general');
+    Route::post('getStateDetails_general', [StateController::class, 'getStateDetails_general'])->name('getStateDetails_general');
+    Route::post('deleteState_general', [StateController::class, 'deleteState_general'])->name('deleteState_general');
+
     // ?=========================================================================================//
 
     //*====================================Master Employee ==================================//

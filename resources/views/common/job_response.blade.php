@@ -39,6 +39,7 @@ use function App\Helpers\getStateName;
     </style>
     <div class="page-content">
         <!--breadcrumb-->
+        <input type="hidden" name="ToDate" id="ToDate" value="{{date('Y-m-d')}}">
         <div class="page-breadcrumb  align-items-center mb-3">
             <div class="row mb-1">
                 <div class="col-3 breadcrumb-title ">
@@ -450,18 +451,19 @@ use function App\Helpers\getStateName;
                         if (value.Professional == 'F') {
                             x = x + 'Fresher';
                         } else {
-                            if (value.JobStartDate != null) {
+                           /*  if (value.JobStartDate != null) {
                                 var fdate = value.JobStartDate;
                                 if (value.JobEndDate == null) {
-                                    var tdate = now();
+                                    var tdate = $('#ToDate').val();
                                 } else {
                                     var tdate = value.JobEndDate;
                                 }
-                                var diff_year_month_day = diff_year_month_day(fdate, tdate)
-                                x = x + diff_year_month_day;
+                                var diff_date = diff_year_month_day(fdate, tdate)
+                                x = x + diff_date;
                             } else {
                                 x = x + 'Experienced';
-                            }
+                            } */
+                            x = x + 'Experienced';
                         }
                         x = x + '</td>' +
                             '<td style="text-align: right">Contact No<span class="pull-right">:</span></td>' +
@@ -586,13 +588,14 @@ use function App\Helpers\getStateName;
             }
         });
 
-        function diff_year_month_day(dt1, dt2) {
+       /*  function diff_year_month_day(dt1, dt2) {
+         
             var time = (dt2.getTime() - dt1.getTime()) / 1000;
             var year = Math.abs(Math.round((time / (60 * 60 * 24)) / 365.25));
             var month = Math.abs(Math.round(time / (60 * 60 * 24 * 7 * 4)));
             var days = Math.abs(Math.round(time / (3600 * 24)));
             return "Year :- " + year + " Month :- " + month + " Days :-" + days;
-        }
+        } */
 
         $(document).on('change', '#MoveCompany', function() {
             var CompanyId = $(this).val();
