@@ -131,8 +131,9 @@
                                 </tr>
                                 <tr>
                                     <th>Date Resume Screened</th>
+                               
                                     <td><input type="date" name="TechScreeningDate" id="TechScreeningDate"
-                                            class="form-control form-control-sm" disabled>
+                                            class="form-control form-control-sm" disabled   >
                                     </td>
                                 </tr>
                                 <tr>
@@ -381,6 +382,7 @@
                         } else {
                             var now = new Date();
                             var today = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate();
+                          
                             $("#TechScreeningDate").val(today);
                         }
                         $("#InterviewTime").val(res.CandidateDetail.IntervTime);

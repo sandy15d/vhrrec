@@ -11,7 +11,7 @@ use App\Mail\OfferLetterMail;
 use App\Mail\ReviewMail;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Admin\master_employee;
-use App\Models\jobapply;
+use App\Models\CandidateJoining;
 use Illuminate\Support\Facades\Mail;
 
 use function App\Helpers\getCompanyCode;
@@ -63,7 +63,7 @@ class OfferLtrController extends Controller
         }
         if ($Status != '') {
             if ($Status == 'Pending') {
-                $usersQuery->where('offerletterbasic.OfferLetterSent','Yes')->where("offerletterbasic.Answer",null);
+                $usersQuery->where('offerletterbasic.OfferLetterSent', 'Yes')->where("offerletterbasic.Answer", null);
             } else {
                 $usersQuery->where("offerletterbasic.Answer", $Status);
             }
@@ -73,12 +73,14 @@ class OfferLtrController extends Controller
             $usersQuery->where("jobcandidates.FName", 'like', "%$Name%");
         }
 
-        $candidate_list = $usersQuery->select('jobapply.JAId', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.ReferenceNo', 'jobcandidates.CandidateImage', 'screening.SelectedForC', 'screening.SelectedForD', 'offerletterbasic.OfferLetterSent', 'offerletterbasic.JoiningFormSent', 'offerletterbasic.Answer', 'offerletterbasic.OfferLtrGen', 'offerletterbasic.OfferLetter', 'candjoining.EmpCode', 'offerletterbasic.SendReview', 'jobpost.JobCode')
+        $candidate_list = $usersQuery->select('jobapply.JAId', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.ReferenceNo', 'jobcandidates.CandidateImage', 'screening.SelectedForC', 'screening.SelectedForD', 'offerletterbasic.OfferLetterSent', 'offerletterbasic.JoiningFormSent', 'offerletterbasic.Answer', 'offerletterbasic.OfferLtrGen', 'offerletterbasic.OfferLetter', 'candjoining.EmpCode', 'candjoining.JoinOnDt', 'offerletterbasic.SendReview', 'jobpost.JobCode')
             ->Join('jobapply', 'screening.JAId', '=', 'jobapply.JAId')
             ->Join('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
+            ->Join('manpowerrequisition', 'manpowerrequisition.MRFId', '=', 'jobpost.MRFId')
             ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
             ->leftJoin('offerletterbasic', 'jobapply.JAId', '=', 'offerletterbasic.JAId')
             ->leftJoin('candjoining', 'jobapply.JAId', '=', 'candjoining.JAId')
+            ->where('manpowerrequisition.CountryId', session('Set_Country'))
             ->whereNotNull('screening.SelectedForC')
             ->whereNotNull('screening.SelectedForD')
             ->orderBy('ScId', 'DESC')->paginate(20);
@@ -776,5 +778,76 @@ class OfferLtrController extends Controller
         } else {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         }
+    }
+
+    public function candidate_joining(Request $request)
+    {
+        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
+        $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
+        $Company = $request->Company;
+        $Department = $request->Department;
+        $Year = $request->Year;
+        $Month = $request->Month;
+        $Gender = $request->Gender;
+        $Status = $request->Status;
+        $Name = $request->Name;
+
+        $usersQuery = CandidateJoining::query();
+
+        if (Auth::user()->role == 'R') {
+
+            $usersQuery->where('jobpost.CreatedBy', Auth::user()->id);
+        }
+
+        if ($Company != '') {
+            $usersQuery->where("screening.SelectedForC", $Company);
+        }
+        if ($Department != '') {
+            $usersQuery->where("screening.SelectedForD", $Department);
+        }
+        if ($Year != '') {
+            $usersQuery->whereBetween('jobapply.ApplyDate', [$Year . '-01-01', $Year . '-12-31']);
+        }
+        if ($Month != '') {
+            if ($Year != '') {
+                $usersQuery->whereBetween('jobapply.ApplyDate', [$Year . '-' . $Month . '-01', $Year . '-' . $Month . '-31']);
+            } else {
+                $usersQuery->whereBetween('jobapply.ApplyDate', [date('Y') . '-' . $Month . '-01', date('Y') . '-' . $Month . '-31']);
+            }
+        }
+
+
+        if ($Status != '') {
+            $usersQuery->where("candjoining.Joined", $Status);
+        }
+
+        if ($Name != '') {
+            $usersQuery->where("jobcandidates.FName", 'like', "%$Name%");
+        }
+
+        $candidate_list = $usersQuery->select(
+            'jobapply.JAId',
+            'jobcandidates.FName',
+            'jobcandidates.MName',
+            'jobcandidates.LName',
+            'jobcandidates.ReferenceNo',
+            'jobcandidates.FinalSubmit',
+            'screening.SelectedForC',
+            'screening.SelectedForD',
+            'candjoining.Verification',
+            'candjoining.Joined',
+            'candjoining.ForwardToESS'
+        )
+            ->Join('jobapply', 'candjoining.JAId', '=', 'jobapply.JAId')
+            ->Join('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
+            ->Join('screening', 'screening.JAId', '=', 'jobapply.JAId')
+            ->Join('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
+            ->Join('manpowerrequisition', 'manpowerrequisition.MRFId', '=', 'jobpost.MRFId')
+            ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+            ->where('manpowerrequisition.Status', 'Approved')
+            ->where('manpowerrequisition.CountryId', session('Set_Country'))
+            ->where('offerletterbasic.Answer', 'Accepted')
+            ->paginate(20);
+        return view('onboarding.candidate_joining', compact('company_list', 'months', 'candidate_list'));
     }
 }

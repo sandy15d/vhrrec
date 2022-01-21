@@ -109,9 +109,13 @@ class AdminController extends Controller
         }
 
         $mrf = $usersQuery->select('*')
-            ->where('Status', 'Approved')
-            ->whereNull('Allocated')
-            ->orWhere('Status', 'New')
+            ->where('manpowerrequisition.CountryId', session('Set_Country'))
+            ->where('manpowerrequisition.Status', 'New')
+            ->orWhere(function ($query) {
+                $query->where('manpowerrequisition.Status', 'Approved')
+                    ->whereNull('manpowerrequisition.Allocated');
+            })
+
             ->orderBy('CreatedTime', 'DESC')
             ->select(['manpowerrequisition.*']);
 
@@ -232,6 +236,7 @@ class AdminController extends Controller
         }
 
         $mrf =  $usersQuery->select('*')
+        ->where('CountryId', session('Set_Country'))
             ->where('Status', 'Approved')
             ->where('Allocated', '!=', null)
             ->orderBy('CreatedTime', 'DESC');
@@ -354,6 +359,7 @@ class AdminController extends Controller
         }
 
         $mrf = $usersQuery->select('*')
+        ->where('CountryId', session('Set_Country'))
             ->where('Status', 'Close')
             ->orderBy('CreatedTime', 'DESC');
 
@@ -490,6 +496,7 @@ class AdminController extends Controller
     function getTaskList(Request $request)
     {
         $sql = DB::table('manpowerrequisition')
+            ->where('CountryId', session('Set_Country'))
             ->where('Allocated', $request->Uid)
             ->where('Status', '!=', 'New')
             ->get();

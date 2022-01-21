@@ -115,7 +115,6 @@
             min-height: 20mm;
             padding: 10mm;
             margin: 10mm auto;
-
             border: 1px black solid;
             border-radius: 5px;
             background: white;

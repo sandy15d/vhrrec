@@ -5,7 +5,6 @@
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
             <div class="breadcrumb-title pe-3">Country Master</div>
-
             <div class="ms-auto">
                 <button class="btn btn--new btn-sm" id="addCountry" data-bs-toggle="modal"
                     data-bs-target="#addCountryModal">Add New</button>

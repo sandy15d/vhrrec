@@ -39,7 +39,7 @@ use function App\Helpers\getStateName;
     </style>
     <div class="page-content">
         <!--breadcrumb-->
-        <input type="hidden" name="ToDate" id="ToDate" value="{{date('Y-m-d')}}">
+        <input type="hidden" name="ToDate" id="ToDate" value="{{ date('Y-m-d') }}">
         <div class="page-breadcrumb  align-items-center mb-3">
             <div class="row mb-1">
                 <div class="col-3 breadcrumb-title ">
@@ -451,7 +451,7 @@ use function App\Helpers\getStateName;
                         if (value.Professional == 'F') {
                             x = x + 'Fresher';
                         } else {
-                           /*  if (value.JobStartDate != null) {
+                            if (value.JobStartDate != null) {
                                 var fdate = value.JobStartDate;
                                 if (value.JobEndDate == null) {
                                     var tdate = $('#ToDate').val();
@@ -462,8 +462,8 @@ use function App\Helpers\getStateName;
                                 x = x + diff_date;
                             } else {
                                 x = x + 'Experienced';
-                            } */
-                            x = x + 'Experienced';
+                            }
+                            // x = x + 'Experienced';
                         }
                         x = x + '</td>' +
                             '<td style="text-align: right">Contact No<span class="pull-right">:</span></td>' +
@@ -552,7 +552,8 @@ use function App\Helpers\getStateName;
                             ' <center>' +
                             '<small>' +
                             '<span class="text-primary m-1 " style="cursor: pointer; font-size:14px;">' +
-                            '<a href="{{route('candidate_detail')}}?jaid='+jaid+'" target="_blank">View Details</a>' +
+                            '<a href="{{ route('candidate_detail') }}?jaid=' + jaid +
+                            '" target="_blank">View Details</a>' +
                             '</span>' +
                             '</small>' +
                             '</center>' +
@@ -588,14 +589,27 @@ use function App\Helpers\getStateName;
             }
         });
 
-       /*  function diff_year_month_day(dt1, dt2) {
-         
-            var time = (dt2.getTime() - dt1.getTime()) / 1000;
-            var year = Math.abs(Math.round((time / (60 * 60 * 24)) / 365.25));
-            var month = Math.abs(Math.round(time / (60 * 60 * 24 * 7 * 4)));
-            var days = Math.abs(Math.round(time / (3600 * 24)));
-            return "Year :- " + year + " Month :- " + month + " Days :-" + days;
-        } */
+        function diff_year_month_day(dt1, dt2) {
+
+            var date2 = new Date(dt1.replace('-', ','));  //old date
+
+            var date1 = new Date(dt2.replace('-', ','));  //latest date, current date
+
+            var diff = Math.floor(date1.getTime() - date2.getTime());
+            var day = 1000 * 60 * 60 * 24;
+            var days = Math.floor(diff / day);
+           
+            var months = Math.floor(days / 30);
+            var years = Math.floor(months / 12);
+          
+            var yd = Math.floor(years * 365);
+            var dd = Math.floor(days - yd);
+            
+            var months = Math.floor(dd / 30);
+            var cc = Math.floor(months * 30);
+            var days = Math.floor(dd - cc);
+            return years + " Years " + months + " Months " ;
+        }
 
         $(document).on('change', '#MoveCompany', function() {
             var CompanyId = $(this).val();

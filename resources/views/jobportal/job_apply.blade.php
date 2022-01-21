@@ -206,6 +206,22 @@ $query = DB::table('jobpost')
                                                             </td>
                                                         </tr>
                                                         <tr>
+                                                            <td valign="middle">Nationality<font color="#FF0000">*
+                                                                </font>
+                                                            </td>
+                                                            <td>
+                                                                <select name="Nationality" id="Nationality"
+                                                                    class="form-select form-select-sm reqinp"
+                                                                    onchange="getState(this.value);getCollege(this.value)">
+                                                                    <option value="">Select</option>
+                                                                    @foreach ($country_list as $key => $value)
+                                                                        <option value="{{ $key }}">
+                                                                            {{ $value }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
                                                             <td valign="middle">Address<font color="#FF0000">*
                                                                 </font>
                                                             </td>
@@ -240,16 +256,20 @@ $query = DB::table('jobpost')
                                                                     </tr>
                                                                     <tr>
                                                                         <td>
+                                                                            <div class="spinner-border text-primary d-none"
+                                                                                role="status" id="StateLoader"><span
+                                                                                    class="visually-hidden">Loading...</span>
+                                                                            </div>
                                                                             <select name="State" id="State"
                                                                                 class="form-select form-select-sm reqinp"
                                                                                 onchange="getLocation(this.value)">
                                                                                 <option value="">Select State</option>
-                                                                                @foreach ($state_list as $key => $value)
+                                                                                {{-- @foreach ($state_list as $key => $value)
                                                                                     <option
                                                                                         value="{{ $key }}">
                                                                                         {{ $value }}</option>
 
-                                                                                @endforeach
+                                                                                @endforeach --}}
                                                                             </select>
                                                                         </td>
                                                                         <td>
@@ -283,6 +303,7 @@ $query = DB::table('jobpost')
                                                                 </table>
                                                             </td>
                                                         </tr>
+
                                                         <tr>
                                                             <td valign="middle">Aadhaar No.<font color="#FF0000">*
                                                                 </font>
@@ -363,13 +384,17 @@ $query = DB::table('jobpost')
                                                                 </font>
                                                             </td>
                                                             <td>
+                                                                <div class="spinner-border text-primary d-none"
+                                                                role="status" id="CollegeLoader"><span
+                                                                    class="visually-hidden">Loading...</span>
+                                                            </div>
                                                                 <select name="College" id="College"
                                                                     class="form-select form-select-sm reqinp single-select">
                                                                     <option value="">Select</option>
-                                                                    @foreach ($institute_list as $key => $value)
+                                                                    {{-- @foreach ($institute_list as $key => $value)
                                                                         <option value="{{ $key }}">
                                                                             {{ $value }}</option>
-                                                                    @endforeach
+                                                                    @endforeach --}}
                                                                 </select>
                                                             </td>
                                                         </tr>
@@ -922,6 +947,67 @@ $query = DB::table('jobpost')
         });
 
 
+        function getState(CountryId) {
+            var CountryId = CountryId;
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getState1') }}?CountryId=" + CountryId,
+                async: false,
+                beforeSend: function() {
+                    $('#StateLoader').removeClass('d-none');
+                    $('#State').addClass('d-none');
+                },
+
+                success: function(res) {
+                    if (res) {
+                        setTimeout(function() {
+                                $('#StateLoader').addClass('d-none');
+                                $('#State').removeClass('d-none');
+                                $("#State").empty();
+                                $("#State").append(
+                                    '<option value="" selected disabled >Select State</option>');
+                                $.each(res, function(key, value) {
+                                    $("#State").append('<option value="' + value + '">' + key +
+                                        '</option>');
+                                });
+                            },
+                            500);
+
+                    }
+                }
+            });
+        }
+
+        function getCollege(CountryId) {
+            var CountryId = CountryId;
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getCollege1') }}?CountryId=" + CountryId,
+                async: false,
+                beforeSend: function() {
+                    $('#CollegeLoader').removeClass('d-none');
+                    $('#College').addClass('d-none');
+                },
+
+                success: function(res) {
+                    if (res) {
+                        setTimeout(function() {
+                                $('#CollegeLoader').addClass('d-none');
+                                $('#College').removeClass('d-none');
+                                $("#College").empty();
+                                $("#College").append(
+                                    '<option value="" selected disabled >Select College</option><option value="637">Other</option>');
+                                $.each(res, function(key, value) {
+                                    $("#College").append('<option value="' + value + '">' + key +
+                                        '</option>');
+                                });
+                            },
+                            500);
+
+                    }
+                }
+            });
+        }
 
         $(document).on('change', '#College', function() {
             var College = $(this).val();
@@ -934,10 +1020,10 @@ $query = DB::table('jobpost')
 
 
         $('#jobApplyForm').on('submit', function(e) {
-           // debugger;
+            // debugger;
             e.preventDefault();
             var form = this;
-         //   form.append('img1', $('.img1').attr('src'));
+            //   form.append('img1', $('.img1').attr('src'));
             var reqcond = checkRequired();
             if (reqcond == 1) {
                 alert('Please fill required field...!');
@@ -957,14 +1043,16 @@ $query = DB::table('jobpost')
                         if (data.status == 400) {
                             $("#loader").modal('hide');
                             $.each(data.error, function(prefix, val) {
-                                $(form).find('span.' + prefix + '_error').text(val[0]);
+                                $(form).find('span.' + prefix +
+                                    '_error').text(val[0]);
                             });
                         } else {
                             $(form)[0].reset();
                             $('#loader').modal('hide');
                             toastr.success(data.msg);
                             var JCId = btoa(data.jcid); //base64 Encode
-                            window.location.href = "{{ route('verification') }}?jcid=" + JCId;
+                            window.location.href =
+                                "{{ route('verification') }}?jcid=" + JCId;
                         }
                     }
                 });

@@ -47,7 +47,8 @@ class MrfController extends Controller
         $this->company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
         $this->department_list = DB::table("master_department")->where('DeptStatus', 'A')->where('CompanyId', session('Set_Company'))->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
         $this->state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
-        $this->institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+        $this->institute_list = DB::table("master_institute")->join('states','states.StateId','=','master_institute.StateId')->where('states.CountryId',session('Set_Country'))->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+        $this->country_list = DB::table("master_country")->orderBy('CountryId', 'asc')->pluck("CountryName", "CountryId");
     }
 
 
@@ -58,7 +59,8 @@ class MrfController extends Controller
             'company_list' => $this->company_list,
             'department_list' => $this->department_list,
             'state_list' => $this->state_list,
-            "institute_list" => $this->institute_list
+            "institute_list" => $this->institute_list,
+            "country_list" => $this->country_list,
         );
         return view('hod.hod_new_mrf', compact('params'));
     }
@@ -141,6 +143,7 @@ class MrfController extends Controller
             $MRF = new master_mrf;
             $MRF->Type = 'N';
             $MRF->Reason = $request->Reason;
+            $MRF->CountryId = session('Set_Country');
             $MRF->CompanyId = $request->Company;
             $MRF->DepartmentId = $request->Department;
             $MRF->DesigId = $request->Designation;
@@ -510,6 +513,7 @@ class MrfController extends Controller
     {
         $mrf = DB::table('manpowerrequisition')
             ->Join('master_designation', 'manpowerrequisition.DesigId', '=', 'master_designation.DesigId', 'left')
+            ->where('manpowerrequisition.CountryId', session('Set_Country'))
             ->where('CreatedBy', Auth::user()->id)
             ->orWhere('onBehalf', Auth::user()->id)
             ->select('manpowerrequisition.MRFId', 'manpowerrequisition.Type', 'manpowerrequisition.JobCode', 'manpowerrequisition.CreatedBy', 'master_designation.DesigName', 'manpowerrequisition.Status', 'manpowerrequisition.CreatedTime');

@@ -12,12 +12,12 @@ class InstituteController extends Controller
 {
     public function institute()
     {
-        $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
+        $state_list = DB::table("states")->where('CountryId',session('Set_Country'))->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
         $district_list = DB::table("master_district")->orderBy('DistrictName', 'asc')->pluck("DistrictName", "DistrictId");
         return view('admin.institute', compact('state_list','district_list'));
     }
 
-    public function getDistrict(Request $request)
+   /*  public function getDistrict(Request $request)
     {
         $district = DB::table("master_district")->orderBy('DistrictName','asc')
             ->where("StateId", $request->StateId)
@@ -25,7 +25,7 @@ class InstituteController extends Controller
        return response()->json($district);
           
     }
-
+ */
     // ?===============Insert Institute records in Database===================
     public function addInstitute(Request $request)
     {
@@ -65,6 +65,9 @@ class InstituteController extends Controller
     {
         $Institute = DB::table('master_institute')->join('states', 'states.StateId', '=', 'master_institute.StateId')
             ->join('master_district', 'master_district.DistrictId', '=', 'master_institute.DistrictId')
+        
+            ->join('master_country', 'master_country.CountryId', '=', 'states.CountryId')
+            ->where('master_country.CountryId', '=', session('Set_Country'))
             ->select(['master_institute.*', 'states.StateCode', 'master_district.DistrictName']);
 
         return datatables()->of($Institute)

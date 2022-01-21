@@ -18,6 +18,7 @@ class DepartmentController extends Controller
     {
         $department = DB::table('master_department')
             ->join('master_company', 'master_department.CompanyId', '=', 'master_company.CompanyId')
+            ->where('master_department.CompanyId', '=', session('Set_Company'))
             ->select(['master_department.*', 'master_company.CompanyCode']);
 
         return datatables()->of($department)

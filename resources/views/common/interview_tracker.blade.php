@@ -492,8 +492,8 @@
                 createdRow: (row, data, dataIndex, cells) => {
                     if (data['IntervStatus'] == 'Selected' || data['IntervStatus'] == null) {
                       
+                        $(cells[8]).css('background-color', 'rgb(218 209 237)')
                         $(cells[9]).css('background-color', 'rgb(218 209 237)')
-                        $(cells[10]).css('background-color', 'rgb(218 209 237)')
                     }
                 }
 

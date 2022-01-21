@@ -94,9 +94,16 @@ class CommonController extends Controller
             ->pluck("DesigId", "DesigName");
         return response()->json($designation);
     }
+
     public function getState()
     {
-        $State = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateId", "StateName");
+        $State = DB::table("states")->where('CountryId',session('Set_Country'))->orderBy('StateName', 'asc')->pluck("StateId", "StateName");
+        return response()->json($State);
+    }
+
+    public function getState1(Request $request)
+    {
+        $State = DB::table("states")->where('CountryId',$request->CountryId)->orderBy('StateName', 'asc')->pluck("StateId", "StateName");
         return response()->json($State);
     }
 
@@ -125,6 +132,12 @@ class CommonController extends Controller
     public function getCollege()
     {
         $Education = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteId", "InstituteName");
+        return response()->json($Education);
+    }
+
+    public function getCollege1(Request $request)
+    {
+        $Education = DB::table("master_institute")->join('states','states.StateId','=','master_institute.StateId')->where('CountryId',$request->CountryId)->orderBy('InstituteName', 'asc')->pluck("InstituteId", "InstituteName");
         return response()->json($Education);
     }
 

@@ -23,6 +23,7 @@ class EmployeeController extends Controller
             ->join('master_department as d', 'd.DepartmentId', '=', 'e.DepartmentId')
             ->join('master_designation as dg', 'dg.DesigId', '=', 'e.DesigId')
             ->join('master_grade as g', 'g.GradeId', '=', 'e.GradeId')
+            ->where('e.CountryId', '=', session('Set_Country'))
             ->select(['e.*', 'e1.Fname as RFname', 'e1.Sname as RSname', 'e1.Lname as RLname', 'c.CompanyCode', 'd.DepartmentCode', 'dg.DesigName', 'g.GradeValue']);
 
         return datatables()->of($employee)

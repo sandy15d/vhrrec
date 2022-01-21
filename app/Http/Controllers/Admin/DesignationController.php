@@ -19,6 +19,7 @@ class DesignationController extends Controller
         $designation = DB::table('master_designation')
             ->join('master_company', 'master_designation.CompanyId', '=', 'master_company.CompanyId')
             ->join('master_department', 'master_designation.DepartmentId', '=', 'master_department.DepartmentId')
+            ->where('master_designation.CompanyId', '=', session('Set_Company'))
             ->select(['master_designation.*', 'master_company.CompanyCode', 'master_department.DepartmentCode']);
 
         return datatables()->of($designation)

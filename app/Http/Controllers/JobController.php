@@ -31,11 +31,12 @@ class JobController extends Controller
 
     public function job_apply_form()
     {
-        $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
+        //   $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
+        $country_list = DB::table("master_country")->orderBy('CountryId', 'asc')->pluck("CountryName", "CountryId");
         $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
         $education_list = DB::table("master_education")->where('Status', 'A')->orderBy('EducationCode', 'asc')->pluck("EducationCode", "EducationId");
         $resume_list = DB::table("master_resumesource")->where('Status', 'A')->where('ResumeSouId', '!=', '7')->orderBy('ResumeSouId', 'asc')->pluck("ResumeSource", "ResumeSouId");
-        return view('jobportal.job_apply', compact('state_list', 'institute_list', 'education_list', 'resume_list'));
+        return view('jobportal.job_apply', compact('country_list', 'institute_list', 'education_list', 'resume_list'));
     }
 
     public function job_apply_form_manual()
@@ -104,6 +105,7 @@ class JobController extends Controller
         $query->RefMail = $request->RefMail;
         $query->EmailOTP = $EmailOTP;
         $query->SmsOTP = $SmsOTP;
+        $query->Nationality = $request->Nationality;
         $query->save();
 
         $JCId = $query->JCId;
@@ -136,7 +138,7 @@ class JobController extends Controller
 
         CandidateActivityLog::addToCandLog($JCId, $request->Aadhaar, 'Applied for ' . $Title . ' in ' . getCompanyCode($CompanyId));
         if (!$jobApply) {
-             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
             $details = [
                 "subject" => 'OTP to verify your email address for Application submission',
@@ -145,7 +147,7 @@ class JobController extends Controller
             ];
             Mail::to($request->Email)->send(new AppSubOTPMail($details));
             SendOTP($request->Phone, $SmsOTP);
-              return response()->json(['status' => 200, 'msg' => ' successfully created.', 'jcid' => $JCId]);
+            return response()->json(['status' => 200, 'msg' => ' successfully created.', 'jcid' => $JCId]);
         }
     }
 
@@ -519,7 +521,7 @@ class JobController extends Controller
         $query1->CandidateImage = $CandidateImage;
         $query1->save();
 
-        $jobApply = DB::table('trainee_apply')->insert(['JCId' => $JCId,'JPId'=>$JPId,'Company'=>$CompanyId,'Department'=>$DepartmentId,'ApplyDate'=>now() ]);
+        $jobApply = DB::table('trainee_apply')->insert(['JCId' => $JCId, 'JPId' => $JPId, 'Company' => $CompanyId, 'Department' => $DepartmentId, 'ApplyDate' => now()]);
 
         if (!$jobApply) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
@@ -532,7 +534,7 @@ class JobController extends Controller
             if (CheckCommControl(7) == 1) {  // OPT Mail
                 Mail::to($request->Email)->send(new AppSubOTPMail($details));
             }
-          
+
             SendOTP($request->Phone, $SmsOTP);
             $jobCreatedBy = jobpost::find($JPId);
             $jobCreatedBy = $jobCreatedBy->CreatedBy;

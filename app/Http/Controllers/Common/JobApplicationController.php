@@ -64,8 +64,10 @@ class JobApplicationController extends Controller
             }
         }
 
-        $data = $usersQuery->select('jobpost.JPId', 'jobapply.Company', 'jobapply.Department', 'JobCode', 'jobpost.DesigId', 'jobapply.ResumeSource', DB::raw('COUNT(jobapply.JAId) AS Response'))
+        $data = $usersQuery->select('jobpost.JPId', 'jobapply.Company', 'jobapply.Department', 'jobpost.JobCode', 'jobpost.DesigId', 'jobapply.ResumeSource', DB::raw('COUNT(jobapply.JAId) AS Response'))
             ->Join('jobapply', 'jobpost.JPId', '=', 'jobapply.JPId')
+            ->join('manpowerrequisition', 'manpowerrequisition.MRFId', '=', 'jobpost.MRFId')
+            ->where('manpowerrequisition.CountryId', session('Set_Country'))
             ->where('jobapply.Type', '!=', 'Campus')
             ->groupBy('jobpost.JPId');
 
@@ -159,6 +161,7 @@ class JobApplicationController extends Controller
             ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
             ->leftJoin('screening', 'jobapply.JAId', '=', 'screening.JAId')
             ->where('jobapply.Type', '!=', 'Campus')
+            ->where('jobcandidates.Nationality', session('Set_Country'))
             ->orderBy('jobapply.ApplyDate', 'desc');
 
 
@@ -166,16 +169,22 @@ class JobApplicationController extends Controller
         $candidate_list = $candidate_list->paginate(10);
 
         $total_available = DB::table('jobapply')
+            ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+            ->where('jobcandidates.Nationality', session('Set_Country'))
             ->where('Type', '!=', 'Campus')
             ->where('Status', null);
         $total_available = $total_available->count();
 
         $total_hr_scr = DB::table('jobapply')
             ->where('Type', '!=', 'Campus')
+            ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+            ->where('jobcandidates.Nationality', session('Set_Country'))
             ->where('Status', '!=', null);
         $total_hr_scr = $total_hr_scr->count();
 
         $total_fwd = DB::table('jobapply')
+            ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+            ->where('jobcandidates.Nationality', session('Set_Country'))
             ->where('Type', '!=', 'Campus')
             ->where('FwdTechScr', 'Yes');
         $total_fwd = $total_fwd->count();
@@ -463,8 +472,8 @@ class JobApplicationController extends Controller
         $district_list = DB::table("master_district")->orderBy('DistrictName', 'asc')->pluck("DistrictName", "DistrictId");
         $education_list = DB::table("master_education")->orderBy('EducationCode', 'asc')->pluck("EducationCode", "EducationId");
         $specialization_list = DB::table("master_specialization")->orderBy('Specialization', 'asc')->pluck("Specialization", "SpId");
-        $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
-        return view('jobportal.candidate_interview_form', compact('state_list', 'district_list', 'education_list', 'specialization_list', 'institute_list'));
+      //  $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+        return view('jobportal.candidate_interview_form', compact('state_list', 'district_list', 'education_list', 'specialization_list'));
     }
 
 
@@ -492,7 +501,7 @@ class JobApplicationController extends Controller
         $LName = $request->LName ?? null;
         $DOB = $request->DOB;
         $Gender = $request->Gender;
-        $Nationality = $request->Nationality;
+     //   $Nationality = $request->Nationality;
         $Religion = $request->Religion;
         $OtherReligion = $request->OtherReligion ?? null;
         $Category = $request->Category;
@@ -518,7 +527,7 @@ class JobApplicationController extends Controller
                     'LName' => $LName,
                     'DOB' => $DOB,
                     'Gender' => $Gender,
-                    'Nationality' => $Nationality,
+                 //   'Nationality' => $Nationality,
                     'Religion' => $Religion,
                     'OtherReligion' => $OtherReligion,
                     'Caste' => $Category,
@@ -645,6 +654,7 @@ class JobApplicationController extends Controller
 
     public function SaveEducation(Request $request)
     {
+       
         $JCId = $request->JCId;
         $Qualification = $request->Qualification;
         $Course = $request->Course;
@@ -652,6 +662,7 @@ class JobApplicationController extends Controller
         $Institute = $request->Collage;
         $PassingYear = $request->PassingYear;
         $CGPA = $request->Percentage;
+        $OtherInstitute = $request->OtherInstitute;
 
         $query = DB::table('candidateeducation')->where('JCId', $JCId)->delete();
 
@@ -663,6 +674,7 @@ class JobApplicationController extends Controller
                 'Course' => $Course[$i],
                 'Specialization' => $Specialization[$i],
                 'Institute' => $Institute[$i],
+                'OtherInstitute' => $OtherInstitute[$i],
                 'YearOfPassing' => $PassingYear[$i],
                 'CGPA' => $CGPA[$i],
                 'LastUpdated' => now()

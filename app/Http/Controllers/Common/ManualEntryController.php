@@ -34,7 +34,7 @@ class ManualEntryController extends Controller
         $this->company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
         $this->department_list = DB::table("master_department")->where('DeptStatus', 'A')->where('CompanyId', session('Set_Company'))->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
         $this->state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
-        $this->institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+        $this->institute_list = DB::table("master_institute")->Join('states','states.StateId','=','master_institute.StateId')->where('CountryId',session('Set_Country'))->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
         $this->userlist = DB::table("users")->where('role', 'H')->orderBy('name', 'asc')->pluck("name", "id");
     }
 

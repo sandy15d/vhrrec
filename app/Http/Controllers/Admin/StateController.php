@@ -55,7 +55,7 @@ class StateController extends Controller
 
     public function getAllStateData()
     {
-        $state = DB::table('master_state')->join('master_country', 'master_state.Country', '=', 'master_country.CountryId')
+        $state = DB::table('master_state')->join('master_country', 'master_state.Country', '=', 'master_country.CountryId')->where('CountryId', '=', session('Set_Country'))
             ->select(['master_state.StateId', 'master_state.StateName', 'master_state.StateCode', 'master_country.CountryName', 'master_state.Status']);
 
         return datatables()->of($state)
@@ -159,6 +159,7 @@ class StateController extends Controller
     public function getAllStateData_General()
     {
         $state = DB::table('states')->join('master_country', 'states.CountryId', '=', 'master_country.CountryId')
+        ->where('states.CountryId', '=', session('Set_Country'))
             ->select(['states.StateId', 'states.StateName', 'states.StateCode', 'master_country.CountryName', 'states.Status']);
 
         return datatables()->of($state)
@@ -216,7 +217,7 @@ class StateController extends Controller
         if ($validator->fails()) {
             return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
         } else {
-        
+
             $query = DB::table('states')
                 ->where('StateId', $StateId)
                 ->update([
@@ -235,7 +236,7 @@ class StateController extends Controller
     public function deleteState_general(Request $request)
     {
         $StateId = $request->StateId;
-       
+
         $query = DB::table('states')->where('StateId', $StateId)->delete();
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
@@ -243,5 +244,4 @@ class StateController extends Controller
             return response()->json(['status' => 200, 'msg' => 'State data has been Deleted.']);
         }
     }
-
 }

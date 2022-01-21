@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\jf_contact_det;
 use App\Models\jf_pf_esic;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class AboutCandidateController extends Controller
@@ -766,9 +767,6 @@ class AboutCandidateController extends Controller
 
             return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
         }
-
-    
-
     }
 
     public function Candidate_Other_Seed_Relation(Request $request)
@@ -818,5 +816,47 @@ class AboutCandidateController extends Controller
 
             return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
         }
+    }
+
+    public function appointment_letter()
+    {
+        return view('onboarding.appointment_letter');
+    }
+
+    public function appointment_ltr_print()
+    {
+        return view('onboarding.appointment_ltr_print');
+    }
+
+    public function appointmentGen(Request $request)
+    {
+        $JAId = base64_decode($request->JAId);
+        $query = DB::table('appointing')->insert(['JAId' => $JAId, 'A_Date' => date('Y-m-d'), 'CreatedTime' => date('Y-m-d H:i:s'), 'CreatedBy' => Auth::user()->id]);
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Appointment Letter Generated Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function appointment_letter_generate(Request $request)
+    {
+        $JAId = $request->JAId;
+        $ltrno = $request->ltrno;
+        $query = DB::table('appointing')->where('JAId', $JAId)->update(['AppLetterNo' => $ltrno, 'A_Date' => date('Y-m-d'), 'AppLtrGen' => 'Yes', 'LastUpdated' => date('Y-m-d H:i:s'), 'UpdatedBy' => Auth::user()->id]);
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Appointment Letter Generated Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function service_agreement()
+    {
+        return view('onboarding.service_agreement');
+    }
+    public function service_agreement_print()
+    {
+        return view('onboarding.service_agreement_print');
     }
 }

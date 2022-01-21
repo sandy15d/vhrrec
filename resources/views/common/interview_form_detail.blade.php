@@ -684,7 +684,10 @@ $Year = Carbon::now()->year;
                                         <td>
                                             @if ($item->Institute != null)
                                                 {{ getCollegeById($item->Institute) }}
+                                                @if ($item->Institute == 637)
+                                                    ({{ $item->OtherInstitute ?? '-' }})
 
+                                                @endif
                                             @else
                                                 -
                                             @endif
@@ -692,6 +695,7 @@ $Year = Carbon::now()->year;
                                         <td>
                                             @if ($item->Course != null)
                                                 {{ getEducationCodeById($item->Course) }}
+
                                             @else
                                                 -
                                             @endif

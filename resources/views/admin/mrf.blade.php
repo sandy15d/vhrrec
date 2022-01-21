@@ -57,7 +57,6 @@
 
         <div class="card">
             <div class="card-body">
-
                 <div class="table-responsive">
                     <table class="table  table-hover table-condensed table-striped table-bordered text-center" id="MRFTable"
                         style="width: 100%">

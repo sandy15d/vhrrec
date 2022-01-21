@@ -11,7 +11,10 @@ $NotificationCount = $Notification->count();
 
 $CompanyQry = DB::table('master_company')
     ->where('CompanyId', session('Set_Company'))
-    ->get();
+    ->first();
+$CountryQry = DB::table('master_country')
+    ->where('CountryId', session('Set_Country'))
+    ->first();
 @endphp
 <!doctype html>
 <html lang="en" class="{{ session('ThemeStyle') }} {{ session('SidebarColor') }}">
@@ -309,8 +312,8 @@ $CompanyQry = DB::table('master_company')
                         </a>
                         <ul>
                             <li> <a href="/offer_letter"><i class="bx bx-right-arrow-alt"></i>Job Offers</a></li>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Candidates for Joining</a></li>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Appointments</a></li>
+                            <li> <a href="/candidate_joining"><i class="bx bx-right-arrow-alt"></i>Candidates for Joining</a></li>
+                            
                         </ul>
                     </li>
                     <li>
@@ -407,7 +410,7 @@ $CompanyQry = DB::table('master_company')
                     </div>
                     <div class="search-bar flex-grow-1">
                         <div class="position-relative search-bar-box">
-                            <h4 class="logo-text">{{ $CompanyQry[0]->CompanyName }}</h4>
+                            <h4 class="logo-text">{{ $CompanyQry->CompanyName }}   ({{$CountryQry->CountryName}})</h4>
                         </div>
                     </div>
                     <div class="top-menu ms-auto">

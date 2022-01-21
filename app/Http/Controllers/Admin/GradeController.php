@@ -18,6 +18,7 @@ class GradeController extends Controller
     {
         $grade = DB::table('master_grade')
             ->join('master_company', 'master_grade.CompanyId', '=', 'master_company.CompanyId')
+            ->where('master_grade.CompanyId', '=', session('Set_Company'))
             ->select(['master_grade.*', 'master_company.CompanyCode']);
 
         return datatables()->of($grade)

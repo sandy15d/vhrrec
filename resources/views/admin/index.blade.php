@@ -1,23 +1,31 @@
 @php
 use function App\Helpers\ActiveMRFCount;
 $NewMRF = DB::table('manpowerrequisition')
-    ->where('Status', 'Approved')
-    ->whereNull('Allocated')
-    ->orWhere('Status', 'New')
+    ->where('CountryId', session('Set_Country'))
+    ->where('Status', 'New')
+    ->orWhere(function ($query) {
+        $query->where('Status', 'Approved')->whereNull('Allocated');
+    })
     ->count();
+
 $ActiveMRF = DB::table('manpowerrequisition')
+    ->where('CountryId', session('Set_Country'))
     ->where('MRFId', '!=', 0)
     ->where('Allocated', '!=', null)
     ->where('Status', 'Approved')
     ->count();
+
 $CloseMRF = DB::table('manpowerrequisition')
+    ->where('CountryId', session('Set_Country'))
     ->where('MRFId', '!=', 0)
     ->where('Status', 'Close')
     ->count();
+
 $sql = DB::table('users')
     ->where('role', 'R')
     ->where('Status', 'A')
     ->get();
+
 $TotalCandidate = DB::table('jobcandidates')->count();
 
 $upcomming_interview = DB::table('screening')
@@ -26,14 +34,18 @@ $upcomming_interview = DB::table('screening')
     ->Join('manpowerrequisition', 'jobpost.MRFId', '=', 'manpowerrequisition.MRFId')
     ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
     ->where('jobpost.Status', 'Open')
+    ->where('manpowerrequisition.CountryId', session('Set_Country'))
     ->whereNull('screening.IntervStatus')
-   ->count();
+    ->count();
 
-   $total_available = DB::table('jobapply')
-            ->where('Type', '!=', 'Campus')
-            ->where('Status', null)
-            ->count();
-       
+$total_available = DB::table('jobapply')
+    ->Join('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
+    ->Join('manpowerrequisition', 'jobpost.MRFId', '=', 'manpowerrequisition.MRFId')
+    ->where('manpowerrequisition.CountryId', session('Set_Country'))
+    ->where('jobapply.Type', '!=', 'Campus')
+    ->where('jobapply.Status', null)
+    ->count();
+
 @endphp
 @extends('layouts.master')
 @section('title', 'Dashboard')
@@ -124,7 +136,7 @@ $upcomming_interview = DB::table('screening')
                                     <p class="mb-0 text-primary">Resume Pending for Tech. Screening</p>
                                 </div>
                                 <div class="ms-auto">
-                                    <h4 class="my-1 text-danger">{{$total_available}}</h4>
+                                    <h4 class="my-1 text-danger">{{ $total_available }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -133,19 +145,19 @@ $upcomming_interview = DB::table('screening')
             </div>
             <div class="col">
                 <a href="/interview_tracker">
-                <div class="card radius-10">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div>
-                                <p class="mb-0 text-primary">Upcoming Interviews</p>
-                            </div>
-                            <div class="ms-auto">
-                                <h4 class="my-1 text-success">{{$upcomming_interview}}</h4>
-                            </div>
+                    <div class="card radius-10">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <p class="mb-0 text-primary">Upcoming Interviews</p>
+                                </div>
+                                <div class="ms-auto">
+                                    <h4 class="my-1 text-success">{{ $upcomming_interview }}</h4>
+                                </div>
 
+                            </div>
                         </div>
                     </div>
-                </div>
                 </a>
             </div>
             <div class="col">

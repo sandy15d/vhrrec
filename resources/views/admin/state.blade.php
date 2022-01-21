@@ -6,8 +6,8 @@
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
             <div class="breadcrumb-title pe-3">State Master(HQ)</div>
             <div class="ms-auto">
-                <button class="btn btn--new btn-sm" id="addState" data-bs-toggle="modal"
-                    data-bs-target="#addStateModal">Add New</button>
+                <button class="btn btn--new btn-sm" id="addState" data-bs-toggle="modal" data-bs-target="#addStateModal">Add
+                    New</button>
                 <button class="btn btn-sm btn--red" id="syncState">Sync</button>
             </div>
         </div>
@@ -37,7 +37,8 @@
     </div>
 
 
-    <div class="modal fade" id="addStateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="addStateModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -59,12 +60,12 @@
                         </div>
                         <div class="form-group">
                             <label for="Country">Country</label>
-                         <select name="Country" class="form-control form-select">
-                             <option value="" selected disabled>Select Country</option>
-                             @foreach ($country_list as $key=>$value)
-                                 <option value="{{$key}}">{{$value}}</option>
-                             @endforeach
-                         </select>
+                            <select name="Country" class="form-control form-select">
+                                <option value="" selected disabled>Select Country</option>
+                                @foreach ($country_list as $key => $value)
+                                    <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
                             <span class="text-danger error-text Country_error"></span>
                         </div>
                         <div class="form-group">
@@ -85,7 +86,8 @@
         </div>
     </div>
 
-    <div class="modal fade" id="editStateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="editStateModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -109,8 +111,8 @@
                         <div class="form-group">
                             <label for="editCountry">Country</label>
                             <select name="editCountry" id="editCountry" class="form-control form-select">
-                                @foreach ($country_list as $key=>$value)
-                                    <option value="{{$key}}">{{$value}}</option>
+                                @foreach ($country_list as $key => $value)
+                                    <option value="{{ $key }}">{{ $value }}</option>
                                 @endforeach
                             </select>
                             <span class="text-danger error-text editCountry_error"></span>
@@ -150,7 +152,7 @@
                     $(form).find('span.error-text').text('');
                 },
                 success: function(data) {
-                    if (data.status==400) {
+                    if (data.status == 400) {
                         $.each(data.error, function(prefix, val) {
                             $(form).find('span.' + prefix + '_error').text(val[0]);
                         });
@@ -182,7 +184,7 @@
                 {
                     data: 'CountryName',
                     name: 'CountryName',
-                  
+
                 },
                 {
                     data: 'Status',
@@ -193,7 +195,7 @@
                     name: 'actions'
                 },
             ],
-            
+
         });
         //===============Get State Record for Updation=================
         $(document).on('click', '#editBtn', function() {
@@ -270,7 +272,7 @@
             });
         });
         //===================== Synchonize State Data from ESS===================
-        $(document).on('click','#syncState',function(){
+        $(document).on('click', '#syncState', function() {
             var url = '<?= route('syncState') ?>';
             swal.fire({
                 title: 'Are you sure?',

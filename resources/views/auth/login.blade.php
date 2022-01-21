@@ -26,6 +26,7 @@
     $company_list = DB::table('master_company')
     ->orderBy('CompanyId', 'asc')
     ->pluck('CompanyName', 'CompanyId');
+    $country_list = DB::table('master_country')->orderBy('CountryId', 'asc')->pluck('CountryName', 'CountryId');
 @endphp
 <body class="bg-login">
     <!--wrapper-->
@@ -68,6 +69,21 @@
                                                     @endforeach
                                                     </select>
                                                     @error('company')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12">
+                                                    <label for="country" class="form-label">Country</label>
+                                                    <select name="country" id="country"
+                                                        class="form-control form-select @error('country') is-invalid @enderror"
+                                                        value="{{ old('country') }}" required autofocus>
+                                                        @foreach ($country_list as $key => $value)
+                                                        <option value="{{ $key }}">{{ $value }}</option>
+                                                    @endforeach
+                                                    </select>
+                                                    @error('country')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ $message }}</strong>
                                                         </span>
@@ -127,14 +143,13 @@
             </div>
         </div>
     </div>
-    <!--end wrapper-->
-    <!-- Bootstrap JS -->
+   
     <script src="{{ URL::to('/') }}/assets/js/bootstrap.bundle.min.js"></script>
     <!--plugins-->
     <script src="{{ URL::to('/') }}/assets/js/jquery.min.js"></script>
-    <script src="{{ URL::to('/') }}/assets/plugins/simplebar/js/simplebar.min.js"></script>
-    <script src="{{ URL::to('/') }}/assets/plugins/metismenu/js/metisMenu.min.js"></script>
-    <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
+{{--     <script src="{{ URL::to('/') }}/assets/plugins/simplebar/js/simplebar.min.js"></script>
+    <script src="{{ URL::to('/') }}/assets/plugins/metismenu/js/metisMenu.min.js"></script> --}}
+{{--     <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script> --}}
     <!--Password show & hide js -->
     <script>
         $(document).ready(function() {
@@ -153,7 +168,7 @@
         });
     </script>
     <!--app JS-->
-    <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
+  {{--   <script src="{{ URL::to('/') }}/assets/js/app.js"></script> --}}
 </body>
 
 </html>

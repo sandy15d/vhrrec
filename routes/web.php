@@ -77,10 +77,12 @@ Route::get('getReportingManager', [CommonController::class, 'getReportingManager
 Route::get('getResignedEmployee', [CommonController::class, 'getResignedEmployee'])->name('getResignedEmployee');
 Route::get('getResignedEmpDetail', [CommonController::class, 'getResignedEmpDetail'])->name('getResignedEmpDetail');
 Route::get('getState', [CommonController::class, 'getState'])->name('getState');
+Route::get('getState1', [CommonController::class, 'getState1'])->name('getState1');
 Route::get('getDistrict', [CommonController::class, 'getDistrict'])->name('getDistrict');
 Route::get('getHq', [CommonController::class, 'getHq'])->name('getHq');
 Route::get('getEducation', [CommonController::class, 'getEducation'])->name('getEducation');
 Route::get('getCollege', [CommonController::class, 'getCollege'])->name('getCollege');
+Route::get('getCollege1', [CommonController::class, 'getCollege1'])->name('getCollege1');
 Route::get('getSpecialization', [CommonController::class, 'getSpecialization'])->name('getSpecialization');
 Route::get('getAllDistrict', [CommonController::class, 'getAllDistrict'])->name('getAllDistrict');
 Route::get('getAllSP', [CommonController::class, 'getAllSP'])->name('getAllSP');
@@ -152,6 +154,17 @@ Route::post('Candidate_Strength_Save', [AboutCandidateController::class, 'Candid
 
 Route::post('Candidate_Language', [AboutCandidateController::class, 'Candidate_Language'])->name('Candidate_Language');
 Route::post('Candidate_Language_Save', [AboutCandidateController::class, 'Candidate_Language_Save'])->name('Candidate_Language_Save');
+
+Route::get('appointment_letter', [AboutCandidateController::class, 'appointment_letter'])->name('appointment_letter');
+Route::get('appointment_ltr_print', [AboutCandidateController::class, 'appointment_ltr_print'])->name('appointment_ltr_print');
+Route::post('appointmentGen', [AboutCandidateController::class, 'appointmentGen'])->name('appointmentGen');
+Route::post('appointment_letter_generate', [AboutCandidateController::class, 'appointment_letter_generate'])->name('appointment_letter_generate');
+
+Route::get('service_agreement', [AboutCandidateController::class, 'service_agreement'])->name('service_agreement');
+Route::get('service_agreement_print', [AboutCandidateController::class, 'service_agreement_print'])->name('service_agreement_print');
+
+
+
 
 Route::get('job_response', [JobApplicationController::class, 'job_response'])->name('job_response');
 Route::get('job_applications', [JobApplicationController::class, 'job_applications'])->name('job_applications');
@@ -237,6 +250,16 @@ Route::get('offer-letter-review', [OfferLtrController::class, 'offer_letter_revi
 Route::get('viewReview', [OfferLtrController::class, 'viewReview'])->name('viewReview');
 Route::post('ReviewResponse', [OfferLtrController::class, 'ReviewResponse'])->name('ReviewResponse');
 Route::post('saveEmpCode', [OfferLtrController::class, 'saveEmpCode'])->name('saveEmpCode');
+
+Route::get('candidate_joining', [OfferLtrController::class, 'candidate_joining'])->name('candidate_joining');
+
+
+
+
+
+
+
+
 
 
 Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');

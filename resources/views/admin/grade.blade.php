@@ -11,11 +11,11 @@
         </div>
         <!--end breadcrumb-->
         <hr />
-        <div class="card">
+        <div class="card  col-lg-6">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover table-condensed" id="gradetable" style="width: 100%">
-                        <thead class="bg-primary text-light text-center">
+                    <table class="table table-striped table-hover table-condensed text-center" id="gradetable" style="width: 100%">
+                        <thead class="bg-primary text-light ">
                             <tr>
                                 <td class="td-sm">S.No</td>
                                 <td>Grade</td>

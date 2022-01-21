@@ -8,7 +8,6 @@ $Rec = DB::table('jobapply')
     ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
     ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
     ->leftJoin('jf_pf_esic', 'jobcandidates.JCId', '=', 'jf_pf_esic.JCId')
-    ->leftJoin('jf_strength', 'jobcandidates.JCId', '=', 'jf_strength.JCId')
     ->where('JAId', $JAId)
     ->select('jobapply.*', 'jobcandidates.*', 'jobpost.Title as JobTitle', 'jobpost.JobCode', 'jf_contact_det.pre_address', 'jf_contact_det.pre_city', 'jf_contact_det.pre_state', 'jf_contact_det.pre_pin', 'jf_contact_det.pre_dist', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin', 'jf_contact_det.perm_dist', 'jf_contact_det.cont_one_name', 'jf_contact_det.cont_one_relation', 'jf_contact_det.cont_one_number', 'jf_contact_det.cont_two_name', 'jf_contact_det.cont_two_relation', 'jf_contact_det.cont_two_number', 'jf_pf_esic.UAN', 'jf_pf_esic.PFNumber', 'jf_pf_esic.ESICNumber', 'jf_pf_esic.BankName', 'jf_pf_esic.BranchName', 'jf_pf_esic.IFSCCode', 'jf_pf_esic.AccountNumber', 'jf_pf_esic.PAN', 'jf_pf_esic.Passport', 'jf_pf_esic.ESIC_Chk')
     ->first();
@@ -50,6 +49,7 @@ $AboutAns = DB::table('about_answer')
 $Docs = DB::table('jf_docs')
     ->where('JCId', $JCId)
     ->first();
+$country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
 @endphp
 <!doctype html>
 <html lang="en">
@@ -159,6 +159,7 @@ $Docs = DB::table('jf_docs')
                                         </li>
                                     </ul>
                                     <div class="tab-content">
+                                        
                                         <div id="personal" class="tab-pane" role="tabpanel"
                                             aria-labelledby="step-1"
                                             style="position: static; left: auto; width: 1019px; display: none;">
@@ -252,10 +253,17 @@ $Docs = DB::table('jf_docs')
                                                                     <label
                                                                         class="col-form-label col-md-3">Nationality</label>
                                                                     <div class="col-md-9">
-                                                                        <input type="text" name="Nationality"
-                                                                            id="Nationality"
-                                                                            class="form-control form-control-sm reqinp"
-                                                                            value="{{ $Rec->Nationality }}">
+                                                                        <select name="Nationality" id="Nationality"
+                                                                            class="form-select form-select-sm" disabled>
+                                                                            <option value="">Select</option>
+                                                                            @foreach ($country_list as $key => $value)
+                                                                                <option value="{{ $key }}">
+                                                                                    {{ $value }}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                        <script>
+                                                                            $('#Nationality').val('{{ $Rec->Nationality }}');
+                                                                        </script>
                                                                     </div>
 
                                                                 </div>
@@ -703,6 +711,7 @@ $Docs = DB::table('jf_docs')
                                                                                 class="form-select form-select-sm"
                                                                                 onchange="getSpecialization(this.value,1)">
                                                                                 <option value="">Select</option>
+                                                                               
                                                                                 @foreach ($education_list as $key => $value)
                                                                                     <option
                                                                                         value="{{ $key }}">
@@ -727,8 +736,9 @@ $Docs = DB::table('jf_docs')
                                                                         </td>
                                                                         <td>
                                                                             <select name="Collage[]" id="Collage1"
-                                                                                class="form-select form-select-sm">
+                                                                                class="form-select form-select-sm" onchange="getOtherInstitute(1);">
                                                                                 <option value="">Select</option>
+                                                                                <option value="637">Other</option>
                                                                                 @foreach ($institute_list as $key => $value)
                                                                                     <option
                                                                                         value="{{ $key }}">
@@ -736,6 +746,7 @@ $Docs = DB::table('jf_docs')
                                                                                     </option>
                                                                                 @endforeach
                                                                             </select>
+                                                                            <input type="text" name="OtherInstitute[]" id="OtherInstitute1" class="form-control form-control-sm mt-1 d-none">
                                                                         </td>
                                                                         <td>
                                                                             <select name="PassingYear[]"
@@ -793,8 +804,9 @@ $Docs = DB::table('jf_docs')
                                                                         </td>
                                                                         <td>
                                                                             <select name="Collage[]" id="Collage2"
-                                                                                class="form-select form-select-sm">
+                                                                                class="form-select form-select-sm" onchange="getOtherInstitute(2);">
                                                                                 <option value="">Select</option>
+                                                                                <option value="637">Other</option>
                                                                                 @foreach ($institute_list as $key => $value)
                                                                                     <option
                                                                                         value="{{ $key }}">
@@ -802,6 +814,7 @@ $Docs = DB::table('jf_docs')
                                                                                     </option>
                                                                                 @endforeach
                                                                             </select>
+                                                                            <input type="text" name="OtherInstitute[]" id="OtherInstitute2" class="form-control form-control-sm mt-1 d-none">
                                                                         </td>
                                                                         <td>
                                                                             <select name="PassingYear[]"
@@ -859,8 +872,9 @@ $Docs = DB::table('jf_docs')
                                                                         </td>
                                                                         <td>
                                                                             <select name="Collage[]" id="Collage3"
-                                                                                class="form-select form-select-sm">
+                                                                                class="form-select form-select-sm" onchange="getOtherInstitute(3);">
                                                                                 <option value="">Select</option>
+                                                                                <option value="637">Other</option>
                                                                                 @foreach ($institute_list as $key => $value)
                                                                                     <option
                                                                                         value="{{ $key }}">
@@ -868,6 +882,7 @@ $Docs = DB::table('jf_docs')
                                                                                     </option>
                                                                                 @endforeach
                                                                             </select>
+                                                                            <input type="text" name="OtherInstitute[]" id="OtherInstitute3" class="form-control form-control-sm mt-1 d-none">
                                                                         </td>
                                                                         <td>
                                                                             <select name="PassingYear[]"
@@ -926,8 +941,9 @@ $Docs = DB::table('jf_docs')
                                                                         </td>
                                                                         <td>
                                                                             <select name="Collage[]" id="Collage4"
-                                                                                class="form-select form-select-sm">
+                                                                                class="form-select form-select-sm" onchange="getOtherInstitute(4);">
                                                                                 <option value="">Select</option>
+                                                                                <option value="637">Other</option>
                                                                                 @foreach ($institute_list as $key => $value)
                                                                                     <option
                                                                                         value="{{ $key }}">
@@ -935,6 +951,7 @@ $Docs = DB::table('jf_docs')
                                                                                     </option>
                                                                                 @endforeach
                                                                             </select>
+                                                                            <input type="text" name="OtherInstitute[]" id="OtherInstitute4" class="form-control form-control-sm mt-1 d-none">
                                                                         </td>
                                                                         <td>
                                                                             <select name="PassingYear[]"
@@ -992,8 +1009,9 @@ $Docs = DB::table('jf_docs')
                                                                         </td>
                                                                         <td>
                                                                             <select name="Collage[]" id="Collage5"
-                                                                                class="form-select form-select-sm">
+                                                                                class="form-select form-select-sm" onchange="getOtherInstitute(5);">
                                                                                 <option value="">Select</option>
+                                                                                <option value="637">Other</option>
                                                                                 @foreach ($institute_list as $key => $value)
                                                                                     <option
                                                                                         value="{{ $key }}">
@@ -1001,6 +1019,7 @@ $Docs = DB::table('jf_docs')
                                                                                     </option>
                                                                                 @endforeach
                                                                             </select>
+                                                                            <input type="text" name="OtherInstitute[]" id="OtherInstitute5" class="form-control form-control-sm mt-1 d-none">
                                                                         </td>
                                                                         <td>
                                                                             <select name="PassingYear[]"
@@ -1058,7 +1077,7 @@ $Docs = DB::table('jf_docs')
                                                                         </td>
                                                                         <td>
                                                                             <select name="Collage[]" id="Collage6"
-                                                                                class="form-select form-select-sm">
+                                                                                class="form-select form-select-sm" onchange="getOtherInstitute(6);">
                                                                                 <option value="">Select</option>
                                                                                 @foreach ($institute_list as $key => $value)
                                                                                     <option
@@ -1067,6 +1086,7 @@ $Docs = DB::table('jf_docs')
                                                                                     </option>
                                                                                 @endforeach
                                                                             </select>
+                                                                            <input type="text" name="OtherInstitute[]" id="OtherInstitute6" class="form-control form-control-sm mt-1 d-none">
                                                                         </td>
                                                                         <td>
                                                                             <select name="PassingYear[]"
@@ -3417,13 +3437,12 @@ $Docs = DB::table('jf_docs')
                 '</select>' +
                 '</td>' +
                 '<td>' + '<select class="form-select form-select-sm" name="Collage[]" id="Collage' + num +
-                '">' + CollegeList +
+                '" onchange="getOtherInstitute('+num+')">' + CollegeList +
                 '</select>' +
+                '<input type="text" name="OtherInstitute[]" id="OtherInstitute'+num+'" class="form-control form-control-sm mt-1 d-none">' +
                 '</td>' +
                 '<td>' + '<select class="form-select form-select-sm" name="PassingYear[]" id="PassingYear' + num +
                 '">' +
-
-
                 YearList +
                 '</select>' +
                 '</td>' +
@@ -3704,23 +3723,29 @@ $Docs = DB::table('jf_docs')
                 type: "POST",
                 data: {
                     JCId: JCId,
-
                 },
                 dataType: "json",
                 success: function(data) {
-                    $('#Edu_JCId').val($('#JCId').val());
-                    EducationCount = data.data.length;
-                    for (var i = 1; i <= EducationCount; i++) {
-                        if (i >= 7) {
-                            Qualification(i);
-                        }
-                        $('#Qualification' + i).val(data.data[i - 1].Qualification);
-                        $('#Course' + i).val(data.data[i - 1].Course);
-                        $('#Specialization' + i).val(data.data[i - 1].Specialization);
-                        $('#Collage' + i).val(data.data[i - 1].Institute);
-                        $('#PassingYear' + i).val(data.data[i - 1].YearOfPassing);
-                        $('#Percentage' + i).val(data.data[i - 1].CGPA);
+                    if (data.status == 200) {
+                        $('#Edu_JCId').val($('#JCId').val());
+                        EducationCount = data.data.length;
+                        for (var i = 1; i <= EducationCount; i++) {
+                            if (i >= 7) {
+                                Qualification(i);
+                            }
+                            $('#Qualification' + i).val(data.data[i - 1].Qualification);
+                            $('#Course' + i).val(data.data[i - 1].Course);
+                            $('#Specialization' + i).val(data.data[i - 1].Specialization);
+                            $('#Collage' + i).val(data.data[i - 1].Institute);
+                            $('#PassingYear' + i).val(data.data[i - 1].YearOfPassing);
+                            $('#Percentage' + i).val(data.data[i - 1].CGPA);
+                            if(data.data[i - 1].Institute == '637'){
+                                $('#OtherInstitute' + i).removeClass('d-none');
+                                $('#OtherInstitute' + i).addClass('reqinp');
+                                $('#OtherInstitute' + i).val(data.data[i - 1].OtherInstitute);
+                            }
 
+                        }
                     }
                 }
             });
@@ -5400,6 +5425,18 @@ $Docs = DB::table('jf_docs')
         window.onload = (event) => {
             $('.tab-content').height('auto');
         };
+        
+        function getOtherInstitute(num){
+            var Collage = $('#Collage' + num).val();
+            console.log(Collage);
+            if (Collage == '637') {
+                $('#OtherInstitute' + num).removeClass('d-none');
+                $('.tab-content').height('auto');
+            } else {
+                $('#OtherInstitute' + num).addClass('d-none');
+                $('.tab-content').height('auto');
+            }
+        }
     </script>
 </body>
 

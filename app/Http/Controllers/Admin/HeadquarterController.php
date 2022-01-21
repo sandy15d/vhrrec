@@ -21,6 +21,8 @@ class HeadquarterController extends Controller
         $headquarter = DB::table('master_headquater')
             ->join('master_company', 'master_headquater.CompanyId', '=', 'master_company.CompanyId')
             ->join('master_state', 'master_headquater.StateId', '=', 'master_state.StateId')
+            ->where('master_state.Country', '=', session('Set_Country'))
+            ->where('master_headquater.CompanyId', '=', session('Set_Company'))
             ->select(['master_headquater.*', 'master_company.CompanyCode', 'master_state.StateName']);
 
 

@@ -2,6 +2,7 @@
 $sql = DB::table('master_employee')
     ->where('RepEmployeeID', Auth::user()->id)
     ->where('Empstatus', 'A')
+    ->where('CountryId',session('Set_Country'))
     ->get();
 $ActiveMember = $sql->count();
 $query = DB::table('screening')
@@ -14,6 +15,7 @@ $query = DB::table('screening')
     ->where(function ($query) {
         $query->where('manpowerrequisition.CreatedBy', Auth::user()->id)->orWhere('manpowerrequisition.OnBehalf', Auth::user()->id);
     })
+    
     ->orderBy('screening.IntervDt', 'asc')
     ->count();
 @endphp

@@ -4,6 +4,7 @@ use function App\Helpers\getEducationCodeById;
 use function App\Helpers\getSpecializationbyId;
 use function App\Helpers\getResumeSourceById;
 use function App\Helpers\getStateName;
+$country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
 @endphp
 @extends('layouts.master')
 @section('title', 'Job Applications')
@@ -25,15 +26,18 @@ use function App\Helpers\getStateName;
             height: 1000px;
             overflow-y: scroll;
         }
-        #applications::-webkit-scrollbar {
-    display: none;
-}
 
-/* Hide scrollbar for IE, Edge and Firefox */
-#applications {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
+        #applications::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        #applications {
+            -ms-overflow-style: none;
+            /* IE and Edge */
+            scrollbar-width: none;
+            /* Firefox */
+        }
 
     </style>
     <div class="page-content">
@@ -149,14 +153,14 @@ use function App\Helpers\getStateName;
                                                 <tr>
                                                     <td style="text-align: left">Applied For<span
                                                             class="text-right">:</span></td>
-                                                    <td colspan="3" style="text-align: left">
+                                                    <td colspan="3" style="text-align: left" class="text-primary">
                                                         <?= $row->DesigId != null ? getDesignation($row->DesigId) : "<i class='fa fa-pencil-square-o text-primary' aria-hidden='true' style='cursor: pointer;' id='AddToJobPost' data-id='$row->JAId'></i>" ?>
                                                     </td>
                                                 </tr>
                                                 <tr class="">
                                                     <td>Experience<span class="pull-right" style="width: 25%">:</span>
                                                     </td>
-                                                    <td style="text-align: right">
+                                                    <td style="text-align: left">
                                                         @php
                                                             if ($row->Professional == 'F') {
                                                                 echo 'Fresher';
@@ -168,21 +172,17 @@ use function App\Helpers\getStateName;
                                                                     } else {
                                                                         $tdate = $row->JobEndDate;
                                                                     }
-                                                                    $datetime1 = new DateTime($fdate);
-                                                                    $datetime2 = new DateTime($tdate);
-                                                                    $interval = $datetime1->diff($datetime2);
-                                                                    $days = $interval->format('%a');
-                                                                    $years_remaining = intval($days / 365); //divide by 365 and throw away the remainder
-                                                                    $days_remaining = $days % 365;
-                                                                    $month_remaining = $days_remaining % 12;
-                                                                    echo $years_remaining . ' Year ' . $month_remaining . ' Months';
+                                                            
+                                                                    echo Carbon\Carbon::createFromDate($fdate)
+                                                                        ->diff($tdate)
+                                                                        ->format('%y Years %m Months');
                                                                 } else {
                                                                     echo 'Experienced';
                                                                 }
                                                             }
                                                         @endphp
                                                     </td>
-                                                    <td style="text-align: right;width:25%">Contact No:</td>
+                                                    <td style="text-align: right;">Contact No:</td>
                                                     <td style="text-align:right"> {{ $row->Phone }}@if ($row->Verified == 'Y')
                                                             <i class="fadeIn animated bx bx-badge-check text-success"></i>
                                                         @endif
@@ -190,7 +190,7 @@ use function App\Helpers\getStateName;
                                                 </tr>
                                                 <tr class="">
                                                     <td>Current Company<span class="pull-right">:</span></td>
-                                                    <td style="text-align: right">
+                                                    <td style="text-align: left">
                                                         <?= $row->PresentCompany == null ? '' : $row->PresentCompany ?></td>
                                                     <td style="text-align: right">Email ID<span
                                                             class="pull-right">:</span>
@@ -202,7 +202,7 @@ use function App\Helpers\getStateName;
                                                 </tr>
                                                 <tr class="">
                                                     <td>Current Designation<span class="pull-right">:</span></td>
-                                                    <td style="text-align: right">
+                                                    <td style="text-align: left">
                                                         <?= $row->Designation == null ? '' : $row->Designation ?></td>
                                                     <td style="text-align: right">Education<span
                                                             class="pull-right">:</span>
@@ -214,11 +214,11 @@ use function App\Helpers\getStateName;
                                                 </tr>
                                                 <tr class="">
                                                     <td>Current Location<span class="pull-right">:</span></td>
-                                                    <td style="text-align: right">{{ $row->City }}</td>
+                                                    <td style="text-align: left">{{ $row->City }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Applied on date:</td>
-                                                    <td style="text-align: right">
+                                                    <td style="text-align: left">
                                                         {{ date('d-m-Y', strtotime($row->ApplyDate)) }}</td>
                                                     <td style="text-align: right">HR Screening Status:</td>
                                                     <td style="text-align: right">
@@ -229,7 +229,7 @@ use function App\Helpers\getStateName;
                                                 </tr>
                                                 <tr>
                                                     <td> Source: </td>
-                                                    <td style="text-align: right">
+                                                    <td style="text-align: left">
                                                         {{ getResumeSourceById($row->ResumeSource) }}
                                                     </td>
 
@@ -321,7 +321,7 @@ use function App\Helpers\getStateName;
                             </div>
                         </div>
                     @endforeach
-                
+
                 </div>
 
                 {{ $candidate_list->links('vendor.pagination.custom') }}
@@ -695,9 +695,23 @@ use function App\Helpers\getStateName;
                                                 id="Phone" onkeypress="return isNumberKey(event)" maxlength="10">
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td valign="middle">Nationality <font color="#FF0000">*</font>
+                                        </td>
+                                        <td>
+                                            <select name="Nationality" id="Nationality" class="form-select form-select-sm">
+                                                <option value="">Select</option>
+                                                @foreach ($country_list as $key => $value)
+                                                    <option value="{{ $key }}"
+                                                        {{ session('Set_Country') == $key ? 'selected' : '' }}>
+                                                        {{ $value }}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                    </tr>
 
                                     <tr>
-                                        <td valign="middle">Aadhaar No.<font color="#FF0000">*
+                                        <td valign="middle">Aadhaar No. / NID No<font color="#FF0000">*
                                             </font>
                                         </td>
                                         <td>

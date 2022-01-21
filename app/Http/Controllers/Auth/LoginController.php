@@ -67,6 +67,7 @@ class LoginController extends Controller
         if (auth()->attempt(array('email' => $input['email'], 'password' => $input['password'])) || auth()->attempt(array('Username' => $input['email'], 'password' => $input['password']))) {
 
             $request->session()->put('Set_Company', $input['company']);
+            $request->session()->put('Set_Country', $input['country']);
             $userId = Auth::user()->id;
             $themedetail = DB::table("theme_customizer")->where("UserId", $userId)->get();
 

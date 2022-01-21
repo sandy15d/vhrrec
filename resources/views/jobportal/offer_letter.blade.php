@@ -168,7 +168,7 @@ $candJoin = DB::table('candjoining')
 $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
 @endphp
 
-<body>
+<body class="bg-lock-screen">
     @if ($sql->Answer == null)
         @if ($LinkValidityEnd < date('Y-m-d'))
             <div class="section-authentication-signin d-flex align-items-center justify-content-center ">
@@ -1021,18 +1021,18 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
 
         @endif
     @else
-        <div class="section-authentication-signin d-flex align-items-center justify-content-center ">
-            <div class="container">
-                <div class="row">
-                    <div class="col-7 mx-auto">
-                        <div class="card">
+        <div class="section-authentication-signin d-flex align-items-center justify-content-center my-5 my-lg-0">
+            <div class="container-fluid">
+                <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-2">
+                    <div class="col-6 mx-auto">
+                        <div class="card bg-success text-white">
                             <div class="card-body">
-                                <h5 class="card-title">Dear Candidate,</h5>
+                                <h5 class="card-title text-white">Dear Candidate,</h5>
                                 <p class="card-text">You have already given your response for the job offered to
                                     you.</p>
-                                <p class="card-text mb-0">In case of any further query kindly contact HR-Recruitment
+                                <p class="card-text text-white mb-0">In case of any further query kindly contact HR-Recruitment
                                     team.</p>
-                                <p class="card-text">Contact No: 0771-4350005</p>
+                                <p class="card-text text-white">Contact No: 0771-4350005</p>
                             </div>
                         </div>
                     </div>

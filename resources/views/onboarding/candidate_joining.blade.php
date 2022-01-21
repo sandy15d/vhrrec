@@ -9,6 +9,7 @@ $LtrIssue = DB::table('offerletterbasic')
     ->where('OfferLtrGen', 1)
     ->where('Year', $Year)
     ->count();
+
 $pending = DB::table('offerletterbasic')
     ->join('jobapply', 'jobapply.JAId', '=', 'offerletterbasic.JAId')
     ->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')
@@ -17,6 +18,7 @@ $pending = DB::table('offerletterbasic')
     ->where('Answer', null)
     ->where('Year', $Year)
     ->count();
+
 $accepted = DB::table('offerletterbasic')
     ->join('jobapply', 'jobapply.JAId', '=', 'offerletterbasic.JAId')
     ->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')
@@ -24,6 +26,7 @@ $accepted = DB::table('offerletterbasic')
     ->where('Answer', 'Accepted')
     ->where('Year', $Year)
     ->count();
+
 $rejected = DB::table('offerletterbasic')
     ->join('jobapply', 'jobapply.JAId', '=', 'offerletterbasic.JAId')
     ->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')
@@ -63,7 +66,7 @@ $rejected = DB::table('offerletterbasic')
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div>
-                                <p class="mb-0">Total Offer Letter Issued:<br>(Cr. year)</p>
+                                <p class="mb-0">Candidate not filled <br>Joining Form</p>
                             </div>
                             <div class="ms-auto font-20">
                                 {{ $LtrIssue }}
@@ -77,7 +80,7 @@ $rejected = DB::table('offerletterbasic')
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div>
-                                <hp class="mb-0">Offer Letter Status:<br>Accepted</hp>
+                                <hp class="mb-0">Document Verification<br>Pending</hp>
                             </div>
                             <div class="ms-auto font-20">
                                 {{ $accepted }}
@@ -91,7 +94,7 @@ $rejected = DB::table('offerletterbasic')
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div>
-                                <hp class="mb-0">Offer Letter Status:<br>Pending</hp>
+                                <hp class="mb-0">Data Processed to <br>ESS</hp>
                             </div>
                             <div class="ms-auto font-20">
                                 {{ $pending }}
@@ -105,7 +108,7 @@ $rejected = DB::table('offerletterbasic')
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div>
-                                <hp class="mb-0">Offer Letter Status:<br>Rejected</hp>
+                                <hp class="mb-0">Candidate Not <br>Joined</hp>
                             </div>
                             <div class="ms-auto font-20">
                                 {{ $rejected }}
@@ -174,9 +177,9 @@ $rejected = DB::table('offerletterbasic')
                     <div class="col-2">
                         <select name="Status" id="Status" class="form-select form-select-sm" onchange="GetApplications();">
                             <option value="">Select Status</option>
-                            <option value="Accepted">Accepted</option>
-                            <option value="Rejected">Rejected</option>
-                            <option value="Pending">Pending</option>
+                            <option value="1">Joined</option>
+                            <option value="0">Not Joined</option>
+                         
                         </select>
                         @if (isset($_REQUEST['Status']) && $_REQUEST['Status'] != '')
                             <script>
@@ -203,22 +206,27 @@ $rejected = DB::table('offerletterbasic')
                     <table class="table table-bordered text-center table-striped table-light">
                         <thead class="table-light">
                             <tr>
+                                <th>S.No</th>
                                 <th scope="col">Reference No</th>
                                 <th scope="col">Candidate</th>
                                 <th scope="col">Selected For</th>
-                                <th scope="col">Offer Ltr Generate</th>
-                                <th scope="col">Offer Ltr Send</th>
-                                <th scope="col">Acceptance Status</th>
-                                <th scope="col">Joining Form Sent</th>
-                                <th scope="col">Joining Date</th>
+                                <th scope="col">Joining Form Filled</th>
+                                <th scope="col">Document Verified</th>
+                                <th scope="col">Candidate Joined?</th>
+                                <th scope="col">Data Forwarded to Ess</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $i = 0;
+                            @endphp
                             @foreach ($candidate_list as $row)
                                 @php
                                     $sendingId = base64_encode($row->JAId);
+                                    
                                 @endphp
                                 <tr>
+                                    <td>{{ ++$i }}</td>
                                     <td>{{ $row->ReferenceNo }}</td>
                                     <td> <a class="text-underline"
                                             href="{{ route('candidate_detail') }}?jaid={{ $sendingId }}"
@@ -227,16 +235,18 @@ $rejected = DB::table('offerletterbasic')
                                     <td>{{ getDepartmentCode($row->SelectedForD) }}
                                         ({{ getCompanyCode($row->SelectedForC) }})</td>
                                     <td>
-                                        @if ($row->OfferLtrGen == 1)
-                                            Yes
-                                        @else
-                                            No
-                                        @endif
+                                        {{ $row->FinalSubmit == 1 ? 'Yes' : 'No' }}
                                     </td>
-                                    <td>{{ $row->OfferLetterSent ?? 'No' }}</td>
-                                    <td>{{ $row->Answer }}</td>
-                                    <td>{{ $row->JoiningFormSent ?? 'No' }}</td>
-                                    <td> {{ $row->JoinOnDt != null ? date('d-m-Y', strtotime($row->JoinOnDt)) : '' }}</td>
+                                    <td>
+                                        {{$row->Verification}}
+                                    </td>
+                                    <td>
+                                        {{$row->Joined==1?'Yes':'No'}}
+                                    </td>
+                                    <td>
+                                        {{$row->ForwardToESS}}
+                                    </td>
+
                                 </tr>
                             @endforeach
                         </tbody>
@@ -283,7 +293,7 @@ $rejected = DB::table('offerletterbasic')
                 var Gender = $('#Gender').val() || '';
                 var Status = $('#Status').val() || '';
                 var Name = $('#Name').val() || '';
-                window.location.href = "{{ route('offer_letter') }}?Company=" + Company + "&Department=" +
+                window.location.href = "{{ route('candidate_joining') }}?Company=" + Company + "&Department=" +
                     Department + "&Year=" + Year + "&Month=" + Month + "&Gender=" + Gender + "&Name=" + Name +
                     "&Status=" + Status;
             }
@@ -357,7 +367,7 @@ $rejected = DB::table('offerletterbasic')
             });
 
             $(document).on('click', '#reset', function() {
-                window.location.href = "{{ route('offer_letter') }}";
+                window.location.href = "{{ route('candidate_joining') }}";
             });
 
 

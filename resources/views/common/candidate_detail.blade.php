@@ -19,9 +19,49 @@ $Rec = DB::table('jobapply')
     ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
     ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
     ->leftJoin('jf_pf_esic', 'jobcandidates.JCId', '=', 'jf_pf_esic.JCId')
-
+    ->leftJoin('master_country', 'jobcandidates.Nationality', '=', 'master_country.CountryId')
+    ->leftJoin('appointing', 'appointing.JAId', '=', 'jobapply.JAId')
     ->where('jobapply.JAId', $JAId)
-    ->select('jobapply.*', 'jobcandidates.*', 'screening.ReSentForScreen', 'screening.ScreenStatus', 'screening.IntervStatus', 'screening.IntervDt', 'screen2ndround.IntervDt2', 'screen2ndround.IntervStatus2', 'screening.SelectedForD','jobpost.Title as JobTitle', 'jobpost.JobCode', 'jf_contact_det.pre_address', 'jf_contact_det.pre_city', 'jf_contact_det.pre_state', 'jf_contact_det.pre_pin', 'jf_contact_det.pre_dist', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin', 'jf_contact_det.perm_dist', 'jf_contact_det.cont_one_name', 'jf_contact_det.cont_one_relation', 'jf_contact_det.cont_one_number', 'jf_contact_det.cont_two_name', 'jf_contact_det.cont_two_relation', 'jf_contact_det.cont_two_number', 'jf_pf_esic.UAN', 'jf_pf_esic.PFNumber', 'jf_pf_esic.ESICNumber', 'jf_pf_esic.BankName', 'jf_pf_esic.BranchName', 'jf_pf_esic.IFSCCode', 'jf_pf_esic.AccountNumber', 'jf_pf_esic.PAN', 'jf_pf_esic.Passport')
+    ->select(
+        'jobapply.*',
+        'jobcandidates.*',
+        'screening.ReSentForScreen',
+        'screening.ScreenStatus',
+        'screening.IntervStatus',
+        'screening.IntervDt',
+        'screen2ndround.IntervDt2',
+        'screen2ndround.IntervStatus2',
+        'screening.SelectedForD',
+        'jobpost.Title as JobTitle',
+        'jobpost.JobCode',
+        'jf_contact_det.pre_address',
+        'jf_contact_det.pre_city',
+        'jf_contact_det.pre_state',
+        'jf_contact_det.pre_pin',
+        'jf_contact_det.pre_dist',
+        'jf_contact_det.perm_address',
+        'jf_contact_det.perm_city',
+        'jf_contact_det.perm_state',
+        'jf_contact_det.perm_pin',
+        'jf_contact_det.perm_dist',
+        'jf_contact_det.cont_one_name',
+        'jf_contact_det.cont_one_relation',
+        'jf_contact_det.cont_one_number',
+        'jf_contact_det.cont_two_name',
+        'jf_contact_det.cont_two_relation',
+        'jf_contact_det.cont_two_number',
+        'jf_pf_esic.UAN',
+        'jf_pf_esic.PFNumber',
+        'jf_pf_esic.ESICNumber',
+        'jf_pf_esic.BankName',
+        'jf_pf_esic.BranchName',
+        'jf_pf_esic.IFSCCode',
+        'jf_pf_esic.AccountNumber',
+        'jf_pf_esic.PAN',
+        'jf_pf_esic.Passport',
+        'master_country.CountryName',
+        'appointing.AppLtrGen',
+    )
     ->first();
 
 $JCId = $Rec->JCId;
@@ -56,7 +96,6 @@ $VnrRef = DB::table('jf_reference')
     ->where('from', 'VNR')
     ->get();
 $Year = Carbon::now()->year;
-
 $sql = DB::table('offerletterbasic_history')
     ->where('JAId', $JAId)
     ->get();
@@ -76,6 +115,8 @@ $AboutAns = DB::table('about_answer')
 $Docs = DB::table('jf_docs')
     ->where('JCId', $JCId)
     ->first();
+
+$country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
 @endphp
 @extends('layouts.master')
 @section('title', 'Candidate Detail')
@@ -142,6 +183,7 @@ $Docs = DB::table('jf_docs')
                                             <h6 class="user-name m-t-0 mb-0"> {{ $Rec->FName }} {{ $Rec->MName }}
                                                 {{ $Rec->LName }}</h6>
                                             <h6 class="staff-id">Applied For: {{ $Rec->JobTitle }}</h6>
+                                            <h6 class="staff-id text-primary">MRF: {{ $Rec->JobCode }}</h6>
 
                                             <div class="staff-id">ReferenceNo : {{ $Rec->ReferenceNo }}</div>
                                             <div class="staff-id">Date of Apply :
@@ -204,7 +246,10 @@ $Docs = DB::table('jf_docs')
                                                     </div>
                                                 @endif
 
+
+
                                             </li>
+
 
 
                                         </ul>
@@ -239,8 +284,11 @@ $Docs = DB::table('jf_docs')
                         <li class="nav-item"><a href="#cand_reference" data-bs-toggle="tab"
                                 class="nav-link">Reference</a></li>
 
-                        <li class="nav-item"><a href="#cand_other" data-bs-toggle="tab"
-                                class="nav-link">Document & Other </a></li>
+                        <li class="nav-item"><a href="#cand_other" data-bs-toggle="tab" class="nav-link"> Other
+                            </a></li>
+
+                        <li class="nav-item"><a href="#cand_document" data-bs-toggle="tab"
+                                class="nav-link">Documents</a></li>
 
                         <li class="nav-item"><a href="#cand_history" data-bs-toggle="tab"
                                 class="nav-link">History</a></li>
@@ -280,7 +328,7 @@ $Docs = DB::table('jf_docs')
 
                                     <li>
                                         <div class="title">Nationality<span style="float: right">:</span></div>
-                                        <div class="text">{{ $Rec->Nationality ?? '-' }}</div>
+                                        <div class="text">{{ $Rec->CountryName ?? '-' }}</div>
                                     </li>
 
                                     <li>
@@ -1029,6 +1077,128 @@ $Docs = DB::table('jf_docs')
                         </div>
                     </div>
                 </div>
+
+
+                <div class="row">
+                    <div class="col-md-12 d-flex">
+                        <div class="card profile-box flex-fill">
+                            <div class="card-body">
+                                <h6 class="card-title">About Yourself<a href="#" class="edit-icon"
+                                        data-bs-toggle="modal" data-bs-target="#about_modal"><i
+                                            class="fa fa-pencil"></i></a></h6>
+
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr style="background-color: #F1F8E9">
+                                                <td class="fw-bold">
+                                                    Q1. What is your aim in life?
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F9FBE7">
+                                                <td>
+                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutAim ?? '' }}
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F1F8E9">
+                                                <td class="fw-bold">
+                                                    Q2. What are you hobbies and interest?
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F9FBE7">
+                                                <td>
+                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutHobbi ?? '' }}
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F1F8E9">
+                                                <td class="fw-bold">
+                                                    Q3. Where do you see yourself 5 Years from now?
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F9FBE7">
+                                                <td>
+                                                    &ensp;&ensp;&ensp;{{ $AboutAns->About5Year ?? '' }}
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F1F8E9">
+                                                <td class="fw-bold">
+                                                    Q4. What are your greatest personal assets (qualities, skills,
+                                                    abilities) which make you successful in the jobs you take up?
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F9FBE7">
+                                                <td>
+                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutAssets ?? '' }}
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F1F8E9">
+                                                <td class="fw-bold">
+                                                    Q5. What are your areas where you think you need to improve yourself?
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F9FBE7">
+                                                <td>
+                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutImprovement ?? '' }}
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F1F8E9">
+                                                <td class="fw-bold">
+                                                    Q6. What are your Strengths?
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F9FBE7">
+                                                <td>
+                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutStrength ?? '' }}
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F1F8E9">
+                                                <td class="fw-bold">
+                                                    Q7. In the past or at present, have/are you suffered /suffering from,
+                                                    any form of physical disability or any minor or major illness or
+                                                    deficiency?
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F9FBE7">
+                                                <td>
+                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutDeficiency ?? '' }}
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F1F8E9">
+                                                <td class="fw-bold">
+                                                    Q8. Have you Been criminally prosecuted? if so, give details separately.
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F9FBE7">
+                                                <td>
+                                                    &ensp;&ensp;&ensp;
+                                                    @if ($AboutAns != null)
+
+                                                        {{ $AboutAns->CriminalChk == 'Y' ? 'Yes' : 'No' }}
+                                                    @endif
+
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F1F8E9">
+                                                <td class="fw-bold">
+                                                    Q9. Do You have a valid driving licence?
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #F9FBE7">
+                                                <td>
+                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutDeficiency ?? '' }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="cand_document">
+
                 <div class="row">
                     <div class="col-md-12 d-flex">
                         <div class="card profile-box flex-fill">
@@ -1231,122 +1401,7 @@ $Docs = DB::table('jf_docs')
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-12 d-flex">
-                        <div class="card profile-box flex-fill">
-                            <div class="card-body">
-                                <h6 class="card-title">About Yourself<a href="#" class="edit-icon"
-                                        data-bs-toggle="modal" data-bs-target="#about_modal"><i
-                                            class="fa fa-pencil"></i></a></h6>
 
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <tbody>
-                                            <tr style="background-color: #F1F8E9">
-                                                <td class="fw-bold">
-                                                    Q1. What is your aim in life?
-                                                </td>
-                                            </tr>
-                                            <tr style="background-color: #F9FBE7">
-                                                <td>
-                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutAim ?? '' }}
-                                                </td>
-                                            </tr>
-                                            <tr style="background-color: #F1F8E9">
-                                                <td class="fw-bold">
-                                                    Q2. What are you hobbies and interest?
-                                                </td>
-                                            </tr>
-                                            <tr style="background-color: #F9FBE7">
-                                                <td>
-                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutHobbi ?? '' }}
-                                                </td>
-                                            </tr>
-                                            <tr style="background-color: #F1F8E9">
-                                                <td class="fw-bold">
-                                                    Q3. Where do you see yourself 5 Years from now?
-                                                </td>
-                                            </tr>
-                                            <tr style="background-color: #F9FBE7">
-                                                <td>
-                                                    &ensp;&ensp;&ensp;{{ $AboutAns->About5Year ?? '' }}
-                                                </td>
-                                            </tr>
-                                            <tr style="background-color: #F1F8E9">
-                                                <td class="fw-bold">
-                                                    Q4. What are your greatest personal assets (qualities, skills,
-                                                    abilities) which make you successful in the jobs you take up?
-                                                </td>
-                                            </tr>
-                                            <tr style="background-color: #F9FBE7">
-                                                <td>
-                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutAssets ?? '' }}
-                                                </td>
-                                            </tr>
-                                            <tr style="background-color: #F1F8E9">
-                                                <td class="fw-bold">
-                                                    Q5. What are your areas where you think you need to improve yourself?
-                                                </td>
-                                            </tr>
-                                            <tr style="background-color: #F9FBE7">
-                                                <td>
-                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutImprovement ?? '' }}
-                                                </td>
-                                            </tr>
-                                            <tr style="background-color: #F1F8E9">
-                                                <td class="fw-bold">
-                                                    Q6. What are your Strengths?
-                                                </td>
-                                            </tr>
-                                            <tr style="background-color: #F9FBE7">
-                                                <td>
-                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutStrength ?? '' }}
-                                                </td>
-                                            </tr>
-                                            <tr style="background-color: #F1F8E9">
-                                                <td class="fw-bold">
-                                                    Q7. In the past or at present, have/are you suffered /suffering from,
-                                                    any form of physical disability or any minor or major illness or
-                                                    deficiency?
-                                                </td>
-                                            </tr>
-                                            <tr style="background-color: #F9FBE7">
-                                                <td>
-                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutDeficiency ?? '' }}
-                                                </td>
-                                            </tr>
-                                            <tr style="background-color: #F1F8E9">
-                                                <td class="fw-bold">
-                                                    Q8. Have you Been criminally prosecuted? if so, give details separately.
-                                                </td>
-                                            </tr>
-                                            <tr style="background-color: #F9FBE7">
-                                                <td>
-                                                    &ensp;&ensp;&ensp;
-                                                    @if ($AboutAns != null)
-
-                                                        {{ $AboutAns->CriminalChk == 'Y' ? 'Yes' : 'No' }}
-                                                    @endif
-
-                                                </td>
-                                            </tr>
-                                            <tr style="background-color: #F1F8E9">
-                                                <td class="fw-bold">
-                                                    Q9. Do You have a valid driving licence?
-                                                </td>
-                                            </tr>
-                                            <tr style="background-color: #F9FBE7">
-                                                <td>
-                                                    &ensp;&ensp;&ensp;{{ $AboutAns->AboutDeficiency ?? '' }}
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div class="tab-pane fade" id="cand_history">
@@ -1408,16 +1463,16 @@ $Docs = DB::table('jf_docs')
                                                 </tr>
                                             @endif
                                             @if ($Rec->SelectedForD != null)
-                                            <tr>
-                                                <td>Offer Letter Sent</td>
-                                                <td>{{ $OfBasic->OfferLetterSent ?? '' }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Offer Letter Status</td>
-                                                <td>{{ $OfBasic->Answer ?? '' }}</td>
-                                            </tr>
+                                                <tr>
+                                                    <td>Offer Letter Sent</td>
+                                                    <td>{{ $OfBasic->OfferLetterSent ?? '' }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Offer Letter Status</td>
+                                                    <td>{{ $OfBasic->Answer ?? '' }}</td>
+                                                </tr>
                                             @endif
-                                           
+
                                             @if ($OfBasic != null && $OfBasic->Answer == 'Rejected')
                                                 <tr>
                                                     <td>Offer Letter Rejected Reason</td>
@@ -1452,6 +1507,7 @@ $Docs = DB::table('jf_docs')
             </div>
 
             <div class="tab-pane fade" id="job_offer">
+
                 <div class="row">
                     <div class="col-md-5 d-flex">
                         <div class="card profile-box flex-fill">
@@ -1533,6 +1589,14 @@ $Docs = DB::table('jf_docs')
                                                     No Probation No Training
                                                 @endif
                                             @endif
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div class="title" style="width: 150px;">Service Bond<span
+                                                style="float: right">:</span></div>
+                                        <div class="text">
+                                            {{ $OfBasic->ServiceBond ?? '-' }}
                                         </div>
                                     </li>
                                 </ul>
@@ -1650,6 +1714,21 @@ $Docs = DB::table('jf_docs')
                                                 Send Now</a>)
                                         </div>
                                     </li>
+                                    <li>
+                                        <div class="title" style="width: 150px;">Ref. Check <span
+                                                style="float: right">:</span>
+                                        </div>
+                                        <div class="text">
+                                            @if ($OfBasic->RefCheck == 'Yes')
+                                                <span class="text-dark">Yes</span>
+                                                (view)
+                                            @else
+                                                <span class="text-danger">No</span>( <a href="javascript:void(0);"
+                                                    class="" onclick="sendRefCheck({{ $Rec->JAId }});">
+                                                    Send Now</a>)
+                                            @endif
+                                        </div>
+                                    </li>
 
                                 </ul>
                             </div>
@@ -1662,11 +1741,9 @@ $Docs = DB::table('jf_docs')
                         <div class="col-md-5 d-flex">
                             <div class="card profile-box flex-fill">
                                 <div class="card-body">
-                                    <h6 class="card-title">Joining Details
-
-                                    </h6>
+                                    <h6 class="card-title">Joining Details </h6>
                                     <ul class="personal-info">
-                                        <li>
+                                        {{-- <li>
                                             <div class="title" style="width: 150px;">Emp Code<span
                                                     style="float: right">:</span></div>
                                             <div class="text">
@@ -1682,44 +1759,52 @@ $Docs = DB::table('jf_docs')
                                                 <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
                                                     id="empCancle" onclick="window.location.reload();">Cancel</button>
                                             </div>
-                                        </li>
+                                        </li> --}}
 
-                                        <li>
-                                            <div class="title" style="width: 150px;">Ref. Check <span
-                                                    style="float: right">:</span>
-                                            </div>
-                                            <div class="text">
-                                                @if ($OfBasic->RefCheck == 'Yes')
-                                                    <span class="text-dark">Yes</span>
-                                                    (view)
-                                                @else
-                                                    <span class="text-danger">No</span>( <a href="javascript:void(0);"
-                                                        class=""
-                                                        onclick="sendRefCheck({{ $Rec->JAId }});"> Send Now</a>)
-                                                @endif
-                                            </div>
-                                        </li>
+
 
                                         <li>
                                             <div class="title" style="width: 150px;"> Appointment Letter <span
                                                     style="float: right">:</span> </div>
-                                            <div class="text  text-dark"> <i class="fa fa-pencil text-primary"
-                                                    aria-hidden="true" onclick="appointmentGen({{ $Rec->JAId }})"
-                                                    style="font-size: 16px;cursor: pointer; display: ">Generate </i> </div>
+
+                                            <div class="text  text-dark">
+                                                @if ($Rec->AppLtrGen == 'No')
+                                                    <i class="fa fa-pencil text-primary" aria-hidden="true"
+                                                        onclick="appointmentGen({{ $Rec->JAId }})"
+                                                        style="font-size: 16px;cursor: pointer; display: ">Generate </i>
+                                                @else
+                                                    <a href="{{ route('appointment_letter') }}?jaid={{ base64_encode($JAId) }}"
+                                                        target="_blank"> View</a> | <a href="javascript:void(0);"
+                                                        onclick="PrintAppointmentLetter('{{ route('appointment_ltr_print') }}?jaid={{ $Rec->JAId }}');">
+                                                        Print</a>
+                                                @endif
+
+                                            </div>
                                         </li>
                                         <li>
                                             <div class="title" style="width: 150px;"> Service Agreement <span
                                                     style="float: right">:</span> </div>
-                                            <div class="text  text-dark"> <i class="fa fa-pencil text-primary"
-                                                    aria-hidden="true" onclick="appointmentGen({{ $Rec->JAId }})"
-                                                    style="font-size: 16px;cursor: pointer; display: ">Generate </i> </div>
+                                            <div class="text  text-dark">
+                                                @if ($Rec->AppLtrGen == 'Yes')
+                                                    <i class="fa fa-pencil text-primary" aria-hidden="true"
+                                                        onclick="ServiceAgrGen({{ $Rec->JAId }})"
+                                                        style="font-size: 16px;cursor: pointer; display: ">Generate </i>
+                                                @else
+                                                    -
+                                                @endif
+
+                                            </div>
                                         </li>
                                         <li>
                                             <div class="title" style="width: 150px;"> Service Bond <span
                                                     style="float: right">:</span> </div>
-                                            <div class="text  text-dark"> <i class="fa fa-pencil text-primary"
-                                                    aria-hidden="true" onclick="appointmentGen({{ $Rec->JAId }})"
-                                                    style="font-size: 16px;cursor: pointer; display: ">Generate </i> </div>
+                                            <div class="text  text-dark">
+                                                @if ($Rec->AppLtrGen == 'Yes')
+                                                    <i class="fa fa-pencil text-primary" aria-hidden="true"
+                                                        onclick="appointmentGen({{ $Rec->JAId }})"
+                                                        style="font-size: 16px;cursor: pointer; display: ">Generate </i>
+                                                @endif
+                                            </div>
                                         </li>
                                     </ul>
                                 </div>
@@ -1799,8 +1884,6 @@ $Docs = DB::table('jf_docs')
                     </div>
 
                 </div>
-
-
             </div>
         </div>
     </div>
@@ -1928,7 +2011,13 @@ $Docs = DB::table('jf_docs')
                         </div>
                         <div class="form-group">
                             <label>Nationality</label>
-                            <input type="text" name="Nationality" id="Nationality" class="form-control form-control-sm">
+                            <select name="Nationality" id="Nationality" class="form-select form-select-sm">
+                                <option value="">Select</option>
+                                @foreach ($country_list as $key => $value)
+                                    <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
+
                         </div>
                         <div class="form-group">
                             <label>Religion</label>
@@ -2341,13 +2430,14 @@ $Docs = DB::table('jf_docs')
                             <table class="table table-bordered">
                                 <thead class="text-center">
                                     <tr>
-                                        <td>Qualification</td>
-                                        <td style="width: 20%">Course</td>
-                                        <td style="width: 20%">Specialization</td>
-                                        <td>Board/University</td>
-                                        <td>Passing Year</td>
-                                        <td style="width: 10%">Percentage</td>
-                                        <td style="width: 5%"></td>
+                                        <th>Qualification</th>
+                                        <th style="width: 20%">Course</th>
+                                        <th style="width: 20%">Specialization
+                                        </th>
+                                        <th>Board/University</th>
+                                        <th>Passing Year</th>
+                                        <th style="width: 10%">Percentage</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody id="EducationData">
@@ -2360,8 +2450,11 @@ $Docs = DB::table('jf_docs')
                                             <select name="Course[]" id="Course1" class="form-select form-select-sm"
                                                 onchange="getSpecialization(this.value,1)">
                                                 <option value="">Select</option>
+
                                                 @foreach ($education_list as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}">
+                                                        {{ $value }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </td>
@@ -2371,24 +2464,34 @@ $Docs = DB::table('jf_docs')
                                                 <option value="">Select</option>
                                                 <option value="0">Other</option>
                                                 @foreach ($specialization_list as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}">
+                                                        {{ $value }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </td>
                                         <td>
-                                            <select name="Collage[]" id="Collage1" class="form-select form-select-sm">
+                                            <select name="Collage[]" id="Collage1" class="form-select form-select-sm"
+                                                onchange="getOtherInstitute(1);">
                                                 <option value="">Select</option>
+                                                <option value="637">Other</option>
                                                 @foreach ($institute_list as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}">
+                                                        {{ $value }}
+                                                    </option>
                                                 @endforeach
                                             </select>
+                                            <input type="text" name="OtherInstitute[]" id="OtherInstitute1"
+                                                class="form-control form-control-sm mt-1 d-none">
                                         </td>
                                         <td>
                                             <select name="PassingYear[]" id="PassingYear1"
                                                 class="form-select form-select-sm">
                                                 <option value="">Select</option>
                                                 @for ($i = 1980; $i <= $Year; $i++)
-                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                    <option value="{{ $i }}">
+                                                        {{ $i }}
+                                                    </option>
                                                 @endfor
                                             </select>
                                         </td>
@@ -2408,7 +2511,9 @@ $Docs = DB::table('jf_docs')
                                                 onchange="getSpecialization(this.value,2)">
                                                 <option value="">Select</option>
                                                 @foreach ($education_list as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}">
+                                                        {{ $value }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </td>
@@ -2418,24 +2523,34 @@ $Docs = DB::table('jf_docs')
                                                 <option value="">Select</option>
                                                 <option value="0">Other</option>
                                                 @foreach ($specialization_list as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}">
+                                                        {{ $value }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </td>
                                         <td>
-                                            <select name="Collage[]" id="Collage2" class="form-select form-select-sm">
+                                            <select name="Collage[]" id="Collage2" class="form-select form-select-sm"
+                                                onchange="getOtherInstitute(2);">
                                                 <option value="">Select</option>
+                                                <option value="637">Other</option>
                                                 @foreach ($institute_list as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}">
+                                                        {{ $value }}
+                                                    </option>
                                                 @endforeach
                                             </select>
+                                            <input type="text" name="OtherInstitute[]" id="OtherInstitute2"
+                                                class="form-control form-control-sm mt-1 d-none">
                                         </td>
                                         <td>
                                             <select name="PassingYear[]" id="PassingYear2"
                                                 class="form-select form-select-sm">
                                                 <option value="">Select</option>
                                                 @for ($i = 1980; $i <= $Year; $i++)
-                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                    <option value="{{ $i }}">
+                                                        {{ $i }}
+                                                    </option>
                                                 @endfor
                                             </select>
                                         </td>
@@ -2455,7 +2570,9 @@ $Docs = DB::table('jf_docs')
                                                 onchange="getSpecialization(this.value,3)">
                                                 <option value="">Select</option>
                                                 @foreach ($education_list as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}">
+                                                        {{ $value }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </td>
@@ -2465,24 +2582,34 @@ $Docs = DB::table('jf_docs')
                                                 <option value="">Select</option>
                                                 <option value="0">Other</option>
                                                 @foreach ($specialization_list as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}">
+                                                        {{ $value }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </td>
                                         <td>
-                                            <select name="Collage[]" id="Collage3" class="form-select form-select-sm">
+                                            <select name="Collage[]" id="Collage3" class="form-select form-select-sm"
+                                                onchange="getOtherInstitute(3);">
                                                 <option value="">Select</option>
+                                                <option value="637">Other</option>
                                                 @foreach ($institute_list as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}">
+                                                        {{ $value }}
+                                                    </option>
                                                 @endforeach
                                             </select>
+                                            <input type="text" name="OtherInstitute[]" id="OtherInstitute3"
+                                                class="form-control form-control-sm mt-1 d-none">
                                         </td>
                                         <td>
                                             <select name="PassingYear[]" id="PassingYear3"
                                                 class="form-select form-select-sm">
                                                 <option value="">Select</option>
                                                 @for ($i = 1980; $i <= $Year; $i++)
-                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                    <option value="{{ $i }}">
+                                                        {{ $i }}
+                                                    </option>
                                                 @endfor
                                             </select>
                                         </td>
@@ -2503,7 +2630,9 @@ $Docs = DB::table('jf_docs')
                                                 onchange="getSpecialization(this.value,4)">
                                                 <option value="">Select</option>
                                                 @foreach ($education_list as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}">
+                                                        {{ $value }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </td>
@@ -2513,24 +2642,34 @@ $Docs = DB::table('jf_docs')
                                                 <option value="">Select</option>
                                                 <option value="0">Other</option>
                                                 @foreach ($specialization_list as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}">
+                                                        {{ $value }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </td>
                                         <td>
-                                            <select name="Collage[]" id="Collage4" class="form-select form-select-sm">
+                                            <select name="Collage[]" id="Collage4" class="form-select form-select-sm"
+                                                onchange="getOtherInstitute(4);">
                                                 <option value="">Select</option>
+                                                <option value="637">Other</option>
                                                 @foreach ($institute_list as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}">
+                                                        {{ $value }}
+                                                    </option>
                                                 @endforeach
                                             </select>
+                                            <input type="text" name="OtherInstitute[]" id="OtherInstitute4"
+                                                class="form-control form-control-sm mt-1 d-none">
                                         </td>
                                         <td>
                                             <select name="PassingYear[]" id="PassingYear4"
                                                 class="form-select form-select-sm">
                                                 <option value="">Select</option>
                                                 @for ($i = 1980; $i <= $Year; $i++)
-                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                    <option value="{{ $i }}">
+                                                        {{ $i }}
+                                                    </option>
                                                 @endfor
                                             </select>
                                         </td>
@@ -2550,7 +2689,9 @@ $Docs = DB::table('jf_docs')
                                                 onchange="getSpecialization(this.value,5)">
                                                 <option value="">Select</option>
                                                 @foreach ($education_list as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}">
+                                                        {{ $value }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </td>
@@ -2560,24 +2701,34 @@ $Docs = DB::table('jf_docs')
                                                 <option value="">Select</option>
                                                 <option value="0">Other</option>
                                                 @foreach ($specialization_list as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}">
+                                                        {{ $value }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </td>
                                         <td>
-                                            <select name="Collage[]" id="Collage5" class="form-select form-select-sm">
+                                            <select name="Collage[]" id="Collage5" class="form-select form-select-sm"
+                                                onchange="getOtherInstitute(5);">
                                                 <option value="">Select</option>
+                                                <option value="637">Other</option>
                                                 @foreach ($institute_list as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}">
+                                                        {{ $value }}
+                                                    </option>
                                                 @endforeach
                                             </select>
+                                            <input type="text" name="OtherInstitute[]" id="OtherInstitute5"
+                                                class="form-control form-control-sm mt-1 d-none">
                                         </td>
                                         <td>
                                             <select name="PassingYear[]" id="PassingYear5"
                                                 class="form-select form-select-sm">
                                                 <option value="">Select</option>
                                                 @for ($i = 1980; $i <= $Year; $i++)
-                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                    <option value="{{ $i }}">
+                                                        {{ $i }}
+                                                    </option>
                                                 @endfor
                                             </select>
                                         </td>
@@ -2597,7 +2748,9 @@ $Docs = DB::table('jf_docs')
                                                 onchange="getSpecialization(this.value,6)">
                                                 <option value="">Select</option>
                                                 @foreach ($education_list as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}">
+                                                        {{ $value }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </td>
@@ -2607,24 +2760,33 @@ $Docs = DB::table('jf_docs')
                                                 <option value="">Select</option>
                                                 <option value="0">Other</option>
                                                 @foreach ($specialization_list as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}">
+                                                        {{ $value }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </td>
                                         <td>
-                                            <select name="Collage[]" id="Collage6" class="form-select form-select-sm">
+                                            <select name="Collage[]" id="Collage6" class="form-select form-select-sm"
+                                                onchange="getOtherInstitute(6);">
                                                 <option value="">Select</option>
                                                 @foreach ($institute_list as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}">
+                                                        {{ $value }}
+                                                    </option>
                                                 @endforeach
                                             </select>
+                                            <input type="text" name="OtherInstitute[]" id="OtherInstitute6"
+                                                class="form-control form-control-sm mt-1 d-none">
                                         </td>
                                         <td>
                                             <select name="PassingYear[]" id="PassingYear6"
                                                 class="form-select form-select-sm">
                                                 <option value="">Select</option>
                                                 @for ($i = 1980; $i <= $Year; $i++)
-                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                    <option value="{{ $i }}">
+                                                        {{ $i }}
+                                                    </option>
                                                 @endfor
                                             </select>
                                         </td>
@@ -4375,26 +4537,6 @@ $Docs = DB::table('jf_docs')
             });
         }
 
-        function GetStrength() {
-            var JCId = $('#JCId').val();
-            $.ajax({
-                url: "{{ route('Candidate_Strength') }}",
-                type: "POST",
-                data: {
-                    JCId: JCId
-                },
-                dataType: "json",
-                success: function(data) {
-                    $('#S_JCId').val($('#JCId').val());
-                    $('#Strength1').val(data.data.Strength1);
-                    $('#Strength2').val(data.data.Strength2);
-                    $('#Improvement1').val(data.data.Improvement1);
-                    $('#Improvement2').val(data.data.Improvement2);
-
-                }
-            });
-        }
-
         function GetBankInfo() {
             var JCId = $('#JCId').val();
             $.ajax({
@@ -4487,8 +4629,6 @@ $Docs = DB::table('jf_docs')
         getAllSP();
         getCollegeList();
         getYearList();
-
-
 
         function getEducationList() {
             $.ajax({
@@ -4597,23 +4737,30 @@ $Docs = DB::table('jf_docs')
                 url: "{{ route('Candidate_Education') }}",
                 type: "POST",
                 data: {
-                    JCId: JCId
+                    JCId: JCId,
                 },
                 dataType: "json",
                 success: function(data) {
-                    $('#Edu_JCId').val($('#JCId').val());
-                    EducationCount = data.data.length;
-                    for (var i = 1; i <= EducationCount; i++) {
-                        if (i >= 7) {
-                            Qualification(i);
-                        }
-                        $('#Qualification' + i).val(data.data[i - 1].Qualification);
-                        $('#Course' + i).val(data.data[i - 1].Course);
-                        $('#Specialization' + i).val(data.data[i - 1].Specialization);
-                        $('#Collage' + i).val(data.data[i - 1].Institute);
-                        $('#PassingYear' + i).val(data.data[i - 1].YearOfPassing);
-                        $('#Percentage' + i).val(data.data[i - 1].CGPA);
+                    if (data.status == 200) {
+                        $('#Edu_JCId').val($('#JCId').val());
+                        EducationCount = data.data.length;
+                        for (var i = 1; i <= EducationCount; i++) {
+                            if (i >= 7) {
+                                Qualification(i);
+                            }
+                            $('#Qualification' + i).val(data.data[i - 1].Qualification);
+                            $('#Course' + i).val(data.data[i - 1].Course);
+                            $('#Specialization' + i).val(data.data[i - 1].Specialization);
+                            $('#Collage' + i).val(data.data[i - 1].Institute);
+                            $('#PassingYear' + i).val(data.data[i - 1].YearOfPassing);
+                            $('#Percentage' + i).val(data.data[i - 1].CGPA);
+                            if (data.data[i - 1].Institute == '637') {
+                                $('#OtherInstitute' + i).removeClass('d-none');
+                                $('#OtherInstitute' + i).addClass('reqinp');
+                                $('#OtherInstitute' + i).val(data.data[i - 1].OtherInstitute);
+                            }
 
+                        }
                     }
                 }
             });
@@ -4633,13 +4780,13 @@ $Docs = DB::table('jf_docs')
                 '</select>' +
                 '</td>' +
                 '<td>' + '<select class="form-select form-select-sm" name="Collage[]" id="Collage' + num +
-                '">' + CollegeList +
+                '" onchange="getOtherInstitute(' + num + ')">' + CollegeList +
                 '</select>' +
+                '<input type="text" name="OtherInstitute[]" id="OtherInstitute' + num +
+                '" class="form-control form-control-sm mt-1 d-none">' +
                 '</td>' +
                 '<td>' + '<select class="form-select form-select-sm" name="PassingYear[]" id="PassingYear' + num +
                 '">' +
-
-
                 YearList +
                 '</select>' +
                 '</td>' +
@@ -6055,7 +6202,7 @@ $Docs = DB::table('jf_docs')
             $('#offerletterbasicform')[0].reset();
         });
 
-        $(document).on('change', '#AdminstrativeDepartment', function() {
+        $(document).on('change', '#AdministrativeDepartment', function() {
             var DepartmentId = $(this).val();
             $.ajax({
                 type: "GET",
@@ -6171,6 +6318,13 @@ $Docs = DB::table('jf_docs')
         });
 
         function OfferLetterPrint(url) {
+            $("<iframe>") // create a new iframe element
+                .hide() // make it invisible
+                .attr("src", url) // point the iframe to the page you want to print
+                .appendTo("body");
+        }
+
+        function PrintAppointmentLetter(url) {
             $("<iframe>") // create a new iframe element
                 .hide() // make it invisible
                 .attr("src", url) // point the iframe to the page you want to print
@@ -6435,6 +6589,41 @@ $Docs = DB::table('jf_docs')
             }, 'json');
 
         });
+
+
+        function getOtherInstitute(num) {
+            var Collage = $('#Collage' + num).val();
+            console.log(Collage);
+            if (Collage == '637') {
+                $('#OtherInstitute' + num).removeClass('d-none');
+            } else {
+                $('#OtherInstitute' + num).addClass('d-none');
+            }
+        }
+
+        function appointmentGen(JAId) {
+            var JAId = btoa(JAId);
+            $.ajax({
+                url: "{{ route('appointmentGen') }}",
+                type: "POST",
+                data: {
+                    "JAId": JAId
+                },
+
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        window.open('{{ route('appointment_letter') }}?jaid=' + JAId, '_blank');
+                    }
+                }
+            });
+        }
+
+        function ServiceAgrGen(JAId) {
+            var JAId = btoa(JAId);
+            window.open('{{ route('service_agreement') }}?jaid=' + JAId, '_blank');
+        }
     </script>
     <script>
         /*

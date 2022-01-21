@@ -129,6 +129,8 @@ use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getCompanyCode;
 use function App\Helpers\getFullName;
 use function App\Helpers\getGradeValue;
+use function App\Helpers\getStateName;
+use function App\Helpers\getDistrictName;
 $JAId = base64_decode($_REQUEST['jaid']);
 
 $sql = DB::table('offerletterbasic')
@@ -136,7 +138,7 @@ $sql = DB::table('offerletterbasic')
     ->leftJoin('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
     ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
     ->leftJoin('jf_family_det', 'jobcandidates.JCId', '=', 'jf_family_det.JCId')
-    ->select('offerletterbasic.*', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobapply.ApplyDate')
+    ->select('offerletterbasic.*', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobapply.ApplyDate','jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
     ->where('jobapply.JAId', $JAId)
     ->first();
 
@@ -171,10 +173,10 @@ $elg = DB::table('candidate_entitlement')
                     <p style="margin-bottom: 0px;"><b>{{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }}</b>
                     </p>
                     <b>
-                        <p style="margin-bottom: 0px;">Ward No 8, Near Old Gram Panchayat Bhawan</p>
-                        <p style="margin-bottom: 0px;">Baloda,
-                            Dist-Janjgir-Champa,Chhattisgarh,
-                            495559
+                        <p style="margin-bottom: 0px;">{{$sql->perm_address}}</p>
+                        <p style="margin-bottom: 0px;">{{$sql->perm_city}},
+                            Dist-{{getDistrictName($sql->perm_dist)}},{{getStateName($sql->perm_state)}},
+                           {{$sql->perm_pin}}
                         </p>
                     </b><br />
                     <p class="text-center"><b><u>Subject: Offer for Employment</u></b></p>
