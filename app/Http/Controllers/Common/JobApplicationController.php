@@ -111,11 +111,13 @@ class JobApplicationController extends Controller
         $resume_list = DB::table("master_resumesource")->where('Status', 'A')->where('ResumeSouId', '!=', '7')->orderBy('ResumeSouId', 'asc')->pluck("ResumeSource", "ResumeSouId");
         $job = jobpost::query();
         if (Auth::user()->role == 'R') {
-            $job->where('CreatedBy', Auth::user()->id);
+            $job->where('jobpost.CreatedBy', Auth::user()->id);
         }
-        $jobpost_list = $job->select('JPId', 'JobCode')
-            ->where('Status', 'Open')
+        $jobpost_list = $job->join('manpowerrequisition', 'manpowerrequisition.MRFId', '=', 'jobpost.MRFId')->select('JPId', 'jobpost.JobCode')
+            ->where('manpowerrequisition.CountryId', session('Set_Country'))
+            ->where('jobpost.Status', 'Open')
             ->where('JobPostType', 'Regular')
+
             ->get();
         $Company = $request->Company;
         $Department = $request->Department;
@@ -200,9 +202,15 @@ class JobApplicationController extends Controller
         $query->Status = $Status;
         $query->SelectedBy = Auth::user()->id;
         $query->save();
+
+        $JCId = $query->JCId;
+
+        $candidate = jobcandidate::find($JCId);
+        $Aadhaar = $candidate->Aadhaar;
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
+            CandidateActivityLog::addToCandLog($JCId, $Aadhaar, 'Candidate HR Screening Status- ' . $Status);
             return response()->json(['status' => 200, 'msg' => 'HR Screening Status has been changed successfully.']);
         }
     }
@@ -217,7 +225,6 @@ class JobApplicationController extends Controller
             $query->SelectedBy = Auth::user()->id;
             $query->save();
 
-
             $res = new screening;
             $res->JAId = $query->JAId;
             $res->ScrCmp = $query->Company;
@@ -228,8 +235,12 @@ class JobApplicationController extends Controller
             $res->CreatedTime = now();
             $res->save();
 
+            $sql = DB::table('previous_screening')->insert(['JAId' => $query->JAId, 'ReSentForScreen' => now(), 'ScrCmp' => $query->Company, 'ScrDpt' => $query->Department, 'ScreeningBy' => $request->ScreeningBy, 'CreatedBy' => Auth::user()->id, 'CreatedTime' => now()]);
 
-            //Need to send mail for Firo B   , do it later after firo b is completed
+            $JCId = $query->JCId;
+            $candidate = jobcandidate::find($JCId);
+            $Aadhaar = $candidate->Aadhaar;
+            CandidateActivityLog::addToCandLog($JCId, $Aadhaar, 'Candidate Send For Technical Screening');
             $sql = 1;
         }
 
@@ -314,6 +325,7 @@ class JobApplicationController extends Controller
         $query->Email = $request->Email;
         $query->Phone = $request->Phone;
         $query->Aadhaar = $request->Aadhaar;
+        $query->Nationality = $request->Nationality;
         $query->save();
         $JCId = $query->JCId;
 
@@ -472,7 +484,7 @@ class JobApplicationController extends Controller
         $district_list = DB::table("master_district")->orderBy('DistrictName', 'asc')->pluck("DistrictName", "DistrictId");
         $education_list = DB::table("master_education")->orderBy('EducationCode', 'asc')->pluck("EducationCode", "EducationId");
         $specialization_list = DB::table("master_specialization")->orderBy('Specialization', 'asc')->pluck("Specialization", "SpId");
-      //  $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+        //  $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
         return view('jobportal.candidate_interview_form', compact('state_list', 'district_list', 'education_list', 'specialization_list'));
     }
 
@@ -501,7 +513,7 @@ class JobApplicationController extends Controller
         $LName = $request->LName ?? null;
         $DOB = $request->DOB;
         $Gender = $request->Gender;
-     //   $Nationality = $request->Nationality;
+        //   $Nationality = $request->Nationality;
         $Religion = $request->Religion;
         $OtherReligion = $request->OtherReligion ?? null;
         $Category = $request->Category;
@@ -527,7 +539,7 @@ class JobApplicationController extends Controller
                     'LName' => $LName,
                     'DOB' => $DOB,
                     'Gender' => $Gender,
-                 //   'Nationality' => $Nationality,
+                    //   'Nationality' => $Nationality,
                     'Religion' => $Religion,
                     'OtherReligion' => $OtherReligion,
                     'Caste' => $Category,
@@ -654,7 +666,7 @@ class JobApplicationController extends Controller
 
     public function SaveEducation(Request $request)
     {
-       
+
         $JCId = $request->JCId;
         $Qualification = $request->Qualification;
         $Course = $request->Course;
@@ -1236,11 +1248,12 @@ class JobApplicationController extends Controller
             ->Join('jobapply', 'jobcandidates.JCId', '=', 'jobapply.JCId')
             ->Join('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
             ->where('jobcandidates.JCId', $JCId)
-            ->select('jobpost.CreatedBy', 'jobcandidates.FName')->first();
+            ->select('jobpost.CreatedBy', 'jobcandidates.FName', 'jobcandidates.Aadhaar')->first();
         $CreatedBy = $sql->CreatedBy;
         $FName = $sql->FName;
         UserNotification::notifyUser($CreatedBy, 'Pre Interview Form', $FName . ' has submitted the pre interview form');
         if ($query) {
+            CandidateActivityLog::addToCandLog($JCId, $sql->Aadhaar, 'Pre Interview Form has been submitted');
             return response()->json(['status' => 200, 'msg' => 'Interview Form has been submitted successfully']);
         } else {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
@@ -1261,11 +1274,12 @@ class JobApplicationController extends Controller
             ->Join('jobapply', 'jobcandidates.JCId', '=', 'jobapply.JCId')
             ->Join('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
             ->where('jobcandidates.JCId', $JCId)
-            ->select('jobpost.CreatedBy', 'jobcandidates.FName')->first();
+            ->select('jobpost.CreatedBy', 'jobcandidates.FName','jobcandidates.Aadhaar')->first();
         $CreatedBy = $sql->CreatedBy;
         $FName = $sql->FName;
         UserNotification::notifyUser($CreatedBy, 'Joining Form', $FName . ' has submitted the joining form');
         if ($query) {
+            CandidateActivityLog::addToCandLog($JCId, $sql->Aadhaar, 'Joining Form has been submitted');
             return response()->json(['status' => 200, 'msg' => 'Joining Form has been submitted successfully']);
         } else {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
@@ -1334,12 +1348,23 @@ class JobApplicationController extends Controller
                 ]
             );
         }
-        $query1 = DB::table('jf_pf_esic')->where('JCId', $JCId)->update(
-            [
-                'PAN' => $request->PanCardNumber,
-                'LastUpdated' => now()
-            ]
-        );
+        $chk = DB::table('jf_pf_esic')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $query1 = DB::table('jf_pf_esic')->insert(
+                [
+                    'JCId' => $JCId,
+                    'PAN' => $request->PanCardNumber,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query1 = DB::table('jf_pf_esic')->where('JCId', $JCId)->update(
+                [
+                    'PAN' => $request->PanCardNumber,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
 
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
@@ -1375,13 +1400,23 @@ class JobApplicationController extends Controller
                 ]
             );
         }
-        $query1 = DB::table('jf_pf_esic')->where('JCId', $JCId)->update(
-            [
-                'Passport' => $request->PassportNumber,
-                'LastUpdated' => now()
-            ]
-        );
-
+        $chk1 = DB::table('jf_pf_esic')->where('JCId', $JCId)->first();
+        if ($chk1 == null) {
+            $query1 = DB::table('jf_pf_esic')->insert(
+                [
+                    'JCId' => $JCId,
+                    'Passport' => $request->PassportNumber,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query1 = DB::table('jf_pf_esic')->where('JCId', $JCId)->update(
+                [
+                    'Passport' => $request->PassportNumber,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
@@ -1731,16 +1766,30 @@ class JobApplicationController extends Controller
                 ]
             );
         }
+        $chk = DB::table('jf_pf_esic')->where('JCId', $JCId)->first();
 
-        $query1 = DB::table('jf_pf_esic')->where('JCId', $JCId)->update(
-            [
-                'BankName' => $request->BankName,
-                'BranchName' => $request->BranchName,
-                'AccountNumber' => $request->AccNumber,
-                'IFSCCode' => $request->IFSC,
-                'LastUpdated' => now()
-            ]
-        );
+        if ($chk == null) {
+            $query1 = DB::table('jf_pf_esic')->insert(
+                [
+                    'JCId' => $JCId,
+                    'BankName' => $request->BankName,
+                    'BranchName' => $request->BranchName,
+                    'AccountNumber' => $request->AccNumber,
+                    'IFSCCode' => $request->IFSC,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query1 = DB::table('jf_pf_esic')->where('JCId', $JCId)->update(
+                [
+                    'BankName' => $request->BankName,
+                    'BranchName' => $request->BranchName,
+                    'AccountNumber' => $request->AccNumber,
+                    'IFSCCode' => $request->IFSC,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {

@@ -68,7 +68,7 @@ $JCId = $Rec->JCId;
 $firobid = base64_encode($Rec->JCId);
 $OfBasic = DB::table('offerletterbasic')
     ->leftJoin('candjoining', 'candjoining.JAId', '=', 'offerletterbasic.JAId')
-    ->select('offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.RejReason', 'candjoining.EmpCode', 'candjoining.RefCheck')
+    ->select('offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.RejReason', 'candjoining.EmpCode')
     ->where('offerletterbasic.JAId', $JAId)
     ->first();
 
@@ -117,6 +117,9 @@ $Docs = DB::table('jf_docs')
     ->first();
 
 $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
+$candidate_log = DB::table('candidate_log')
+    ->where('JCId', $JCId)
+    ->get();
 @endphp
 @extends('layouts.master')
 @section('title', 'Candidate Detail')
@@ -1406,7 +1409,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
 
             <div class="tab-pane fade" id="cand_history">
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-5">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Job Application History </h6>
@@ -1432,14 +1435,18 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                     <td>Forwarded for Technical Screening</td>
                                                     <td>{{ $Rec->FwdTechScr }}</td>
                                                 </tr>
-                                                <tr>
-                                                    <td>Technical Screening Sent Date</td>
-                                                    <td> {{ date('d-M-Y', strtotime($Rec->ReSentForScreen)) }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Technical Screening Status</td>
-                                                    <td>{{ $Rec->ScreenStatus }}</td>
-                                                </tr>
+                                                @if ($Rec->FwdTechScr == 'Yes')
+
+
+                                                    <tr>
+                                                        <td>Technical Screening Sent Date</td>
+                                                        <td> {{ date('d-M-Y', strtotime($Rec->ReSentForScreen)) }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Technical Screening Status</td>
+                                                        <td>{{ $Rec->ScreenStatus }}</td>
+                                                    </tr>
+                                                @endif
                                             @endif
 
                                             @if ($Rec->ScreenStatus == 'Shortlist')
@@ -1496,10 +1503,30 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-7">
                         <div class="card">
-                            <div class="card-body">
-                                <h1>World</h1>
+                            <div class="card-body ">
+                                <h6 class="card-title">Candidate Log</h6>
+                                <table class="table table-bordered text-center table-striped " id="CandLogTable">
+                                    <thead>
+                                        <th>S.No</th>
+                                        <th style="width: 20%">Date</th>
+                                        <th>Action</th>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $i = 0;
+                                        @endphp
+                                        @foreach ($candidate_log as $item => $value)
+                                            <tr>
+                                                <td>{{ ++$i }}</td>
+                                                <td>{{ date('d-M-Y', strtotime($value->Date)) }}</td>
+                                                <td>{{ $value->Description }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+
                             </div>
                         </div>
                     </div>
@@ -1507,7 +1534,6 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
             </div>
 
             <div class="tab-pane fade" id="job_offer">
-
                 <div class="row">
                     <div class="col-md-5 d-flex">
                         <div class="card profile-box flex-fill">
@@ -1536,7 +1562,11 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                 style="float: right">:</span></div>
                                         <div class="text">
                                             @if ($OfBasic != null)
-                                                {{ getDesignation($OfBasic->Designation) ?? '-' }}
+                                                @if ($OfBasic->Designation == 0)
+                                                    -
+                                                @else
+                                                    {{ getDesignation($OfBasic->Designation) ?? '-' }}
+                                                @endif
                                             @else
                                                 -
                                             @endif
@@ -1547,7 +1577,12 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                 style="float: right">:</span></div>
                                         <div class="text">
                                             @if ($OfBasic != null)
-                                                {{ getGradeValue($OfBasic->Grade) ?? '-' }}
+                                                @if ($OfBasic->Grade == 0)
+                                                    -
+                                                @else
+                                                    {{ getGradeValue($OfBasic->Grade) ?? '-' }}
+                                                @endif
+
                                             @else
                                                 -
                                             @endif
@@ -1558,7 +1593,12 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                 style="float: right">:</span></div>
                                         <div class="text">
                                             @if ($OfBasic != null)
-                                                {{ getFullName($OfBasic->A_ReportingManager) ?? '-' }}
+                                                @if ($OfBasic->A_ReportingManager == '' || $OfBasic->A_ReportingManager == null)
+                                                    -
+                                                @else
+                                                    {{ getFullName($OfBasic->A_ReportingManager) ?? '-' }}
+                                                @endif
+
                                             @else
                                                 -
                                             @endif
@@ -1569,7 +1609,12 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                 style="float: right">:</span></div>
                                         <div class="text">
                                             @if ($OfBasic != null)
-                                                {{ $OfBasic->CTC ?? '-' }}
+                                                @if ($OfBasic->CTC == '' || $OfBasic->CTC == null)
+                                                    -
+                                                @else
+                                                    {{ $OfBasic->CTC ?? '-' }}
+                                                @endif
+
                                             @else
                                                 -
                                             @endif
@@ -1585,8 +1630,10 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                     Training
                                                 @elseif($OfBasic->ServiceCondition == 'Probation')
                                                     Probation
-                                                @else
+                                                @elseif($OfBasic->ServiceCondition == 'nopnot')
                                                     No Probation No Training
+                                                @else
+                                                    -
                                                 @endif
                                             @endif
                                         </div>
@@ -1596,7 +1643,15 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                         <div class="title" style="width: 150px;">Service Bond<span
                                                 style="float: right">:</span></div>
                                         <div class="text">
-                                            {{ $OfBasic->ServiceBond ?? '-' }}
+                                            @if ($OfBasic != null)
+                                                @if ($OfBasic->ServiceBond == 'Yes')
+                                                    Yes
+                                                @elseif($OfBasic->ServiceBond == 'No')
+                                                    No
+                                                @else
+                                                    -
+                                                @endif
+                                           @endif
                                         </div>
                                     </li>
                                 </ul>
@@ -1635,7 +1690,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                         <div class="title" style="width: 150px;">Offer Letter Send<span
                                                 style="float: right">:</span></div>
                                         <div class="text">
-                                            @if ($OfBasic != null && $OfBasic->OfferLetterSent != null)
+                                            @if ($OfBasic != null && $OfBasic->OfferLetterSent =='Yes')
                                                 <span class="text-dark">Yes</span>
                                             @else
                                                 <span class="text-danger">No</span> ( <a href="javascript:void(0);"
@@ -1690,7 +1745,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                         <div class="title" style="width: 150px;">Joining Form Sent<span
                                                 style="float: right">:</span></div>
                                         <div class="text">
-                                            @if ($OfBasic != null && $OfBasic->JoiningFormSent != null)
+                                            @if ($OfBasic != null && $OfBasic->JoiningFormSent =='Yes')
                                                 <span class="text-dark">Yes</span>
                                             @else
                                                 <span class="text-danger">No</span> ( <a href="javascript:void(0);"
@@ -1719,12 +1774,12 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                 style="float: right">:</span>
                                         </div>
                                         <div class="text">
-                                            @if ($OfBasic->RefCheck == 'Yes')
+                                            @if ($OfBasic != null && $OfBasic->SendForRefChk == 1)
                                                 <span class="text-dark">Yes</span>
-                                                (view)
+                                                (<a href="{{route('view_reference_check')}}?jaid={{base64_encode($Rec->JAId)}}" target="_blank">View</a>)
                                             @else
                                                 <span class="text-danger">No</span>( <a href="javascript:void(0);"
-                                                    class="" onclick="sendRefCheck({{ $Rec->JAId }});">
+                                                    class="" data-bs-toggle="modal" data-bs-target="#ref_modal">
                                                     Send Now</a>)
                                             @endif
                                         </div>
@@ -3913,7 +3968,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="send_for_review" method="POST" id="reviewForm">
+                    <form action="{{route('send_for_review')}}" method="POST" id="reviewForm">
                         @csrf
                         <div class="form-group mb-2">
                             <input type="hidden" name="ReviewJaid" value="{{ $JAId }}">
@@ -4448,9 +4503,47 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
             </div>
         </div>
     </div>
+
+    <div id="ref_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog " role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">Send for Reference Check</h6>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{route('send_for_ref_chk')}}" method="POST" id="ref_chk_form">
+                        @csrf
+                        <div class="form-group mb-2">
+                            <input type="hidden" name="ReferenceChkJAId" value="{{ $JAId }}">
+                            <label for="RefChkMail">Ref. Person Mail ID <i class="text-danger">*</i></label>
+                            <input type="text" name="RefChkMail" id="RefChkMail" class="form-control form-control-sm">
+                        </div>
+                        <div class="submit-section">
+                            <button class="btn btn-primary submit-btn">Send Mail</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('scriptsection')
     <script>
+        $(document).ready(function() {
+            $("#CandLogTable").DataTable({
+                pageLength: 10,
+                searching: false,
+                bLengthChange: false,
+                ordering: false,
+
+            });
+        });
+
         function GetProfileData() {
             var JCId = $('#JCId').val();
             $.ajax({
@@ -5375,7 +5468,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
 
         $(document).on('click', '.dlchk', function() {
             var val = $(this).data('value');
-            // debugger;
+          
             if (val == 'Y') {
                 $('#dl_div').removeClass('d-none');
                 $('#DLNo').addClass('reqinp_abt');
@@ -6311,6 +6404,39 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
             });
         });
 
+        $('#ref_chk_form').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                beforeSend: function() {
+                    $(form).find('span.error-text').text('');
+                    $('#ref_modal').modal('hide');
+                    $("#loader").modal('show');
+                },
+                success: function(data) {
+                    if (data.status == 400) {
+                        $("#loader").modal('hide');
+                        $('#ref_modal').modal('show');
+                        $.each(data.error, function(prefix, val) {
+                            $(form).find('span.' + prefix + '_error').text(val[0]);
+                        });
+                    } else {
+                        $(form)[0].reset();
+                        $('#loader').modal('hide');
+                        $('#ref_modal').modal('hide');
+                        toastr.success(data.msg);
+                        window.location.reload();
+                    }
+                }
+            });
+        });
+
         $(document).on('click', '#offerltrgen', function() {
             var JAId = $(this).data('id');
             sendingId = btoa(JAId);
@@ -6505,7 +6631,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                     $i = 1;
                     var reason = '';
                     $.each(data.data, function(key, value) {
-                        debugger;
+                      
                         if (value.RejReason == null) {
                             reason = '-';
                         } else {

@@ -748,12 +748,11 @@ $query = DB::table('jobcandidates')
 
     <script src="{{ URL::to('/') }}/assets/plugins/simplebar/js/simplebar.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/plugins/metismenu/js/metisMenu.min.js"></script>
-    <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
+
     <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
 
-    <!--app JS-->
-    <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
+
 
     <script>
         function isNumberKey(evt) {

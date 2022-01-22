@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Common;
 
+use App\Helpers\CandidateActivityLog;
 use App\Models\screening;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -210,7 +211,8 @@ class OfferLtrController extends Controller
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
-
+            $sql = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->select('jobapply.JCId', 'Aadhaar')->where('JAId', $JAId)->first();
+            CandidateActivityLog::addToCandLog($sql->JCId, $sql->Aadhaar, 'Offer Letter Basic Details Updated');
             return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully']);
         }
     }
@@ -266,6 +268,8 @@ class OfferLtrController extends Controller
             ]
         );
         if ($query1) {
+            $sql = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->select('jobapply.JCId', 'Aadhaar')->where('JAId', $jaid)->first();
+            CandidateActivityLog::addToCandLog($sql->JCId, $sql->Aadhaar, 'CTC Details Updated');
             return response()->json(['status' => 200, 'msg' => 'CTC Data has been changed successfully']);
         } else {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
@@ -322,6 +326,8 @@ class OfferLtrController extends Controller
         );
 
         if ($query1) {
+            $sql = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->select('jobapply.JCId', 'Aadhaar')->where('JAId', $jaid)->first();
+            CandidateActivityLog::addToCandLog($sql->JCId, $sql->Aadhaar, 'Eligibility Details Updated');
             return response()->json(['status' => 200, 'msg' => 'Entitlement Data has been changed successfully']);
         } else {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
@@ -467,6 +473,8 @@ class OfferLtrController extends Controller
         );
 
         if ($update_query) {
+            $sql = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->select('jobapply.JCId', 'Aadhaar')->where('JAId', $JAId)->first();
+            CandidateActivityLog::addToCandLog($sql->JCId, $sql->Aadhaar, 'Offer Letter Generated');
             return response()->json(['status' => 200, 'msg' => 'Offer Letter Generated Successfully']);
         } else {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
@@ -568,8 +576,6 @@ class OfferLtrController extends Controller
                 ]
             );  //insert
         }
-
-
         if ($update && $candJoin) {
 
             $details = [
@@ -583,6 +589,8 @@ class OfferLtrController extends Controller
             ];
 
             Mail::to($query->Email)->send(new OfferLetterMail($details));
+            $sql = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->select('jobapply.JCId', 'Aadhaar')->where('JAId', $JAId)->first();
+            CandidateActivityLog::addToCandLog($sql->JCId, $sql->Aadhaar, 'Offer Letter Send to Candidate');
             return response()->json(['status' => 200, 'msg' => 'Offer Letter Sent Successfully']);
         } else {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
@@ -638,6 +646,8 @@ class OfferLtrController extends Controller
             );
         }
         if ($query && $query1) {
+            $sql = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->select('jobapply.JCId', 'Aadhaar')->where('JAId', $JAId)->first();
+            CandidateActivityLog::addToCandLog($sql->JCId, $sql->Aadhaar, 'Candidate Response to Offer Letter-' . $Answer);
             return response()->json(['status' => 200, 'msg' => 'Response Submitted Successfully']);
         } else {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
@@ -687,6 +697,7 @@ class OfferLtrController extends Controller
         $Company = $request->ReviewCompany;
         $Employee = $request->review_to;
 
+
         $update_query = DB::table('offerletterbasic')->where('JAId', $JAId)->update(
             [
                 'SendReview' => '1',
@@ -723,6 +734,8 @@ class OfferLtrController extends Controller
 
                 Mail::to(getEmployeeEmailId($Employee[$j]))->send(new ReviewMail($details));
             }
+            $query = DB::table('jobapply')->join('jobcandidates','jobcandidates.JCId','=','jobapply.JCId')->select('jobcandidates.JCId','jobcandidates.Aadhaar')->where('JAId',$JAId)->first();
+            CandidateActivityLog::addToCandLog($query->JCId, $query->Aadhaar, 'Offer Letter Sent for Review');
             return response()->json(['status' => 200, 'msg' => 'Offer Letter Sent for Review Successfully']);
         } else {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);

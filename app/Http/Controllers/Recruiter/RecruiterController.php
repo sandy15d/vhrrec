@@ -11,8 +11,8 @@ class RecruiterController extends Controller
 {
     function index()
     {
-        $AlCount = DB::table('manpowerrequisition')->where('Allocated', Auth::user()->id)->count();
-        $allCreated = DB::table('jobpost')->where('CreatedBy', Auth::user()->id)->count();
+        $AlCount = DB::table('manpowerrequisition')->where('CountryId',session('Set_Country'))->where('Allocated', Auth::user()->id)->count();
+        $allCreated = DB::table('jobpost')->join('manpowerrequisition','jobpost.MRFId','=','manpowerrequisition.MRFId')->where('CountryId',session('Set_Country'))->where('jobpost.CreatedBy', Auth::user()->id)->count();
         $PendingTechScr = DB::table('jobapply')
             ->Join('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
             ->Join('manpowerrequisition', 'jobpost.MRFId', '=', 'manpowerrequisition.MRFId')

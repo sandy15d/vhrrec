@@ -192,6 +192,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
             </div>
         @else
             <div class="container">
+
                 <div id="offer_letter">
                     <div class="page">
                         <div class="subpage">
@@ -212,7 +213,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                             <b>
                                 <p style="margin-bottom: 0px;">{{ $sql->perm_address ?? '' }}</p>
                                 <p style="margin-bottom: 0px;">{{ $sql->perm_city ?? '' }},
-                                    Dist-{{ getDistrictName($sql->perm_dist) ?? '' }},<br>{{ getStateName($sql->perm_state) ?? '' }}-{{ $sql->perm_pin ?? '' }},
+                                    Dist-{{ getDistrictName($sql->perm_dist) ?? '' }},<br>{{ getStateName($sql->perm_state) ?? '' }}-{{ $sql->perm_pin ?? '' }}
                                 </p>
                             </b><br />
                             <p class="text-center"><b><u>Subject: Offer for Employment</u></b></p>
@@ -339,7 +340,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                         Management
                                         from time to time.
                                     </li>
-                                @elseif ($sql->Admins_R ==1 && $sql->Functional_R ==0)
+                                @elseif ($sql->Admins_R == 1 && $sql->Functional_R == 0)
                                     <li>You will report to <b>{{ getFullName($sql->A_ReportingManager) }}</b>, and
                                         will
                                         work
@@ -505,7 +506,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                                 one month. </li>
                                         @endif
                                     @endif
-                                @elseif ($sql->Company==3)
+                                @elseif ($sql->Company == 3)
                                     {{-- VNPL --}}
                                     <li>In case of discontinuation of service, during the period of
                                         {{ $sql->ServiceCondition }} the
@@ -764,8 +765,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                                     <b style="color:red">(In Case of day tour involving more than 40 km.
                                                         per
                                                         day)</b>
-                                                @elseif($sql->Department==25 || $sql->Department==4 ||
-                                                    $sql->Department==24)
+                                                @elseif($sql->Department == 25 || $sql->Department == 4 || $sql->Department == 24)
                                                     <b style="color:red">(If the work needs travel for more than 6 hours
                                                         in
                                                         a day)</b>
@@ -815,7 +815,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                             <td class="text-center"> {{ $elg->TravelClass }}
                                                 @if ($elg->Flight == 'flight_approval_based')
                                                     , Flight Approval Based
-                                                @elseif($elg->Flight =='flight_need_based')
+                                                @elseif($elg->Flight == 'flight_need_based')
                                                     , Flight Need Based
                                                 @endif
                                             </td>
@@ -929,6 +929,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
 
                     </div>
                 </div>
+
                 <div class="generate" id="generate">
                     <form method="POST" action="{{ route('OfferResponse') }}" id="responseform">
                         @csrf
@@ -972,23 +973,9 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                         <span>
                                             Date: &nbsp;&nbsp;<input type="date"
                                                 class="form-control d-inline-block  form-control-sm"
-                                                style="width:175px;" name="Date" value="{{date('Y-m-d')}}">
+                                                style="width:175px;" name="Date" value="{{ date('Y-m-d') }}">
                                         </span>
-                                        <br>
-                                        <br><br>
-                                        <br>
 
-                                        <br>
-                                        <small>
-                                            <b>Note: </b><i>Please note this offer letter is valid for 7 days only, if
-                                                no
-                                                response is received from you on or before within 7 days form the
-                                                receipt of
-                                                this mail, It is assumed that you are no longer interested for the
-                                                offered
-                                                Job
-                                                and the Job offer letter link shall also be deactivated.</i>
-                                        </small>
                                     </div>
                                 </div>
                                 <span id="Rejreason" style="display: none;">
@@ -1002,20 +989,26 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                 <button class="btn btn-sm btn-primary px-5" type="submit">
                                     Submit
                                 </button>
+
+                                <br>
+                                <br>
+                                <small>
+                                    <b>Note: </b><i>Please note this offer letter is valid for 7 days only, if
+                                        no
+                                        response is received from you on or before within 7 days form the
+                                        receipt of
+                                        this mail, It is assumed that you are no longer interested for the
+                                        offered
+                                        Job
+                                        and the Job offer letter link shall also be deactivated.</i>
+                                </small>
                             </center>
                         </div>
                     </form>
 
                 </div>
 
-                <div class="modal" id="loader" data-bs-backdrop="static" data-bs-keyboard="false"
-                style="background-color: rgba(0,0,0,.0001)">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="spinner-border text-danger" style="width: 5rem; height: 5rem;" role="status"> <span
-                            class="visually-hidden">Loading...</span>
-                    </div>
-                </div>
-            </div>
+
             </div>
 
 
@@ -1030,7 +1023,8 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                 <h5 class="card-title text-white">Dear Candidate,</h5>
                                 <p class="card-text">You have already given your response for the job offered to
                                     you.</p>
-                                <p class="card-text text-white mb-0">In case of any further query kindly contact HR-Recruitment
+                                <p class="card-text text-white mb-0">In case of any further query kindly contact
+                                    HR-Recruitment
                                     team.</p>
                                 <p class="card-text text-white">Contact No: 0771-4350005</p>
                             </div>
@@ -1040,6 +1034,15 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
             </div>
         </div>
     @endif
+
+    <div class="modal" id="loader" data-bs-backdrop="static" data-bs-keyboard="false"
+        style="background-color: rgba(0,0,0,.0001)">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="spinner-border text-danger" style="width: 5rem; height: 5rem;" role="status"> <span
+                    class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
     <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
     <script>

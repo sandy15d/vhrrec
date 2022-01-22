@@ -162,9 +162,12 @@ Route::post('appointment_letter_generate', [AboutCandidateController::class, 'ap
 
 Route::get('service_agreement', [AboutCandidateController::class, 'service_agreement'])->name('service_agreement');
 Route::get('service_agreement_print', [AboutCandidateController::class, 'service_agreement_print'])->name('service_agreement_print');
+Route::post('service_agreement_generate', [AboutCandidateController::class, 'service_agreement_generate'])->name('service_agreement_generate');
 
-
-
+Route::post('send_for_ref_chk', [AboutCandidateController::class, 'send_for_ref_chk'])->name('send_for_ref_chk');
+Route::get('reference_check', [AboutCandidateController::class, 'reference_check'])->name('reference_check');
+Route::get('view_reference_check', [AboutCandidateController::class, 'view_reference_check'])->name('view_reference_check');
+Route::post('reference_chk_response', [AboutCandidateController::class, 'reference_chk_response'])->name('reference_chk_response');
 
 Route::get('job_response', [JobApplicationController::class, 'job_response'])->name('job_response');
 Route::get('job_applications', [JobApplicationController::class, 'job_applications'])->name('job_applications');

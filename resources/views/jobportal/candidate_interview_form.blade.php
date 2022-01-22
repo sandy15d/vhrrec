@@ -2347,7 +2347,6 @@ $institute_list = DB::table("master_institute")->join('states','states.StateId',
                                                     </div>
                                                     <div class="form-group row mb-2">
                                                         <div class="form-group row 
-                                                             
                                                             @php
                                                                 if($AboutAns != null){
                                                                     if($AboutAns->LicenseChk == 'Y'){

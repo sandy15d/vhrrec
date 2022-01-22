@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class OfferLetterMail extends Mailable
+class RefCheckMail extends Mailable
 {
     use Queueable, SerializesModels;
     public $details;
@@ -19,7 +19,7 @@ class OfferLetterMail extends Mailable
     {
         $this->details = $details;
     }
-    
+
 
     /**
      * Build the message.
@@ -28,6 +28,6 @@ class OfferLetterMail extends Mailable
      */
     public function build()
     {
-        return $this->from("recruitment@vnress.in", "VNR Recruitment")->subject($this->details['subject'])->markdown('emails.OfferLetterMail')->with("details", $this->details);
+        return $this->from("recruitment@vnress.in", "VNR Recruitment")->subject($this->details['subject'])->markdown('emails.RefCheckMail')->with("details", $this->details);
     }
 }

@@ -41,6 +41,7 @@ class MrfAllocatedController extends Controller
             ->where('Type', '!=', 'Campus_HrManual')
             ->where('Type', '!=', 'SIP')
             ->where('Type', '!=', 'SIP_HrManual')
+            ->where('CountryId', session('Set_Country'))
             ->where('Allocated', Auth::user()->id)
             ->where('Status', 'Close')
             ->get();
@@ -51,6 +52,7 @@ class MrfAllocatedController extends Controller
             ->where('Type', '!=', 'Campus_HrManual')
             ->where('Type', '!=', 'SIP')
             ->where('Type', '!=', 'SIP_HrManual')
+            ->where('CountryId', session('Set_Country'))
             ->where('Allocated', Auth::user()->id)
             ->where('Status', '!=', 'Close')
 
@@ -99,7 +101,8 @@ class MrfAllocatedController extends Controller
             ->where('Type', '!=', 'Campus')
             ->where('Type', '!=', 'Campus_HrManual')
             ->where('Type', '!=', 'SIP')
-            ->where('Type', '!=', 'SIP_HrManual');
+            ->where('Type', '!=', 'SIP_HrManual')
+            ->where('CountryId', session('Set_Country'));
 
         return datatables()->of($mrf)
             ->addIndexColumn()
@@ -128,9 +131,9 @@ class MrfAllocatedController extends Controller
                         } else {
                             $city = 0;
                         }
-                        $loc .= getDistrictName($city) . ' ';
-                        $loc .= getStateCode($value['state']) . ' - ';
-                        $loc .= $value['nop'];
+                        $loc .= getDistrictName($city) . ', ';
+                        $loc .= '('.getStateCode($value['state']) . ') - ';
+                        $loc .= $value['nop'].',<br>';
                         $loc . '<br>';
                     }
                     return $loc;
@@ -174,7 +177,7 @@ class MrfAllocatedController extends Controller
             })
 
 
-            ->rawColumns(['chk', 'details', 'JobShow', 'JobPost'])
+            ->rawColumns(['chk', 'details', 'JobShow', 'JobPost','LocationIds'])
             ->make(true);
     }
 

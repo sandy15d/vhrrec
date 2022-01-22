@@ -145,8 +145,6 @@ $sql = DB::table('jobapply')
 
             <div class="page">
                 <div class="subpage">
-
-                    {{-- <p style="margin-bottom:550px;"></p> --}}
                     <p class="text-center "><b>Service Agreement</b></p>
                     <p style="font-size:16px;"><b>Ref:
                             {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
@@ -245,16 +243,19 @@ $sql = DB::table('jobapply')
                 <div class="subpage">
                     <p style="margin-bottom:50px;"></p>
                     <p class="text-center"><u><B>EMPLOYMENT AGREEMENT</B></u></p>
-                    <p style="text-align: justify"><b>I,   {{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }},
-                        @if ($sql->Title == 'Mr.')
-                        S/o,
-                    @else
-                        D/o,
-                    @endif
-                  {{ $sql->FatherTitle }}
-                        {{ $sql->FatherName }}</b> has been offered
+                    <p style="text-align: justify"><b>I, {{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }}
+                            {{ $sql->LName }},
+                            @if ($sql->Title == 'Mr.')
+                                S/o,
+                            @else
+                                D/o,
+                            @endif
+                            {{ $sql->FatherTitle }}
+                            {{ $sql->FatherName }}
+                        </b> has been offered
                         employment by M/s.
-                        {{ getCompanyName($sql->Company) }} and has accepted the employment as per the terms & conditions
+                        {{ getCompanyName($sql->Company) }} and has accepted the employment as per the terms &
+                        conditions
                         communicated to
                         me in relation to the same. In addition to confirming my acceptance of all such terms &
                         conditions, I
@@ -323,10 +324,10 @@ $sql = DB::table('jobapply')
                     <p><b>For, {{ getCompanyName($sql->Company) }}</b></p>
 
                     <p style="margin-bottom:2px;">----------------------------<span
-                           style="float: right">----------------------------</span></p>
-                            <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b><span style="float:right">
-                                {{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }}
-                            </span></p>
+                            style="float: right">----------------------------</span></p>
+                    <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b><span style="float:right">
+                            {{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }}
+                        </span></p>
                 </div>
             </div>
 
@@ -427,13 +428,13 @@ $sql = DB::table('jobapply')
 
                     <p><b>For, {{ getCompanyName($sql->Company) }}</b></p>
                     <p style="margin-bottom:2px;">----------------------------<span
-                          style="float: right">----------------------------</span></p>
-                            <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b><span style="float:right">
-                                {{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }}
-                            </span></p>
+                            style="float: right">----------------------------</span></p>
+                    <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b><span style="float:right">
+                            {{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }}
+                        </span></p>
                 </div>
             </div>
-           
+
 
             <div class="page">
                 <p style="margin-bottom:50px;"></p>
@@ -548,8 +549,8 @@ $sql = DB::table('jobapply')
                 @endif
 
                 <button id="print" class="btn btn-info btn-md text-center text-light"
-                    onclick="printLtr('{{ route('appointment_ltr_print') }}?jaid={{ $JAId }}');"> <i
-                        class="fa fa-print"></i> Print</button>
+                    onclick="printLtr('{{ route('service_agreement_print') }}?jaid={{ base64_encode($JAId) }}');">
+                    <i class="fa fa-print"></i> Print</button>
             </center>
         </div>
     </div>
@@ -561,10 +562,10 @@ $sql = DB::table('jobapply')
         $(document).on('click', '#generateLtr', function() {
             var JAId = $("#jaid").val();
             var ltrno = $("#ltrno").val();
-            var url = '<?= route('appointment_letter_generate') ?>';
+            var url = '<?= route('service_agreement_generate') ?>';
             swal.fire({
                 title: 'Are you sure?',
-                html: 'Generate Appointment Letter',
+                html: 'Generate Service Agreement',
                 showCancelButton: true,
                 showCloseButton: true,
                 cancelButtonText: 'Cancel',
@@ -582,9 +583,11 @@ $sql = DB::table('jobapply')
                         ltrno: ltrno
                     }, function(data) {
                         if (data.status == 200) {
-
                             toastr.success(data.msg);
-
+                            setTimeout(function() {
+                                window.opener.location.reload();
+                                window.close();
+                            }, 1000);
                         } else {
                             toastr.error(data.msg);
                         }

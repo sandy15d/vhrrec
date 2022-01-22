@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
+use App\Mail\RefCheckMail;
 use App\Models\jf_contact_det;
 use App\Models\jf_pf_esic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class AboutCandidateController extends Controller
 {
@@ -367,8 +369,8 @@ class AboutCandidateController extends Controller
             $query1->perm_address = $request->PermAddress;
             $query1->perm_city = $request->PermCity;
             $query1->perm_state = $request->PermState;
-            $query1->perm_pin = $request->PermPin;
-            $query1->perm_dist = $request->PermDis;
+            $query1->perm_pin = $request->PermPinCode;
+            $query1->perm_dist = $request->PermDistrict;
             $query1->LastUpdated = now();
             $query1->save();
         }
@@ -851,6 +853,18 @@ class AboutCandidateController extends Controller
         }
     }
 
+    public function service_agreement_generate(Request $request)
+    {
+        $JAId = $request->JAId;
+        $ltrno = $request->ltrno;
+        $query = DB::table('appointing')->where('JAId', $JAId)->update(['AgrLtrNo' => $ltrno, 'Agr_Date' => date('Y-m-d'), 'AgrLtrGen' => 'Yes', 'LastUpdated' => date('Y-m-d H:i:s'), 'UpdatedBy' => Auth::user()->id]);
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Service Agreement Generated Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
     public function service_agreement()
     {
         return view('onboarding.service_agreement');
@@ -858,5 +872,75 @@ class AboutCandidateController extends Controller
     public function service_agreement_print()
     {
         return view('onboarding.service_agreement_print');
+    }
+
+    public function send_for_ref_chk(Request $request)
+    {
+        $JAId = $request->ReferenceChkJAId;
+        $RefMail = $request->RefChkMail;
+        $query = DB::table('offerletterbasic')->where('JAId', $JAId)->update(['SendForRefChk' => 1]);
+        $sql = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')
+            ->select('jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName')->where('jobapply.JAId', $JAId)->first();
+        if ($query) {
+            $details = [
+                "candidate_name" => $sql->FName . ' ' . $sql->MName . ' ' . $sql->LName,
+                "subject" => "Employment Reference Check of " . $sql->FName . ' ' . $sql->MName . ' ' . $sql->LName,
+                "form_link" => route('reference_check') . '?jaid=' . base64_encode($JAId),
+            ];
+            Mail::to($RefMail)->send(new RefCheckMail($details));
+            return response()->json(['status' => 200, 'msg' => 'Reference Check Mail Sent Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function reference_check()
+    {
+        return view('onboarding.reference_check');
+    }
+
+    public function reference_chk_response(Request $request)
+    {
+        $JAId = $request->JAId;
+        $Company = $request->Company;
+        $FromDate = $request->FromDate;
+        $ToDate = $request->ToDate;
+        $Designation = $request->Designation;
+        $ReportMgr = $request->ReportMgr;
+        $EmpType = $request->EmpType;
+        $Agency = $request->Agency ?? '';
+        $NetMonth = $request->NetMonth;
+        $CTC = $request->CTC;
+        $AbilityTeam = $request->AbilityTeam;
+        $Loyal = $request->Loyal;
+        $Leadership = $request->Leadership;
+        $Relationship = $request->Relationship;
+        $CharacterConduct = $request->CharacterConduct;
+        $Strength = $request->Strength;
+        $Weakness = $request->Weakness;
+        $LeaveReason = $request->LeaveReason;
+        $Rehire = $request->Rehire;
+        $AnyOther = $request->AnyOther;
+        $VerifierName = $request->VerifierName;
+        $VDesig = $request->VDesig;
+        $Contact = $request->Contact;
+        $Email = $request->Email;
+        $chk = DB::table('candidate_ref')->where('JAId', $JAId)->first();
+        if ($chk == null) {
+
+            $query = DB::table('candidate_ref')->insert(['JAId' => $JAId, 'Company' => $Company, 'FromDate' => $FromDate, 'ToDate' => $ToDate, 'Designation' => $Designation, 'ReportMgr' => $ReportMgr, 'EmpType' => $EmpType, 'Agency' => $Agency, 'NetMonth' => $NetMonth, 'CTC' => $CTC, 'AbilityTeam' => $AbilityTeam, 'Loyal' => $Loyal, 'Leadership' => $Leadership, 'Relationship' => $Relationship, 'CharacterConduct' => $CharacterConduct, 'Strength' => $Strength, 'Weakness' => $Weakness, 'LeaveReason' => $LeaveReason, 'Rehire' => $Rehire, 'AnyOther' => $AnyOther, 'VerifierName' => $VerifierName, 'VDesig' => $VDesig, 'Contact' => $Contact, 'Email' => $Email, 'CreatedTime' => now()]);
+        } else {
+            $query = DB::table('candidate_ref')->where('JAId', $JAId)->update(['Company' => $Company, 'FromDate' => $FromDate, 'ToDate' => $ToDate, 'Designation' => $Designation, 'ReportMgr' => $ReportMgr, 'EmpType' => $EmpType, 'Agency' => $Agency, 'NetMonth' => $NetMonth, 'CTC' => $CTC, 'AbilityTeam' => $AbilityTeam, 'Loyal' => $Loyal, 'Leadership' => $Leadership, 'Relationship' => $Relationship, 'CharacterConduct' => $CharacterConduct, 'Strength' => $Strength, 'Weakness' => $Weakness, 'LeaveReason' => $LeaveReason, 'Rehire' => $Rehire, 'AnyOther' => $AnyOther, 'VerifierName' => $VerifierName, 'VDesig' => $VDesig, 'Contact' => $Contact, 'Email' => $Email, 'CreatedTime' => now()]);
+        }
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Reference Check Response Submitted Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function view_reference_check()
+    {
+        return view('onboarding.view_reference_check');
     }
 }

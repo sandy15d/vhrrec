@@ -93,7 +93,7 @@ class TrackerController extends Controller
             ->editColumn('interviewTime', function ($data) {
                 return date('h:i a', strtotime($data->IntervTime));
             })
-            ->rawColumns(['chk','Name', 'InterviewMail', 'Action'])
+            ->rawColumns(['chk', 'Name', 'InterviewMail', 'Action'])
             ->make(true);
     }
 
@@ -108,6 +108,7 @@ class TrackerController extends Controller
 
     public function CandidateTechnicalScreening(Request $request)
     {
+
         $JAId = $request->JAId;
         $sendingId = base64_encode($JAId);
         $TechScreenStatus = $request->TechScreenStatus;
@@ -121,7 +122,7 @@ class TrackerController extends Controller
         $InterviewMail = $request->InterviewMail;
         $BlackList = $request->BlackList;
         $BlackListRemark = $request->BlackListRemark;
-        $RegretMail = $request->RegretMail;
+
         $curDate = date('Y-m-d');
         $sql = DB::table('screening')
             ->where('JAId', $JAId)
@@ -136,6 +137,7 @@ class TrackerController extends Controller
         $Title = $jobpost->Title;
 
         $jobcandidates = jobcandidate::find($JCId);
+        $Aadhaar = $jobcandidates->Aadhaar;
         $CandidateEmail = $jobcandidates->Email;
         $Company = $jobapply->Company;
         $CompanyName = getCompanyName($Company);
@@ -161,16 +163,18 @@ class TrackerController extends Controller
                 'interview_form' => route("candidate-interview-form", "jaid=$sendingId"),
                 'firob' =>  route("firo_b", "jcid=$firobid")
             ];
+            Mail::to($CandidateEmail)->send(new InterviewMail($details));
+        }
 
-
-            if ($request->va != 'New') {
-                Mail::to($CandidateEmail)->send(new InterviewMail($details));
-            }
+        if (isset($request->RegretMail) && $request->RegretMail == 'Yes') {
+            $details = [];
+            //  Mail::to($CandidateEmail)->send(new RegretMail($details));
         }
 
         if (!$sql) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
+            CandidateActivityLog::addToCandLog($JCId, $Aadhaar, 'Candidate Technical Screening Status- ' . $TechScreenStatus);
             return response()->json(['status' => 200, 'msg' => 'Technical Screening Data has been changed successfully.']);
         }
     }
@@ -209,7 +213,7 @@ class TrackerController extends Controller
             ->Join('jobpost as jp', 'ja.JPId', '=', 'jp.JPId')
             ->join('manpowerrequisition as mp', 'mp.MRFId', '=', 'jp.MRFId')
             ->join('screen2ndround as sc', 'screening.ScId', '=', 'sc.ScId', 'left')
-            ->where('mp.CountryId',session('Set_Country'))
+            ->where('mp.CountryId', session('Set_Country'))
             ->where('jp.JobPostType', 'Regular')
             ->where('jp.Status', 'Open')
             ->where('screening.ScreenStatus', 'Shortlist')
@@ -300,12 +304,17 @@ class TrackerController extends Controller
         $sql->InterAtt = 'Yes';
         $sql->IntervStatus = $request->IntervStatus;
         $sql->save();
+        $JAId = $sql->JAId;
+        $query = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->select('jobcandidates.JCId', 'jobcandidates.Aadhaar')->where('JAId', $JAId)->first();
+
         if (!$sql) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
+            CandidateActivityLog::addToCandLog($query->JCId, $query->Aadhaar, 'Candidate Interview Status - ' . $request->IntervStatus);
             return response()->json(['status' => 200, 'msg' => '1st Interview Data has been changed successfully.']);
         }
     }
+
     public function second_round_interview(Request $request)
     {
 
@@ -336,6 +345,10 @@ class TrackerController extends Controller
             $sql->save();
         }
 
+        $sql = screening::find($SCId);
+        $JAId = $sql->JAId;
+        $query = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->select('jobcandidates.JCId', 'jobcandidates.Aadhaar')->where('JAId', $JAId)->first();
+        CandidateActivityLog::addToCandLog($query->JCId, $query->Aadhaar, 'Candidate 2nd Round Interview Status - ' . $IntervStatus2);
         if (!$sql) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
@@ -360,9 +373,13 @@ class TrackerController extends Controller
         $query->Year = date('Y');
         $query->CreatedBy = Auth::user()->id;
         $query->save();
+
+        $query = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->select('jobcandidates.JCId', 'jobcandidates.Aadhaar')->where('JAId', $JAId)->first();
+      
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
+            CandidateActivityLog::addToCandLog($query->JCId, $query->Aadhaar, 'Candidate Slected For - ' . getDepartmentCode($request->SelectedForD) . ' - ' . getCompanyCode($request->SelectedForC));
             return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully.']);
         }
     }

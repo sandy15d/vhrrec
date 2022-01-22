@@ -151,8 +151,8 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="text-align: left">Applied For<span
-                                                            class="text-right">:</span></td>
+                                                    <td style="text-align: left" >Applied For<span
+                                                            class="text-right fw-bold">:</span></td>
                                                     <td colspan="3" style="text-align: left" class="text-primary">
                                                         <?= $row->DesigId != null ? getDesignation($row->DesigId) : "<i class='fa fa-pencil-square-o text-primary' aria-hidden='true' style='cursor: pointer;' id='AddToJobPost' data-id='$row->JAId'></i>" ?>
                                                     </td>
@@ -182,46 +182,46 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                             }
                                                         @endphp
                                                     </td>
-                                                    <td style="text-align: right;">Contact No:</td>
-                                                    <td style="text-align:right"> {{ $row->Phone }}@if ($row->Verified == 'Y')
+                                                    <td style="text-align: left;">Contact No:</td>
+                                                    <td style="text-align:left"> {{ $row->Phone }}@if ($row->Verified == 'Y')
                                                             <i class="fadeIn animated bx bx-badge-check text-success"></i>
                                                         @endif
                                                     </td>
                                                 </tr>
                                                 <tr class="">
-                                                    <td>Current Company<span class="pull-right">:</span></td>
+                                                    <td>Cur. Company<span class="pull-right">:</span></td>
                                                     <td style="text-align: left">
                                                         <?= $row->PresentCompany == null ? '' : $row->PresentCompany ?></td>
-                                                    <td style="text-align: right">Email ID<span
+                                                    <td style="text-align: left">Email ID<span
                                                             class="pull-right">:</span>
                                                     </td>
-                                                    <td style="text-align: right">{{ $row->Email }} @if ($row->Verified == 'Y')
+                                                    <td style="text-align: left">{{ $row->Email }} @if ($row->Verified == 'Y')
                                                             <i class="fadeIn animated bx bx-badge-check text-success"></i>
                                                         @endif
                                                     </td>
                                                 </tr>
                                                 <tr class="">
-                                                    <td>Current Designation<span class="pull-right">:</span></td>
+                                                    <td>Cur. Designation<span class="pull-right">:</span></td>
                                                     <td style="text-align: left">
                                                         <?= $row->Designation == null ? '' : $row->Designation ?></td>
-                                                    <td style="text-align: right">Education<span
+                                                    <td style="text-align: left">Education<span
                                                             class="pull-right">:</span>
                                                     </td>
-                                                    <td style="text-align: right">
+                                                    <td style="text-align: left">
                                                         <?= $row->Education == null ? '' : getEducationCodeById($row->Education) ?>
                                                         <?= $row->Specialization == null ? '' : '-' . getSpecializationbyId($row->Specialization) ?>
                                                     </td>
                                                 </tr>
                                                 <tr class="">
-                                                    <td>Current Location<span class="pull-right">:</span></td>
+                                                    <td>Cur. Location<span class="pull-right">:</span></td>
                                                     <td style="text-align: left">{{ $row->City }}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Applied on date:</td>
+                                                    <td>Apply Date:</td>
                                                     <td style="text-align: left">
                                                         {{ date('d-m-Y', strtotime($row->ApplyDate)) }}</td>
-                                                    <td style="text-align: right">HR Screening Status:</td>
-                                                    <td style="text-align: right">
+                                                    <td style="text-align: left">HR Screening:</td>
+                                                    <td style="text-align: left">
                                                         @if ($row->JPId != 0)
                                                             <?= $row->Status != null ? '<b>' . $row->Status . '</b>' : "<i class='fa fa-pencil-square-o text-primary' aria-hidden='true' style='font-size:14px;cursor: pointer;' id='HrScreening' data-id='$row->JAId'></i>" ?>
                                                         @endif
@@ -288,10 +288,10 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                         <center>
                                             @if ($row->CandidateImage == null)
                                                 <img src="{{ URL::to('/') }}/assets/images/user1.png"
-                                                    style="width: 130px; height: 130px;" class="img-fluid rounded" />
+                                                    style="width: 100px; height: 100px;" class="img-fluid rounded" />
                                             @else
                                                 <img src="{{ URL::to('/') }}/uploads/Picture/{{ $row->CandidateImage }}"
-                                                    style="width: 130px; height: 130px;" class="img-fluid rounded" />
+                                                    style="width: 100px; height: 100px;" class="img-fluid rounded" />
                                             @endif
                                         </center>
                                         <center>

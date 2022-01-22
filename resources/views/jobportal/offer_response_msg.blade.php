@@ -41,7 +41,7 @@ $sql = DB::table('offerletterbasic')
 
 @endphp
 
-<body>
+<body class="bg-lock-screen">
     @if ($sql->Answer == 'Accepted')
         <div class="section-authentication-signin d-flex align-items-center justify-content-center ">
             <div class="container">

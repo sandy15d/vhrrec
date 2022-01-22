@@ -144,6 +144,7 @@ $sql = DB::table('jobapply')
             value="{{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}">
 
         <div id="ServiceAgreement_ltr">
+
             <div class="page">
                 <div class="subpage">
                     <div style="height:950px;"></div>
@@ -155,7 +156,9 @@ $sql = DB::table('jobapply')
 
                                 @else
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
-                                @endif</span></b>
+                                @endif
+                            </b>
+                        </span>
                     </p>
                     <b>
                         <p class="text-center">Service Agreement</p>
@@ -182,7 +185,7 @@ $sql = DB::table('jobapply')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @endif
 
-                        </span></b>
+                            </b></span>
                     </p>
 
 
@@ -328,7 +331,6 @@ $sql = DB::table('jobapply')
 
             <div class="page">
                 <div class="subpage">
-                    <p style="margin-bottom:50px;"></p>
                     <p style="font-size:16px;"><b>Ref:
                             {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date:
@@ -339,7 +341,7 @@ $sql = DB::table('jobapply')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @endif
 
-                        </span></b>
+                            </b></span>
                     </p>
                     <ul type="none">
                         <li>
@@ -435,6 +437,39 @@ $sql = DB::table('jobapply')
                             whatever other rights and remedies the Company may have against me, the Company shall have
                             the
                             following specific rights.
+
+                        </li>
+
+                    </ol>
+
+                    <p><b>For, {{ getCompanyName($sql->Company) }}</b></p>
+
+                    <p style="margin-bottom:2px;">----------------------------<span
+                            style="float: right">----------------------------</span></p>
+                    <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b><span style="float:right">
+                            {{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }}
+                        </span></p>
+
+                </div>
+            </div>
+
+            <div class="page">
+                <p style="font-size:16px;"><b>Ref:
+                        {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                    <span style="float:right"><b>Date:
+                            @if ($sql->Agr_Date == null)
+                                {{ date('d-M-Y') }}
+
+                            @else
+                                {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
+                            @endif
+
+                        </b></span>
+
+                </p>
+                <div class="subpage">
+                    <ul type="none">
+                        <li>
                             <ul type="disc">
                                 <li>The right to specific enforcement and/or injunctive relief, and in that regard, I
                                     acknowledge that my breach of my obligations under this agreement may cause
@@ -448,38 +483,8 @@ $sql = DB::table('jobapply')
                                     arising from my breach of my obligations to the Company.</li>
                             </ul>
                         </li>
+                    </ul>
 
-                    </ol>
-
-                    <br>
-                    <p><b>For, {{ getCompanyName($sql->Company) }}</b></p>
-
-                    <p style="margin-bottom:2px;">----------------------------<span
-                            style="float: right">----------------------------</span></p>
-                    <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b><span style="float:right">
-                            {{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }}
-                        </span></p>
-                </div>
-            </div>
-
-
-
-
-            <div class="page">
-                <p style="margin-bottom:50px;"></p>
-                <p style="font-size:16px;"><b>Ref:
-                        {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
-                    <span style="float:right"><b>Date:
-                            @if ($sql->Agr_Date == null)
-                                {{ date('d-M-Y') }}
-
-                            @else
-                                {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
-                            @endif
-
-                    </span></b>
-                </p>
-                <div class="subpage">
                     <ol start="7">
                         <li> (b) I further agree to reimburse the Company for all of its expenses and damages that it
                             may incur
@@ -579,10 +584,6 @@ $sql = DB::table('jobapply')
             </div>
 
         </div>
-
-
-
-
     </div>
 
     <script src="{{ URL::to('/') }}/assets/js/bootstrap.bundle.min.js"></script>

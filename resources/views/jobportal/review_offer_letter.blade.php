@@ -192,7 +192,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                     <b>
                         <p style="margin-bottom: 0px;">{{ $sql->perm_address ?? '' }}</p>
                         <p style="margin-bottom: 0px;">{{ $sql->perm_city ?? '' }},
-                            Dist-{{ getDistrictName($sql->perm_dist) ?? '' }},<br>{{ getStateName($sql->perm_state) ?? '' }}-{{ $sql->perm_pin ?? '' }},
+                            Dist-{{ getDistrictName($sql->perm_dist) ?? '' }},<br>{{ getStateName($sql->perm_state) ?? '' }}-{{ $sql->perm_pin ?? '' }}
                         </p>
                     </b><br />
                     <p class="text-center"><b><u>Subject: Offer for Employment</u></b></p>
