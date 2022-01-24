@@ -943,4 +943,45 @@ class AboutCandidateController extends Controller
     {
         return view('onboarding.view_reference_check');
     }
+
+    public function VerificationSave(Request $request)
+    {
+        $JAId = $request->JAId;
+        $Verification = $request->Verification;
+        $query = DB::table('candjoining')->where('JAId',$JAId)->update(['Verification' => $Verification]);
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Verification Saved Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function JoinedSave(Request $request)
+    {
+        $JAId = $request->JAId;
+        $Joined = $request->Joined;
+        $query = DB::table('candjoining')->where('JAId',$JAId)->update(['Joined' => $Joined]);
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Data Saved Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function AssignPositionCode(Request $request)
+    {
+        $JAId = $request->JAId;
+        $PositionCode = $request->PositionCode;
+        $query = DB::table('candjoining')->where('JAId',$JAId)->update(['PositionCode' => $PositionCode]);
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Data Saved Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function process_to_ess_form()
+    {
+        return view('onboarding.process_to_ess_form');
+    }
 }

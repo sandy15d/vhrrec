@@ -68,7 +68,7 @@ $JCId = $Rec->JCId;
 $firobid = base64_encode($Rec->JCId);
 $OfBasic = DB::table('offerletterbasic')
     ->leftJoin('candjoining', 'candjoining.JAId', '=', 'offerletterbasic.JAId')
-    ->select('offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.RejReason', 'candjoining.EmpCode')
+    ->select('offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.RejReason', 'candjoining.EmpCode', 'candjoining.Verification', 'candjoining.Joined', 'candjoining.PositionCode')
     ->where('offerletterbasic.JAId', $JAId)
     ->first();
 
@@ -310,7 +310,7 @@ $candidate_log = DB::table('candidate_log')
 
         <div class="tab-content">
 
-            <div id="cand_profile" class=" tab-pane fade pro-overview show active">
+            <div id="cand_profile" class=" tab-pane fade pro-overview show ">
                 <div class="row">
                     <div class="col-md-6 d-flex">
                         <div class="card profile-box flex-fill">
@@ -1533,7 +1533,8 @@ $candidate_log = DB::table('candidate_log')
                 </div>
             </div>
 
-            <div class="tab-pane fade" id="job_offer">
+            <div class="tab-pane fade show active" id="job_offer">
+
                 <div class="row">
                     <div class="col-md-5 d-flex">
                         <div class="card profile-box flex-fill">
@@ -1651,7 +1652,7 @@ $candidate_log = DB::table('candidate_log')
                                                 @else
                                                     -
                                                 @endif
-                                           @endif
+                                            @endif
                                         </div>
                                     </li>
                                 </ul>
@@ -1690,7 +1691,7 @@ $candidate_log = DB::table('candidate_log')
                                         <div class="title" style="width: 150px;">Offer Letter Send<span
                                                 style="float: right">:</span></div>
                                         <div class="text">
-                                            @if ($OfBasic != null && $OfBasic->OfferLetterSent =='Yes')
+                                            @if ($OfBasic != null && $OfBasic->OfferLetterSent == 'Yes')
                                                 <span class="text-dark">Yes</span>
                                             @else
                                                 <span class="text-danger">No</span> ( <a href="javascript:void(0);"
@@ -1745,7 +1746,7 @@ $candidate_log = DB::table('candidate_log')
                                         <div class="title" style="width: 150px;">Joining Form Sent<span
                                                 style="float: right">:</span></div>
                                         <div class="text">
-                                            @if ($OfBasic != null && $OfBasic->JoiningFormSent =='Yes')
+                                            @if ($OfBasic != null && $OfBasic->JoiningFormSent == 'Yes')
                                                 <span class="text-dark">Yes</span>
                                             @else
                                                 <span class="text-danger">No</span> ( <a href="javascript:void(0);"
@@ -1776,10 +1777,12 @@ $candidate_log = DB::table('candidate_log')
                                         <div class="text">
                                             @if ($OfBasic != null && $OfBasic->SendForRefChk == 1)
                                                 <span class="text-dark">Yes</span>
-                                                (<a href="{{route('view_reference_check')}}?jaid={{base64_encode($Rec->JAId)}}" target="_blank">View</a>)
+                                                (<a href="{{ route('view_reference_check') }}?jaid={{ base64_encode($Rec->JAId) }}"
+                                                    target="_blank">View</a>)
                                             @else
                                                 <span class="text-danger">No</span>( <a href="javascript:void(0);"
-                                                    class="" data-bs-toggle="modal" data-bs-target="#ref_modal">
+                                                    class="" data-bs-toggle="modal"
+                                                    data-bs-target="#ref_modal">
                                                     Send Now</a>)
                                             @endif
                                         </div>
@@ -1798,26 +1801,6 @@ $candidate_log = DB::table('candidate_log')
                                 <div class="card-body">
                                     <h6 class="card-title">Joining Details </h6>
                                     <ul class="personal-info">
-                                        {{-- <li>
-                                            <div class="title" style="width: 150px;">Emp Code<span
-                                                    style="float: right">:</span></div>
-                                            <div class="text">
-                                                <input type="text"
-                                                    class="form-control frminp form-control-sm d-inline-block" id="empCode"
-                                                    name="" readonly="" style="width: 100px;"
-                                                    value="{{ $OfBasic->EmpCode ?? '' }}">
-                                                <i class="fa fa-pencil text-primary" aria-hidden="true" id="empCodeEnable"
-                                                    onclick="empCodeEnable()"
-                                                    style="font-size: 16px;cursor: pointer; display: "></i>
-                                                <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
-                                                    id="EmpCodeSave" onclick="saveEmpCode()">Save</button>
-                                                <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
-                                                    id="empCancle" onclick="window.location.reload();">Cancel</button>
-                                            </div>
-                                        </li> --}}
-
-
-
                                         <li>
                                             <div class="title" style="width: 150px;"> Appointment Letter <span
                                                     style="float: right">:</span> </div>
@@ -1858,9 +1841,94 @@ $candidate_log = DB::table('candidate_log')
                                                     <i class="fa fa-pencil text-primary" aria-hidden="true"
                                                         onclick="appointmentGen({{ $Rec->JAId }})"
                                                         style="font-size: 16px;cursor: pointer; display: ">Generate </i>
+                                                @else
+                                                    -
                                                 @endif
                                             </div>
                                         </li>
+
+                                        <li>
+                                            <div class="title" style="width: 150px;"> Verify Joining Form <span
+                                                    style="float: right">:</span> </div>
+                                            <div class="text  text-dark">
+                                                <select name="Verification" id="Verification"
+                                                    class="form-select form-select-sm frminp d-inline" disabled
+                                                    style="width: 100px;">
+                                                    <option value="Not Verified">Not Verified</option>
+                                                    <option value="Verified"
+                                                        {{ $OfBasic->Verification == 'Verified' ? 'selected' : '' }}>
+                                                        Verified
+                                                    </option>
+                                                </select>
+                                                <i class="fa fa-pencil text-primary" aria-hidden="true"
+                                                    id="VerificationEnable" onclick="VerificationEnable()"
+                                                    style="font-size: 16px;cursor: pointer; display: "></i>
+                                                <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
+                                                    id="SaveVerification">Save</button>
+                                                <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
+                                                    id="verificationCancle"
+                                                    onclick="window.location.reload();">Cancel</button>
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            <div class="title" style="width: 150px;"> Candidate Joined <span
+                                                    style="float: right">:</span> </div>
+                                            <div class="text  text-dark">
+                                                <select name="Joined" id="Joined"
+                                                    class="form-select form-select-sm frminp d-inline" disabled
+                                                    style="width: 100px;">
+                                                    <option value="No">No</option>
+                                                    <option value="Yes"
+                                                        {{ $OfBasic->Joined == 'Yes' ? 'selected' : '' }}>Yes
+                                                    </option>
+                                                </select>
+                                                <i class="fa fa-pencil text-primary" aria-hidden="true" id="JoinedEnbl"
+                                                    onclick="JoinedEnbl()"
+                                                    style="font-size: 16px;cursor: pointer; display: "></i>
+                                                <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
+                                                    id="SaveJoined">Save</button>
+                                                <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
+                                                    id="JoinedCancle" onclick="window.location.reload();">Cancel</button>
+                                            </div>
+                                        </li>
+                                        @if ($OfBasic->Joined == 'Yes')
+                                            <li>
+                                                <div class="title" style="width: 150px;">Position Code<span
+                                                        style="float: right">:</span></div>
+                                                <div class="text">
+                                                    <input type="text"
+                                                        class="form-control frminp form-control-sm d-inline-block"
+                                                        id="empCode" name="" readonly="" style="width: 100px;"
+                                                        value="{{ $OfBasic->EmpCode ?? '' }}">
+                                                    <i class="fa fa-pencil text-primary" aria-hidden="true"
+                                                        id="empCodeEnable" onclick="empCodeEnable()"
+                                                        style="font-size: 16px;cursor: pointer; display: "></i>
+                                                    <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
+                                                        id="EmpCodeSave" onclick="saveEmpCode()">Save</button>
+                                                    <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
+                                                        id="empCancle" onclick="window.location.reload();">Cancel</button>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="title" style="width: 150px;">Emp Code<span
+                                                        style="float: right">:</span></div>
+                                                <div class="text">
+                                                    <input type="text"
+                                                        class="form-control frminp form-control-sm d-inline-block"
+                                                        id="PositionCode" name="PositionCode" readonly=""
+                                                        style="width: 100px;"
+                                                        value="{{ $OfBasic->PositionCode ?? '' }}">
+                                                    <i class="fa fa-pencil text-primary" aria-hidden="true" id="PosEnbl"
+                                                        onclick="PosEnbl()"
+                                                        style="font-size: 16px;cursor: pointer; display: "></i>
+                                                    <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
+                                                        id="PositionCodeSave" onclick="PositionCodeSave()">Save</button>
+                                                    <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
+                                                        id="posCancle" onclick="window.location.reload();">Cancel</button>
+                                                </div>
+                                            </li>
+                                        @endif
                                     </ul>
                                 </div>
                             </div>
@@ -1934,6 +2002,10 @@ $candidate_log = DB::table('candidate_log')
                                         </div>
                                     </li>
                                 </ul>
+                                <br>
+                                <br>
+                                <center><button class="btn btn-sm btn-primary" id="ProcessToEss">Process Data to Ess</butt>
+                                </center>
                             </div>
                         </div>
                     </div>
@@ -3726,7 +3798,8 @@ $candidate_log = DB::table('candidate_log')
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" id="nopnot" value="nopnot"
                                                 name="ServiceCond" onclick="$('#training_tr').addClass('d-none');">
-                                            <label class="form-check-label" for="nopnot">No Probation / No Training</label>
+                                            <label class="form-check-label" for="nopnot">No Probation / No
+                                                Training</label>
                                         </div>
 
                                     </td>
@@ -3968,7 +4041,7 @@ $candidate_log = DB::table('candidate_log')
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{route('send_for_review')}}" method="POST" id="reviewForm">
+                    <form action="{{ route('send_for_review') }}" method="POST" id="reviewForm">
                         @csrf
                         <div class="form-group mb-2">
                             <input type="hidden" name="ReviewJaid" value="{{ $JAId }}">
@@ -4504,8 +4577,7 @@ $candidate_log = DB::table('candidate_log')
         </div>
     </div>
 
-    <div id="ref_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static"
-        data-bs-keyboard="false">
+    <div id="ref_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog " role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -4515,7 +4587,7 @@ $candidate_log = DB::table('candidate_log')
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{route('send_for_ref_chk')}}" method="POST" id="ref_chk_form">
+                    <form action="{{ route('send_for_ref_chk') }}" method="POST" id="ref_chk_form">
                         @csrf
                         <div class="form-group mb-2">
                             <input type="hidden" name="ReferenceChkJAId" value="{{ $JAId }}">
@@ -5468,7 +5540,7 @@ $candidate_log = DB::table('candidate_log')
 
         $(document).on('click', '.dlchk', function() {
             var val = $(this).data('value');
-          
+
             if (val == 'Y') {
                 $('#dl_div').removeClass('d-none');
                 $('#DLNo').addClass('reqinp_abt');
@@ -6631,7 +6703,7 @@ $candidate_log = DB::table('candidate_log')
                     $i = 1;
                     var reason = '';
                     $.each(data.data, function(key, value) {
-                      
+
                         if (value.RejReason == null) {
                             reason = '-';
                         } else {
@@ -7450,6 +7522,121 @@ $candidate_log = DB::table('candidate_log')
                     toastr.error(errorsHtml);
 
                 }
+            });
+        });
+
+        function VerificationEnable() {
+            $('#Verification').prop('disabled', false);
+            $('#VerificationEnable').hide(500);
+            $('#SaveVerification').show(500);
+            $('#verificationCancle').show(500);
+        }
+
+        $(document).on('click', '#SaveVerification', function() {
+            var JAId = $('#JAId').val();
+            var Verification = $('#Verification').val();
+            $.ajax({
+                url: '<?= route('VerificationSave') ?>',
+                method: 'POST',
+                data: {
+                    JAId: JAId,
+                    Verification: Verification
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        toastr.success(data.msg);
+                        //   window.location.reload();
+
+                    }
+                },
+
+            });
+        });
+
+        function JoinedEnbl() {
+            $('#Joined').prop('disabled', false);
+            $('#JoinedEnbl').hide(500);
+            $('#SaveJoined').show(500);
+            $('#JoinedCancle').show(500);
+        }
+
+        $(document).on('click', '#SaveJoined', function() {
+            var JAId = $('#JAId').val();
+            var Joined = $('#Joined').val();
+            $.ajax({
+                url: '<?= route('JoinedSave') ?>',
+                method: 'POST',
+                data: {
+                    JAId: JAId,
+                    Joined: Joined
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        toastr.success(data.msg);
+                        //  window.location.reload();
+
+                    }
+                },
+
+            });
+        });
+
+        function PosEnbl() {
+            $('#PositionCode').prop('readonly', false);
+            $('#PosEnbl').hide(500);
+            $('#PositionCodeSave').show(500);
+            $('#posCancle').show(500);
+        }
+
+        $(document).on('click', '#PositionCodeSave', function() {
+            var JAId = $('#JAId').val();
+            var PositionCode = $('#PositionCode').val();
+            $.ajax({
+                url: '<?= route('AssignPositionCode') ?>',
+                method: 'POST',
+                data: {
+                    JAId: JAId,
+                    PositionCode: PositionCode
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        toastr.success(data.msg);
+                        //    window.location.reload();
+
+                    }
+                },
+
+            });
+        });
+
+        $(document).on('click', '#ProcessToEss', function() {
+            var JAId = $('#JAId').val();
+            $.ajax({
+                url: '<?= route('processDataToEss') ?>',
+                method: 'POST',
+                data: {
+                    JAId: JAId
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        toastr.success(data.msg);
+                        window.location.reload();
+
+                    }
+                },
+
             });
         });
     </script>

@@ -241,7 +241,7 @@ $rejected = DB::table('offerletterbasic')
                                         {{$row->Verification}}
                                     </td>
                                     <td>
-                                        {{$row->Joined==1?'Yes':'No'}}
+                                        {{$row->Joined}}
                                     </td>
                                     <td>
                                         {{$row->ForwardToESS}}

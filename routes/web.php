@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\CommunicationController;
 use App\Http\Controllers\Recruiter\RecruiterController;
 use App\Http\Controllers\Common\AboutCandidateController;
 use App\Http\Controllers\Common\JobApplicationController;
+use App\Http\Controllers\ProcessToEss;
 use App\Http\Controllers\Recruiter\MrfAllocatedController;
 
 Route::get('/', function () {
@@ -168,6 +169,16 @@ Route::post('send_for_ref_chk', [AboutCandidateController::class, 'send_for_ref_
 Route::get('reference_check', [AboutCandidateController::class, 'reference_check'])->name('reference_check');
 Route::get('view_reference_check', [AboutCandidateController::class, 'view_reference_check'])->name('view_reference_check');
 Route::post('reference_chk_response', [AboutCandidateController::class, 'reference_chk_response'])->name('reference_chk_response');
+Route::post('VerificationSave', [AboutCandidateController::class, 'VerificationSave'])->name('VerificationSave');
+Route::post('JoinedSave', [AboutCandidateController::class, 'JoinedSave'])->name('JoinedSave');
+Route::post('AssignPositionCode', [AboutCandidateController::class, 'AssignPositionCode'])->name('AssignPositionCode');
+
+Route::get('process_to_ess_form', [AboutCandidateController::class, 'process_to_ess_form'])->name('process_to_ess_form');
+
+Route::post('processDataToEss', [ProcessToEss::class, 'processDataToEss'])->name('processDataToEss');
+
+
+
 
 Route::get('job_response', [JobApplicationController::class, 'job_response'])->name('job_response');
 Route::get('job_applications', [JobApplicationController::class, 'job_applications'])->name('job_applications');
