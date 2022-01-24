@@ -65,8 +65,8 @@ return [
 
         'mysql2' => [
             'driver' => env('DB_CONNECTION_SECOND'),
-            'host' => env('DB_HOST_SECOND'),
-            'port' => env('DB_PORT_SECOND'),
+            'host' => env('DB_HOST_SECOND','159.69.73.26'),
+            'port' => env('DB_PORT_SECOND','3306'),
             'database' => env('DB_DATABASE_SECOND'),
             'username' => env('DB_USERNAME_SECOND'),
             'password' => env('DB_PASSWORD_SECOND'),
