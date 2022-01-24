@@ -9,15 +9,28 @@ use Illuminate\Support\Facades\DB;
 
 class ProcessToEss extends Controller
 {
+  
+
     public function processDataToEss(Request $request)
     {
-        $JAId = $request->JAId;
+
+        /*  $JAId = $request->JAId;
         $EmpCode = CandidateJoining::where('JAId', $JAId)->value('EmpCode');
         $CompanyId = OfferLetter::where('JAId', $JAId)->value('Company');
         $ctc_query = DB::table('candidate_ctc')->where('JAId', $JAId)->first();
 
-        $SendCTC = DB::connection('mysql2');
-        $SendCTC = $SendCTC->table('EmployeeCTC')->insert([
+       */
+
+
+        try {
+            \DB::connection('mysql2')->getPDO();
+            dump('Database connected: ' . \DB::connection('mysql2')->getDatabaseName());
+        } catch (\Exception $e) {
+            dump('Database connected: ' . 'None');
+        }
+
+
+        /*  $SendCTC = $SendCTC->table('EmployeeCTC')->insert([
             'EmpCode' => $EmpCode,
             'CompanyId' => $CompanyId,
             'basic' => $ctc_query->basic,
@@ -42,6 +55,6 @@ class ProcessToEss extends Controller
             return response()->json(['success' => 'Data Sent Successfully']);
         } else {
             return response()->json(['error' => 'Data Not Sent']);
-        }
+        } */
     }
 }
