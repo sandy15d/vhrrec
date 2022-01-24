@@ -26,7 +26,7 @@ class ProcessToEss extends Controller
             \DB::connection('mysql2')->getPDO();
             dump('Database connected: ' . \DB::connection('mysql2')->getDatabaseName());
         } catch (\Exception $e) {
-            dump('Database connected: ' . 'None');
+            dump('Database connected: ' . $e);
         }
 
 
