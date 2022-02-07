@@ -127,10 +127,12 @@ use function App\Helpers\getHqStateCode;
 use function App\Helpers\getHq;
 use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getCompanyCode;
+use function App\Helpers\getCompanyName;
 use function App\Helpers\getFullName;
 use function App\Helpers\getGradeValue;
 use function App\Helpers\getStateName;
 use function App\Helpers\getDistrictName;
+use function App\Helpers\getEmployeeDesignation;
 $JAId = base64_decode($_REQUEST['jaid']);
 
 $sql = DB::table('offerletterbasic')
@@ -138,7 +140,7 @@ $sql = DB::table('offerletterbasic')
     ->leftJoin('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
     ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
     ->leftJoin('jf_family_det', 'jobcandidates.JCId', '=', 'jf_family_det.JCId')
-    ->select('offerletterbasic.*', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobapply.ApplyDate','jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
+    ->select('offerletterbasic.*', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobapply.ApplyDate', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
     ->where('jobapply.JAId', $JAId)
     ->first();
 
@@ -173,10 +175,10 @@ $elg = DB::table('candidate_entitlement')
                     <p style="margin-bottom: 0px;"><b>{{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }}</b>
                     </p>
                     <b>
-                        <p style="margin-bottom: 0px;">{{$sql->perm_address}}</p>
-                        <p style="margin-bottom: 0px;">{{$sql->perm_city}},
-                            Dist-{{getDistrictName($sql->perm_dist)}},{{getStateName($sql->perm_state)}},
-                           {{$sql->perm_pin}}
+                        <p style="margin-bottom: 0px;">{{ $sql->perm_address }}</p>
+                        <p style="margin-bottom: 0px;">{{ $sql->perm_city }},
+                            Dist-{{ getDistrictName($sql->perm_dist) }},{{ getStateName($sql->perm_state) }},
+                            {{ $sql->perm_pin }}
                         </p>
                     </b><br />
                     <p class="text-center"><b><u>Subject: Offer for Employment</u></b></p>
@@ -186,7 +188,7 @@ $elg = DB::table('candidate_entitlement')
                     <p>We are pleased to offer you the position of <b>{{ getDesignation($sql->Designation) }}</b> at
                         <b>Grade - {{ getGradeValue($sql->Grade) }}</b> in
                         <b>{{ getDepartmentCode($sql->Department) }}</b>
-                        Department w.e.f. the date of your joining.
+                        Department of <b>{{ getCompanyName($sql->Company) }}</b>
                     </p>
                     <p>This offer is subject to following terms and conditions:</p>
                     <ol>
@@ -273,15 +275,18 @@ $elg = DB::table('candidate_entitlement')
 
                         @if ($sql->Functional_R != 0 && $sql->Admins_R != 0)
                             <li>For administrative purpose you shall be reporting to
-                                <b>{{ getFullName($sql->A_ReportingManager) }}</b>
+                                <b>{{ getFullName($sql->A_ReportingManager) }},
+                                    {{ getEmployeeDesignation($sql->A_ReportingManager) }}</b>
                                 and for technical purpose you shall be reporting to
-                                <b>{{ getFullName($sql->F_ReportingManager) }}</b>
+                                <b>{{ getFullName($sql->F_ReportingManager) }},
+                                    {{ getEmployeeDesignation($sql->F_ReportingManager) }}</b>
                                 and will work under the supervision of such officers as may be decided upon by the
                                 Management
                                 from time to time.
                             </li>
-                        @elseif ($sql->Admins_R ==1 && $sql->Functional_R ==0)
-                            <li>You will report to <b>{{ getFullName($sql->A_ReportingManager) }}</b>, and will work
+                        @elseif ($sql->Admins_R == 1 && $sql->Functional_R == 0)
+                            <li>You will report to <b>{{ getFullName($sql->A_ReportingManager) }},
+                                    {{ getEmployeeDesignation($sql->A_ReportingManager) }} </b>, and will work
                                 under the
                                 supervision of such officers as may be decided upon by the management from time to time.
                             </li>
@@ -412,7 +417,7 @@ $elg = DB::table('candidate_entitlement')
                                         one month. </li>
                                 @endif
                             @endif
-                        @elseif ($sql->Company==3)
+                        @elseif ($sql->Company == 3)
                             {{-- VNPL --}}
                             <li>In case of discontinuation of service, during the period of
                                 {{ $sql->ServiceCondition }} the
@@ -739,52 +744,83 @@ $elg = DB::table('candidate_entitlement')
                             </tr>
                             <tr>
                                 <td class="text-center">5</td>
-                                <td><b>Mode of Travel outside HQ</b></b></td>
+                                <td colspan="2"><b>Mode of Travel outside HQ</b></b></td>
+
+                            </tr>
+
+                            <tr>
+                                <td></td>
+                                <td>Bus/Train</td>
                                 <td>
-                                    <select id="TravelMode" name="TravelMode" class="frminp"
+                                    <select id="Train" name="Train" class="frminp"
                                         style=" height:20px;border: 0px none;">
                                         <option disabled selected>Select Travel Mode</option>
-                                        <option value="Bus/Train">Bus/Train</option>
-                                        <option value="Flight">Flight</option>
+                                        <option value="Y">Yes</option>
+                                        <option value="N">No</option>
                                     </select>
                                     <script>
-                                        $('#TravelMode').val('{{ $elg->TravelMode ?? '' }}');
+                                        $('#Train').val('{{ $elg->Train ?? '' }}');
+                                    </script>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Flight</td>
+                                <td>
+                                    <select id="Flight" name="Flight" class="frminp"
+                                        style=" height:20px;border: 0px none;">
+                                        <option disabled selected>Select Travel Mode</option>
+                                        <option value="Y">Yes</option>
+                                        <option value="N">No</option>
+                                    </select>
+                                    <script>
+                                        $('#Flight').val('{{ $elg->Flight ?? '' }}');
                                     </script>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="text-center">6</td>
-                                <td><b>Travel Class</b></b></td>
+                                <td colspan="2"><b>Travel Class</b></b></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Bus/Train</td>
                                 <td>
-                                    <select id="TravelClass" name="TravelClass" class="frminp"
-                                        style="height:20px;border:0px none;">
-                                        <option disabled selected> Select Travel Class</option>
-
+                                    <select id="Train_Class" name="Train_Class" class="frminp"
+                                        style=" height:20px;border: 0px none;">
+                                        <option disabled selected>Select Travel Class</option>
                                         <option value="Sleeper">Sleeper</option>
-                                        <option value="3 AC">3 AC</option>
-                                        <option value="2 AC">2 AC</option>
-                                        <option value="First Class">First Class</option>
-                                        <option value="Economy">Economy</option>
-                                        <option value="Business">Business</option>
+                                        <option value="AC-I">AC-I</option>
+                                        <option value="AC-II">AC-II</option>
+                                        <option value="AC-III">AC-III</option>
                                     </select>
                                     <script>
-                                        $('#TravelClass').val('{{ $elg->TravelClass ?? '' }}');
+                                        $('#Train_Class').val('{{ $elg->Train_Class ?? '' }}');
                                     </script>
                                 </td>
                             </tr>
-                            <tr>
-                                <td class="text-center"></td>
-                                <td>Flight</td>
-                                <td>
-                                    <input type="checkbox" id="flight_approval_based" name="flight_approval_based"
-                                        class="flight" data-value="flight_approval_based"
-                                        @if ($elg->Flight == 'flight_approval_based') checked @endif>Flight Approval Based
-                                    <br />
-                                    <input type="checkbox" id="flight_need_based" name="flight_need_based"
-                                        class="flight" data-value="flight_need_based"
-                                        @if ($elg->Flight == 'flight_need_based') checked @endif>Flight Need Based
-                                </td>
-                            </tr>
+                           
+                                <tr id="flight_class_tr" class="{{ $elg->Flight == 'Y' ? '' : 'd-none' }}">
+                                    <td></td>
+                                    <td>Flight</td>
+                                    <td>
+                                        <select id="Flight_Class" name="Flight_Class" class="frminp"
+                                            style=" height:20px;border: 0px none;">
+                                            <option disabled selected>Select Travel Class</option>
+                                            <option value="Economy">Economy</option>
+                                            <option value="Business">Business</option>
+                                        </select>
+                                        <script>
+                                            $('#Flight_Class').val('{{ $elg->Flight_Class ?? '' }}');
+                                        </script>
+                                        <br><br> <input type="text" name="Flight_Remark" id="Flight_Remark"
+                                            value="{{ $elg->Flight_Remark ?? '' }}"
+                                            style=" height:20px;border: 0px none;" class="form-control text-left">
+
+                                    </td>
+                                </tr>
+                         
+
                             <tr>
                                 <td class="text-center">7</td>
                                 <td><b>Mobile Handset Eligibility</b></b></td>
@@ -825,11 +861,16 @@ $elg = DB::table('candidate_entitlement')
                                         style=" height:20px;border: 0px none;" value="">
                                     <select id="HealthIns" name="HealthIns" class="frminp" style="width:100px;">
                                         <option value="" selected>Select</option>
-                                        <?php
-                                        for ($i = 1; $i <= 10; $i++) {
-                                            echo '<option value=' . $i . '>' . $i . '</option>';
-                                        }
-                                        ?>
+                                        <option value="100000">1</option>
+                                        <option value="200000">2</option>
+                                        <option value="300000">3</option>
+                                        <option value="400000">4</option>
+                                        <option value="500000">5</option>
+                                        <option value="600000">6</option>
+                                        <option value="700000">7</option>
+                                        <option value="800000">8</option>
+                                        <option value="900000">9</option>
+                                        <option value="1000000">10</option>
                                     </select> Lakh
                                     <script>
                                         $('#HealthIns').val('{{ $elg->HealthIns ?? '' }}');
@@ -872,6 +913,17 @@ $elg = DB::table('candidate_entitlement')
                             km/month.</p><br><br>
                     </form>
                     <script>
+                        $(document).on('change', '#Flight', function() {
+                            var Flight = $('#Flight').val();
+                            if (Flight == 'Y') {
+                                $('#flight_class_tr').removeClass('d-none');
+
+                            } else {
+                                $('#flight_class_tr').addClass('d-none');
+
+                            }
+                        });
+
                         $('#tline').click(function() {
                             if ($(this).prop("checked") == true) {
                                 $(this).val(1);
@@ -915,20 +967,7 @@ $elg = DB::table('candidate_entitlement')
 
                         });
 
-                        $(document).on('click', '.flight', function() {
-                            var x = '';
-                            var flight = $(this).data('value');
-                            if ($(this).prop("checked") == true) {
-                                if (flight == 'flight_approval_based') {
-                                    x = 'flight_approval_based';
-                                } else {
-                                    x = 'flight_need_based';
-                                }
-                            } else {
-                                x = '';
-                            }
 
-                        });
 
                         $('#tline').val('{{ $elg->TravelLine }}');
                         $('#two_wheel_line').val('{{ $elg->TwoWheelLine }}');
@@ -1220,12 +1259,7 @@ $elg = DB::table('candidate_entitlement')
 
             //============================Insert/Update ENT=========================
             $('#save_ent').click(function(e) {
-                var x = '';
-                $('.flight').each(function(k, v) {
-                    if ($(this).prop("checked") == true) {
-                        x = $(this).data('value');
-                    }
-                });
+
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1240,8 +1274,11 @@ $elg = DB::table('candidate_entitlement')
                     DAHq: $('#DAHq').val(),
                     TwoWheel: $('#TwoWheel').val(),
                     FourWheel: $('#FourWheel').val(),
-                    TravelMode: $('#TravelMode').val(),
-                    TravelClass: $('#TravelClass').val(),
+                    Train: $('#Train').val(),
+                    Train_Class: $('#Train_Class').val(),
+                    Flight: $('#Flight').val(),
+                    Flight_Class: $('#Flight_Class').val(),
+                    Flight_Remark: $('#Flight_Remark').val(),
                     Mobile: $('#Mobile').val(),
                     MExpense: $('#MExpense').val(),
                     MTerm: $('#MTerm').val(),
@@ -1251,7 +1288,7 @@ $elg = DB::table('candidate_entitlement')
                     two_wheel_line: $('#two_wheel_line').val(),
                     four_wheel_line: $('#four_wheel_line').val(),
                     GPRS: $('#GPRS').val(),
-                    flight: x,
+
 
                 };
                 $.ajax({

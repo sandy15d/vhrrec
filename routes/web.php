@@ -33,8 +33,12 @@ use App\Http\Controllers\Admin\CommunicationController;
 use App\Http\Controllers\Recruiter\RecruiterController;
 use App\Http\Controllers\Common\AboutCandidateController;
 use App\Http\Controllers\Common\JobApplicationController;
+use App\Http\Controllers\DepartmentVertical;
+use App\Http\Controllers\ElgController;
+use App\Http\Controllers\ImportController;
 use App\Http\Controllers\ProcessToEss;
 use App\Http\Controllers\Recruiter\MrfAllocatedController;
+use App\Http\Controllers\Report\Reports;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -176,6 +180,7 @@ Route::post('AssignPositionCode', [AboutCandidateController::class, 'AssignPosit
 Route::get('process_to_ess_form', [AboutCandidateController::class, 'process_to_ess_form'])->name('process_to_ess_form');
 
 Route::post('processDataToEss', [ProcessToEss::class, 'processDataToEss'])->name('processDataToEss');
+Route::get('ImportFromOld', [ProcessToEss::class, 'ImportFromOld'])->name('ImportFromOld');
 
 
 
@@ -413,7 +418,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('syncDesignation', [DesignationController::class, 'syncDesignation'])->name('syncDesignation');
     //*=================================================================================================//
 
-    //*====================================Master Designation ==================================//
+    //*====================================Master Grade ==================================//
     Route::get('grade', [GradeController::class, 'grade'])->name('admin.grade');
     Route::get('getAllGrade', [GradeController::class, 'getAllGrade'])->name('getAllGrade');
     Route::post('syncGrade', [GradeController::class, 'syncGrade'])->name('syncGrade');
@@ -456,6 +461,21 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
 
     //?====================================================================== */
 
+    // !======================== Department Vertical=========================== */
+
+    Route::get('department_vertical', [DepartmentVertical::class, 'department_vertical'])->name('admin.department_vertical');
+    Route::get('getAllVertical', [DepartmentVertical::class, 'getAllVertical'])->name('getAllVertical');
+    Route::post('syncVertical', [DepartmentVertical::class, 'syncVertical'])->name('syncVertical');
+
+
+    // !======================== Department Vertical=========================== */
+
+    Route::get('lodging', [ElgController::class, 'lodging'])->name('admin.lodging');
+    Route::get('travel', [ElgController::class, 'travel'])->name('admin.travel');
+    Route::post('getAllLodging', [ElgController::class, 'getAllLodging'])->name('getAllLodging');
+    Route::post('getAllTravel', [ElgController::class, 'getAllTravel'])->name('getAllTravel');
+    Route::post('syncELg', [ElgController::class, 'syncELg'])->name('syncELg');
+
     //**=============================Resume Source================================================= */
     Route::get('resumesource', [ResumeSourcController::class, 'resumesource'])->name('admin.resumesource');
     Route::post('addResumeSource', [ResumeSourcController::class, 'addResumeSource'])->name('addResumeSource');
@@ -492,7 +512,6 @@ Route::group(['prefix' => 'recruiter', 'middleware' => ['isRecruiter', 'auth', '
 
 Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [HodController::class, 'index'])->name('hod.dashboard');
-
     Route::get('mrfbyme', [HodController::class, 'mrfbyme'])->name('mrfbyme');
     Route::get('interviewschedule', [HodController::class, 'interviewschedule'])->name('interviewschedule');
     //**========================My Team =========================================== */
@@ -512,3 +531,9 @@ Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackH
     Route::get('getAllMRFCreatedByMe', [MrfController::class, 'getAllMRFCreatedByMe'])->name('getAllMRFCreatedByMe');
     //!==============================================================================//
 });
+
+
+//=============================REPORTS=====================================================//
+Route::get('Firob_Reports', [Reports::class, 'Firob_Reports'])->name('Firob_Reports');
+
+Route::get('Import', [ImportController::class, 'Import'])->name('Import');

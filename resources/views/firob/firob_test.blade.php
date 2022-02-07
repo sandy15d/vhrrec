@@ -9,7 +9,7 @@ $query = DB::table('firob')
     ->get();
 $JCId = base64_decode(request()->query('jcid'));
 $chk = DB::table('jobcandidates')
-    ->select('FIROB_Test')
+    ->select('FIROB_Test','FName','MName','LName','ReferenceNo', 'CandidateImage')
     ->where('JCId', $JCId)
     ->first();
 
@@ -78,19 +78,23 @@ $chk = DB::table('jobcandidates')
                                     <li>
                                         <table>
                                             <tr>
+                                                @if ($chk->CandidateImage == null)
                                                 <td style="padding: 5px 15px; border: 2px solid #666"><i
                                                         class="fa fa-user fa-4x"></i></td>
+                                            @else
+                                            <td style="border: 2px solid #f09a3e; "> <img
+                                                src="{{ URL::to('/') }}/uploads/Picture/{{ $chk->CandidateImage }}" style="width: 80px;" height="80px;"/></td>
+                                               
+                                            @endif
                                                 <td>
                                                     <table>
                                                         <tr>
                                                             <td style="padding: 0px 5px;">Candidate Name</td>
-                                                            <td> : <span style="color: #fff; font-weight: bold">[Your
-                                                                    Name]</span></td>
+                                                            <td> : <span style="color: #fff; font-weight: bold">{{$chk->FName}} {{$chk->MName}} {{$chk->LName}}</span></td>
                                                         </tr>
                                                         <tr>
-                                                            <td style="padding: 0px 5px;">Subject Name</td>
-                                                            <td> : <span style="color: #fff; font-weight: bold">[Test
-                                                                    Practice]</span></td>
+                                                            <td style="padding: 0px 5px;">Reference No</td>
+                                                            <td> : <span style="color: #fff; font-weight: bold">{{$chk->ReferenceNo}}</span></td>
                                                         </tr>
                                                         <tr>
                                                             <td style="padding: 0px 5px;">Remaining Time</td>
@@ -641,7 +645,7 @@ $chk = DB::table('jobcandidates')
                 NextQuestion(!0);
             });
 
-            $(".test-ques").click(function() {
+            /* $(".test-ques").click(function() {
                 var e = $(".test-questions").find("li.active").find("a");
                 $(".test-questions").find("li").removeClass("active"),
                     $(this).parent().addClass("active"),
@@ -656,7 +660,7 @@ $chk = DB::table('jobcandidates')
                     (e.addClass("que-not-answered"),
                         e.removeClass("que-not-attempted")),
                     OpenCurrentQue($(this));
-            });
+            }); */
 
             $(".btn-save-answer").click(function(e) {
                 e.preventDefault();

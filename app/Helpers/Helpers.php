@@ -42,6 +42,16 @@ function getEmployeeEmailId($empid)
 	}
 }
 
+function getEmployeeDesignation($empid)
+{
+	if ($empid == null) {
+		return "";
+	} else {
+		$query = DB::table('master_employee')->join('master_designation','master_designation.DesigId','=','master_employee.DesigId')->select("DesigName")->where('EmployeeID', $empid)->first();
+		return $query->DesigName;
+	}
+}
+
 
 function getCompanyCode($companyId)
 {

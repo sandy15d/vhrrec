@@ -183,7 +183,8 @@ $CountryQry = DB::table('master_country')
                             <li> <a href="/admin/designation"><i class="bx bx-right-arrow-alt"></i>Designation</a></li>
                             <li> <a href="/admin/grade"><i class="bx bx-right-arrow-alt"></i>Grade</a></li>
 
-                            <li> <a href="/admin/gen_states"><i class="bx bx-right-arrow-alt"></i>States(General Purpose)</a></li>
+                            <li> <a href="/admin/gen_states"><i class="bx bx-right-arrow-alt"></i>States(General
+                                    Purpose)</a></li>
                             <li> <a href="/admin/district"><i class="bx bx-right-arrow-alt"></i>District</a></li>
                             <li> <a href="/admin/education"><i class="bx bx-right-arrow-alt"></i>Education</a></li>
                             <li> <a href="/admin/eduspecialization"><i class="bx bx-right-arrow-alt"></i>Education
@@ -194,6 +195,18 @@ $CountryQry = DB::table('master_country')
                             <li> <a href="/admin/resumesource"><i class="bx bx-right-arrow-alt"></i>Resume Source</a>
                             </li>
                             <li> <a href="/admin/employee"><i class="bx bx-right-arrow-alt"></i>Employee</a></li>
+                            <li> <a href="/admin/department_vertical"><i class="bx bx-right-arrow-alt"></i>Department
+                                    Vertical</a></li>
+                            <li>
+                                <a class="has-arrow" href="javascript:;">
+                                    <i class="bx bx-right-arrow-alt"></i>Eligibility </a>
+                                <ul>
+                                    <li> <a href="/admin/lodging"><i class="bx bx-right-arrow-alt"></i>Lodging & Other</a>
+                                    </li>
+                                    <li> <a href="/admin/travel"><i class="bx bx-right-arrow-alt"></i>Travel</a>
+                                    </li>
+                                </ul>
+                            </li>
                             <li> <a href="/admin/communication_control"><i
                                         class="bx bx-right-arrow-alt"></i>Communication Control</a></li>
                         </ul>
@@ -289,7 +302,7 @@ $CountryQry = DB::table('master_country')
 
                         </ul>
                     </li>
-                   
+
                     <li>
                         <a href="javascript:;" class="has-arrow">
                             <div class="parent-icon"><i class="lni lni-timer  text-info"></i>
@@ -312,8 +325,9 @@ $CountryQry = DB::table('master_country')
                         </a>
                         <ul>
                             <li> <a href="/offer_letter"><i class="bx bx-right-arrow-alt"></i>Job Offers</a></li>
-                            <li> <a href="/candidate_joining"><i class="bx bx-right-arrow-alt"></i>Candidates for Joining</a></li>
-                            
+                            <li> <a href="/candidate_joining"><i class="bx bx-right-arrow-alt"></i>Candidates for
+                                    Joining</a></li>
+
                         </ul>
                     </li>
                     <li>
@@ -344,13 +358,14 @@ $CountryQry = DB::table('master_country')
                             <li> <a href="/trainee_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Trainee MRF</a>
                             </li>
                             <li> <a href="/trainee_applications"><i class="bx bx-right-arrow-alt"></i>Trainee
-                                Application</a></li>
-                                <li> <a href="/trainee_screening_tracker"><i class="bx bx-right-arrow-alt"></i>SIP / Trainee Tracker</a></li>
+                                    Application</a></li>
+                            <li> <a href="/trainee_screening_tracker"><i class="bx bx-right-arrow-alt"></i>SIP /
+                                    Trainee Tracker</a></li>
                             <li> <a href="/active_trainee"><i class="bx bx-right-arrow-alt"></i>Active Trainee</a></li>
                             <li> <a href="/old_trainee"><i class="bx bx-right-arrow-alt"></i>Old Trainee</a></li>
                         </ul>
                     </li>
-{{--                     <li>
+                    {{-- <li>
                         <a href="/">
                             <div class="parent-icon"><i class="lni lni-target-customer" style="color: #6610f2"></i>
                             </div>
@@ -385,7 +400,7 @@ $CountryQry = DB::table('master_country')
                             <div class="menu-title">Reports</div>
                         </a>
                         <ul>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>FIRO B Test</a></li>
+                            <li> <a href="/Firob_Reports"><i class="bx bx-right-arrow-alt"></i>FIRO B Test</a></li>
 
                         </ul>
                     </li>
@@ -410,7 +425,8 @@ $CountryQry = DB::table('master_country')
                     </div>
                     <div class="search-bar flex-grow-1">
                         <div class="position-relative search-bar-box">
-                            <h4 class="logo-text">{{ $CompanyQry->CompanyName }}   ({{$CountryQry->CountryName}})</h4>
+                            <h4 class="logo-text">{{ $CompanyQry->CompanyName }}
+                                ({{ $CountryQry->CountryName }})</h4>
                         </div>
                     </div>
                     <div class="top-menu ms-auto">
@@ -448,9 +464,9 @@ $CountryQry = DB::table('master_country')
                                                     <div class="notify bg-light-primary">
                                                         @if ($item->title == 'MRF Allocated')
                                                             <i class="bx bx-file  text-primary"></i>
-                                                        @elseif($item->title =='Offer Letter')
+                                                        @elseif($item->title == 'Offer Letter')
                                                             <i class="bx bx-user text-danger"></i>
-                                                        @elseif($item->title =='Job Post Create')
+                                                        @elseif($item->title == 'Job Post Create')
                                                             <i class="bx bx-send text-success"></i>
                                                         @endif
 
@@ -462,7 +478,7 @@ $CountryQry = DB::table('master_country')
                                                                 class="msg-time float-end">{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</span>
                                                         </h6>
                                                         <p class="msg-info">{{ $item->description }}
-                                                           {{--  <span class="user-online float-end mt-3"></span> --}}
+                                                            {{-- <span class="user-online float-end mt-3"></span> --}}
                                                         </p>
                                                     </div>
                                                 </div>

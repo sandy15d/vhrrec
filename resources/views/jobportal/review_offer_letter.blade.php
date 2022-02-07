@@ -142,6 +142,7 @@ use function App\Helpers\getFullName;
 use function App\Helpers\getGradeValue;
 use function App\Helpers\getStateName;
 use function App\Helpers\getDistrictName;
+use function App\Helpers\getEmployeeDesignation;
 $JAId = $_REQUEST['jaid'];
 $EmpId = $_REQUEST['E'];
 $sql = DB::table('offerletterbasic')
@@ -309,18 +310,22 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                             @endif
                         @endif
 
+
                         @if ($sql->Functional_R != 0 && $sql->Admins_R != 0)
                             <li>For administrative purpose you shall be reporting to
-                                <b>{{ getFullName($sql->A_ReportingManager) }}</b>
+                                <b>{{ getFullName($sql->A_ReportingManager) }},
+                                    {{ getEmployeeDesignation($sql->A_ReportingManager) }}</b>
                                 and for technical purpose you shall be reporting to
-                                <b>{{ getFullName($sql->F_ReportingManager) }}</b>
+                                <b>{{ getFullName($sql->F_ReportingManager) }},
+                                    {{ getEmployeeDesignation($sql->F_ReportingManager) }}</b>
                                 and will work under the supervision of such officers as may be decided upon by
                                 the
                                 Management
                                 from time to time.
                             </li>
-                        @elseif ($sql->Admins_R ==1 && $sql->Functional_R ==0)
-                            <li>You will report to <b>{{ getFullName($sql->A_ReportingManager) }}</b>, and
+                        @elseif ($sql->Admins_R == 1 && $sql->Functional_R == 0)
+                            <li>You will report to <b>{{ getFullName($sql->A_ReportingManager) }},
+                                    {{ getEmployeeDesignation($sql->A_ReportingManager) }}</b>, and
                                 will
                                 work
                                 under the
@@ -485,7 +490,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                         one month. </li>
                                 @endif
                             @endif
-                        @elseif ($sql->Company==3)
+                        @elseif ($sql->Company == 3)
                             {{-- VNPL --}}
                             <li>In case of discontinuation of service, during the period of
                                 {{ $sql->ServiceCondition }} the
@@ -710,9 +715,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                 <tr>
                                     <td></td>
                                     <td>Lodging for City in Category A</td>
-                                    <td class="text-center" style="width: 200px;">Rs.
-                                        {{ $elg->LoadCityA }}
-                                    </td>
+                                    <td class="text-center" style="width: 200px;">Rs. {{ $elg->LoadCityA }}</td>
                                 </tr>
                             @endif
                             @if ($elg->LoadCityB != '')
@@ -733,7 +736,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                 <tr>
                                     <td class="text-center"><?= ++$rowCount ?></td>
                                     <td><b>D.A Out Side H.Q</b></td>
-                                    <td class="text-center">Rs. {{ $elg->DAOut }} /-Per Day</td>
+                                    <td class="text-center">{{ $elg->DAOut }}</td>
                                 </tr>
                             @endif
                             @if ($elg->DAHq != '')
@@ -741,17 +744,14 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                     <td class="text-center"><?= ++$rowCount ?></td>
                                     <td><b>D.A @ H.Q</b>
                                         @if ($sql->Department == 3)
-                                            <b style="color:red">(In Case of day tour involving more than 40 km.
-                                                per
+                                            <b style="color:red">(In Case of day tour involving more than 40 km. per
                                                 day)</b>
-                                        @elseif($sql->Department==25 || $sql->Department==4 ||
-                                            $sql->Department==24)
-                                            <b style="color:red">(If the work needs travel for more than 6 hours
-                                                in
+                                        @elseif($sql->Department == 25 || $sql->Department == 4 || $sql->Department == 24)
+                                            <b style="color:red">(If the work needs travel for more than 6 hours in
                                                 a day)</b>
                                         @endif
                                     </td>
-                                    <td class="text-center">Rs. {{ $elg->DAHq }} /-Per Day</td>
+                                    <td class="text-center">{{ $elg->DAHq }}</td>
                                 </tr>
 
                             @endif
@@ -765,7 +765,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                 <tr>
                                     <td></td>
                                     <td style="width:502px;">**Two Wheeler </td>
-                                    <td class="text-center">Rs. {{ $elg->TwoWheel }}</td>
+                                    <td class="text-center">{{ $elg->TwoWheel }}</td>
                                 </tr>
                             @endif
                             @if ($elg->FourWheel != '')
@@ -774,33 +774,35 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                     <td style="width:502px;">*Four Wheeler (Max: 2000 km per month, 24000 km per
                                         Annum)
                                     </td>
-                                    <td class="text-center">Rs. {{ $elg->FourWheel }}</td>
-                                </tr>
-                            @endif
-
-                            @if ($elg->TravelMode != '')
-                                <tr>
-                                    <td class="text-center"><?= ++$rowCount ?></td>
-                                    <td><b>Mode of Travel outside HQ</b></b></td>
-                                    <td class="text-center">
-                                        <?= $elg->Flight != '' ? 'Bus/Train/Flight' : $elg->TravelMode ?></td>
+                                    <td class="text-center">{{ $elg->FourWheel }}</td>
                                 </tr>
                             @endif
 
 
-                            @if ($elg->TravelClass != '')
+                            <tr>
+                                <td class="text-center"><?= ++$rowCount ?></td>
+                                <td colspan="2"><b>Mode of Travel outside HQ</b></b></td>
+
+                            </tr>
+
+                            <tr>
+                                <td></td>
+                                <td>Bus/Train</td>
+                                <td class="text-center"> {{ $elg->Train_Class }}</td>
+                                </td>
+                            </tr>
+                            @if ($elg->Flight == 'Y')
                                 <tr>
-                                    <td class="text-center"><?= ++$rowCount ?></td>
-                                    <td><b>Travel Class</b></b></td>
-                                    <td class="text-center"> {{ $elg->TravelClass }}
-                                        @if ($elg->Flight == 'flight_approval_based')
-                                            , Flight Approval Based
-                                        @elseif($elg->Flight =='flight_need_based')
-                                            , Flight Need Based
-                                        @endif
+                                    <td></td>
+                                    <td>Flight</td>
+                                    <td class="text-center"> {{ $elg->Flight_Class }}
+                                        ({{ $elg->Flight_Remark }})
+
                                     </td>
                                 </tr>
                             @endif
+
+
 
                             @if ($elg->Mobile != '')
                                 <tr>
@@ -819,9 +821,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                 <tr>
                                     <td class="text-center"><?= ++$rowCount ?></td>
                                     <td><b>Mobile Expense Reimbursement</b></b></td>
-                                    <td class="text-center">Rs. {{ $elg->MExpense }} /
-                                        {{ $elg->MTerm }}
-                                    </td>
+                                    <td class="text-center">Rs. {{ $elg->MExpense }} / {{ $elg->MTerm }}</td>
                                 </tr>
 
                             @endif
@@ -838,36 +838,32 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                 <tr>
                                     <td class="text-center"><?= ++$rowCount ?></td>
                                     <td><b>Health Insuarance</b></b></td>
-                                    <td class="text-center"> {{ $elg->HealthIns }} Lakh</td>
+                                    <td class="text-center"> Rs. {{ $elg->HealthIns }}</td>
                                 </tr>
                             @endif
+
 
                         </table>
                     </center>
 
                     @if ($elg->TwoWheelLine == 1)
-                        <p style="padding-left: 20px;margin-bottom:5px;"> *2 Wheeler vehicle eligibility as per
-                            company
+                        <p style="padding-left: 20px;margin-bottom:5px;"> *2 Wheeler vehicle eligibility as per company
                             vehicle policy.</p>
 
 
                     @endif
 
                     @if ($elg->FourWheelLine == 1)
-                        <p style="padding-left: 20px;margin-bottom:5px;">*4 Wheeler vehicle eligibility as per
-                            company
+                        <p style="padding-left: 20px;margin-bottom:5px;">*4 Wheeler vehicle eligibility as per company
                             vehicle policy.
                         </p>
 
                     @endif
 
                     @if ($elg->TravelLine == 1)
-                        <p style="padding-left: 20px;margin-bottom:5px; text-align:justify">*Maximum travel km
-                            per
-                            month
+                        <p style="padding-left: 20px;margin-bottom:5px; text-align:justify">*Maximum travel km per month
                             allowed for 4 wheeler is 2000
-                            km/month and overall travel including both 4 wheeler & 2 wheeler should not exceed
-                            more
+                            km/month and overall travel including both 4 wheeler & 2 wheeler should not exceed more
                             than
                             3000
                             km/month.</p>
@@ -877,29 +873,23 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                     <p class="text-center"><b><u>LIST OF DOCUMENTS REQUIRED DURING APPOINTMENT</u></b></p>
                     <ol>
                         <li style="font-size:14px;">Form 16/Investment Declaration</li>
-                        <li style="font-size:14px;">6 colored formal Passport Size Photos with White background
-                        </li>
+                        <li style="font-size:14px;">6 colored formal Passport Size Photos with White background</li>
                         <li style="font-size:14px;">Blood Group Test report</li>
-                        <li style="font-size:14px;">Copy of educational certificates (10th / 12th / Graduation /
-                            Post
+                        <li style="font-size:14px;">Copy of educational certificates (10th / 12th / Graduation / Post
                             Graduation, etc.)</li>
                         <li style="font-size:14px;">Previous Employer documents (Service Certificates)</li>
                         <li style="font-size:14px;">Pay slip/ CTC structure of recent previous company</li>
-                        <li style="font-size:14px;">Relieving letter from previous company/ Resignation
-                            Acceptance
+                        <li style="font-size:14px;">Relieving letter from previous company/ Resignation Acceptance
                             Letter
                         </li>
-                        <li style="font-size:14px;">Compulsory Documents (Driving license/PAN Card/ Aadhaar
-                            Card)
-                        </li>
+                        <li style="font-size:14px;">Compulsory Documents (Driving license/PAN Card/ Aadhaar Card)</li>
                         <li style="font-size:14px;">Copy of Bank account passbook (Preferred only SBI/BOB) </li>
                     </ol>
                     <br><br><br><br>
                     <p style="margin-bottom:2px;">----------------------------<span
                             style="float: right">----------------------------</span></p>
                     <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b><span
-                            style="float: right">{{ $sql->Title }} {{ $sql->FName }}
-                            {{ $sql->MName }}
+                            style="float: right">{{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }}
                             {{ $sql->LName }}</span>
                     </p>
                     <p><b> {{ $sql->SigningAuth }}</b>
@@ -909,6 +899,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
 
             </div>
         </div>
+
         <div class="generate" id="generate">
             <form method="POST" action="{{ route('ReviewResponse') }}" id="responseform">
                 @csrf
@@ -992,7 +983,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                             setTimeout(function() {
                                 window.close();
                             }, 1000);
-                            
+
                         }
                     }
                 });

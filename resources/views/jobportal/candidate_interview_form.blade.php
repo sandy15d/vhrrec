@@ -160,6 +160,7 @@ $institute_list = DB::table("master_institute")->join('states','states.StateId',
                                                     Submit</strong></a>
                                         </li>
                                     </ul>
+
                                     <div class="tab-content">
 
                                         <div id="personal" class="tab-pane" role="tabpanel"
@@ -3069,7 +3070,7 @@ $institute_list = DB::table("master_institute")->join('states','states.StateId',
 
         });
     </script>
-    {{-- <script src="{{ URL::to('/') }}/assets/js/app.js"></script> --}}
+ 
     <script>
         var MemberCount = 1;
         var EducationCount = 6;

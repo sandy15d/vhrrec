@@ -737,6 +737,7 @@ class JobApplicationController extends Controller
 
     public function SaveExperience(Request $request)
     {
+
         $JCId = $request->JCId;
         $ProfCheck = $request->ProfCheck;
         $CurrCompany = $request->CurrCompany ?? null;
@@ -865,7 +866,7 @@ class JobApplicationController extends Controller
             );
         }
 
-        if ($WorkExpCompany != null) {
+        if ($WorkExpCompany[0] != null || $WorkExpCompany[0] != '') {
             $delete_work_exp = DB::table('jf_work_exp')->where('JCId', $JCId)->delete();
             $experienceArray = array();
             for ($i = 0; $i < count($WorkExpCompany); $i++) {
@@ -885,7 +886,8 @@ class JobApplicationController extends Controller
             $query1 = DB::table('jf_work_exp')->insert($experienceArray);
         }
 
-        if ($TrainingNature != null) {
+
+        if ($TrainingNature[0] != null || $TrainingNature[0] != '') {
             $del_training = DB::table('jf_tranprac')->where('JCId', $JCId)->delete();
             $trainingArray = array();
             for ($i = 0; $i < count($TrainingNature); $i++) {
@@ -1274,7 +1276,7 @@ class JobApplicationController extends Controller
             ->Join('jobapply', 'jobcandidates.JCId', '=', 'jobapply.JCId')
             ->Join('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
             ->where('jobcandidates.JCId', $JCId)
-            ->select('jobpost.CreatedBy', 'jobcandidates.FName','jobcandidates.Aadhaar')->first();
+            ->select('jobpost.CreatedBy', 'jobcandidates.FName', 'jobcandidates.Aadhaar')->first();
         $CreatedBy = $sql->CreatedBy;
         $FName = $sql->FName;
         UserNotification::notifyUser($CreatedBy, 'Joining Form', $FName . ' has submitted the joining form');

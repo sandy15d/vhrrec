@@ -68,7 +68,7 @@ $JCId = $Rec->JCId;
 $firobid = base64_encode($Rec->JCId);
 $OfBasic = DB::table('offerletterbasic')
     ->leftJoin('candjoining', 'candjoining.JAId', '=', 'offerletterbasic.JAId')
-    ->select('offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.RejReason', 'candjoining.EmpCode', 'candjoining.Verification', 'candjoining.Joined', 'candjoining.PositionCode')
+    ->select('offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.RejReason', 'candjoining.EmpCode', 'candjoining.Verification', 'candjoining.Joined', 'candjoining.PositionCode', 'candjoining.ForwardToESS')
     ->where('offerletterbasic.JAId', $JAId)
     ->first();
 
@@ -310,7 +310,7 @@ $candidate_log = DB::table('candidate_log')
 
         <div class="tab-content">
 
-            <div id="cand_profile" class=" tab-pane fade pro-overview show ">
+            <div id="cand_profile" class=" tab-pane fade pro-overview show active">
                 <div class="row">
                     <div class="col-md-6 d-flex">
                         <div class="card profile-box flex-fill">
@@ -763,7 +763,7 @@ $candidate_log = DB::table('candidate_log')
                     </div>
                 </div>
                 <div class="col-md-12 d-flex">
-                    <div class="card profile-box flex-fill">
+                    <div class="card flex-fill">
                         <div class="card-body">
                             <h6 class="card-title">Previous Employement Records <small>(except the present)</small>
                                 <a href="#" class="edit-icon" data-bs-toggle="modal" data-bs-target="#work_exp_modal"
@@ -813,7 +813,7 @@ $candidate_log = DB::table('candidate_log')
                     </div>
                 </div>
                 <div class="col-md-12 d-flex">
-                    <div class="card profile-box flex-fill">
+                    <div class="card  flex-fill">
                         <div class="card-body">
                             <h6 class="card-title">Training & Practical Experience <small>(Other than regular
                                     jobs)</small>
@@ -862,7 +862,7 @@ $candidate_log = DB::table('candidate_log')
 
             <div class="tab-pane fade" id="cand_reference">
                 <div class="col-md-12 d-flex">
-                    <div class="card profile-box flex-fill">
+                    <div class="card  flex-fill">
                         <div class="card-body">
                             <h6 class="card-title">Previous Organization Reference
                                 <a href="#" class="edit-icon" data-bs-toggle="modal"
@@ -909,7 +909,7 @@ $candidate_log = DB::table('candidate_log')
 
                 <div class="row">
                     <div class="col-md-12 d-flex">
-                        <div class="card profile-box flex-fill">
+                        <div class="card  flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Acquaintances or relatives working with
                                     VNR Group Companies<a href="#" class="edit-icon" data-bs-toggle="modal"
@@ -955,7 +955,7 @@ $candidate_log = DB::table('candidate_log')
 
                 <div class="row">
                     <div class="col-md-12 d-flex">
-                        <div class="card profile-box flex-fill">
+                        <div class="card  flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Acquaintances or relatives associated with
                                     VNR as business associates<a href="#" class="edit-icon" data-bs-toggle="modal"
@@ -995,7 +995,7 @@ $candidate_log = DB::table('candidate_log')
 
                 <div class="row">
                     <div class="col-md-12 d-flex">
-                        <div class="card profile-box flex-fill">
+                        <div class="card  flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Relatives or acquaintances is/are working
                                     or associated with any other Seed Company<a href="#" class="edit-icon"
@@ -1037,7 +1037,7 @@ $candidate_log = DB::table('candidate_log')
             <div class="tab-pane fade" id="cand_other">
                 <div class="row">
                     <div class="col-md-12 d-flex">
-                        <div class="card profile-box flex-fill">
+                        <div class="card flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Language Proficiency
                                     <a href="#" class="edit-icon" data-bs-toggle="modal"
@@ -1533,7 +1533,7 @@ $candidate_log = DB::table('candidate_log')
                 </div>
             </div>
 
-            <div class="tab-pane fade show active" id="job_offer">
+            <div class="tab-pane fade" id="job_offer">
 
                 <div class="row">
                     <div class="col-md-5 d-flex">
@@ -1806,7 +1806,7 @@ $candidate_log = DB::table('candidate_log')
                                                     style="float: right">:</span> </div>
 
                                             <div class="text  text-dark">
-                                                @if ($Rec->AppLtrGen == 'No')
+                                                @if ($Rec->AppLtrGen == 'No' || $Rec->AppLtrGen == null)
                                                     <i class="fa fa-pencil text-primary" aria-hidden="true"
                                                         onclick="appointmentGen({{ $Rec->JAId }})"
                                                         style="font-size: 16px;cursor: pointer; display: ">Generate </i>
@@ -2004,8 +2004,15 @@ $candidate_log = DB::table('candidate_log')
                                 </ul>
                                 <br>
                                 <br>
-                                <center><button class="btn btn-sm btn-primary" id="ProcessToEss">Process Data to Ess</butt>
-                                </center>
+                                @if ($OfBasic->EmpCode != '' && $OfBasic != null)
+                                    <center><button class="btn btn-sm btn-primary" id="ProcessToEss">Process Data to Ess
+                                        </button>
+                                    </center>
+                                @endif
+                                    @if ($OfBasic->ForwardToESS =='Yes')
+                                        <center><h3 class="text-success">Data Forwarded to ESS</h3></center>
+                                    @endif
+
                             </div>
                         </div>
                     </div>
@@ -3629,6 +3636,16 @@ $candidate_log = DB::table('candidate_log')
                                     <td style="width:150px;">Designation</td>
                                     <td>
                                         <select name="Designation" id="Designation" class="form-select form-select-sm"
+                                            style="width: 200px;">
+                                            <option value="">Select</option>
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="width:150px;">Vertical</td>
+                                    <td>
+                                        <select name="Vertical" id="Vertical" class="form-select form-select-sm"
                                             style="width: 200px;">
                                             <option value="">Select</option>
                                         </select>
@@ -6201,6 +6218,19 @@ $candidate_log = DB::table('candidate_log')
 
                         $('#Designation').val(res.candidate_detail.Designation);
 
+
+                        $("#Vertical").empty();
+                        $("#Vertical").append(
+                            '<option value="0">Select Vertical</option>');
+                        $.each(res.vertical_list, function(key, value) {
+                            $("#Vertical").append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+
+                        $('#Vertical').val(res.candidate_detail.VerticalId);
+
+
+
                         $("#AdministrativeDepartment").empty();
                         $("#AdministrativeDepartment").append(
                             '<option value="">Select Department</option>');
@@ -6345,6 +6375,14 @@ $candidate_log = DB::table('candidate_log')
                         if (res.candidate_detail.ServiceBond != '') {
                             $("input[name=ServiceBond][value=" + res.candidate_detail.ServiceBond +
                                 "]").prop('checked', true);
+                        }
+
+                        if (res.candidate_detail.ServiceBond === 'Yes') {
+                            $('#bond_tr').removeClass('d-none');
+                            $('#ServiceBondDuration').val(res.candidate_detail.ServiceBondYears);
+                            $('#ServiceBondRefund').val(res.candidate_detail.ServiceBondRefund);
+                        } else {
+                            $('#bond_tr').addClass('d-none');
                         }
 
                         if (res.candidate_detail.PreMedicalCheckUp != '') {
@@ -7627,13 +7665,19 @@ $candidate_log = DB::table('candidate_log')
                     JAId: JAId
                 },
                 dataType: 'json',
+                beforeSend: function() {
+                    $("#loader").modal('show');
+                },
                 success: function(data) {
                     if (data.status == 400) {
+                        $("#loader").modal('hide');
                         toastr.error(data.msg);
                     } else {
-                        toastr.success(data.msg);
-                        window.location.reload();
 
+                        $("#loader").modal('hide');
+                        toastr.success(data.msg);
+
+                        window.location.reload();
                     }
                 },
 

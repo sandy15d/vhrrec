@@ -133,6 +133,7 @@ use function App\Helpers\getFullName;
 use function App\Helpers\getGradeValue;
 use function App\Helpers\getStateName;
 use function App\Helpers\getDistrictName;
+use function App\Helpers\getEmployeeDesignation;
 $JAId = $_REQUEST['jaid'];
 $sql = DB::table('offerletterbasic')
     ->leftJoin('jobapply', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
@@ -272,15 +273,18 @@ $elg = DB::table('candidate_entitlement')
 
                         @if ($sql->Functional_R != 0 && $sql->Admins_R != 0)
                             <li>For administrative purpose you shall be reporting to
-                                <b>{{ getFullName($sql->A_ReportingManager) }}</b>
+                                <b>{{ getFullName($sql->A_ReportingManager) }},
+                                    {{ getEmployeeDesignation($sql->A_ReportingManager) }}</b>
                                 and for technical purpose you shall be reporting to
-                                <b>{{ getFullName($sql->F_ReportingManager) }}</b>
+                                <b>{{ getFullName($sql->F_ReportingManager) }},
+                                    {{ getEmployeeDesignation($sql->F_ReportingManager) }}</b>
                                 and will work under the supervision of such officers as may be decided upon by the
                                 Management
                                 from time to time.
                             </li>
-                        @elseif ($sql->Admins_R ==1 && $sql->Functional_R ==0)
-                            <li>You will report to <b>{{ getFullName($sql->A_ReportingManager) }}</b>, and will work
+                        @elseif ($sql->Admins_R == 1 && $sql->Functional_R == 0)
+                            <li>You will report to <b>{{ getFullName($sql->A_ReportingManager) }},
+                                    {{ getEmployeeDesignation($sql->A_ReportingManager) }}</b>, and will work
                                 under the
                                 supervision of such officers as may be decided upon by the management from time to time.
                             </li>
@@ -409,7 +413,7 @@ $elg = DB::table('candidate_entitlement')
                                         one month. </li>
                                 @endif
                             @endif
-                        @elseif ($sql->Company==3)
+                        @elseif ($sql->Company == 3)
                             {{-- VNPL --}}
                             <li>In case of discontinuation of service, during the period of
                                 {{ $sql->ServiceCondition }} the
@@ -640,7 +644,7 @@ $elg = DB::table('candidate_entitlement')
                                 <tr>
                                     <td class="text-center"><?= ++$rowCount ?></td>
                                     <td><b>D.A Out Side H.Q</b></td>
-                                    <td class="text-center">Rs. {{ $elg->DAOut }} /-Per Day</td>
+                                    <td class="text-center">{{ $elg->DAOut }}</td>
                                 </tr>
                             @endif
                             @if ($elg->DAHq != '')
@@ -650,13 +654,12 @@ $elg = DB::table('candidate_entitlement')
                                         @if ($sql->Department == 3)
                                             <b style="color:red">(In Case of day tour involving more than 40 km. per
                                                 day)</b>
-                                        @elseif($sql->Department==25 || $sql->Department==4 ||
-                                            $sql->Department==24)
+                                        @elseif($sql->Department == 25 || $sql->Department == 4 || $sql->Department == 24)
                                             <b style="color:red">(If the work needs travel for more than 6 hours in
                                                 a day)</b>
                                         @endif
                                     </td>
-                                    <td class="text-center">Rs. {{ $elg->DAHq }} /-Per Day</td>
+                                    <td class="text-center">{{ $elg->DAHq }}</td>
                                 </tr>
 
                             @endif
@@ -670,7 +673,7 @@ $elg = DB::table('candidate_entitlement')
                                 <tr>
                                     <td></td>
                                     <td style="width:502px;">**Two Wheeler </td>
-                                    <td class="text-center">Rs. {{ $elg->TwoWheel }}</td>
+                                    <td class="text-center">{{ $elg->TwoWheel }}</td>
                                 </tr>
                             @endif
                             @if ($elg->FourWheel != '')
@@ -679,33 +682,35 @@ $elg = DB::table('candidate_entitlement')
                                     <td style="width:502px;">*Four Wheeler (Max: 2000 km per month, 24000 km per
                                         Annum)
                                     </td>
-                                    <td class="text-center">Rs. {{ $elg->FourWheel }}</td>
-                                </tr>
-                            @endif
-
-                            @if ($elg->TravelMode != '')
-                                <tr>
-                                    <td class="text-center"><?= ++$rowCount ?></td>
-                                    <td><b>Mode of Travel outside HQ</b></b></td>
-                                    <td class="text-center">
-                                        <?= $elg->Flight != '' ? 'Bus/Train/Flight' : $elg->TravelMode ?></td>
+                                    <td class="text-center">{{ $elg->FourWheel }}</td>
                                 </tr>
                             @endif
 
 
-                            @if ($elg->TravelClass != '')
-                                <tr>
-                                    <td class="text-center"><?= ++$rowCount ?></td>
-                                    <td><b>Travel Class</b></b></td>
-                                    <td class="text-center"> {{ $elg->TravelClass }}
-                                        @if ($elg->Flight == 'flight_approval_based')
-                                            , Flight Approval Based
-                                        @elseif($elg->Flight =='flight_need_based')
-                                            , Flight Need Based
-                                        @endif
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td class="text-center"><?= ++$rowCount ?></td>
+                                <td colspan="2"><b>Mode of Travel outside HQ</b></b></td>
+
+                            </tr>
+
+                            <tr>
+                                <td></td>
+                                <td>Bus/Train</td>
+                                <td class="text-center"> {{ $elg->Train_Class }}</td>
+                                </td>
+                            </tr>
+                            @if ($elg->Flight == 'Y')
+                            <tr>
+                                <td></td>
+                                <td>Flight</td>
+                                <td class="text-center"> {{ $elg->Flight_Class }}
+                                        ({{ $elg->Flight_Remark }})
+                                 
+                                </td>
+                            </tr>
                             @endif
+
+
 
                             @if ($elg->Mobile != '')
                                 <tr>
@@ -741,9 +746,10 @@ $elg = DB::table('candidate_entitlement')
                                 <tr>
                                     <td class="text-center"><?= ++$rowCount ?></td>
                                     <td><b>Health Insuarance</b></b></td>
-                                    <td class="text-center"> {{ $elg->HealthIns }} Lakh</td>
+                                    <td class="text-center"> Rs. {{ $elg->HealthIns }}</td>
                                 </tr>
                             @endif
+                            
 
                         </table>
                     </center>

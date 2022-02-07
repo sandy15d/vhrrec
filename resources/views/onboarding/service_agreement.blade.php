@@ -146,7 +146,7 @@ $sql = DB::table('jobapply')
             <div class="page">
                 <div class="subpage">
                     <p class="text-center "><b>Service Agreement</b></p>
-                    <p style="font-size:16px;"><b>Ref:
+                  {{--   <p style="font-size:16px;"><b>Ref:
                             {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date:
                                 @if ($sql->Agr_Date == null)
@@ -157,7 +157,7 @@ $sql = DB::table('jobapply')
                                 @endif
 
                         </span></b>
-                    </p>
+                    </p> --}}
 
                     <br>
 

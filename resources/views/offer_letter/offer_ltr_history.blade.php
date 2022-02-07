@@ -133,6 +133,7 @@ use function App\Helpers\getFullName;
 use function App\Helpers\getGradeValue;
 use function App\Helpers\getStateName;
 use function App\Helpers\getDistrictName;
+use function App\Helpers\getEmployeeDesignation;
 $LtrId = $_REQUEST['LtrId'];
 $sql = DB::table('offerletterbasic_history')
     ->leftJoin('jobapply', 'offerletterbasic_history.JAId', '=', 'jobapply.JAId')
@@ -263,24 +264,27 @@ $sql = DB::table('offerletterbasic_history')
                         @endif
 
                         @if ($sql->Functional_R != 0 && $sql->Admins_R != 0)
-                            <li>For administrative purpose you shall be reporting to
-                                <b>{{ getFullName($sql->A_ReportingManager) }}</b>
-                                and for technical purpose you shall be reporting to
-                                <b>{{ getFullName($sql->F_ReportingManager) }}</b>
-                                and will work under the supervision of such officers as may be decided upon by the
-                                Management
-                                from time to time.
-                            </li>
-                        @elseif ($sql->Admins_R ==1 && $sql->Functional_R ==0)
-                            <li>You will report to <b>{{ getFullName($sql->A_ReportingManager) }}</b>, and will work
-                                under the
-                                supervision of such officers as may be decided upon by the management from time to time.
-                            </li>
-                        @else
-                            <li>You will work under the supervision of such officers as may be decided upon by the
-                                Management
-                                from time to time.</li>
-                        @endif
+                        <li>For administrative purpose you shall be reporting to
+                            <b>{{ getFullName($sql->A_ReportingManager) }},
+                                {{ getEmployeeDesignation($sql->A_ReportingManager) }}</b>
+                            and for technical purpose you shall be reporting to
+                            <b>{{ getFullName($sql->F_ReportingManager) }},
+                                {{ getEmployeeDesignation($sql->F_ReportingManager) }}</b>
+                            and will work under the supervision of such officers as may be decided upon by the
+                            Management
+                            from time to time.
+                        </li>
+                    @elseif ($sql->Admins_R == 1 && $sql->Functional_R == 0)
+                        <li>You will report to <b>{{ getFullName($sql->A_ReportingManager) }},
+                                {{ getEmployeeDesignation($sql->A_ReportingManager) }}</b>, and will work
+                            under the
+                            supervision of such officers as may be decided upon by the management from time to time.
+                        </li>
+                    @else
+                        <li>You will work under the supervision of such officers as may be decided upon by the
+                            Management
+                            from time to time.</li>
+                    @endif
 
 
                         @if ($sql->ServiceCondition == 'Training' && $sql->OrientationPeriod != null && $sql->Stipend != null)
@@ -631,7 +635,7 @@ $sql = DB::table('offerletterbasic_history')
                                 <tr>
                                     <td class="text-center"><?= ++$rowCount ?></td>
                                     <td><b>D.A Out Side H.Q</b></td>
-                                    <td class="text-center">Rs. {{ $sql->DAOut }} /-Per Day</td>
+                                    <td class="text-center">{{ $sql->DAOut }}</td>
                                 </tr>
                             @endif
                             @if ($sql->DAHq != '')
@@ -641,13 +645,12 @@ $sql = DB::table('offerletterbasic_history')
                                         @if ($sql->Department == 3)
                                             <b style="color:red">(In Case of day tour involving more than 40 km. per
                                                 day)</b>
-                                        @elseif($sql->Department==25 || $sql->Department==4 ||
-                                            $sql->Department==24)
+                                        @elseif($sql->Department == 25 || $sql->Department == 4 || $sql->Department == 24)
                                             <b style="color:red">(If the work needs travel for more than 6 hours in
                                                 a day)</b>
                                         @endif
                                     </td>
-                                    <td class="text-center">Rs. {{ $sql->DAHq }} /-Per Day</td>
+                                    <td class="text-center">{{ $sql->DAHq }}</td>
                                 </tr>
 
                             @endif
@@ -661,7 +664,7 @@ $sql = DB::table('offerletterbasic_history')
                                 <tr>
                                     <td></td>
                                     <td style="width:502px;">**Two Wheeler </td>
-                                    <td class="text-center">Rs. {{ $sql->TwoWheel }}</td>
+                                    <td class="text-center">{{ $sql->TwoWheel }}</td>
                                 </tr>
                             @endif
                             @if ($sql->FourWheel != '')
@@ -670,33 +673,35 @@ $sql = DB::table('offerletterbasic_history')
                                     <td style="width:502px;">*Four Wheeler (Max: 2000 km per month, 24000 km per
                                         Annum)
                                     </td>
-                                    <td class="text-center">Rs. {{ $sql->FourWheel }}</td>
-                                </tr>
-                            @endif
-
-                            @if ($sql->TravelMode != '')
-                                <tr>
-                                    <td class="text-center"><?= ++$rowCount ?></td>
-                                    <td><b>Mode of Travel outside HQ</b></b></td>
-                                    <td class="text-center">
-                                        <?= $sql->Flight != '' ? 'Bus/Train/Flight' : $sql->TravelMode ?></td>
+                                    <td class="text-center">{{ $sql->FourWheel }}</td>
                                 </tr>
                             @endif
 
 
-                            @if ($sql->TravelClass != '')
-                                <tr>
-                                    <td class="text-center"><?= ++$rowCount ?></td>
-                                    <td><b>Travel Class</b></b></td>
-                                    <td class="text-center"> {{ $sql->TravelClass }}
-                                        @if ($sql->Flight == 'flight_approval_based')
-                                            , Flight Approval Based
-                                        @elseif($sql->Flight =='flight_need_based')
-                                            , Flight Need Based
-                                        @endif
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td class="text-center"><?= ++$rowCount ?></td>
+                                <td colspan="2"><b>Mode of Travel outside HQ</b></b></td>
+
+                            </tr>
+
+                            <tr>
+                                <td></td>
+                                <td>Bus/Train</td>
+                                <td class="text-center"> {{ $sql->Train_Class }}</td>
+                                </td>
+                            </tr>
+                            @if ($sql->Flight == 'Y')
+                            <tr>
+                                <td></td>
+                                <td>Flight</td>
+                                <td class="text-center"> {{ $sql->Flight_Class }}
+                                        ({{ $sql->Flight_Remark }})
+                                 
+                                </td>
+                            </tr>
                             @endif
+
+
 
                             @if ($sql->Mobile != '')
                                 <tr>
@@ -732,9 +737,10 @@ $sql = DB::table('offerletterbasic_history')
                                 <tr>
                                     <td class="text-center"><?= ++$rowCount ?></td>
                                     <td><b>Health Insuarance</b></b></td>
-                                    <td class="text-center"> {{ $sql->HealthIns }} Lakh</td>
+                                    <td class="text-center"> Rs. {{ $sql->HealthIns }}</td>
                                 </tr>
                             @endif
+                            
 
                         </table>
                     </center>

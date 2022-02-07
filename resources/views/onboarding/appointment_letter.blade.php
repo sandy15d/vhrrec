@@ -484,7 +484,7 @@ $sql = DB::table('jobapply')
 
         <div class="generate" id="generate">
             <center>
-                @if ($sql->AppLtrGen == 'No')
+                @if ($sql->AppLtrGen == 'No' || $sql->AppLtrGen == '' || $sql->AppLtrGen == null)
                     <button type="button" class="btn  btn-md text-center btn-success" id="generateLtr"><i
                             class="fa fa-file"></i> Generate Letter</button>
                 @endif

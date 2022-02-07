@@ -108,18 +108,23 @@ class OfferLtrController extends Controller
         }
 
         $designation_list = DB::table("master_designation")->where('DesigStatus', 'A')->where('CompanyId', $company)->where('DepartmentId', $Department)->orderBy('DesigName', 'ASC')->pluck("DesigId", "DesigName");
+        $vertical_list = DB::table("master_vertical")->where('CompanyId', $company)->where('DepartmentId', $Department)->orderBy('VerticalName', 'ASC')->pluck("VerticalId", "VerticalName");
         $department_list = DB::table("master_department")->where('DeptStatus', 'A')->where('CompanyId', $company)->orderBy('DepartmentName', 'ASC')->pluck("DepartmentId", "DepartmentName");
         $employee_list = master_employee::select(DB::raw("CONCAT(Fname,' ',Lname) AS name"), 'EmployeeID')->where('CompanyId', $company)->where('EmpStatus', 'A')->pluck('name', 'EmployeeID');
         $headquarter_list = DB::table("master_headquater")->where('CompanyId', $company)->orderBy('HqName', 'ASC')->pluck("HqId", "HqName");
         $state_list = DB::table("master_state")->leftJoin('master_headquater', 'master_headquater.StateId', '=', 'master_state.StateId')->where('master_headquater.CompanyId', $company)->orderBy('StateName', 'ASC')->pluck("master_state.StateId", "master_state.StateName");
-        return response(array('candidate_detail' => $candidate_detail[0], 'grade_list' => $grade_list, 'designation_list' => $designation_list, 'department_list' => $department_list, 'employee_list' => $employee_list, 'headquarter_list' => $headquarter_list, 'state_list' => $state_list, 'status' => 200));
+        return response(array('candidate_detail' => $candidate_detail[0], 'grade_list' => $grade_list, 'designation_list' => $designation_list, 'department_list' => $department_list, 'employee_list' => $employee_list, 'headquarter_list' => $headquarter_list, 'state_list' => $state_list, 'vertical_list' => $vertical_list, 'status' => 200));
     }
 
     public function update_offerletter_basic(Request $request)
     {
+
         $JAId = $request->Of_JAId;
+        $Company = $request->SelectedForC;
+        $Department = $request->SelectedForD;
         $Grade = $request->Grade;
         $Designation = $request->Designation;
+        $Vertical = $request->Vertical;
         $permanent_chk = $request->permanent_chk ?? 0;
         $PermState = $request->Of_PermState;
         $PermHQ = $request->PermHQ;
@@ -152,6 +157,7 @@ class OfferLtrController extends Controller
             ->update(
                 [
                     'Grade' => $Grade,
+                    'VerticalId' => $Vertical,
                     'Designation' => $Designation,
                     'TempS' => $temporary_chk,
                     'T_StateHq' => $TempState,
@@ -207,6 +213,39 @@ class OfferLtrController extends Controller
                 ]
             );
         }
+
+        $check = DB::table('master_eligibility')->where('CompanyId', $Company)->where('DepartmentId', $Department)->where('GradeId', $Grade)->where('VerticalId', $Vertical)->count();
+
+        if ($check > 0) {
+            $get_elg = DB::table('master_eligibility')->where('CompanyId', $Company)->where('DepartmentId', $Department)->where('GradeId', $Grade)->where('VerticalId', $Vertical)->first();
+        } else {
+            $get_elg = DB::table('master_eligibility')->where('CompanyId', $Company)->where('DepartmentId', $Department)->where('GradeId', $Grade)->where('VerticalId', 0)->first();
+        }
+
+        $update_cand_elg = DB::table('candidate_entitlement')->where('JAId', $JAId)->update(
+            [
+                'LoadCityA' => $get_elg->CategoryA,
+                'LoadCityB' => $get_elg->CategoryB,
+                'LoadCityC' =>  $get_elg->CategoryC,
+                'DAOut' => $get_elg->DA_OutSiteHQ,
+                'DAHq' => $get_elg->DA_InSiteHQ,
+                'TwoWheel' => $get_elg->TW_Km . ' /Per KM',
+                'Train' => $get_elg->Train_YN,
+                'Train_Class' => ($get_elg->Train_Class == 'AC' || $get_elg->Train_Class == 'AC-I') ? 'AC-I' : $get_elg->Train_Class,
+                'Flight' => $get_elg->Flight_YN,
+                'Flight_Class' => $get_elg->Flight_Class,
+                'Flight_Remark' => $get_elg->TravelEnt_Rmk,
+
+                'Mobile' => $get_elg->Mobile,
+                'MExpense' => $get_elg->Mobile_Remb,
+                'MTerm' => ($get_elg->Mobile_Remb_Period == 'Qtr' || $get_elg->Mobile_Remb_Period == 'Quarterly') ? 'Qtr' : 'Monthly',
+                'Laptop' => $get_elg->Laptop_Amt,
+                'HealthIns' => $get_elg->Mediclaim_Coverage_Slabs,
+                'Helth_CheckUp' => $get_elg->Helth_CheckUp,
+                'LastUpdated' => now(),
+
+            ]
+        );
 
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
@@ -286,8 +325,11 @@ class OfferLtrController extends Controller
         $DAHq = $request->DAHq;
         $TwoWheel = $request->TwoWheel;
         $FourWheel = $request->FourWheel;
-        $TravelMode = $request->TravelMode;
-        $TravelClass = $request->TravelClass;
+        $Train = $request->Train;
+        $Train_Class = $request->Train_Class;
+        $Flight = $request->Flight;
+        $Flight_Class = $request->Flight_Class;
+        $Flight_Remark = $request->Flight_Remark;
         $Mobile = $request->Mobile;
         $MExpense = $request->MExpense;
         $MTerm = $request->MTerm;
@@ -297,7 +339,7 @@ class OfferLtrController extends Controller
         $two_wheel_line = $request->two_wheel_line;
         $four_wheel_line = $request->four_wheel_line;
         $GPRS = $request->GPRS;
-        $flight = $request->flight;
+      
         $query1 = DB::table('candidate_entitlement')->where('JAId', $jaid)->update(
             [
                 'EntDate' => now(),
@@ -308,8 +350,11 @@ class OfferLtrController extends Controller
                 'DAHq' => $DAHq,
                 'TwoWheel' => $TwoWheel,
                 'FourWheel' => $FourWheel,
-                'TravelMode' => $TravelMode,
-                'TravelClass' => $TravelClass,
+                'Train' => $Train,
+                'Train_Class' => $Train_Class,
+                'Flight' => $Flight,
+                'Flight_Class' => $Flight_Class,
+                'Flight_Remark' => $Flight_Remark,
                 'Mobile' => $Mobile,
                 'MExpense' => $MExpense,
                 'MTerm' => $MTerm,
@@ -319,7 +364,7 @@ class OfferLtrController extends Controller
                 'TravelLine' => $tline,
                 'TwoWheelLine' => $two_wheel_line,
                 'FourWheelLine' => $four_wheel_line,
-                'Flight' => $flight,
+               
                 'created_on' => now(),
                 'created_by' => Auth::user()->id
             ]
@@ -455,18 +500,21 @@ class OfferLtrController extends Controller
                 'DAHq' => $ent->DAHq,
                 'TwoWheel' => $ent->TwoWheel,
                 'FourWheel' => $ent->FourWheel,
-                'TravelMode' => $ent->TravelMode,
-                'TravelClass' => $ent->TravelClass,
+                'Train' => $ent->Train,
+                'Train_Class' => $ent->Train_Class,
+                'Flight' => $ent->Flight,
+                'Flight_Class' => $ent->Flight_Class,
+                'Flight_Remark' => $ent->Flight_Remark,
                 'Mobile' => $ent->Mobile,
                 'MExpense' => $ent->MExpense,
                 'MTerm' => $ent->MTerm,
                 'GPRS' => $ent->GPRS,
                 'Laptop' => $ent->Laptop,
                 'HealthIns' => $ent->HealthIns,
+                'Helth_CheckUp' => $ent->Helth_CheckUp,
                 'TravelLine' => $ent->TravelLine,
                 'TwoWheelLine' => $ent->TwoWheelLine,
                 'FourWheelLine' => $ent->FourWheelLine,
-                'Flight' => $ent->Flight,
                 'CreatedTime' => now(),
                 'CreatedBy' => Auth::user()->id
             ]
@@ -734,7 +782,7 @@ class OfferLtrController extends Controller
 
                 Mail::to(getEmployeeEmailId($Employee[$j]))->send(new ReviewMail($details));
             }
-            $query = DB::table('jobapply')->join('jobcandidates','jobcandidates.JCId','=','jobapply.JCId')->select('jobcandidates.JCId','jobcandidates.Aadhaar')->where('JAId',$JAId)->first();
+            $query = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->select('jobcandidates.JCId', 'jobcandidates.Aadhaar')->where('JAId', $JAId)->first();
             CandidateActivityLog::addToCandLog($query->JCId, $query->Aadhaar, 'Offer Letter Sent for Review');
             return response()->json(['status' => 200, 'msg' => 'Offer Letter Sent for Review Successfully']);
         } else {

@@ -123,7 +123,16 @@ class AboutCandidateController extends Controller
 
 
         if ($request->CandidateImage != '' || $request->CandidateImage != null) {
+
             $filename = $JCId . '.' . $request->CandidateImage->extension();
+            $query1 = DB::table('jobcandidates')->where('JCId', $JCId)->update(
+                [
+                    'CandidateImage' => $filename,
+                    'LastUpdated' => now()
+
+                ]
+            );
+
             if (\File::exists(public_path('uploads/Picture/' . $filename))) {
                 \File::delete(public_path('uploads/Picture/' . $filename));
             }
@@ -948,7 +957,7 @@ class AboutCandidateController extends Controller
     {
         $JAId = $request->JAId;
         $Verification = $request->Verification;
-        $query = DB::table('candjoining')->where('JAId',$JAId)->update(['Verification' => $Verification]);
+        $query = DB::table('candjoining')->where('JAId', $JAId)->update(['Verification' => $Verification]);
         if ($query) {
             return response()->json(['status' => 200, 'msg' => 'Verification Saved Successfully']);
         } else {
@@ -960,7 +969,7 @@ class AboutCandidateController extends Controller
     {
         $JAId = $request->JAId;
         $Joined = $request->Joined;
-        $query = DB::table('candjoining')->where('JAId',$JAId)->update(['Joined' => $Joined]);
+        $query = DB::table('candjoining')->where('JAId', $JAId)->update(['Joined' => $Joined]);
         if ($query) {
             return response()->json(['status' => 200, 'msg' => 'Data Saved Successfully']);
         } else {
@@ -972,7 +981,7 @@ class AboutCandidateController extends Controller
     {
         $JAId = $request->JAId;
         $PositionCode = $request->PositionCode;
-        $query = DB::table('candjoining')->where('JAId',$JAId)->update(['PositionCode' => $PositionCode]);
+        $query = DB::table('candjoining')->where('JAId', $JAId)->update(['PositionCode' => $PositionCode]);
         if ($query) {
             return response()->json(['status' => 200, 'msg' => 'Data Saved Successfully']);
         } else {
