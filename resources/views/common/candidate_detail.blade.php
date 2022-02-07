@@ -2004,14 +2004,16 @@ $candidate_log = DB::table('candidate_log')
                                 </ul>
                                 <br>
                                 <br>
-                                @if ($OfBasic->EmpCode != '' && $OfBasic != null)
+                                @if ($OfBasic->EmpCode != '' && $OfBasic != null && $OfBasic->ForwardToESS == 'No')
                                     <center><button class="btn btn-sm btn-primary" id="ProcessToEss">Process Data to Ess
                                         </button>
                                     </center>
                                 @endif
-                                    @if ($OfBasic->ForwardToESS =='Yes')
-                                        <center><h3 class="text-success">Data Forwarded to ESS</h3></center>
-                                    @endif
+                                @if ($OfBasic->ForwardToESS == 'Yes')
+                                    <center>
+                                        <h3 class="text-success">Data Forwarded to ESS</h3>
+                                    </center>
+                                @endif
 
                             </div>
                         </div>
@@ -3767,7 +3769,8 @@ $candidate_log = DB::table('candidate_log')
                                                         <div class="form-check form-check-inline">
                                                             <input class="form-check-input " type="checkbox"
                                                                 id="functional_chk" name="functional_chk" value="1">
-                                                            <label class="form-check-label" for="functional_chk">Functional
+                                                            <label class="form-check-label"
+                                                                for="functional_chk">Functional
                                                             </label>
                                                         </div>
                                                         <div class="form-check form-check-inline d-none"
@@ -6637,6 +6640,7 @@ $candidate_log = DB::table('candidate_log')
                         toastr.success(res.msg);
                     } else {
                         toastr.error(res.msg);
+                        window.location.reload();
                     }
                 }
             });
@@ -7586,7 +7590,7 @@ $candidate_log = DB::table('candidate_log')
                         toastr.error(data.msg);
                     } else {
                         toastr.success(data.msg);
-                        //   window.location.reload();
+                        window.location.reload();
 
                     }
                 },
@@ -7617,7 +7621,7 @@ $candidate_log = DB::table('candidate_log')
                         toastr.error(data.msg);
                     } else {
                         toastr.success(data.msg);
-                        //  window.location.reload();
+                        window.location.reload();
 
                     }
                 },
@@ -7648,7 +7652,7 @@ $candidate_log = DB::table('candidate_log')
                         toastr.error(data.msg);
                     } else {
                         toastr.success(data.msg);
-                        //    window.location.reload();
+                        window.location.reload();
 
                     }
                 },

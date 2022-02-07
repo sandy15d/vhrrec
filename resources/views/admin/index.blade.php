@@ -45,7 +45,13 @@ $total_available = DB::table('jobapply')
     ->where('jobapply.Type', '!=', 'Campus')
     ->where('jobapply.Status', null)
     ->count();
-
+$OfferStatusPending = DB::table('candjoining')
+    ->whereNull('Answer')
+    ->count();
+$upcommingJoining = DB::table('candjoining')
+    ->where('Answer', 'Accepeted')
+    ->where('Joined', 'No')
+    ->count();
 @endphp
 @extends('layouts.master')
 @section('title', 'Dashboard')
@@ -161,32 +167,36 @@ $total_available = DB::table('jobapply')
                 </a>
             </div>
             <div class="col">
-                <div class="card radius-10">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div>
-                                <p class="mb-0 text-primary">Offer Letter Status Pending</p>
-                            </div>
-                            <div class="ms-auto">
-                                <h4 class="my-1 text-danger">23</h4>
+                <a href="/offer_letter">
+                    <div class="card radius-10">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <p class="mb-0 text-primary">Offer Letter Status Pending</p>
+                                </div>
+                                <div class="ms-auto">
+                                    <h4 class="my-1 text-danger">{{ $OfferStatusPending }}</h4>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col">
-                <div class="card radius-10">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div>
-                                <p class="mb-0 text-primary">Upcoming Joining's</p>
-                            </div>
-                            <div class="ms-auto">
-                                <h4 class="my-1 text-success">23</h4>
+                <a href="/candidate_joining">
+                    <div class="card radius-10">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <p class="mb-0 text-primary">Upcoming Joining's</p>
+                                </div>
+                                <div class="ms-auto">
+                                    <h4 class="my-1 text-success">{{ $upcommingJoining }}</h4>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
         <!--end row-->

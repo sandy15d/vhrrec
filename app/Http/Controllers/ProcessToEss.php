@@ -36,13 +36,15 @@ class ProcessToEss extends Controller
         $address_query = DB::table('jf_contact_det')->where('JCId', $JCId)->first();
         $elg_query = DB::table('candidate_entitlement')->where('JAId', $JAId)->first();
         $pf_esic_query = DB::table('jf_pf_esic')->where('JCId', $JCId)->first();
-        $jobcandidate = DB::table('jobcandidates')->join('jobapply', 'jobapply.JCId', '=', 'jobcandidates.JCId')->join('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')->join('candjoining', 'candjoining.JAId', '=', 'jobapply.JAId')->where('jobcandidates.JCId', $JCId)->join('about_answer', 'about_answer.JCId', 'jobcandidates.JCId')->select('jobcandidates.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.PositionCode', 'about_answer.DLNo', 'about_answer.LValidity')->first();
+        $jobcandidate = DB::table('jobcandidates')->join('jobapply', 'jobapply.JCId', '=', 'jobcandidates.JCId')->join('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')->leftjoin('candjoining', 'candjoining.JAId', '=', 'jobapply.JAId')->where('jobcandidates.JCId', $JCId)->leftjoin('about_answer', 'about_answer.JCId', 'jobcandidates.JCId')->select('jobcandidates.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.PositionCode', 'about_answer.DLNo', 'about_answer.LValidity')->first();
+
         $workexp_query = DB::table('jf_work_exp')->where('JCId', $JCId)->get();
-        $training_query = DB::table('jf_tranprac')->where('JCId', $JCId)->get();
+        $training_query = DB::table('jf_tranprac')->select('*')->where('JCId', $JCId)->get();
         $pre_ref = DB::table('jf_reference')->where('JCId', $JCId)->where('from', 'Previous Organization')->get();
         $vnr_ref = DB::table('jf_reference')->where('JCId', $JCId)->where('from', 'VNR')->get();
 
         $connection = DB::connection('mysql2');
+
 
 
         $SendCTC = $connection->table('employee_ctc')->insert([
@@ -107,15 +109,18 @@ class ProcessToEss extends Controller
             'DAHq' => $elg_query->DAHq ?? '',
             'TwoWheel' => $elg_query->TwoWheel ?? '',
             'FourWheel' => $elg_query->FourWheel ?? '',
-            'TravelMode' => $elg_query->TravelMode ?? '',
-            'TravelClass' => $elg_query->TravelClass ?? '',
+            'Train' => $elg_query->Train ?? '',
+            'Train_Class' => $elg_query->Train_Class ?? '',
             'Flight' => $elg_query->Flight ?? '',
+            'Flight_Class' => $elg_query->Flight_Class ?? '',
+            'Flight_Remark' => $elg_query->Flight_Remark ?? '',
             'Mobile' => $elg_query->Mobile  ?? '',
             'MExpense' => $elg_query->MExpense ?? '',
             'MTerm' => $elg_query->MTerm ?? '',
             'GPRS' => $elg_query->GPRS ?? '',
             'Laptop' => $elg_query->Laptop ?? '',
             'HealthIns' => $elg_query->HealthIns ?? '',
+            'Helth_CheckUp' => $elg_query->Helth_CheckUp ?? '',
         ]);
 
 
@@ -203,37 +208,41 @@ class ProcessToEss extends Controller
             $SendPreRef = $connection->table('employee_preref')->insert($pre_ref_array);
         }
 
-        if ($training_query[0]->training != null || $training_query[0]->training != '') {
-            $training_array = [];
-            foreach ($training_query as $key => $value) {
-                $temp = array();
-                $temp['EmpCode'] = $EmpCode;
-                $temp['CompanyId'] = $CompanyId;
-                $temp['training'] = $value->training;
-                $temp['organization'] = $value->organization;
-                $temp['from'] = $value->from;
-                $temp['to'] = $value->to;
-                $training_array[] = $temp;
-            }
+        if ($training_query->count() > 0) {
+            if ($training_query[0]->training != null || $training_query[0]->training != '') {
+                $training_array = [];
+                foreach ($training_query as $key => $value) {
+                    $temp = array();
+                    $temp['EmpCode'] = $EmpCode;
+                    $temp['CompanyId'] = $CompanyId;
+                    $temp['training'] = $value->training;
+                    $temp['organization'] = $value->organization;
+                    $temp['from'] = $value->from;
+                    $temp['to'] = $value->to;
+                    $training_array[] = $temp;
+                }
 
-            $SendTraining = $connection->table('employee_training')->insert($training_array);
+                $SendTraining = $connection->table('employee_training')->insert($training_array);
+            }
         }
 
-        if ($vnr_ref[0]->name != null || $vnr_ref[0]->name != '') {
-            $vnr_array = [];
-            foreach ($vnr_ref as $key => $value) {
-                $temp = array();
-                $temp['EmpCode'] = $EmpCode;
-                $temp['CompanyId'] = $CompanyId;
-                $temp['name'] = $value->name;
-                $temp['designation'] = $value->designation;
-                $temp['company'] = $value->company == 'Other' ? $value->other_company : $value->company;
-                $temp['contact'] = $value->contact;
-                $temp['email'] = $value->email;
-                $temp['rel_with_person'] = $value->rel_with_person;
-                $vnr_array[] = $temp;
+        if ($vnr_ref->count() > 0) {
+            if ($vnr_ref[0]->name != null || $vnr_ref[0]->name != '') {
+                $vnr_array = [];
+                foreach ($vnr_ref as $key => $value) {
+                    $temp = array();
+                    $temp['EmpCode'] = $EmpCode;
+                    $temp['CompanyId'] = $CompanyId;
+                    $temp['name'] = $value->name;
+                    $temp['designation'] = $value->designation;
+                    $temp['company'] = $value->company == 'Other' ? $value->other_company : $value->company;
+                    $temp['contact'] = $value->contact;
+                    $temp['email'] = $value->email;
+                    $temp['rel_with_person'] = $value->rel_with_person;
+                    $vnr_array[] = $temp;
+                }
+                $SendVNRRef = $connection->table('employee_vnrref')->insert($vnr_array);
             }
-            $SendVNRRef = $connection->table('employee_vnrref')->insert($vnr_array);
         }
 
         $SendGeneral = $connection->table('employee_general')->insert([
