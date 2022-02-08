@@ -66,6 +66,7 @@ $Rec = DB::table('jobapply')
 
 $JCId = $Rec->JCId;
 $firobid = base64_encode($Rec->JCId);
+
 $OfBasic = DB::table('offerletterbasic')
     ->leftJoin('candjoining', 'candjoining.JAId', '=', 'offerletterbasic.JAId')
     ->select('offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.RejReason', 'candjoining.EmpCode', 'candjoining.Verification', 'candjoining.Joined', 'candjoining.PositionCode', 'candjoining.ForwardToESS')
@@ -2004,17 +2005,19 @@ $candidate_log = DB::table('candidate_log')
                                 </ul>
                                 <br>
                                 <br>
-                                @if ($OfBasic->EmpCode != '' && $OfBasic != null && $OfBasic->ForwardToESS == 'No')
-                                    <center><button class="btn btn-sm btn-primary" id="ProcessToEss">Process Data to Ess
-                                        </button>
-                                    </center>
+                                @if ($OfBasic != null)
+                                    @if ($OfBasic->ForwardToESS == 'No' || ($OfBasic->ForwardToESS == null && $OfBasic->Joined == 'Yes'))
+                                        <center><button class="btn btn-sm btn-primary" id="ProcessToEss">Process Data to
+                                                Ess
+                                            </button>
+                                        </center>
+                                    @endif
                                 @endif
-                                @if ($OfBasic->ForwardToESS == 'Yes')
+                                @if ($OfBasic != null && $OfBasic->ForwardToESS == 'Yes')
                                     <center>
                                         <h3 class="text-success">Data Forwarded to ESS</h3>
                                     </center>
                                 @endif
-
                             </div>
                         </div>
                     </div>

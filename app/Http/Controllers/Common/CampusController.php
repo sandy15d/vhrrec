@@ -6,6 +6,7 @@ use App\Models\jobpost;
 use App\Models\jobapply;
 use App\Models\screening;
 use App\Models\master_mrf;
+use App\Models\OfferLetter;
 use App\Helpers\LogActivity;
 use App\Models\jobcandidate;
 use Illuminate\Http\Request;
@@ -13,8 +14,11 @@ use App\Models\screen2ndround;
 use App\Helpers\UserNotification;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Mail\CampusInterviewMail;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Recruiter\master_post;
+use Illuminate\Support\Facades\Mail;
+
 use function App\Helpers\convertData;
 use function App\Helpers\getFullName;
 use function App\Helpers\GetJobPostId;
@@ -29,6 +33,7 @@ use function App\Helpers\getEducationById;
 use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getDesignationCode;
 use function App\Helpers\CheckJobPostCreated;
+use function App\Helpers\getEducationCodeById;
 use function App\Helpers\getSpecializationbyId;
 
 
@@ -72,7 +77,7 @@ class CampusController extends Controller
             $query1->where('Type', 'Campus')
                 ->orWhere('Type', 'Campus_HrManual');
         })
-            ->where('status', '!=', 'Close')
+            ->where('status', 'Approved')
             ->select('MRFId')
             ->get();
         $OpenMRF = $open->count();
@@ -109,7 +114,7 @@ class CampusController extends Controller
         }
 
         if ($request->MrfStatus == 'Open') {
-            $usersQuery->where('manpowerrequisition.Status', '!=', 'Close');
+            $usersQuery->where('manpowerrequisition.Status', 'Approved');
         } else {
             $usersQuery->where('manpowerrequisition.Status', 'Close');
         }
@@ -128,7 +133,8 @@ class CampusController extends Controller
             ->addColumn('chk', function () {
                 return '<input type="checkbox" class="select_all">';
             })
-            ->editColumn('Type', function ($mrf) {
+
+            /*     ->editColumn('Type', function ($mrf) {
                 if ($mrf->Type == 'N' || $mrf->Type == 'N_HrManual') {
                     return 'New MRF';
                 } elseif ($mrf->Type == 'SIP' || $mrf->Type == 'SIP_HrManual') {
@@ -138,6 +144,11 @@ class CampusController extends Controller
                 } elseif ($mrf->Type == 'R' || $mrf->Type == 'R_HrManual') {
                     return 'Replacement MRF';
                 }
+            }) */
+
+            ->editColumn('Collage', function ($mrf) {
+                $collage = unserialize($mrf->EducationInsId);
+                return getCollegeById($collage[0]);
             })
             ->editColumn('LocationIds', function ($mrf) {
                 if ($mrf->LocationIds != '') {
@@ -330,8 +341,10 @@ class CampusController extends Controller
 
 
 
-        $data = $usersQuery->select('jobpost.JPId', 'jobapply.Company', 'jobapply.Department', 'JobCode', 'jobpost.DesigId', DB::raw('COUNT(jobapply.JAId) AS StudentApplied'))
+        $data = $usersQuery->select('jobpost.JPId', 'jobapply.Company', 'jobapply.Department', 'jobpost.JobCode', 'manpowerrequisition.EducationInsId', 'jobpost.DesigId', DB::raw('COUNT(jobapply.JAId) AS StudentApplied'))
+            ->Join('manpowerrequisition', 'manpowerrequisition.MRFId', '=', 'jobpost.MRFId')
             ->Join('jobapply', 'jobpost.JPId', '=', 'jobapply.JPId')
+
             ->where('jobapply.Type', 'Campus')
             ->groupBy('jobpost.JPId');
 
@@ -341,6 +354,12 @@ class CampusController extends Controller
 
             ->addColumn('chk', function () {
                 return '<input type="checkbox" class="select_all">';
+            })
+
+            ->editColumn('College', function ($data) {
+
+                $College = unserialize($data->EducationInsId);
+                return getCollegeById($College[0]);
             })
 
             ->editColumn('Department', function ($data) {
@@ -379,13 +398,18 @@ class CampusController extends Controller
             })
 
             ->addColumn('University', function ($data) {
-                return getCollegeById($data->College);
+                return getCollegeCode($data->College);
             })
             ->addColumn('StudentName', function ($data) {
                 return $data->FName . ' ' . $data->MName . ' ' . $data->LName;
             })
+
+            ->addColumn('University', function ($data) {
+                return getCollegeCode($data->College);
+            })
+
             ->addColumn('Qualification', function ($data) {
-                $x = getEducationById($data->Education);
+                $x = getEducationCodeById($data->Education);
                 if ($data->Specialization != 0) {
                     $x .= '-' . getSpecializationbyId($data->Specialization);
                 }
@@ -398,7 +422,7 @@ class CampusController extends Controller
                 return $x;
             })
 
-            
+
             ->rawColumns(['chk', 'PlacementDate'])
             ->make(true);
     }
@@ -421,12 +445,11 @@ class CampusController extends Controller
     public function getPostTitle(Request $request)
     {
         $sql = jobpost::find($request->JPId);
-        if($sql->DesigId == 0 || $sql->DesigId == null){
+        if ($sql->DesigId == 0 || $sql->DesigId == null) {
             return $sql->JobCode;
-        }else{
+        } else {
             return (getDesignation($sql->DesigId));
         }
-       
     }
 
     public function SendForScreening(Request $request)
@@ -436,7 +459,7 @@ class CampusController extends Controller
         for ($i = 0; $i < Count($JAId); $i++) {
             $query = jobapply::find($JAId[$i]);
             $query->Status = 'Selected';       //HR Screening
-            $query->FwdTechScr ='Yes';
+            $query->FwdTechScr = 'Yes';
             $query->SelectedBy = Auth::user()->id;
             $query->save();
 
@@ -716,6 +739,28 @@ class CampusController extends Controller
     {
         $query = screening::where('JAId', $request->JAId)
             ->update(['ScreenStatus' => $request->va, 'ResScreened' => now(), 'LastUpdated' => now(), 'UpdatedBy' => Auth::user()->id]);
+        $jobapply = jobapply::find($request->JAId);
+        $JCId = $jobapply->JCId;
+        $jobcandidates = jobcandidate::find($JCId);
+        $firobid = base64_encode($JCId);
+        $JPId = $jobapply->JPId;
+
+        $jobpost = jobpost::find($JPId);
+        $Title = $jobpost->Title;
+        $sendingId = base64_encode($request->JAId);
+        $CandidateEmail = $jobcandidates->Email;
+
+        if ($request->va == 'Shortlist') {
+            $details = [
+                "subject" => 'Interview Call Letter',
+                "name" => $jobcandidates->FName . ' ' . $jobcandidates->MName . ' ' . $jobcandidates->LName,
+                "reference_no" => $jobcandidates->ReferenceNo,
+                "title" => $jobpost->Title,
+                'interview_form' => route("candidate-interview-form", "jaid=$sendingId"),
+                'firob' =>  route("firo_b", "jcid=$firobid")
+            ];
+            Mail::to($CandidateEmail)->send(new CampusInterviewMail($details));
+        }
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
@@ -750,7 +795,7 @@ class CampusController extends Controller
             return response()->json(['status' => 200, 'msg' => '1st Interview Data has been changed successfully.']);
         }
     }
-    
+
     public function SaveSecondInterview_Campus(Request $request)
     {
         $sql = new screen2ndround;
@@ -776,6 +821,19 @@ class CampusController extends Controller
         $sql->SelectedForC = $request->SelectedForC;
         $sql->SelectedForD = $request->SelectedForD;
         $sql->save();
+
+        $JAId = $sql->JAId;
+
+        $query = new OfferLetter;
+        $query->JAId = $JAId;
+        $query->Company = $request->SelectedForC;
+        $query->Department = $request->SelectedForD;
+        $query->CreatedTime = now();
+        $query->Year = date('Y');
+        $query->CreatedBy = Auth::user()->id;
+        $query->save();
+
+
         if (!$sql) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {

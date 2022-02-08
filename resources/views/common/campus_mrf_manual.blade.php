@@ -6,6 +6,7 @@
             padding: 2px 1px;
         }
 
+
     </style>
     <div class="page-content">
 
@@ -24,6 +25,19 @@
                         <div class="modal-body">
                             <table class="table borderless">
                                 <tbody>
+                                    <tr>
+                                        <th>Desired University/College<font class="text-danger">*</font>
+                                        </th>
+                                        <td>
+                                            <select name="University" id="University"
+                                                class="form-control form-select form-select-sm single-select">
+                                                <option value="" selected>Select University/Collage</option>
+                                                @foreach ($institute_list as $key => $value)
+                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <th>On Behalf of HOD<font class="text-danger">*</font>
                                         </th>
@@ -76,8 +90,8 @@
                                             <select id="Department" name="Department"
                                                 class="form-control form-select form-select-sm">
                                                 <option value="" selected disabled>Select Department</option>
-                                                @foreach ($department_list as $key=>$value)
-                                                    <option value="{{$key}}">{{$value}}</option>
+                                                @foreach ($department_list as $key => $value)
+                                                    <option value="{{ $key }}">{{ $value }}</option>
                                                 @endforeach
                                             </select>
                                             <span class="text-danger error-text Department_error"></span>
@@ -138,19 +152,7 @@
                                                     class="bx bx-plus"></i>Education</button>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <th>Desired University/College</th>
-                                        <td>
-                                            <select name="University[]" id="University"
-                                                class="form-control form-select form-select-sm multiple-select"
-                                                multiple="multiple">
 
-                                                @foreach ($institute_list as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
-                                                @endforeach
-                                            </select>
-                                        </td>
-                                    </tr>
                                     <tr>
                                         <th>Work Experience <font class="text-danger">*</font>
                                         </th>
@@ -560,33 +562,41 @@
                 CKEDITOR.instances[instance].updateElement();
             }
             $('#Company').removeAttr('disabled');
-            $.ajax({
-                url: $(form).attr('action'),
-                method: $(form).attr('method'),
-                data: new FormData(form),
-                processData: false,
-                dataType: 'json',
-                contentType: false,
-                beforeSend: function() {
-                    $(form).find('span.error-text').text('');
-                    $("#loader").modal('show');
-                },
 
-                success: function(data) {
-                    if (data.status == 400) {
-                        $('#Company').attr('disabled',true);
-                        $("#loader").modal('hide');
-                        $.each(data.error, function(prefix, val) {
-                            $(form).find('span.' + prefix + '_error').text(val[0]);
-                        });
-                    } else {
-                        $(form)[0].reset();
-                        $('#loader').modal('hide');
-                        toastr.success(data.msg);
-                        window.location.reload();
+            if ($('#University').val() === '') {
+                alert('Please Select University');
+                $('#University').focus();
+                return false;
+            } else {
+
+                $.ajax({
+                    url: $(form).attr('action'),
+                    method: $(form).attr('method'),
+                    data: new FormData(form),
+                    processData: false,
+                    dataType: 'json',
+                    contentType: false,
+                    beforeSend: function() {
+                        $(form).find('span.error-text').text('');
+                        $("#loader").modal('show');
+                    },
+
+                    success: function(data) {
+                        if (data.status == 400) {
+                            $('#Company').attr('disabled', true);
+                            $("#loader").modal('hide');
+                            $.each(data.error, function(prefix, val) {
+                                $(form).find('span.' + prefix + '_error').text(val[0]);
+                            });
+                        } else {
+                            $(form)[0].reset();
+                            $('#loader').modal('hide');
+                            toastr.success(data.msg);
+                            window.location.reload();
+                        }
                     }
-                }
-            });
+                });
+            }
         });
     </script>
 @endsection

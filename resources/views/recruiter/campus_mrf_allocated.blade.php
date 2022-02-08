@@ -72,7 +72,7 @@
                             <tr class="text-center">
                                 <td></td>
                                 <td class="th-sm">S.No</td>
-                                <td>Type</td>
+                                <td>Collage</td>
                                 <td>JobCode</td>
                                 <td>Department</td>
                                 <td>Designation</td>
@@ -516,8 +516,8 @@
                     name: 'DT_RowIndex'
                 },
                 {
-                    data: 'Type',
-                    name: 'Type'
+                    data: 'Collage',
+                    name: 'Collage'
                 },
                 {
                     data: 'JobCode',

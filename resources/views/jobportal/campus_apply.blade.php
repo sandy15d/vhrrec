@@ -44,12 +44,24 @@ use function App\Helpers\getEducationById;
 use function App\Helpers\getSpecializationbyId;
 use function App\Helpers\getDistrictName;
 use function App\Helpers\getStateName;
+use function App\Helpers\getCollegeById;
 $jpid = $_REQUEST['jpid'];
 $jpid = base64_decode($jpid);
 $query = DB::table('jobpost')
     ->Where('JPId', $jpid)
-    ->get();
-
+    ->first();
+$MRFId = $query->MRFId;
+$get_mrf = DB::table('manpowerrequisition')
+    ->where('MRFId', $MRFId)
+    ->first();
+$Education = unserialize($get_mrf->EducationId);
+$e_list = [];
+foreach ($Education as $edu) {
+    array_push($e_list, $edu['e']);
+}
+$Institute = unserialize($get_mrf->EducationInsId);
+$Institute = $Institute[0];
+$country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
 @endphp
 
 <body class="bg-login">
@@ -63,13 +75,17 @@ $query = DB::table('jobpost')
                             <div class="card-body">
                                 <div class="border p-4 rounded">
                                     <div class="text-center">
-                                        <h5 class="">Application for : {{ $query[0]->Title }}</h5>
+
+                                        <h5 class="">Application for : {{ $query->Title }}</h5>
                                     </div>
                                     <hr style="margin: 10px 0px 10px 0px;">
                                     <p class="text-danger" style="font-size: 14px; margin-bottom:0px;">Note: * All
                                         field are mandatory</p>
                                     <p style="font-size: 14px; margin-bottom:0px;">Mention your name as per yor Aadhaar
                                         card only.</p>
+                                    <p style="font-size: 14px; margin-bottom:0px;">This Campus placement activity is
+                                        only for the students of <b>{{ getCollegeById($Institute) }}</b>. Students
+                                        from othe College / University please do not apply.</p>
                                     <hr style="margin: 10px 0px 10px 0px;">
                                     <form action="{{ route('campus_apply') }}" id="jobApplyForm" name="jobApplyForm"
                                         method="POST">
@@ -79,6 +95,16 @@ $query = DB::table('jobpost')
                                             <div class="row">
                                                 <div class="col-lg-9 col-sm-12 table-responsive">
                                                     <table class=" table borderless d-inline-block">
+                                                        <tr>
+                                                            <td valign="middle" style="width: 150px;">Student ID /
+                                                                Roll No.<font color="#FF0000">*
+                                                                </font>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="StudentId" id="StudentId"
+                                                                    class="form-control form-control-sm reqinp">
+                                                            </td>
+                                                        </tr>
                                                         <tr>
                                                             <td valign="middle" style="width: 150px !important">Title
                                                                 <font color="#FF0000">*
@@ -272,6 +298,20 @@ $query = DB::table('jobpost')
                                                                 </table>
                                                             </td>
                                                         </tr>
+
+                                                        <tr>
+                                                            <td valign="middle">Nationality<font color="#FF0000">*
+                                                                </font>
+                                                            <td> <select name="Nationality" id="Nationality"
+                                                                    class="form-select form-select-sm reqinp" >
+                                                                    <option value="">Select</option>
+                                                                    @foreach ($country_list as $key => $value)
+                                                                        <option value="{{ $key }}">
+                                                                            {{ $value }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                               </td>
+                                                        </tr>
                                                         <tr>
                                                             <td valign="middle">Aadhaar No.<font color="#FF0000">*
                                                                 </font>
@@ -298,9 +338,13 @@ $query = DB::table('jobpost')
                                                                                 <option value="">Select Education
                                                                                 </option>
                                                                                 @foreach ($education_list as $key => $value)
-                                                                                    <option
-                                                                                        value="{{ $key }}">
-                                                                                        {{ $value }}</option>
+                                                                                    @if (in_array($key, $e_list))
+                                                                                        <option
+                                                                                            value="{{ $key }}">
+                                                                                            {{ $value }}
+                                                                                        </option>
+                                                                                    @endif
+
                                                                                 @endforeach
                                                                             </select>
                                                                         </td>
@@ -325,7 +369,8 @@ $query = DB::table('jobpost')
                                                                 </font>
                                                             </td>
                                                             <td>
-                                                                <input type="text" name="CGPA" id="CGPA" class="form-control form-control-sm">
+                                                                <input type="text" name="CGPA" id="CGPA"
+                                                                    class="form-control form-control-sm">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -343,7 +388,7 @@ $query = DB::table('jobpost')
                                                                 </select>
                                                             </td>
                                                         </tr>
-                                                        <tr>
+                                                        {{-- <tr>
                                                             <td valign="middle">University/College<font color="#FF0000">
                                                                     *
                                                                 </font>
@@ -355,10 +400,14 @@ $query = DB::table('jobpost')
                                                                     @foreach ($institute_list as $key => $value)
                                                                         <option value="{{ $key }}">
                                                                             {{ $value }}</option>
+
+
                                                                     @endforeach
                                                                 </select>
                                                             </td>
-                                                        </tr>
+                                                        </tr> --}}
+                                                        <input type="hidden" name="College" id="College"
+                                                            value="{{ $Institute }}">
                                                         <tr>
                                                             <td valign="middle">Work Experience<font color="#FF0000">*
                                                                 </font>

@@ -77,6 +77,7 @@
                         <tr class="text-center">
                             <td>#</td>
                             <td class="th-sm">S.No</td>
+                            <td>College</td>
                             <td>JobCode</td>
                             <td>Department</td>
                             <td>Designation</td>
@@ -110,6 +111,7 @@
                             <td class="th-sm">S.No</td>
                             <td>ReferenceNo</td>
                             <td class="th-sm">University</td>
+                            <td class="th-sm">Roll No</td>
                             <td>Student Name</td>
                             <td>Qualification</td>
                             <td>CGPA</td>
@@ -194,7 +196,10 @@
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex'
                     },
-
+                    {
+                        data: 'College',
+                        name: 'College'
+                    },
                     {
                         data: 'JobCode',
                         name: 'JobCode'
@@ -342,6 +347,10 @@
                     {
                         data: 'University',
                         name: 'University'
+                    },
+                    {
+                        data:'StudentId',
+                        name:'StudentId'
                     },
                     {
                         data: 'StudentName',

@@ -201,7 +201,8 @@ $CountryQry = DB::table('master_country')
                                 <a class="has-arrow" href="javascript:;">
                                     <i class="bx bx-right-arrow-alt"></i>Eligibility </a>
                                 <ul>
-                                    <li> <a href="/admin/lodging"><i class="bx bx-right-arrow-alt"></i>Lodging & Other</a>
+                                    <li> <a href="/admin/lodging"><i class="bx bx-right-arrow-alt"></i>Lodging &
+                                            Other</a>
                                     </li>
                                     <li> <a href="/admin/travel"><i class="bx bx-right-arrow-alt"></i>Travel</a>
                                     </li>
@@ -653,6 +654,13 @@ $CountryQry = DB::table('master_country')
                 allowClear: Boolean($(this).data('allow-clear')),
             });
 
+            $('.single-select').select2({
+                theme: 'bootstrap4',
+                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' :
+                    'style',
+                placeholder: $(this).data('placeholder'),
+                allowClear: Boolean($(this).data('allow-clear')),
+            });
 
             $(document).on('click', '#sidebarsetting', function() {
                 $(".switcher-wrapper").toggleClass("switcher-toggled");

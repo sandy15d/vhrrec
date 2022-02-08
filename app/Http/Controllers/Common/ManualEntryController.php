@@ -34,7 +34,7 @@ class ManualEntryController extends Controller
         $this->company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
         $this->department_list = DB::table("master_department")->where('DeptStatus', 'A')->where('CompanyId', session('Set_Company'))->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
         $this->state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
-        $this->institute_list = DB::table("master_institute")->Join('states','states.StateId','=','master_institute.StateId')->where('CountryId',session('Set_Country'))->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+        $this->institute_list = DB::table("master_institute")->Join('states', 'states.StateId', '=', 'master_institute.StateId')->where('CountryId', session('Set_Country'))->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
         $this->userlist = DB::table("users")->where('role', 'H')->orderBy('name', 'asc')->pluck("name", "id");
     }
 
@@ -141,7 +141,7 @@ class ManualEntryController extends Controller
         $state_list = $this->state_list;
         $institute_list = $this->institute_list;
         $userlist = $this->userlist;
-       
+
         return view('common.replacement_mrf_manual', compact('company_list', 'department_list', 'state_list', 'institute_list', 'userlist'));
     }
 
@@ -226,6 +226,7 @@ class ManualEntryController extends Controller
             $MRF->OnBehalf = $request->OnBehalf;
             $MRF->CreatedBy =  Auth::user()->id;
             $MRF->Status = 'New';
+            $MRF->CountryId = session('Set_Country');
 
             $MRF->save();
 
@@ -337,6 +338,7 @@ class ManualEntryController extends Controller
             $MRF->KeyPositionCriteria = $KpArray_str;
             $MRF->CreatedBy =  Auth::user()->id;
             $MRF->Status = 'New';
+            $MRF->CountryId = session('Set_Country');
 
             $MRF->save();
 
@@ -442,6 +444,7 @@ class ManualEntryController extends Controller
         $MRF->CreatedBy =  Auth::user()->id;
         $MRF->Status = 'New';
         $MRF->Reporting = 0;
+        $MRF->CountryId = session('Set_Country');
 
         $query = $MRF->save();
 
@@ -476,6 +479,7 @@ class ManualEntryController extends Controller
             'Department' => 'required',
             'Designation' => 'required',
             'OnBehalf' => 'required',
+            'University' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
@@ -546,6 +550,7 @@ class ManualEntryController extends Controller
             $MRF->EducationId = $EduArray_str;
             $MRF->EducationInsId = $UniversityArray;
             $MRF->KeyPositionCriteria = $KpArray_str;
+            $MRF->CountryId = session('Set_Country');
             $MRF->CreatedBy =  Auth::user()->id;
             $MRF->Status = 'New';
 

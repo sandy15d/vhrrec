@@ -176,6 +176,7 @@ class JobController extends Controller
         $SmsOTP = rand(100000, 999999);
 
         $query = new jobcandidate;
+        $query->StudentId = $request->StudentId;
         $query->Title = $request->Title;
         $query->FName = $request->FName;
         $query->MName = $request->MName;
@@ -217,6 +218,7 @@ class JobController extends Controller
         $query->RefMail = $request->RefMail;
         $query->EmailOTP = $EmailOTP;
         $query->SmsOTP = $SmsOTP;
+        $query->Nationality = $request->Nationality;
         $query->save();
 
         $JCId = $query->JCId;
