@@ -1,6 +1,10 @@
 @extends('layouts.master')
 @section('title', 'User Master')
 @section('PageContent')
+    @php
+    $permission = DB::table('permission')->get();
+
+    @endphp
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
@@ -36,36 +40,42 @@
         </div>
     </div>
 
-<div class="modal fade" id="cngPasswordModal" tabindex="1" area-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Change Password</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" area-label="Close"></button>
-            </div>
-            <form action="{{ route('cngUserPwd') }}" method="POST" id="changePasswordForm">
-                @csrf
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-6">
-                            <label for="NewPassword">Password</label>
-                            <input type="password" class="form-control" name="NewPassword" id="NewPassword">
-                        </div>
-                        <div class="col-6">
-                            <label for="CnfPassword">Confirm Password</label>
-                            <input type="text" class="form-control" name="CnfPassword" id="CnfPassword">
+    <div class="modal fade" id="cngPasswordModal" tabindex="1" area-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" area-label="Close"></button>
+                </div>
+                <form action="{{ route('cngUserPwd') }}" method="POST" id="changePasswordForm">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <input type="hidden" name="UId" id="UId">
+                                <label for="NewPassword">Password</label>
+                                <input type="password" class="form-control" name="NewPassword" id="NewPassword">
+                                <span class="text-danger error-text NewPassword_error"></span>
+                            </div>
+                            <div class="col-6">
+                                <label for="CnfPassword">Confirm Password</label>
+                                <input type="text" class="form-control" name="CnfPassword" id="CnfPassword">
+                                <span class="text-danger error-text CnfPassword_error"></span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="ChangePassword">Update Password</button>
-                </div>
-            </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="ChangePassword">Update Password</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
-    <div class="modal fade" id="addUserModal" tabindex="-1" aria-hidden="true">
+
+    <div class="modal fade" id="addUserModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -166,6 +176,51 @@
         </div>
     </div>
 
+    <div class="modal fade" id="setPermissionModal" tabindex="1" area-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Set Permission</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" area-label="Close"></button>
+                </div>
+                <form action="{{ route('setpermission') }}" method="POST" id="permission_form">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" name="UserId" id="UserId">
+                        <div class="row">
+                            <div class="col-6"></div>
+                            <div class="col-6">
+                                <div class="form-check" style="float: right;">
+                                    <input type="checkbox" name="checkall" id="checkall">
+                                    <label for="checkall" class="form-check-label">Check All</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" id="permission_div">
+                            {{-- @foreach ($permission as $key => $value)
+                                <div class="col-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input page" type="checkbox" value="{{ $value->PId }}"
+                                            name="page" id="{{ $value->PId }}">
+                                        <label class="form-check-label" for="{{ $value->PId }}">
+                                            {{ $value->PageName }}
+                                        </label>
+                                    </div>
+
+                                </div>
+                            @endforeach --}}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 @endsection
 
@@ -242,8 +297,8 @@
         $('#UserTable').DataTable({
             processing: true,
             info: true,
-            searching:false,
-            
+            searching: false,
+
             ajax: "{{ route('getAllUser') }}",
             columns: [{
                     data: 'DT_RowIndex',
@@ -280,39 +335,12 @@
                     data: 'actions',
                     name: 'actions'
                 },
-               
+
             ],
 
         });
 
-        //===============Update State Details================================
-        $('#editUserForm').on('submit', function(e) {
-            e.preventDefault();
-            var form = this;
-            $.ajax({
-                url: $(form).attr('action'),
-                method: $(form).attr('method'),
-                data: new FormData(form),
-                processData: false,
-                dataType: 'json',
-                contentType: false,
-                beforeSend: function() {
-                    $(form).find('span.error-text').text('');
-                },
-                success: function(data) {
-                    if (data.status == 400) {
-                        $.each(data.error, function(prefix, val) {
-                            $(form).find('span.' + prefix + '_error').text(val[0]);
-                        });
-                    } else {
-                        $('#editUserModal').modal('hide');
-                        // $('#editUserForm').find(form)[0].reset();
-                        $('#UserTable').DataTable().ajax.reload(null, false);
-                        toastr.success(data.msg);
-                    }
-                }
-            });
-        });
+
         // ?==============Delete State======================//
         $(document).on('click', '#deleteBtn', function() {
             var UserId = $(this).data('id');
@@ -343,11 +371,123 @@
                 }
             });
         });
-       
+
         //*****==============================Change Password**********//
         $(document).on('click', '.cngpwd', function() {
             var UId = $(this).data('id');
+            $("#UId").val(UId);
             $('#cngPasswordModal').modal('show');
+        });
+
+
+        $('#changePasswordForm').on('submit', function(e) {
+
+            e.preventDefault();
+            var form = this;
+            var Password = $('#NewPassword').val();
+            var ConfirmPassword = $('#CnfPassword').val();
+            if (Password != ConfirmPassword) {
+                $('.CnfPassword_error').text('Password and Confirm Password not match');
+            } else {
+                $.ajax({
+                    url: $(form).attr('action'),
+                    method: $(form).attr('method'),
+                    data: new FormData(form),
+                    processData: false,
+                    dataType: 'json',
+                    contentType: false,
+                    beforeSend: function() {
+                        $(form).find('span.error-text').text('');
+                    },
+                    success: function(data) {
+                        if (data.status == 400) {
+                            $.each(data.error, function(prefix, val) {
+                                $(form).find('span.' + prefix + '_error').text(val[0]);
+                            });
+                        } else {
+                            $('#cngPasswordModal').modal('hide');
+                            toastr.success(data.msg);
+                        }
+                    }
+                });
+            }
+        });
+
+
+
+        $(document).on('click', '.setpermission', function() {
+            var UId = $(this).data('id');
+            $("#UserId").val(UId);
+            $.ajax({
+                //get permission 
+                url: "{{ route('getPermission') }}",
+                type: "POST",
+                data: {
+                    UserId: UId
+                },
+                success: function(res) {
+                    if (res) {
+                        $("#permission_div").empty();
+                        var x = '';
+                        $.each(res.Permission, function(key, value) {
+                            let y = value.active;
+
+                             (y == 'YES') ? y = 'checked' : y = '';
+                            x +=
+                                '<div class="col-4"><div class="form-check"> <input class="form-check-input page" type="checkbox" value="' +
+                                value.PId + '" name="page" id="' + value.PId +
+                                '" ' + y + '><label class="form-check-label" for="" >' + value
+                                .PageName + ' </label></div></div>';
+
+
+                        });
+
+                        $("#permission_div").append(x);
+
+                    } else {
+                        $("#permission_div").empty();
+                    }
+                }
+            });
+            $('#setPermissionModal').modal('show');
+        });
+
+        $('#checkall').click(function() {
+            if ($(this).prop("checked") == true) {
+                $('.page').prop("checked", true);
+            } else if ($(this).prop("checked") == false) {
+                $('.page').prop("checked", false);
+            }
+        });
+
+        $('#permission_form').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            var permission = [];
+            $("input[name='page']").each(function() {
+                if ($(this).prop("checked") == true) {
+                    var value = $(this).val();
+                    permission.push(value);
+                }
+            });
+            var UserId = $('#UserId').val();
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: {
+                    permission: permission,
+                    UserId: UserId
+                },
+
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        $('#setPermissionModal').modal('hide');
+                        toastr.success(data.msg);
+                    }
+                }
+            });
         });
     </script>
 @endsection

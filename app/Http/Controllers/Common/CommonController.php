@@ -97,13 +97,13 @@ class CommonController extends Controller
 
     public function getState()
     {
-        $State = DB::table("states")->where('CountryId',session('Set_Country'))->orderBy('StateName', 'asc')->pluck("StateId", "StateName");
+        $State = DB::table("states")->where('CountryId', session('Set_Country'))->orderBy('StateName', 'asc')->pluck("StateId", "StateName");
         return response()->json($State);
     }
 
     public function getState1(Request $request)
     {
-        $State = DB::table("states")->where('CountryId',$request->CountryId)->orderBy('StateName', 'asc')->pluck("StateId", "StateName");
+        $State = DB::table("states")->where('CountryId', $request->CountryId)->orderBy('StateName', 'asc')->pluck("StateId", "StateName");
         return response()->json($State);
     }
 
@@ -137,7 +137,7 @@ class CommonController extends Controller
 
     public function getCollege1(Request $request)
     {
-        $Education = DB::table("master_institute")->join('states','states.StateId','=','master_institute.StateId')->where('CountryId',$request->CountryId)->orderBy('InstituteName', 'asc')->pluck("InstituteId", "InstituteName");
+        $Education = DB::table("master_institute")->join('states', 'states.StateId', '=', 'master_institute.StateId')->where('CountryId', $request->CountryId)->orderBy('InstituteName', 'asc')->pluck("InstituteId", "InstituteName");
         return response()->json($Education);
     }
 
@@ -402,5 +402,9 @@ class CommonController extends Controller
         }
     }
 
-  
+
+    public function upcoming_interview()
+    {
+        return view('common.upcoming_interview');
+    }
 }

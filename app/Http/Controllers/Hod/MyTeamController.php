@@ -41,7 +41,7 @@ class MyTeamController extends Controller
             })
 
             ->where('e.RepEmployeeID', Auth::user()->id)
-            ->where('e.CountryId',session('Set_Country'))
+           /*  ->where('e.CountryId',session('Set_Country')) */
             ->select(['e.*', 'e1.Fname as RFname', 'e1.Sname as RSname', 'e1.Lname as RLname', 'c.CompanyCode', 'd.DepartmentCode', 'dg.DesigName', 'g.GradeValue', 'h.HqName']);
         return datatables()::of($employee)
             ->addIndexColumn()

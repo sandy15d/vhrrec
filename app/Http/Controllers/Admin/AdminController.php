@@ -12,6 +12,7 @@ use App\Mail\MrfStatusChangeMail;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\LogBookActivity;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
@@ -236,7 +237,7 @@ class AdminController extends Controller
         }
 
         $mrf =  $usersQuery->select('*')
-        ->where('CountryId', session('Set_Country'))
+            ->where('CountryId', session('Set_Country'))
             ->where('Status', 'Approved')
             ->where('Allocated', '!=', null)
             ->orderBy('CreatedTime', 'DESC');
@@ -359,7 +360,7 @@ class AdminController extends Controller
         }
 
         $mrf = $usersQuery->select('*')
-        ->where('CountryId', session('Set_Country'))
+            ->where('CountryId', session('Set_Country'))
             ->where('Status', 'Close')
             ->orderBy('CreatedTime', 'DESC');
 
@@ -385,17 +386,7 @@ class AdminController extends Controller
             ->editColumn('DesigId', function ($mrf) {
                 return getDesignationCode($mrf->DesigId);
             })
-            /* ->editColumn('LocationIds', function ($mrf) {
-                $location = unserialize($mrf->LocationIds);
-                $loc = '';
-                foreach ($location as $key => $value) {
-                    $loc .= getDistrictName($value['city']) . ' ';
-                    $loc .= getStateCode($value['state']) . ' - ';
-                    $loc .= $value['nop'];
-                    $loc . '<br>';
-                }
-                return $loc;
-            }) */
+
             ->addColumn('MRFDate', function ($mrf) {
                 return date('d-m-Y', strtotime($mrf->CreatedTime));
             })
@@ -414,12 +405,16 @@ class AdminController extends Controller
                 return getFullName($mrf->Allocated);
             })
             ->addColumn('Position_Filled', function ($mrf) {
-                return '1';
+                return $mrf->Hired;
             })
             ->addColumn('Details', function ($mrf) {
                 return '<i class="fa fa-eye text-info" style="font-size: 16px;cursor: pointer;" id="viewMRF" data-id=' . $mrf->MRFId . '></i>';
             })
-            ->rawColumns(['chk', 'Allocated', 'Details'])
+
+            ->addColumn('daystofill', function ($mrf) {
+                return   \Carbon\Carbon::parse($mrf->AllocatedDt)->diff($mrf->CloseDt)->format('%d days');
+            })
+            ->rawColumns(['chk', 'Allocated', 'Details', 'daystofill'])
             ->make(true);
     }
 
@@ -515,18 +510,12 @@ class AdminController extends Controller
             })
             ->addColumn('days_to_fill', function ($sql) {
                 if ($sql->Status == 'Close') {
-                    $fdate = $sql->AllocatedDt;
-                    $tdate = $sql->CloseDt;
-                    $datetime1 = new DateTime($fdate);
-                    $datetime2 = new DateTime($tdate);
-                    $interval = $datetime1->diff($datetime2);
-                    $days = $interval->format('%a');
-                    return $days;
+                return    \Carbon\Carbon::parse($sql->AllocatedDt)->diff($sql->CloseDt)->format('%d days');
                 } else {
                     return '';
                 }
             })
-            ->rawColumns(['actions'])
+            ->rawColumns(['actions','days_to_fill'])
             ->make(true);
     }
 

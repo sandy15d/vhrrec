@@ -15,6 +15,15 @@ $CompanyQry = DB::table('master_company')
 $CountryQry = DB::table('master_country')
     ->where('CountryId', session('Set_Country'))
     ->first();
+$permission = DB::table('permission')
+    ->leftJoin('user_permission', 'permission.PId', '=', 'user_permission.PId')
+    ->where('user_permission.UserId', Auth::user()->id)
+    ->select('permission.PageName')
+    ->get();
+$resultArray = json_decode(json_encode($permission), true);
+
+use function App\Helpers\has_permission;
+
 @endphp
 <!doctype html>
 <html lang="en" class="{{ session('ThemeStyle') }} {{ session('SidebarColor') }}">
@@ -227,7 +236,6 @@ $CountryQry = DB::table('master_country')
 
                         </ul>
                     </li>
-
                 @endif
 
 
@@ -272,100 +280,154 @@ $CountryQry = DB::table('master_country')
                             <div class="menu-title">Dashboard</div>
                         </a>
                     </li>
-                    <li>
-                        <a href="javascript:;" class="has-arrow">
-                            <div class="parent-icon"><i class="bx bx-category" style="color: #198754"></i>
-                            </div>
-                            <div class="menu-title">MRF</div>
-                        </a>
-                        <ul>
-                            <li> <a href="/recruiter/mrf_allocated"><i class="bx bx-right-arrow-alt"></i>MRF
-                                    Allocated</a></li>
-                            <li> <a href="/recruiter_mrf_entry"><i class="bx bx-right-arrow-alt"></i>Manual
-                                    Entry</a></li>
-                        </ul>
-                    </li>
+                    @if (has_permission($resultArray, 'MRF Allocated') || has_permission($resultArray, 'MRF Manual Entry'))
+                        <li <li>
+                            <a href="javascript:;" class="has-arrow">
+                                <div class="parent-icon"><i class="bx bx-category" style="color: #198754"></i>
+                                </div>
+                                <div class="menu-title">MRF</div>
+                            </a>
+                            <ul>
+                                @if (has_permission($resultArray, 'MRF Allocated'))
+                                    <li> <a href="/recruiter/mrf_allocated"><i class="bx bx-right-arrow-alt"></i>MRF
+                                            Allocated</a></li>
+                                @endif
+                                @if (has_permission($resultArray, 'MRF Manual Entry'))
+                                    <li> <a href="/recruiter_mrf_entry"><i class="bx bx-right-arrow-alt"></i>Manual
+                                            Entry</a></li>
+                                @endif
+                            </ul>
+                        </li>
+                    @endif
                 @endif
 
                 @if (Auth::user()->role == 'A' || Auth::user()->role == 'R')
-
-                    <li>
-                        <a href="javascript:;" class="has-arrow">
-                            <div class="parent-icon"><i class="lni lni-write text-warning"></i>
-                            </div>
-                            <div class="menu-title">Job Application Management</div>
-                        </a>
-                        <ul>
-                            <li> <a href="/job_response"><i class="bx bx-right-arrow-alt"></i>Job & Response</a></li>
-                            <li> <a href="/job_applications"><i class="bx bx-right-arrow-alt"></i>Job Application
-                                    (Resume Databank)</a>
-                            </li>
-
-                        </ul>
-                    </li>
-
-                    <li>
-                        <a href="javascript:;" class="has-arrow">
-                            <div class="parent-icon"><i class="lni lni-timer  text-info"></i>
-                            </div>
-                            <div class="menu-title">Recruitment Tracker</div>
-                        </a>
-                        <ul>
-
-                            <li> <a href="/TechnicalScreening"><i class="bx bx-right-arrow-alt"></i>Screening
-                                    Tracker</a></li>
-                            <li> <a href="/interview_tracker"><i class="bx bx-right-arrow-alt"></i>Interview Tracker</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="javascript:;" class="has-arrow">
-                            <div class="parent-icon"><i class="fadeIn animated bx bx-walk  text-success"></i>
-                            </div>
-                            <div class="menu-title">Onboarding</div>
-                        </a>
-                        <ul>
-                            <li> <a href="/offer_letter"><i class="bx bx-right-arrow-alt"></i>Job Offers</a></li>
-                            <li> <a href="/candidate_joining"><i class="bx bx-right-arrow-alt"></i>Candidates for
-                                    Joining</a></li>
-
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="javascript:;" class="has-arrow">
-                            <div class="parent-icon"><i class="lni lni-ux  text-primary"></i>
-                            </div>
-                            <div class="menu-title">Campus Hirings</div>
-                        </a>
-                        <ul>
-                            <li> <a href="/campus_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Campus MRF</a>
-                            </li>
-                            <li> <a href="/campus_applications"><i class="bx bx-right-arrow-alt"></i>Campus
-                                    Application</a></li>
-                            <li> <a href="/campus_screening_tracker"><i class="bx bx-right-arrow-alt"></i>Screening
-                                    Tracker</a></li>
-                            <li> <a href="/campus_hiring_tracker"><i class="bx bx-right-arrow-alt"></i>Hiring
-                                    Tracker</a></li>
-                            <li> <a href="/"><i class="bx bx-right-arrow-alt"></i>Hiring Costing</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="javascript:;" class="has-arrow">
-                            <div class="parent-icon"><i class="fadeIn animated bx bx-atom  text-danger"></i>
-                            </div>
-                            <div class="menu-title">Trainee</div>
-                        </a>
-                        <ul>
-                            <li> <a href="/trainee_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Trainee MRF</a>
-                            </li>
-                            <li> <a href="/trainee_applications"><i class="bx bx-right-arrow-alt"></i>Trainee
-                                    Application</a></li>
-                            <li> <a href="/trainee_screening_tracker"><i class="bx bx-right-arrow-alt"></i>SIP /
-                                    Trainee Tracker</a></li>
-                            <li> <a href="/active_trainee"><i class="bx bx-right-arrow-alt"></i>Active Trainee</a></li>
-                            <li> <a href="/old_trainee"><i class="bx bx-right-arrow-alt"></i>Old Trainee</a></li>
-                        </ul>
-                    </li>
+                    @if (has_permission($resultArray, 'Job & Response') || has_permission($resultArray, 'Job Applications'))
+                        <li>
+                            <a href="javascript:;" class="has-arrow">
+                                <div class="parent-icon"><i class="lni lni-write text-warning"></i>
+                                </div>
+                                <div class="menu-title">Job Application Management</div>
+                            </a>
+                            <ul>
+                                @if (has_permission($resultArray, 'Job & Response'))
+                                    <li> <a href="/job_response"><i class="bx bx-right-arrow-alt"></i>Job & Response</a>
+                                    </li>
+                                @endif
+                                @if (has_permission($resultArray, 'Job Applications'))
+                                    <li> <a href="/job_applications"><i class="bx bx-right-arrow-alt"></i>Job
+                                            Application
+                                            (Resume Databank)</a>
+                                    </li>
+                                @endif
+                            </ul>
+                        </li>
+                    @endif
+                    @if (has_permission($resultArray, 'Screening Tracker') || has_permission($resultArray, 'Interview Tracker'))
+                        <li>
+                            <a href="javascript:;" class="has-arrow">
+                                <div class="parent-icon"><i class="lni lni-timer  text-info"></i>
+                                </div>
+                                <div class="menu-title">Recruitment Tracker</div>
+                            </a>
+                            <ul>
+                                @if (has_permission($resultArray, 'Screening Tracker'))
+                                    <li> <a href="/TechnicalScreening"><i class="bx bx-right-arrow-alt"></i>Screening
+                                            Tracker</a></li>
+                                @endif
+                                @if (has_permission($resultArray, 'Interview Tracker'))
+                                    <li> <a href="/interview_tracker"><i class="bx bx-right-arrow-alt"></i>Interview
+                                            Tracker</a>
+                                    </li>
+                                @endif
+                            </ul>
+                        </li>
+                    @endif
+                    @if (has_permission($resultArray, 'Job Offers') || has_permission($resultArray, 'Candidates for Joining'))
+                        <li>
+                            <a href="javascript:;" class="has-arrow">
+                                <div class="parent-icon"><i class="fadeIn animated bx bx-walk  text-success"></i>
+                                </div>
+                                <div class="menu-title">Onboarding</div>
+                            </a>
+                            <ul>
+                                @if (has_permission($resultArray, 'Job Offers'))
+                                    <li> <a href="/offer_letter"><i class="bx bx-right-arrow-alt"></i>Job Offers</a>
+                                    </li>
+                                @endif
+                                @if (has_permission($resultArray, 'Candidates for Joining'))
+                                    <li> <a href="/candidate_joining"><i class="bx bx-right-arrow-alt"></i>Candidates
+                                            for Joining</a></li>
+                                @endif
+                            </ul>
+                        </li>
+                    @endif
+                    @if (has_permission($resultArray, 'Campus MRF') || has_permission($resultArray, 'Campus Application') || has_permission($resultArray, 'Campus Screening Tracker') || has_permission($resultArray, 'Campus Hiring Tracker') || has_permission($resultArray, 'Campus Hiring Costing'))
+                        <li>
+                            <a href="javascript:;" class="has-arrow">
+                                <div class="parent-icon"><i class="lni lni-ux  text-primary"></i>
+                                </div>
+                                <div class="menu-title">Campus Hirings</div>
+                            </a>
+                            <ul>
+                                @if (has_permission($resultArray, 'Campus MRF'))
+                                    <li> <a href="/campus_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Campus
+                                            MRF</a>
+                                    </li>
+                                @endif
+                                @if (has_permission($resultArray, 'Campus Application'))
+                                    <li> <a href="/campus_applications"><i class="bx bx-right-arrow-alt"></i>Campus
+                                            Application</a></li>
+                                @endif
+                                @if (has_permission($resultArray, 'Campus Screening Tracker'))
+                                    <li> <a href="/campus_screening_tracker"><i
+                                                class="bx bx-right-arrow-alt"></i>Screening
+                                            Tracker</a></li>
+                                @endif
+                                @if (has_permission($resultArray, 'Campus Hiring Tracker'))
+                                    <li> <a href="/campus_hiring_tracker"><i class="bx bx-right-arrow-alt"></i>Hiring
+                                            Tracker</a></li>
+                                @endif
+                                @if (has_permission($resultArray, 'Campus Hiring Costing'))
+                                    <li> <a href="/campus_hiring_costing"><i class="bx bx-right-arrow-alt"></i>Hiring
+                                            Costing</a></li>
+                                @endif
+                            </ul>
+                        </li>
+                    @endif
+                    @if (has_permission($resultArray, 'Trainee MRF') || has_permission($resultArray, 'Trainee Application') || has_permission($resultArray, 'Trainee Tracker') || has_permission($resultArray, 'Active Trainee') || has_permission($resultArray, 'Old Trainee'))
+                        <li>
+                            <a href="javascript:;" class="has-arrow">
+                                <div class="parent-icon"><i class="fadeIn animated bx bx-atom  text-danger"></i>
+                                </div>
+                                <div class="menu-title">Trainee</div>
+                            </a>
+                            <ul>
+                                @if (has_permission($resultArray, 'Trainee MRF'))
+                                    <li> <a href="/trainee_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Trainee
+                                            MRF</a>
+                                    </li>
+                                @endif
+                                @if (has_permission($resultArray, 'Trainee Application'))
+                                    <li> <a href="/trainee_applications"><i class="bx bx-right-arrow-alt"></i>Trainee
+                                            Application</a></li>
+                                @endif
+                                @if (has_permission($resultArray, 'Trainee Tracker'))
+                                    <li> <a href="/trainee_screening_tracker"><i class="bx bx-right-arrow-alt"></i>SIP /
+                                            Trainee Tracker</a></li>
+                                @endif
+                                @if (has_permission($resultArray, 'Active Trainee'))
+                                    <li> <a href="/active_trainee"><i class="bx bx-right-arrow-alt"></i>Active
+                                            Trainee</a>
+                                    </li>
+                                @endif
+                                @if (has_permission($resultArray, 'Old Trainee'))
+                                    <li> <a href="/old_trainee"><i class="bx bx-right-arrow-alt"></i>Old Trainee</a>
+                                    </li>
+                                @endif
+                            </ul>
+                        </li>
+                    @endif
                     {{-- <li>
                         <a href="/">
                             <div class="parent-icon"><i class="lni lni-target-customer" style="color: #6610f2"></i>
@@ -373,8 +435,6 @@ $CountryQry = DB::table('master_country')
                             <div class="menu-title">Online Test Module</div>
                         </a>
                     </li> --}}
-
-
                 @endif
 
                 @if (Auth::user()->role == 'A')

@@ -150,7 +150,7 @@ $upcommingJoining = DB::table('candjoining')
                 </a>
             </div>
             <div class="col">
-                <a href="/interview_tracker">
+                <a href="/upcoming_interview">
                     <div class="card radius-10">
                         <div class="card-body">
                             <div class="d-flex align-items-center">

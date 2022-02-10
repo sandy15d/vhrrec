@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Helpers\Helper;
 use App\Helpers\LogActivity;
 use App\Mail\NewUserMail;
+use App\Models\Admin\master_user_permission;
 use DataTables;
 use Illuminate\Support\Facades\Mail;
 
@@ -114,7 +115,12 @@ class UserController extends Controller
         return datatables()->of($User)
             ->addIndexColumn()
             ->addColumn('actions', function ($User) {
-                return '<button class="btn btn-sm btn btn-outline-danger font-12 delete" data-id="' . $User['id'] . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button> <button class="btn btn-sm btn-outline-warning font-12 cngpwd" data-id="' . $User['id'] . '"><i class="fadeIn animated bx bx-key"></i></button> <button class="btn btn-sm btn-outline-info font-12 setpermission" data-id="' . $User['id'] . '"><i class="fadeIn animated bx bx-lock"></i></button>';
+                $x = '';
+                $x .= '<button class="btn btn-sm btn btn-outline-danger font-12 " ><i class="fadeIn animated bx bx-trash delete" data-id="' . $User['id'] . '" id="deleteBtn"></i></button> <button class="btn btn-sm btn-outline-primary font-12 cngpwd" data-id="' . $User['id'] . '"><i class="fadeIn animated bx bx-key"></i></button>';
+                if ($User['role'] == 'R') {
+                    $x .= '<button class="btn btn-sm btn-outline-info font-12 setpermission" data-id="' . $User['id'] . '"><i class="fadeIn animated bx bx-lock"></i></button>';
+                }
+                return $x;
             })
 
             ->addColumn('UserType', function ($User) {
@@ -139,6 +145,62 @@ class UserController extends Controller
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
             return response()->json(['status' => 200, 'msg' => 'User  data has been Deleted.']);
+        }
+    }
+
+    public function cngUserPwd(Request $request)
+    {
+        $UId = $request->UId;
+        $validator = Validator::make($request->all(), [
+            'CnfPassword' => 'required',
+            'NewPassword' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
+        } else {
+
+            $query = master_user::where('id', $UId)->update(['password' => bcrypt($request->NewPassword), 'updated_at' => date('Y-m-d H:i:s')]);
+
+            if (!$query) {
+                return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+            } else {
+                return response()->json(['status' => 200, 'msg' => 'Password has been changed successfully.']);
+            }
+        }
+    }
+
+
+    public function getPermission(Request $request)
+    {
+        $UserId = $request->UserId;
+        $query = DB::select("SELECT p.*,IF(ISNULL(up.PId), 'NO', 'YES') AS active FROM permission p
+       left JOIN user_permission up on up.PId = p.PId AND up.UserId = $UserId");
+        return response()->json(['Permission' => $query]);
+    }
+
+    public function setpermission(Request $request)
+    {
+        $UserId = $request->UserId;
+        $permission = $request->permission;
+        $sql = 0;
+        $check = master_user_permission::where('UserId', $UserId);
+        if ($check != null) {
+            $query = $check->delete();
+        }
+
+        for ($i = 0; $i < Count($permission); $i++) {
+            $UserPermission = new master_user_permission;
+            $UserPermission->UserId = $UserId;
+            $UserPermission->PId = $permission[$i];
+
+            $UserPermission->save();
+            $sql = 1;
+        }
+
+        if ($sql == 1) {
+            return response()->json(['status' => 200, 'msg' => 'Permission has been set successfully.']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         }
     }
 }

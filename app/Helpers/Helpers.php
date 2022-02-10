@@ -47,7 +47,7 @@ function getEmployeeDesignation($empid)
 	if ($empid == null) {
 		return "";
 	} else {
-		$query = DB::table('master_employee')->join('master_designation','master_designation.DesigId','=','master_employee.DesigId')->select("DesigName")->where('EmployeeID', $empid)->first();
+		$query = DB::table('master_employee')->join('master_designation', 'master_designation.DesigId', '=', 'master_employee.DesigId')->select("DesigName")->where('EmployeeID', $empid)->first();
 		return $query->DesigName;
 	}
 }
@@ -347,4 +347,16 @@ function CheckCommControl($Id)
 	} else {
 		return '0';
 	}
+}
+
+
+
+function has_permission($resultArray, $pageName)
+{
+	foreach ($resultArray as $key => $value) {
+		if ($value['PageName'] == $pageName) {
+			return true;
+		}
+	}
+	return false;
 }

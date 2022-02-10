@@ -20,6 +20,7 @@ use function App\Helpers\getStateCode;
 use function App\Helpers\getDistrictName;
 use function App\Helpers\getFullName;
 use function App\Helpers\GetJobPostId;
+use Illuminate\Support\Facades\Validator;
 
 class MrfAllocatedController extends Controller
 {
@@ -132,8 +133,8 @@ class MrfAllocatedController extends Controller
                             $city = 0;
                         }
                         $loc .= getDistrictName($city) . ', ';
-                        $loc .= '('.getStateCode($value['state']) . ') - ';
-                        $loc .= $value['nop'].',<br>';
+                        $loc .= '(' . getStateCode($value['state']) . ') - ';
+                        $loc .= $value['nop'] . ',<br>';
                         $loc . '<br>';
                     }
                     return $loc;
@@ -171,13 +172,17 @@ class MrfAllocatedController extends Controller
                     return '';
                 }
             })
-            ->addColumn('details', function ($mrf) {
-
-                return '<i  class="fadeIn animated lni lni-eye  text-primary view" aria-hidden="true" data-id="' . $mrf->MRFId . '" id="viewMRF"  style="font-size: 18px;cursor: pointer;"></i>';
+            ->addColumn('Action', function ($mrf) {
+                $x = '';
+                $x .= '<i  class="fadeIn animated lni lni-eye  text-primary view" aria-hidden="true" data-id="' . $mrf->MRFId . '" id="viewMRF" title="View MRF" style="font-size: 18px;cursor: pointer;"></i> ';
+                if ($mrf->Status == 'Approved') {
+                    $x .= '   <i  class="fadeIn animated bx bx-window-close  text-danger closemrf" aria-hidden="true" data-id="' . $mrf->MRFId . '" id="closemrf"  style="font-size: 18px;cursor: pointer;" title="Close MRF"></i>';
+                }
+                return $x;
             })
 
 
-            ->rawColumns(['chk', 'details', 'JobShow', 'JobPost','LocationIds'])
+            ->rawColumns(['chk', 'Action', 'JobShow', 'JobPost', 'LocationIds'])
             ->make(true);
     }
 
@@ -272,6 +277,47 @@ class MrfAllocatedController extends Controller
             $jobCode = $SQL->JobCode;
             LogActivity::addToLog('Job Posting ' . $jobCode . ' is now ' . $request->va . ' in Ess/Site', 'Update');
             return response()->json(['status' => 200, 'msg' => 'Job Posting Viewing Status has been changed successfully.']);
+        }
+    }
+
+    public function close_mrf(Request $request)
+    {
+        $MRFId = $request->MrId;
+        $validator = Validator::make($request->all(), [
+            'hired' => 'required',
+            'reason' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['status' => 400, 'error' => $validator->errors()->toArray()]);
+        } else {
+
+            $mrf = master_mrf::find($MRFId);
+            $JobCode = $mrf->JobCode;
+
+
+
+            $mrf->Status = 'Close';
+            $mrf->CloseDt = now();
+            $mrf->CloseReason = $request->reason;
+            $mrf->Hired = $request->hired;
+            $mrf->UpdatedBy = Auth::user()->id;
+            $mrf->LastUpdated = now();
+            $mrf->save();
+
+            $jobpost = master_post::where('MRFId', $MRFId)->first();
+            $jobpost->Status = 'Close';
+            $jobpost->PostingView = 'Hidden';
+            $jobpost->UpdatedBy = Auth::user()->id;
+            $jobpost->LastUpdated = now();
+            $jobpost->save();
+
+
+            if (!$mrf) {
+                return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+            } else {
+                LogActivity::addToLog('MRF ' . $JobCode . ' is closed by ' . getFullName(Auth::user()->id), 'Update');
+                return response()->json(['status' => 200, 'msg' => 'MRF is closed successfully.']);
+            }
         }
     }
 }

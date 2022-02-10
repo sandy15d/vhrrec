@@ -150,6 +150,7 @@ class TraineeController extends Controller
                     data-bs-target="#createpostmodal" onclick="getDetailForJobPost(' . $mrf->MRFId . ')"><i class="fa fa-plus-square-o"></i>Create</a>';
                 }
             })
+
             ->addColumn('JobShow', function ($mrf) {
                 $check = CheckJobPostCreated($mrf->MRFId);
                 if ($check == 1) {
@@ -172,7 +173,12 @@ class TraineeController extends Controller
             })
 
             ->addColumn('details', function ($mrf) {
-                return '<i  class="fadeIn animated lni lni-eye  text-primary view" aria-hidden="true" data-id="' . $mrf->MRFId . '" id="viewMRF"  style="font-size: 18px;cursor: pointer;"></i>';
+                $x = '';
+                $x .= '<i  class="fadeIn animated lni lni-eye  text-primary view" aria-hidden="true" data-id="' . $mrf->MRFId . '" id="viewMRF" title="View MRF" style="font-size: 18px;cursor: pointer;"></i> ';
+                if ($mrf->Status == 'Approved') {
+                    $x .= '   <i  class="fadeIn animated bx bx-window-close  text-danger closemrf" aria-hidden="true" data-id="' . $mrf->MRFId . '" id="closemrf"  style="font-size: 18px;cursor: pointer;" title="Close MRF"></i>';
+                }
+                return $x;
             })
 
             ->rawColumns(['chk', 'details', 'JobPost', 'JobShow'])

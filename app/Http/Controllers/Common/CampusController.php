@@ -12,14 +12,14 @@ use App\Models\jobcandidate;
 use Illuminate\Http\Request;
 use App\Models\screen2ndround;
 use App\Helpers\UserNotification;
+use App\Mail\CampusInterviewMail;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Mail\CampusInterviewMail;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Recruiter\master_post;
 use Illuminate\Support\Facades\Mail;
-
+use App\Models\Recruiter\master_post;
 use function App\Helpers\convertData;
+
 use function App\Helpers\getFullName;
 use function App\Helpers\GetJobPostId;
 use function App\Helpers\getStateCode;
@@ -29,6 +29,7 @@ use function App\Helpers\getCollegeCode;
 use function App\Helpers\getCompanyCode;
 use function App\Helpers\getDesignation;
 use function App\Helpers\getDistrictName;
+use Illuminate\Support\Facades\Validator;
 use function App\Helpers\getEducationById;
 use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getDesignationCode;
@@ -838,6 +839,134 @@ class CampusController extends Controller
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
             return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully.']);
+        }
+    }
+
+    public function campus_hiring_costing()
+    {
+        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
+        return view('common.hiring_costing', compact('company_list'));
+    }
+
+    public function getCampusCosting(Request $request)
+    {
+
+        $usersQuery = jobpost::query();
+        $Company = $request->Company;
+        $Department = $request->Department;
+
+
+        if (Auth::user()->role == 'R') {
+            $usersQuery->where('jobpost.CreatedBy', Auth::user()->id);
+        }
+        if ($Company != '') {
+            $usersQuery->where("jobpost.CompanyId", $Company);
+        }
+        if ($Department != '') {
+            $usersQuery->where("jobpost.DepartmentId", $Department);
+        }
+
+
+
+
+        $data = $usersQuery->select('jobpost.JPId', 'jobpost.JobCode', 'manpowerrequisition.EducationInsId', 'campus_costing.total', 'jobpost.DepartmentId', 'jobpost.DesigId')
+            ->Join('manpowerrequisition', 'manpowerrequisition.MRFId', '=', 'jobpost.MRFId')
+            ->leftJoin('campus_costing', 'campus_costing.JPId', '=', 'jobpost.JPId')
+            ->where('JobPostType', 'Campus')
+            ->groupBy('jobpost.JPId');
+
+
+        return datatables()->of($data)
+            ->addIndexColumn()
+
+            ->editColumn('College', function ($data) {
+
+                $College = unserialize($data->EducationInsId);
+                return getCollegeById($College[0]);
+            })
+
+            ->editColumn('Department', function ($data) {
+                return getDepartment($data->DepartmentId);
+            })
+            ->editColumn('Designation', function ($data) {
+                if ($data->DesigId != 0 || $data->DesigId != null) {
+                    return getDesignation($data->DesigId);
+                } else {
+                    return '';
+                }
+            })
+            ->addColumn('Action', function ($data) {
+                //data-bs-toggle="modal" data-bs-target="#expense_modal"
+                return '<a href="javascript:void(0);" class="btn btn-xs btn-warning" onclick="getCosting(' . $data->JPId . ')"  >Edit/View</a>';
+            })
+
+            ->rawColumns(['Action'])
+
+            ->make(true);
+    }
+
+    public function updateCosting(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'Appeared' => 'required',
+            'Hired' => 'required',
+            'RT1' => 'required',
+            'RT2' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['status' => 0, 'error' => $validator->errors()->toArray()]);
+        } else {
+            $chk = DB::table('campus_costing')->where('JPId', $request->JPId)->first();
+            if ($chk == null) {
+                $sql = DB::table('campus_costing')->insert([
+                    'JPId' => $request->JPId,
+                    'FromDate' => $request->FromDate,
+                    'ToDate' => $request->ToDate,
+                    'Appeared' => $request->Appeared,
+                    'Hired' => $request->Hired,
+                    'RT1' => $request->RT1,
+                    'RT2' => $request->RT2,
+                    'RT3' => $request->RT3,
+                    'RT4' => $request->RT4,
+                    'AvgCost' => $request->AvgCost,
+                    'Total' => $request->Total,
+                    'CreatedBy' => Auth::user()->id,
+                    'CreatedTime' => now(),
+                ]);
+            } else {
+                $sql = DB::table('campus_costing')->where('JPId', $request->JPId)->update([
+
+                    'FromDate' => $request->FromDate,
+                    'ToDate' => $request->ToDate,
+                    'Appeared' => $request->Appeared,
+                    'Hired' => $request->Hired,
+                    'RT1' => $request->RT1,
+                    'RT2' => $request->RT2,
+                    'RT3' => $request->RT3,
+                    'RT4' => $request->RT4,
+                    'AvgCost' => $request->AvgCost,
+                    'Total' => $request->Total,
+                    'CreatedBy' => Auth::user()->id,
+                    'CreatedTime' => now(),
+                ]);
+            }
+
+
+            if (!$sql) {
+                return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+            } else {
+                return response()->json(['status' => 200, 'msg' => 'Data has been successfully created.']);
+            }
+        }
+    }
+
+    public function getCostingDetail(Request $request)
+    {
+        $data = DB::table('campus_costing')->where('JPId', $request->JPId)->first();
+        if ($data != null) {
+            return response()->json(['status' => 200, 'data' => $data]);
+        } else {
+            return response()->json(['status' => 400]);
         }
     }
 }

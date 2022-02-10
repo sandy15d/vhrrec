@@ -101,6 +101,7 @@ Route::post('sendMailToCandidate', [CommonController::class, 'sendMailToCandidat
 Route::get('getEmpByCompany', [CommonController::class, 'getEmpByCompany'])->name('getEmpByCompany');
 Route::get('change-password', [CommonController::class, 'changePassword'])->name('change-password');
 Route::post('passwordChange', [CommonController::class, 'passwordChange'])->name('passwordChange');
+Route::get('upcoming_interview', [CommonController::class, 'upcoming_interview'])->name('upcoming_interview');
 
 Route::get('candidate_detail', [AboutCandidateController::class, 'candidate_detail'])->name('candidate_detail');
 
@@ -313,6 +314,15 @@ Route::post('SendForScreening', [CampusController::class, 'SendForScreening'])->
 Route::post('SaveFirstInterview_Campus', [CampusController::class, 'SaveFirstInterview_Campus'])->name('SaveFirstInterview_Campus');
 Route::post('SaveSecondInterview_Campus', [CampusController::class, 'SaveSecondInterview_Campus'])->name('SaveSecondInterview_Campus');
 Route::post('Save_Cmp_Dpt_Campus', [CampusController::class, 'Save_Cmp_Dpt_Campus'])->name('Save_Cmp_Dpt_Campus');
+Route::get('campus_hiring_costing', [CampusController::class, 'campus_hiring_costing'])->name('campus_hiring_costing');
+Route::post('getCampusCosting', [CampusController::class, 'getCampusCosting'])->name('getCampusCosting');
+Route::post('updateCosting', [CampusController::class, 'updateCosting'])->name('updateCosting');
+Route::post('getCostingDetail', [CampusController::class, 'getCostingDetail'])->name('getCostingDetail');
+
+
+
+
+
 
 Route::get('trainee_mrf_allocated', [TraineeController::class, 'trainee_mrf_allocated'])->name('trainee_mrf_allocated');
 Route::post('getAllTraineeAllocatedMrf', [TraineeController::class, 'getAllTraineeAllocatedMrf'])->name('getAllTraineeAllocatedMrf');
@@ -491,6 +501,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::get('getAllUser', [UserController::class, 'getAllUser'])->name('getAllUser');
     Route::post('cngUserPwd', [UserController::class, 'cngUserPwd'])->name('cngUserPwd');
     Route::post('deleteUser', [UserController::class, 'deleteUser'])->name('deleteUser');
+    Route::post('getPermission', [UserController::class, 'getPermission'])->name('getPermission');
+    Route::post('setpermission', [UserController::class, 'setpermission'])->name('setpermission');
     Route::get('getEmployee', [UserController::class, 'getEmployee'])->name('getEmployee');
     Route::get('getEmployeeDetail', [UserController::class, 'getEmployeeDetail'])->name('getEmployeeDetail');
 
@@ -508,6 +520,7 @@ Route::group(['prefix' => 'recruiter', 'middleware' => ['isRecruiter', 'auth', '
     Route::post('getDetailForJobPost', [MrfAllocatedController::class, 'getDetailForJobPost'])->name('getDetailForJobPost');
     Route::post('createJobPost', [MrfAllocatedController::class, 'createJobPost'])->name('createJobPost');
     Route::post('ChngPostingView', [MrfAllocatedController::class, 'ChngPostingView'])->name('ChngPostingView');
+    Route::post('close_mrf', [MrfAllocatedController::class, 'close_mrf'])->name('close_mrf');
 });
 
 Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackHistory']], function () {

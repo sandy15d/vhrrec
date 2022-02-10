@@ -1,18 +1,18 @@
 @extends('layouts.master')
 @section('title', 'Closed MRF Details')
 @section('PageContent')
-<style>
-    .table>:not(caption)>*>* {
-        padding: 2px 1px;
-    }
+    <style>
+        .table>:not(caption)>*>* {
+            padding: 2px 1px;
+        }
 
-</style>
+    </style>
     <div class="page-content">
-         <!--breadcrumb-->
-         <div class="page-breadcrumb  align-items-center mb-3">
+        <!--breadcrumb-->
+        <div class="page-breadcrumb  align-items-center mb-3">
             <div class="row mb-1">
                 <div class="col-3 breadcrumb-title ">
-                   Active  MRF Details
+                    Active MRF Details
                 </div>
                 <div class="col-2">
                     <select name="Fill_Company" id="Fill_Company" class="form-select form-select-sm"
@@ -54,10 +54,10 @@
 
         </div>
         <!--end breadcrumb-->
-    
+
         <div class="card">
             <div class="card-body">
-           
+
                 <div class="table-responsive">
                     <table class="table  table-hover table-condensed table-bordered table-striped text-center" id="MRFTable"
                         style="width: 100%">
@@ -71,11 +71,13 @@
                                 <td>Designation</td>
                                 <td>Position</td>
                                 <td>Position Filled</td>
-                               {{--  <td>Location</td> --}}
+                                {{-- <td>Location</td> --}}
                                 <td>MRF Date</td>
                                 <td>Created By</td>
                                 <td>Allocated Date</td>
                                 <td>Close Date</td>
+                                <td>Days to fill</td>
+                                <td>Reason</td>
                                 <td>Details</td>
                             </tr>
                         </thead>
@@ -87,248 +89,248 @@
         </div>
     </div>
     <div class="modal fade" id="editMRFModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
-    data-bs-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-info bg-gradient">
-                <h5 class="modal-title text-white">MRF Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-info bg-gradient">
+                    <h5 class="modal-title text-white">MRF Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('updateMRF') }}" method="POST" id="update_mrf_form">
+                    @csrf
+                    <div class="modal-body">
+                        <table class="table borderless">
+                            <tbody>
+                                <tr>
+                                    <input type="hidden" name="MRFId" id="MRFId">
+                                    <input type="hidden" name="MRF_Type" id="MRF_Type">
+                                    <th style="width:250px;">Reason for Creating New Position<font class="text-danger">*
+                                        </font>
+                                    </th>
+                                    <td>
+                                        <textarea class="form-control" rows="1" name="Reason" id="Reason" tabindex="1"
+                                            autofocus></textarea>
+                                        <span class="text-danger error-text Reason_error"></span>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Company<font class="text-danger">*</font>
+                                    </th>
+                                    <td><select id="Company" name="Company" class="form-control form-select form-select-sm">
+                                            <option value="" selected disabled>Select Company</option>
+                                            @foreach ($company_list as $key => $value)
+                                                <option value="{{ $key }}">{{ $value }}</option>
+                                            @endforeach
+                                        </select>
+                                        <span class="text-danger error-text Company_error"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Deartment<font class="text-danger">*</font>
+                                    </th>
+                                    <td>
+                                        <div class="spinner-border text-primary d-none" role="status" id="DeptLoader"> <span
+                                                class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <select id="Department" name="Department" id="Department"
+                                            class="form-control form-select form-select-sm">
+                                            <option value="" selected disabled>Select Department</option>
+                                            @foreach ($department_list as $key => $value)
+                                                <option value="{{ $key }}">{{ $value }}</option>
+                                            @endforeach
+                                        </select>
+                                        <span class="text-danger error-text Department_error"></span>
+                                    </td>
+                                </tr>
+                                <tr id="deisgnation_tr" class="d-none">
+                                    <th>Designation<font class="text-danger">*</font>
+                                    </th>
+                                    <td>
+                                        <div class="spinner-border text-primary d-none" role="status" id="DesigLoader">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <select id="Designation" name="Designation"
+                                            class="form-control form-select form-select-sm">
+                                            <option value="" selected disabled>Select Designation</option>
+                                            @foreach ($designation_list as $key => $value)
+                                                <option value="{{ $key }}">{{ $value }}</option>
+                                            @endforeach
+                                        </select>
+                                        <span class="text-danger error-text Designation_error"></span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th>Location & Man Power <font class="text-danger">*</font>
+                                    </th>
+                                    <td>
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tbody id="MulLocation">
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr id="ctc_tr">
+                                    <th>Desired CTC (in Rs.) <font class="text-danger">*</font>
+                                    </th>
+                                    <td>
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tr>
+                                                <td><input type="text" name="MinCTC" id="MinCTC"
+                                                        class="form-control form-control-sm" placeholder="Min"></td>
+                                                <td><input type="text" name="MaxCTC" id="MaxCTC"
+                                                        class="form-control form-control-sm" placeholder="Max"> </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr id="stipend_tr">
+                                    <th>Desired Stipend (in Rs. Per Month) <font class="text-danger">*</font>
+                                    </th>
+                                    <td>
+                                        <input type="text" name="Stipend" id="Stipend" class="form-control form-control-sm">
+                                    </td>
+                                </tr>
+                                <tr id="other_benifit_tr">
+                                    <th>Other Benefits</th>
+                                    <td>
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input " type="checkbox"
+                                                                id="two_wheeler_check">
+                                                            <label class="form-check-label" for="two_wheeler_check">2
+                                                                Wheeler reimbursement Rs.
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline d-none"
+                                                            id="two_wheeler_div">
+                                                            <input type="text" name="two_wheeler" id="two_wheeler"
+                                                                style="border-radius: .2rem; border:1px solid #ced4da; padding:.25rem">
+                                                            per
+                                                            km
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-check form-check-inline" style="width: 200px;">
+                                                            <input class="form-check-input " type="checkbox" id="da_check">
+                                                            <label class="form-check-label" for="da_check">DA
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline d-none" id="da_div">
+                                                            <input type="text" name="da" id="da"
+                                                                style="border-radius: .2rem; border:1px solid #ced4da; padding:.25rem">
+                                                            Rs. per
+                                                            Day
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <th>Desired Eductaion
+                                    </th>
+                                    <td>
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tbody id="MulEducation">
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th>Desired University/College</th>
+                                    <td>
+                                        <select name="University[]" id="University"
+                                            class="form-control form-select form-select-sm multiple-select"
+                                            multiple="multiple">
+
+                                            @foreach ($institute_list as $key => $value)
+                                                <option value="{{ $key }}">{{ $value }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr id="work_exp_tr">
+                                    <th>Work Experience <font class="text-danger">*</font>
+                                    </th>
+                                    <td>
+                                        <input type="text" name="WorkExp" id="WorkExp" class="form-control form-control-sm">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Job Description</th>
+                                    <td>
+                                        <textarea name="JobInfo" id="JobInfo" class="form-control"></textarea>
+                                    </td>
+                                </tr>
+                                <tr id="duration_tr">
+                                    <th>Training Duration</th>
+                                    <td>
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tbody>
+                                                <tr>
+                                                    <td valign="middle">From</td>
+                                                    <td>
+                                                        <input type="date" name="Tr_Frm_Date" id="Tr_Frm_Date"
+                                                            class="form-control form-control-sm">
+                                                        <span class="text-danger error-text Tr_Frm_Date_error"></span>
+                                                    </td>
+                                                    <td valign="middle">To</td>
+                                                    <td>
+                                                        <input type="date" name="Tr_To_Date" id="Tr_To_Date"
+                                                            class="form-control form-control-sm">
+                                                        <span class="text-danger error-text Tr_To_Date_error"></span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Mandatory Requirement</th>
+                                    <td>
+
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tbody id="MulKP">
+                                            </tbody>
+                                        </table>
+                                        <button type="button" name="add" id="addKP"
+                                            class="btn btn-warning btn-sm mb-2 mt-2"><i class="bx bx-plus"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Any Other Remark</th>
+                                    <td>
+                                        <textarea name="Remark" id="Remark" class="form-control"></textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="UpdateMRF">Save changes</button>
+                    </div>
+                </form>
             </div>
-            <form action="{{ route('updateMRF') }}" method="POST" id="update_mrf_form">
-                @csrf
-                <div class="modal-body">
-                    <table class="table borderless">
-                        <tbody>
-                            <tr>
-                                <input type="hidden" name="MRFId" id="MRFId">
-                                <input type="hidden" name="MRF_Type" id="MRF_Type">
-                                <th style="width:250px;">Reason for Creating New Position<font class="text-danger">*
-                                    </font>
-                                </th>
-                                <td>
-                                    <textarea class="form-control" rows="1" name="Reason" id="Reason" tabindex="1"
-                                        autofocus></textarea>
-                                    <span class="text-danger error-text Reason_error"></span>
-
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Company<font class="text-danger">*</font>
-                                </th>
-                                <td><select id="Company" name="Company" class="form-control form-select form-select-sm">
-                                        <option value="" selected disabled>Select Company</option>
-                                        @foreach ($company_list as $key => $value)
-                                            <option value="{{ $key }}">{{ $value }}</option>
-                                        @endforeach
-                                    </select>
-                                    <span class="text-danger error-text Company_error"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Deartment<font class="text-danger">*</font>
-                                </th>
-                                <td>
-                                    <div class="spinner-border text-primary d-none" role="status" id="DeptLoader"> <span
-                                            class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <select id="Department" name="Department" id="Department"
-                                        class="form-control form-select form-select-sm">
-                                        <option value="" selected disabled>Select Department</option>
-                                        @foreach ($department_list as $key => $value)
-                                            <option value="{{ $key }}">{{ $value }}</option>
-                                        @endforeach
-                                    </select>
-                                    <span class="text-danger error-text Department_error"></span>
-                                </td>
-                            </tr>
-                            <tr id="deisgnation_tr" class="d-none">
-                                <th>Designation<font class="text-danger">*</font>
-                                </th>
-                                <td>
-                                    <div class="spinner-border text-primary d-none" role="status" id="DesigLoader">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <select id="Designation" name="Designation"
-                                        class="form-control form-select form-select-sm">
-                                        <option value="" selected disabled>Select Designation</option>
-                                        @foreach ($designation_list as $key => $value)
-                                            <option value="{{ $key }}">{{ $value }}</option>
-                                        @endforeach
-                                    </select>
-                                    <span class="text-danger error-text Designation_error"></span>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <th>Location & Man Power <font class="text-danger">*</font>
-                                </th>
-                                <td>
-                                    <table class="table borderless" style="margin-bottom: 0px;">
-                                        <tbody id="MulLocation">
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr id="ctc_tr">
-                                <th>Desired CTC (in Rs.) <font class="text-danger">*</font>
-                                </th>
-                                <td>
-                                    <table class="table borderless" style="margin-bottom: 0px;">
-                                        <tr>
-                                            <td><input type="text" name="MinCTC" id="MinCTC"
-                                                    class="form-control form-control-sm" placeholder="Min"></td>
-                                            <td><input type="text" name="MaxCTC" id="MaxCTC"
-                                                    class="form-control form-control-sm" placeholder="Max"> </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr id="stipend_tr">
-                                <th>Desired Stipend (in Rs. Per Month) <font class="text-danger">*</font>
-                                </th>
-                                <td>
-                                    <input type="text" name="Stipend" id="Stipend" class="form-control form-control-sm">
-                                </td>
-                            </tr>
-                            <tr id="other_benifit_tr">
-                                <th>Other Benefits</th>
-                                <td>
-                                    <table class="table borderless" style="margin-bottom: 0px;">
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input " type="checkbox"
-                                                            id="two_wheeler_check">
-                                                        <label class="form-check-label" for="two_wheeler_check">2
-                                                            Wheeler reimbursement Rs.
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline d-none"
-                                                        id="two_wheeler_div">
-                                                        <input type="text" name="two_wheeler" id="two_wheeler"
-                                                            style="border-radius: .2rem; border:1px solid #ced4da; padding:.25rem">
-                                                        per
-                                                        km
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <div class="form-check form-check-inline" style="width: 200px;">
-                                                        <input class="form-check-input " type="checkbox" id="da_check">
-                                                        <label class="form-check-label" for="da_check">DA
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline d-none" id="da_div">
-                                                        <input type="text" name="da" id="da"
-                                                            style="border-radius: .2rem; border:1px solid #ced4da; padding:.25rem">
-                                                        Rs. per
-                                                        Day
-                                                    </div>
-                                                </td>
-                                            </tr>
-
-                                        </tbody>
-                                    </table>
-
-                                </td>
-                            </tr>
-
-
-                            <tr>
-                                <th>Desired Eductaion
-                                </th>
-                                <td>
-                                    <table class="table borderless" style="margin-bottom: 0px;">
-                                        <tbody id="MulEducation">
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <th>Desired University/College</th>
-                                <td>
-                                    <select name="University[]" id="University"
-                                        class="form-control form-select form-select-sm multiple-select"
-                                        multiple="multiple">
-
-                                        @foreach ($institute_list as $key => $value)
-                                            <option value="{{ $key }}">{{ $value }}</option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr id="work_exp_tr">
-                                <th>Work Experience <font class="text-danger">*</font>
-                                </th>
-                                <td>
-                                    <input type="text" name="WorkExp" id="WorkExp" class="form-control form-control-sm">
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Job Description</th>
-                                <td>
-                                    <textarea name="JobInfo" id="JobInfo" class="form-control"></textarea>
-                                </td>
-                            </tr>
-                            <tr id="duration_tr">
-                                <th>Training Duration</th>
-                                <td>
-                                    <table class="table borderless" style="margin-bottom: 0px;">
-                                        <tbody>
-                                            <tr>
-                                                <td valign="middle">From</td>
-                                                <td>
-                                                    <input type="date" name="Tr_Frm_Date" id="Tr_Frm_Date"
-                                                        class="form-control form-control-sm">
-                                                    <span class="text-danger error-text Tr_Frm_Date_error"></span>
-                                                </td>
-                                                <td valign="middle">To</td>
-                                                <td>
-                                                    <input type="date" name="Tr_To_Date" id="Tr_To_Date"
-                                                        class="form-control form-control-sm">
-                                                    <span class="text-danger error-text Tr_To_Date_error"></span>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Mandatory Requirement</th>
-                                <td>
-
-                                    <table class="table borderless" style="margin-bottom: 0px;">
-                                        <tbody id="MulKP">
-                                        </tbody>
-                                    </table>
-                                    <button type="button" name="add" id="addKP"
-                                        class="btn btn-warning btn-sm mb-2 mt-2"><i class="bx bx-plus"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Any Other Remark</th>
-                                <td>
-                                    <textarea name="Remark" id="Remark" class="form-control"></textarea>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="UpdateMRF">Save changes</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
 @endsection
 @section('scriptsection')
     <script>
-         CKEDITOR.replace('JobInfo', {
+        CKEDITOR.replace('JobInfo', {
             height: 100
         });
         var KPCount;
@@ -339,7 +341,7 @@
                 info: true,
                 searching: false,
                 ordering: false,
-             //   dom: 'Bfrtip',       //enable 
+                //   dom: 'Bfrtip',       //enable 
                 lengthChange: false,
                 buttons: [
 
@@ -382,7 +384,7 @@
                         title: $('.download_label').html(),
                         exportOptions: {
                             columns: ':visible',
-                           
+
 
                         }
                     },
@@ -413,7 +415,7 @@
                         postfixButtons: ['colvisRestore']
                     },
                 ],
-                
+
                 ajax: {
                     url: "{{ route('getCloseMrf') }}",
                     headers: {
@@ -475,7 +477,7 @@
                         name: 'CreatedBy'
                     },
 
-                    
+
                     {
                         data: 'AllocatedDt',
                         name: 'AllocatedDt'
@@ -483,6 +485,14 @@
                     {
                         data: 'CloseDt',
                         name: 'CloseDt'
+                    },
+                    {
+                        data:'daystofill',
+                        name:'daystofill'
+                    },
+                    {
+                        data: 'CloseReason',
+                        name: 'CloseReason'
                     },
                     {
                         data: 'Details',
@@ -520,7 +530,7 @@
             $.post('<?= route('getMRFDetails') ?>', {
                 MRFId: MRFId
             }, function(data) {
-               
+
                 $('#editMRFModal').find('input[name="MRFId"]').val(data.MRFDetails.MRFId);
                 $('#MRF_Type').val(data.MRFDetails.Type);
                 $('#Reason').val(data.MRFDetails.Reason);

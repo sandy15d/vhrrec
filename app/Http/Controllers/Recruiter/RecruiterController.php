@@ -11,8 +11,8 @@ class RecruiterController extends Controller
 {
     function index()
     {
-        $AlCount = DB::table('manpowerrequisition')->where('CountryId',session('Set_Country'))->where('Allocated', Auth::user()->id)->count();
-        $allCreated = DB::table('jobpost')->join('manpowerrequisition','jobpost.MRFId','=','manpowerrequisition.MRFId')->where('CountryId',session('Set_Country'))->where('jobpost.CreatedBy', Auth::user()->id)->count();
+        $AlCount = DB::table('manpowerrequisition')->where('CountryId', session('Set_Country'))->where('Type','!=','Campus')->where('Type','!=','Campus_HrManual')->where('Allocated', Auth::user()->id)->count();
+        $allCreated = DB::table('jobpost')->join('manpowerrequisition', 'jobpost.MRFId', '=', 'manpowerrequisition.MRFId')->where('CountryId', session('Set_Country'))->where('JobPostType','Regular')->where('jobpost.CreatedBy', Auth::user()->id)->count();
         $PendingTechScr = DB::table('jobapply')
             ->Join('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
             ->Join('manpowerrequisition', 'jobpost.MRFId', '=', 'manpowerrequisition.MRFId')
@@ -22,6 +22,14 @@ class RecruiterController extends Controller
             ->where('jobapply.Status', 'Selected')
             ->whereNull('screening.ScreenStatus')
             ->count();
-        return view('recruiter.index', ["allocatedmrf" => $AlCount, "JobPosting" => $allCreated,'PendingTechScr'=>$PendingTechScr]);
+
+        $PendingJoining = DB::table('candjoining')
+            ->join('jobapply', 'jobapply.JAId', '=', 'candjoining.JAId')
+            ->join('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
+            ->where('jobpost.CreatedBy', Auth::user()->id)
+            ->where('Answer', 'Accepeted')
+            ->where('Joined', 'No')
+            ->count();
+        return view('recruiter.index', ["allocatedmrf" => $AlCount, "JobPosting" => $allCreated, 'PendingTechScr' => $PendingTechScr,'PendingJoining'=>$PendingJoining]);
     }
 }

@@ -80,7 +80,7 @@
                                 <td>Location</td>
                                 <td>Job Posting</td>
                                 <td>View on Site</td>
-                                <td>Details</td>
+                                <td>Action</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -372,7 +372,8 @@
                                             </tbody>
                                         </table>
                                         <button type="button" name="editadd" id="editaddKP"
-                                            class="btn btn-warning btn-sm mb-2 mt-2"><i class="bx bx-plus"></i></button>
+                                            class="btn btn-warning btn-sm mb-2 mt-2"><i
+                                                class="bx bx-plus"></i></button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -387,6 +388,46 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary" id="UpdateMRF">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="closemrfmodal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content">
+                <div class="modal-header bg-info bg-gradient">
+                    <h5 class="modal-title text-white">Close MRF</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('close_mrf') }}" method="POST" id="close_mrf_form">
+                    @csrf
+                    <div class="modal-body">
+                        <table class="table borderless">
+                            <tbody>
+                                <tr>
+                                    <input type="hidden" name="MrId" id="MrId">
+                                    <td>No. of Candidate Hired</td>
+                                    <td><input type="text" id="hired" name="hired" class="form-control form-control-sm">
+                                        <span class="text-danger error-text hired_error"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Reason to Close MRF</td>
+                                    <td>
+                                        <textarea name="reason" id="reason"
+                                            class="form-control form-control-sm"></textarea>
+                                        <span class="text-danger error-text reason_error"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="Close_MRF">Save changes</button>
                     </div>
                 </form>
             </div>
@@ -537,8 +578,8 @@
                 },
 
                 {
-                    data: 'details',
-                    name: 'details'
+                    data: 'Action',
+                    name: 'Action'
                 }
             ],
 
@@ -746,6 +787,7 @@
                 $("#da_div").removeClass("d-none");
             }
         });
+
         $(document).on('click', '#viewMRF', function() {
             var MRFId = $(this).data('id');
             $.post('<?= route('getMRFDetails') ?>', {
@@ -847,6 +889,11 @@
         });
 
 
+        $(document).on('click', '#closemrf', function() {
+            var MRFId = $(this).data('id');
+            $("#MrId").val(MRFId);
+            $("#closemrfmodal").modal('show');
+        });
 
 
         var KPCount = 1;
@@ -1005,7 +1052,7 @@
             $(this).closest("tr").remove();
         });
 
-       
+
         //-------------------------------Start Multiple Education===========================//
 
         var EduCount = 1;
@@ -1089,10 +1136,12 @@
         }
 
         editmulKP();
+
         function editmulKP(n) {
             x = '<tr>';
             x += '<td >' +
-                '<input type="text" class="form-control form-control-sm" id="editKeyPosition' + n + '" name="editKeyPosition[]">' +
+                '<input type="text" class="form-control form-control-sm" id="editKeyPosition' + n +
+                '" name="editKeyPosition[]">' +
                 '</td>';
             if (n > 1) {
                 x +=
@@ -1108,10 +1157,43 @@
             editKPCount++;
             editmulKP(editKPCount);
         });
-        
+
         $(document).on('click', '.editremoveKP', function() {
             editKPCount--;
             $(this).closest("tr").remove();
+        });
+
+        $('#close_mrf_form').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                beforeSend: function() {
+                    $(form).find('span.error-text').text('');
+                    $("#loader").modal('show');
+                },
+
+                success: function(data) {
+                    if (data.status == 400) {
+                        $("#loader").modal('hide');
+                        $.each(data.error, function(prefix, val) {
+                            $(form).find('span.' + prefix + '_error').text(val[0]);
+                        });
+                    } else {
+                        $(form)[0].reset();
+                        $('#loader').modal('hide');
+                        $('#closemrfmodal').modal('hide');
+                        $('#MRFTable').DataTable().ajax.reload(null, false);
+                        toastr.success(data.msg);
+                    }
+                }
+            });
         });
     </script>
 @endsection
