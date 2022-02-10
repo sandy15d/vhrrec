@@ -117,7 +117,7 @@ class UserController extends Controller
             ->addColumn('actions', function ($User) {
                 $x = '';
                 $x .= '<button class="btn btn-sm btn btn-outline-danger font-12 " ><i class="fadeIn animated bx bx-trash delete" data-id="' . $User['id'] . '" id="deleteBtn"></i></button> <button class="btn btn-sm btn-outline-primary font-12 cngpwd" data-id="' . $User['id'] . '"><i class="fadeIn animated bx bx-key"></i></button>';
-                if ($User['role'] == 'R') {
+                if ($User['role'] == 'R' || $User['role'] == 'A') {
                     $x .= '<button class="btn btn-sm btn-outline-info font-12 setpermission" data-id="' . $User['id'] . '"><i class="fadeIn animated bx bx-lock"></i></button>';
                 }
                 return $x;
