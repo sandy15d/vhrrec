@@ -641,7 +641,6 @@ $candidate_log = DB::table('candidate_log')
                                                         -
                                                     @else
                                                         {{ getSpecializationbyId($item->Specialization) }}
-
                                                     @endif
                                                 </td>
                                                 <td>
@@ -1176,7 +1175,6 @@ $candidate_log = DB::table('candidate_log')
                                                 <td>
                                                     &ensp;&ensp;&ensp;
                                                     @if ($AboutAns != null)
-
                                                         {{ $AboutAns->CriminalChk == 'Y' ? 'Yes' : 'No' }}
                                                     @endif
 
@@ -1627,7 +1625,6 @@ $candidate_log = DB::table('candidate_log')
                                                 style="float: right">:</span></div>
                                         <div class="text">
                                             @if ($OfBasic != null)
-
                                                 @if ($OfBasic->ServiceCondition == 'Training')
                                                     Training
                                                 @elseif($OfBasic->ServiceCondition == 'Probation')
@@ -1720,7 +1717,6 @@ $candidate_log = DB::table('candidate_log')
                                             <div class="text text-danger">
                                                 @if ($OfBasic != null)
                                                     {{ $OfBasic->RejReason ?? '-' }}
-
                                                 @endif
                                             </div>
                                         </li>
@@ -2074,7 +2070,7 @@ $candidate_log = DB::table('candidate_log')
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="CandidatePersonalForm" action="{{ route('Candidate_ProfileData_Save') }}" method="POST">
+                    <form id="CandidateProfileForm" action="{{ route('Candidate_ProfileData_Save') }}" method="POST">
                         <input type="hidden" name="Pro_JCId" id="Pro_JCId">
                         <div class="form-group">
                             <label>First Name</label>
@@ -2134,6 +2130,7 @@ $candidate_log = DB::table('candidate_log')
                 </div>
                 <div class="modal-body">
                     <form id="CandidatePersonalForm" action="{{ route('Candidate_PersonalData_Save') }}" method="POST">
+
                         <input type="hidden" name="P_JCId" id="P_JCId">
                         <div class="form-group">
                             <label>Gender</label>
@@ -5744,6 +5741,30 @@ $candidate_log = DB::table('candidate_log')
                 dataType: 'json',
                 contentType: false,
                 success: function(data) {
+                    console.log(data);
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        $(form)[0].reset();
+                        $('#createpostmodal').modal('hide');
+                        toastr.success(data.msg);
+                        window.location.reload();
+                    }
+                }
+            });
+        });
+        $('#CandidateProfileForm').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                success: function(data) {
+                    console.log(data);
                     if (data.status == 400) {
                         toastr.error(data.msg);
                     } else {

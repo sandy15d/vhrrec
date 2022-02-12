@@ -203,6 +203,7 @@ $rejected = DB::table('offerletterbasic')
                     <table class="table table-bordered text-center table-striped table-light">
                         <thead class="table-light">
                             <tr>
+                                {{-- <th scope="col">S.No</th> --}}
                                 <th scope="col">Reference No</th>
                                 <th scope="col">Candidate</th>
                                 <th scope="col">Selected For</th>
@@ -214,11 +215,17 @@ $rejected = DB::table('offerletterbasic')
                             </tr>
                         </thead>
                         <tbody>
+                          {{--   @php
+                                $i = 1;
+                            @endphp --}}
+
                             @foreach ($candidate_list as $row)
                                 @php
                                     $sendingId = base64_encode($row->JAId);
+                                   
                                 @endphp
                                 <tr>
+                                   {{--  <td>{{ $i; }}</td> --}}
                                     <td>{{ $row->ReferenceNo }}</td>
                                     <td> <a class="text-underline"
                                             href="{{ route('candidate_detail') }}?jaid={{ $sendingId }}"
@@ -236,8 +243,12 @@ $rejected = DB::table('offerletterbasic')
                                     <td>{{ $row->OfferLetterSent ?? 'No' }}</td>
                                     <td>{{ $row->Answer }}</td>
                                     <td>{{ $row->JoiningFormSent ?? 'No' }}</td>
-                                    <td> {{ $row->JoinOnDt != null ? date('d-m-Y', strtotime($row->JoinOnDt)) : '' }}</td>
+                                    <td> {{ $row->JoinOnDt != null ? date('d-m-Y', strtotime($row->JoinOnDt)) : '' }}
+                                    </td>
                                 </tr>
+                               {{--  @php
+                                    $i++;
+                                @endphp --}}
                             @endforeach
                         </tbody>
                     </table>

@@ -38,6 +38,7 @@ class TrackerController extends Controller
 
     public function getTechnicalSceeningCandidate(Request $request)
     {
+       
         $usersQuery = screening::query();
         $Company = $request->Company;
         $Department = $request->Department;
@@ -52,6 +53,7 @@ class TrackerController extends Controller
             $usersQuery->where("jobpost.JPId", $JPId);
         }
 
+       
         $data =  $usersQuery->select('screening.*', 'jobapply.FwdTechScr', 'jobcandidates.JCId', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.ReferenceNo', 'jobpost.JobCode', 'jobcandidates.BlackList')
             ->join('jobapply', 'jobapply.JAId', '=', 'screening.JAId')
             ->join('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
@@ -61,7 +63,7 @@ class TrackerController extends Controller
             ->where('jobapply.FwdTechScr', 'Yes')
             ->where('jobpost.Status', 'Open')
             ->orderBy('ScId', 'DESC');
-
+      
         return datatables()->of($data)
             ->addIndexColumn()
             ->addColumn('chk', function ($data) {
@@ -375,7 +377,7 @@ class TrackerController extends Controller
         $query->save();
 
         $query = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->select('jobcandidates.JCId', 'jobcandidates.Aadhaar')->where('JAId', $JAId)->first();
-      
+
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {

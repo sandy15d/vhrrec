@@ -59,6 +59,7 @@ class AboutCandidateController extends Controller
 
     public function Candidate_PersonalData_Save(Request $request)
     {
+
         $JCId   = $request->P_JCId;
         $Aadhaar = $request->Aadhaar;
         $Gender = $request->Gender;
@@ -89,6 +90,7 @@ class AboutCandidateController extends Controller
 
                 ]
             );
+       
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {

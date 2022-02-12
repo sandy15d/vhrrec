@@ -151,7 +151,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="text-align: left" >Applied For<span
+                                                    <td style="text-align: left">Applied For<span
                                                             class="text-right fw-bold">:</span></td>
                                                     <td colspan="3" style="text-align: left" class="text-primary">
                                                         <?= $row->DesigId != null ? getDesignation($row->DesigId) : "<i class='fa fa-pencil-square-o text-primary' aria-hidden='true' style='cursor: pointer;' id='AddToJobPost' data-id='$row->JAId'></i>" ?>
@@ -290,8 +290,10 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                 <img src="{{ URL::to('/') }}/assets/images/user1.png"
                                                     style="width: 100px; height: 100px;" class="img-fluid rounded" />
                                             @else
+                                            <a href="#" class="pop">
                                                 <img src="{{ URL::to('/') }}/uploads/Picture/{{ $row->CandidateImage }}"
                                                     style="width: 100px; height: 100px;" class="img-fluid rounded" />
+                                            </a>
                                             @endif
                                         </center>
                                         <center>
@@ -741,13 +743,15 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                         </center>
                                     </span>
                                     <center>
-                                        <label>
-                                            <input type="file" name="CandidateImage" id="CandidateImage"
-                                                class="btn btn-sm mb-1 " style="width: 100px;display: none;"
-                                                accept="image/png, image/gif, image/jpeg"><span
-                                                class="btn btn-sm btn-light shadow-sm text-primary">Upload
-                                                photo</span>
-                                        </label>
+                                       
+                                            <label>
+                                                <input type="file" name="CandidateImage" id="CandidateImage"
+                                                    class="btn btn-sm mb-1 " style="width: 100px;display: none;"
+                                                    accept="image/png, image/gif, image/jpeg"><span
+                                                    class="btn btn-sm btn-light shadow-sm text-primary">Upload
+                                                    photo</span>
+                                            </label>
+                                      
                                     </center>
                                 </div>
                             </div>
@@ -761,11 +765,29 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
             </div>
         </div>
     </div>
+    <div class="modal fade" id="imagemodal" tabindex="-1"  aria-labelledby="myModalLabel"
+        aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                 
+                    <img src="" class="imagepreview" style="width: 100%;">
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scriptsection')
     <script>
         $(document).ready(function() {
+            $('.pop').on('click', function() {
+                $('.imagepreview').attr('src', $(this).find('img').attr('src'));
+                $('#imagemodal').modal('show');
+            });
             GetDepartment();
 
             function GetDepartment() {

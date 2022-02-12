@@ -177,8 +177,8 @@ $rejected = DB::table('offerletterbasic')
                     <div class="col-2">
                         <select name="Status" id="Status" class="form-select form-select-sm" onchange="GetApplications();">
                             <option value="">Select Status</option>
-                            <option value="1">Joined</option>
-                            <option value="0">Not Joined</option>
+                            <option value="Yes">Joined</option>
+                            <option value="No">Not Joined</option>
                          
                         </select>
                         @if (isset($_REQUEST['Status']) && $_REQUEST['Status'] != '')

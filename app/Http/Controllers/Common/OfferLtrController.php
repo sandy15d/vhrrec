@@ -73,7 +73,7 @@ class OfferLtrController extends Controller
         if ($Name != '') {
             $usersQuery->where("jobcandidates.FName", 'like', "%$Name%");
         }
-
+      
         $candidate_list = $usersQuery->select('jobapply.JAId', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.ReferenceNo', 'jobcandidates.CandidateImage', 'screening.SelectedForC', 'screening.SelectedForD', 'offerletterbasic.OfferLetterSent', 'offerletterbasic.JoiningFormSent', 'offerletterbasic.Answer', 'offerletterbasic.OfferLtrGen', 'offerletterbasic.OfferLetter', 'candjoining.EmpCode', 'candjoining.JoinOnDt', 'offerletterbasic.SendReview', 'jobpost.JobCode')
             ->Join('jobapply', 'screening.JAId', '=', 'jobapply.JAId')
             ->Join('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
@@ -84,7 +84,11 @@ class OfferLtrController extends Controller
             ->where('manpowerrequisition.CountryId', session('Set_Country'))
             ->whereNotNull('screening.SelectedForC')
             ->whereNotNull('screening.SelectedForD')
+            ->where('screening.SelectedForC', '!=', '0')
+            ->where('screening.SelectedForD', '!=', '0')
+            ->where('jobpost.Status', 'Open')
             ->orderBy('ScId', 'DESC')->paginate(20);
+        
         return view('offer_letter.offer_letter', compact('company_list', 'months', 'candidate_list'));
     }
 
@@ -339,7 +343,7 @@ class OfferLtrController extends Controller
         $two_wheel_line = $request->two_wheel_line;
         $four_wheel_line = $request->four_wheel_line;
         $GPRS = $request->GPRS;
-      
+
         $query1 = DB::table('candidate_entitlement')->where('JAId', $jaid)->update(
             [
                 'EntDate' => now(),
@@ -364,7 +368,7 @@ class OfferLtrController extends Controller
                 'TravelLine' => $tline,
                 'TwoWheelLine' => $two_wheel_line,
                 'FourWheelLine' => $four_wheel_line,
-               
+
                 'created_on' => now(),
                 'created_by' => Auth::user()->id
             ]
@@ -908,6 +912,7 @@ class OfferLtrController extends Controller
             ->where('manpowerrequisition.Status', 'Approved')
             ->where('manpowerrequisition.CountryId', session('Set_Country'))
             ->where('offerletterbasic.Answer', 'Accepted')
+            ->where('jobpost.Status', 'Open')
             ->paginate(20);
         return view('onboarding.candidate_joining', compact('company_list', 'months', 'candidate_list'));
     }

@@ -378,11 +378,12 @@ class CommonController extends Controller
         ];
         Mail::to($request->eMailId)->send(new CandidateMail($details));
 
-        if (count(Mail::failures()) > 0) {
+       /*  if (count(Mail::failures()) > 0) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
             return response()->json(['status' => 200, 'msg' => 'Mail has been sent successfully.']);
-        }
+        } */
+        return response()->json(['status' => 200, 'msg' => 'Mail has been sent successfully.']);
     }
 
     public function changePassword()

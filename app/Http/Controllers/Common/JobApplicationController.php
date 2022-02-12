@@ -13,7 +13,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\CandidateActivityLog;
 use App\Helpers\UserNotification;
-use Doctrine\DBAL\Query\QueryException;
+
 
 use function App\Helpers\getCompanyCode;
 use function App\Helpers\getDepartment;
@@ -117,7 +117,6 @@ class JobApplicationController extends Controller
             ->where('manpowerrequisition.CountryId', session('Set_Country'))
             ->where('jobpost.Status', 'Open')
             ->where('JobPostType', 'Regular')
-
             ->get();
         $Company = $request->Company;
         $Department = $request->Department;

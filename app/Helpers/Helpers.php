@@ -9,6 +9,7 @@ if (!function_exists('getFullName')) {
 
 	function getFullName($empid)
 	{
+
 		if ($empid == null) {
 			return "";
 		} else {
@@ -42,6 +43,17 @@ function getEmployeeEmailId($empid)
 	}
 }
 
+function getEmpIdByEmpCode($empCode)
+{
+	
+	if ($empCode == null) {
+		return "";
+	} else {
+		$query = DB::table('master_employee')->select("EmployeeID")->where('EmpCode', $empCode)->first();
+		return $query->EmployeeID;
+	}
+}
+
 function getEmployeeDesignation($empid)
 {
 	if ($empid == null) {
@@ -55,6 +67,7 @@ function getEmployeeDesignation($empid)
 
 function getCompanyCode($companyId)
 {
+	
 	if ($companyId == null) {
 		return "";
 	} else {
