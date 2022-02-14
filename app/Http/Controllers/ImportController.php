@@ -1085,9 +1085,65 @@ class ImportController extends Controller
             $appointing_array[] = $temp;
         }
         $importAppointing = DB::table('appointing')->insert($appointing_array);
-*/
 
-        if ($importAppointing) {
+        $getEducation = $connection->table('candidateeducation')
+            ->leftJoin('master_specialization', 'candidateeducation.Specialization', '=', 'master_specialization.Specialization')
+            ->select('candidateeducation.CEId', 'candidateeducation.JCId', 'candidateeducation.Qualification', 'candidateeducation.Course', 'candidateeducation.Institute', 'candidateeducation.YearOfPassing', 'candidateeducation.CGPA', 'candidateeducation.CreatedTime', 'candidateeducation.LastUpdated', 'master_specialization.SpId')
+            ->where('candidateeducation.Qualification', '!=', '')->groupBy('candidateeducation.CEId')->get();
+
+        $edu_array = array();
+        foreach ($getEducation as $key => $value) {
+            $temp = array();
+            $temp['CEId'] = $value->CEId;
+            $temp['JCId'] = $value->JCId;
+            $temp['Qualification'] = $value->Qualification;
+            $temp['Course'] = $value->Course;
+            $temp['Specialization'] = $value->SpId;
+            $temp['Institute'] = $value->Institute;
+            $temp['YearOfPassing'] = $value->YearOfPassing;
+            $temp['CGPA'] = $value->CGPA;
+            $temp['LastUpdated'] = $value->CreatedTime ?? $value->LastUpdated;
+            $edu_array[] = $temp;
+        }
+        $importEducation = DB::table('candidateeducation')->insert($edu_array);
+
+        $getAns = $connection->select("select JCId, max(case when (aqid='1') then answer else NULL end) as 'AboutAim',
+        max(case when (aqid='2') then answer else NULL end) as 'AboutHobbi',
+        max(case when (aqid='3') then answer else NULL end) as 'About5Year',
+         max(case when (aqid='4') then answer else NULL end) as 'AboutAssets',
+        max(case when (aqid='5') then answer else NULL end) as 'AboutImprovement',
+        max(case when (aqid='6') then answer else NULL end) as 'AboutStrength'
+        from jf_about_ans
+        group by JCId
+        order by JCId");
+        $ans_array = array();
+      
+        foreach ($getAns as $key => $value) {
+            $temp = array();
+            $temp['JCId'] = $value->JCId;
+            $temp['AboutAim'] = $value->AboutAim;
+            $temp['AboutHobbi'] = $value->AboutHobbi;
+            $temp['About5Year'] = $value->About5Year;
+            $temp['AboutAssets'] = $value->AboutAssets;
+            $temp['AboutImprovement'] = $value->AboutImprovement;
+            $temp['AboutStrength'] = $value->AboutStrength;
+            $ans_array[] = $temp;
+        }
+        $importAns = DB::table('about_answer')->insert($ans_array);
+        */
+
+        $getPFESIC = $connection->select("SELECT * FROM `jf_pf_esic` WHERE UAN !='' OR pf_acc_no !='' OR esic_no !=''");
+        $pf_esic_array = array();
+        foreach ($getPFESIC as $key => $value) {
+            $temp = array();
+            $temp['JCId'] = $value->JCId;
+            $temp['UAN'] = $value->UAN;
+            $temp['PFNumber'] = $value->pf_acc_no;
+            $temp['ESICNumber'] = $value->esic_no;
+            $pf_esic_array[] = $temp;
+        }
+        $importPF = DB::table('jf_pf_esic')->insert($pf_esic_array);
+        if ($importPF) {
             DB::commit();
             return response()->json(['status' => 200, 'msg' => 'Data Imported Successfully..!!']);
         } else {

@@ -483,7 +483,7 @@ class JobApplicationController extends Controller
         $district_list = DB::table("master_district")->orderBy('DistrictName', 'asc')->pluck("DistrictName", "DistrictId");
         $education_list = DB::table("master_education")->orderBy('EducationCode', 'asc')->pluck("EducationCode", "EducationId");
         $specialization_list = DB::table("master_specialization")->orderBy('Specialization', 'asc')->pluck("Specialization", "SpId");
-        //  $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+     
         return view('jobportal.candidate_interview_form', compact('state_list', 'district_list', 'education_list', 'specialization_list'));
     }
 
