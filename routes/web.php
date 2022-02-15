@@ -246,6 +246,8 @@ Route::get('interview_tracker', [TrackerController::class, 'interview_tracker'])
 Route::post('first_round_interview', [TrackerController::class, 'first_round_interview'])->name('first_round_interview');
 Route::post('second_round_interview', [TrackerController::class, 'second_round_interview'])->name('second_round_interview');
 Route::post('select_cmp_dpt_for_candidate', [TrackerController::class, 'select_cmp_dpt_for_candidate'])->name('select_cmp_dpt_for_candidate');
+Route::post('update_interview_cost', [TrackerController::class, 'update_interview_cost'])->name('update_interview_cost');
+Route::post('get_interview_cost', [TrackerController::class, 'get_interview_cost'])->name('get_interview_cost');
 
 
 Route::get('offer_letter', [OfferLtrController::class, 'offer_letter'])->name('offer_letter');

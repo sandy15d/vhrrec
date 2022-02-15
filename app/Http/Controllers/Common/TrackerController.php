@@ -38,7 +38,7 @@ class TrackerController extends Controller
 
     public function getTechnicalSceeningCandidate(Request $request)
     {
-       
+
         $usersQuery = screening::query();
         $Company = $request->Company;
         $Department = $request->Department;
@@ -53,7 +53,7 @@ class TrackerController extends Controller
             $usersQuery->where("jobpost.JPId", $JPId);
         }
 
-       
+
         $data =  $usersQuery->select('screening.*', 'jobapply.FwdTechScr', 'jobcandidates.JCId', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.ReferenceNo', 'jobpost.JobCode', 'jobcandidates.BlackList')
             ->join('jobapply', 'jobapply.JAId', '=', 'screening.JAId')
             ->join('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
@@ -63,7 +63,7 @@ class TrackerController extends Controller
             ->where('jobapply.FwdTechScr', 'Yes')
             ->where('jobpost.Status', 'Open')
             ->orderBy('ScId', 'DESC');
-      
+
         return datatables()->of($data)
             ->addIndexColumn()
             ->addColumn('chk', function ($data) {
@@ -209,12 +209,13 @@ class TrackerController extends Controller
             $usersQuery->where("jp.JPId", $Mrf);
         }
 
-        $data = $usersQuery->select('screening.*', 'jc.ReferenceNo', 'jc.FName', 'jc.MName', 'jc.LName', 'jp.JobCode', 'sc.IntervDt2', 'sc.IntervLoc2', 'sc.IntervPanel2', 'sc.IntervStatus2')
+        $data = $usersQuery->select('screening.*', 'jc.ReferenceNo', 'jc.FName', 'jc.MName', 'jc.LName', 'jp.JobCode', 'sc.IntervDt2', 'sc.IntervLoc2', 'sc.IntervPanel2', 'sc.IntervStatus2', 'intervcost.Travel', 'intervcost.Lodging', 'intervcost.Relocation', 'intervcost.Other')
             ->Join('jobapply as ja', 'ja.JAId', '=', 'screening.JAId')
             ->Join('jobcandidates as jc', 'ja.JCId', '=', 'jc.JCId')
             ->Join('jobpost as jp', 'ja.JPId', '=', 'jp.JPId')
             ->join('manpowerrequisition as mp', 'mp.MRFId', '=', 'jp.MRFId')
             ->join('screen2ndround as sc', 'screening.ScId', '=', 'sc.ScId', 'left')
+            ->leftjoin('intervcost', 'intervcost.JAId', '=', 'ja.JAId')
             ->where('mp.CountryId', session('Set_Country'))
             ->where('jp.JobPostType', 'Regular')
             ->where('jp.Status', 'Open')
@@ -383,6 +384,48 @@ class TrackerController extends Controller
         } else {
             CandidateActivityLog::addToCandLog($query->JCId, $query->Aadhaar, 'Candidate Slected For - ' . getDepartmentCode($request->SelectedForD) . ' - ' . getCompanyCode($request->SelectedForC));
             return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully.']);
+        }
+    }
+
+    public function update_interview_cost(Request $request)
+    {
+        $JAId = $request->IntervCost_JAId;
+        $Travel = $request->Travel;
+        $Lodging = $request->Lodging;
+        $Relocation = $request->Relocation;
+        $Other = $request->Other;
+
+        $total = $Travel + $Lodging + $Relocation + $Other;
+        $chk = DB::table('intervcost')->where('JAId', $JAId)->first();
+        if ($chk) {
+            $query = DB::table('intervcost')
+                ->where('JAId', $JAId)
+                ->update(['Travel' => $Travel, 'Lodging' => $Lodging, 'Relocation' => $Relocation, 'Other' => $Other, 'LastUpdated' => now(), 'UpdatedBy' => Auth::user()->id]);
+        } else {
+            $query = DB::table('intervcost')
+                ->insert(['Travel' => $Travel, 'Lodging' => $Lodging, 'Relocation' => $Relocation, 'Other' => $Other, 'JAId' => $JAId, 'CreatedTime' => now(), 'CreatedBy' => Auth::user()->id]);
+        }
+
+        $sql = jobapply::find($JAId);
+        $JCId = $sql->JCId;
+        $sql2 = jobcandidate::find($JCId);
+        $Aadhaar = $sql2->Aadhaar;
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            CandidateActivityLog::addToCandLog($JCId, $Aadhaar, 'Candidate Interview Cost - ' . $total);
+            return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully.']);
+        }
+    }
+
+    public function get_interview_cost(Request $request)
+    {
+        $JAId = $request->JAId;
+        $query = DB::table('intervcost')->where('JAId', $JAId)->first();
+        if ($query) {
+            return response()->json(['status' => 200, 'data' => $query]);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         }
     }
 }

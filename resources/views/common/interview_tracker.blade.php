@@ -89,7 +89,7 @@
                     <thead class="text-center bg-primary bg-gradient text-light">
                         <tr class="text-center">
                             <th style="width:30px;" rowspan="2"></th>
-                         {{--    <td rowspan="2">#</td> --}}
+                            {{-- <td rowspan="2">#</td> --}}
                             <td rowspan="2">S.no</td>
                             <td rowspan="2">Ref.No</td>
                             <td rowspan="2">Candidate</td>
@@ -210,6 +210,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="companyModal" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -240,6 +241,58 @@
                                 <td>
                                     <select name="SelectedForD" id="SelectedForD"
                                         class="form-select form-select-sm"></select>
+                                </td>
+                            </tr>
+
+                        </table>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="intervcostmodal" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-info bg-gradient">
+                    <h6 class="modal-title text-white">Interview Cost</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form action="{{ route('update_interview_cost') }}" method="POST" id="interview_cost_form">
+                    @csrf
+                    <div class="modal-body">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td>Travel:</td>
+                                <td>
+                                    <input type="hidden" name="IntervCost_JAId" id="IntervCost_JAId">
+                                    <input type="text" name="Travel" id="Travel" class="form-control form-control-sm">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Lodging</td>
+                                <td>
+                                    <input type="text" name="Lodging" id="Lodging" class="form-control form-control-sm">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Relocation</td>
+                                <td>
+                                    <input type="text" name="Relocation" id="Relocation"
+                                        class="form-control form-control-sm">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Other</td>
+                                <td>
+                                    <input type="text" name="Other" id="Other" class="form-control form-control-sm">
                                 </td>
                             </tr>
 
@@ -351,7 +404,7 @@
                 x = '';
                 x = x +
                     '<table class="table" style="background-color:">' +
-                    '<tr><td colspan="6" class="fw-bold">1st Interview</td></tr>' +
+                    '<tr><td colspan="8" class="fw-bold">1st Interview</td></tr>' +
                     '<tr>' +
                     '<td style="text-align:left;">Interview Date:</td>' +
                     '<td style="text-align:left;">' + d.IntervDt.split("-").reverse().join("-") +
@@ -359,11 +412,11 @@
                     '<td style="text-align:left;">Location:</td>' +
                     '<td style="text-align:left;">' + d.IntervLoc + '</td>' +
                     '<td style="text-align:left;">Panel Member</td>' +
-                    '<td style="text-align:left;">' + d.IntervPanel + '</td>' +
+                    '<td style="text-align:left;" colspan="3">' + d.IntervPanel + '</td>' +
                     '</tr>';
 
                 if (d.IntervStatus == '2nd Round Interview') {
-                    x = x + '<tr><td colspan="6" class="fw-bold">2nd Round Interview</td></tr>' +
+                    x = x + '<tr><td colspan="8" class="fw-bold">2nd Round Interview</td></tr>' +
                         '<tr>' +
                         '<td style="text-align:left;">Interview Date:</td>' +
                         '<td style="text-align:left;">' + d.IntervDt2.split("-").reverse().join("-") +
@@ -371,20 +424,24 @@
                         '<td style="text-align:left;">Location:</td>' +
                         '<td style="text-align:left;">' + d.IntervLoc2 + '</td>' +
                         '<td style="text-align:left;">Panel Member</td>' +
-                        '<td style="text-align:left;">' + d.IntervPanel2 + '</td>' +
+                        '<td style="text-align:left;" colspan="3">' + d.IntervPanel2 + '</td>' +
                         '</tr>';
                 }
 
-               /*  x = x + '<tr><td colspan="6" class="fw-bold">Other Details</td></tr>' +
-                        '<tr>' +
-                        '<td style="text-align:left;">Interview Assessment<br> Record:</td>' +
-                        '<td style="text-align:left;">' + d.IntervDt2.split("-").reverse().join("-") +
-                        '</td>' +
-                        '<td style="text-align:left;">Interview Cost:</td>' +
-                        '<td style="text-align:left;">' + d.IntervLoc2 + '</td>' +
-                        '<td style="text-align:left;">Interview <br>Application Form</td>' +
-                        '<td style="text-align:left;">' + d.IntervPanel2 + '</td>' +
-                        '</tr>'; */
+                x = x +
+                    '<tr><td colspan="8" class="fw-bold">Interview Cost <i class="fa fa-pencil text-primary" onclick="editIntervCost(' +
+                    d.JAId + ')" style="cursor:pointer"></i></td></tr>' +
+                    '<tr>' +
+                    '<td style="text-align:left;">Travel:</td>' +
+                    '<td style="text-align:left;">' + d.Travel +
+                    '</td>' +
+                    '<td style="text-align:left;">Lodging:</td>' +
+                    '<td style="text-align:left;">' + d.Lodging + '</td>' +
+                    '<td style="text-align:left;">Relocation</td>' +
+                    '<td style="text-align:left;">' + d.Relocation + '</td>' +
+                    '<td style="text-align:left;">Other</td>' +
+                    '<td style="text-align:left;">' + d.Other + '</td>' +
+                    '</tr>';
                 x = x + '</table>';
                 return x;
             }
@@ -431,10 +488,10 @@
                         "data": null,
                         "defaultContent": ''
                     },
-                   /*  {
-                        data: 'chk',
-                        name: 'chk'
-                    }, */
+                    /*  {
+                         data: 'chk',
+                         name: 'chk'
+                     }, */
                     {
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex'
@@ -491,7 +548,7 @@
 
                 createdRow: (row, data, dataIndex, cells) => {
                     if (data['IntervStatus'] == 'Selected' || data['IntervStatus'] == null) {
-                      
+
                         $(cells[8]).css('background-color', 'rgb(218 209 237)')
                         $(cells[9]).css('background-color', 'rgb(218 209 237)')
                     }
@@ -625,6 +682,53 @@
                     }
                 }
             });
+        });
+
+        function editIntervCost(JAId) {
+            var JAId = JAId;
+            $("#IntervCost_JAId").val(JAId);
+            $.ajax({
+                type: "POST",
+                url: "{{ route('get_interview_cost') }}?JAId=" + JAId,
+                success: function(res) {
+
+                    $("#Travel").val(res.data.Travel);
+                    $("#Relocation").val(res.data.Relocation);
+                    $("#Lodging").val(res.data.Lodging);
+                    $("#Other").val(res.data.Other);
+
+                }
+            });
+            $('#intervcostmodal').modal('show');
+
+        }
+
+        $('#interview_cost_form').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        $(form)[0].reset();
+                        $('#intervcostmodal').modal('hide');
+                        $('#candidate_table').DataTable().ajax.reload(null, false);
+                        toastr.success(data.msg);
+                    }
+                }
+            });
+        });
+
+        $('#intervcostmodal').on('hidden.bs.modal', function() {
+            $('#intervcostmodal form')[0].reset();
         });
     </script>
 @endsection
