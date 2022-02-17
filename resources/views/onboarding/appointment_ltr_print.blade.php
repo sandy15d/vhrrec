@@ -14,14 +14,15 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&amp;display=swap" rel="stylesheet">
 
-    <title>Offer Letter</title>
+    <title>Appointment Letter</title>
     <style>
         body {
-            width: 100%;
+            width: 230mm;
             height: 100%;
-            margin: 0;
+            margin: 0 auto;
             padding: 0;
-            font: 12pt "Tahoma";
+            font-size: 12pt;
+            background: rgb(204, 204, 204);
         }
 
         * {
@@ -32,19 +33,14 @@
         .page {
             width: 210mm;
             min-height: 297mm;
-            padding: 10mm;
             margin: 10mm auto;
-            border: 1px black solid;
-            border-radius: 5px;
             background: white;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
         }
 
         .subpage {
-            padding: 0.5cm;
-
-            /*  height: 297mm; */
-
+            padding: 1cm;
+            height: 297mm;
         }
 
         p {
@@ -71,7 +67,6 @@
             body {
                 width: 210mm;
                 height: 297mm;
-                /*  display: none; */
             }
 
             .page {
@@ -84,12 +79,7 @@
                 background: initial;
                 page-break-after: always;
             }
-
-            .noprint {
-                display: none !important;
-            }
         }
-
 
     </style>
 </head>
@@ -98,12 +88,14 @@ use function App\Helpers\getDesignation;
 use function App\Helpers\getHqStateCode;
 use function App\Helpers\getHq;
 use function App\Helpers\getDepartmentCode;
+use function App\Helpers\getDepartment;
 use function App\Helpers\getCompanyCode;
 use function App\Helpers\getCompanyName;
 use function App\Helpers\getFullName;
 use function App\Helpers\getGradeValue;
 use function App\Helpers\getStateName;
 use function App\Helpers\getDistrictName;
+use function App\Helpers\getEmployeeDesignation;
 $JAId = $_REQUEST['jaid'];
 $sql = DB::table('jobapply')
     ->leftJoin('appointing', 'appointing.JAId', '=', 'jobapply.JAId')
@@ -112,7 +104,7 @@ $sql = DB::table('jobapply')
     ->leftJoin('candjoining', 'jobapply.JAId', '=', 'candjoining.JAId')
     ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
     ->leftJoin('jf_family_det', 'jobcandidates.JCId', '=', 'jf_family_det.JCId')
-    ->select('appointing.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
+    ->select('appointing.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobcandidates.MaritalStatus', 'jobcandidates.SpouseName', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
     ->where('jobapply.JAId', $JAId)
     ->first();
 @endphp
@@ -120,21 +112,18 @@ $sql = DB::table('jobapply')
 <body>
     <div class="container">
 
-               <div id="appointment_ltr">
+        <div id="appointment_ltr">
             <div class="page">
                 <div class="subpage ml-3">
-
-                    <p style="margin-bottom:100px;"></p>
+                    <p style="margin-bottom:70px;"></p>
                     <p class="text-center "><b><u> APPOINTMENT LETTER</u></b></p>
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                            {{ getCompanyCode($sql->Company) .'_AL/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }}</b>
                         <span style="float:right"><b>Date:{{ date('d-m-Y', strtotime($sql->A_Date)) }}</span></b>
                     </p>
-
-                    <br>
                     <p><b>To,</b></p>
-                    <p style="margin-bottom: 0px;" class="fw-bold">{{ $sql->FName }} {{ $sql->MName }}
-                        {{ $sql->LName }}</p>
+                   <b><p style="margin-bottom: 0px;"> {{$sql->Title}} {{ $sql->FName }} {{ $sql->MName }}
+                        {{ $sql->LName }}</p></b> 
                     <b>
                         <p style="margin-bottom: 0px;">{{ $sql->perm_address }}, {{ $sql->perm_city }},
                         </p>
@@ -147,306 +136,371 @@ $sql = DB::table('jobapply')
                     </b>
                     <br>
 
-                    <br>
-                    <p style="text-align:justify">We are pleased to appoint you on the post of
+
+
+                    <p style="text-align:justify">We take pleasure in appointing you as
                         <b>{{ getDesignation($sql->Designation) }}</b> at
-                        <b>Grade-{{ getGradeValue($sql->Grade) }}</b> in
-                        <b>{{ getDepartmentCode($sql->Department) }}</b> Department w.e.f.
-                        <b><?= date('d-M-Y', strtotime($sql->JoinOnDt)) ?></b>.
-                        @if ($sql->TempS == 1 && $sql->FixedS == 1)
-                            For initial few months, your temporary headquarter will be
-                            <strong>{{ getHQ($sql->T_LocationHq) }}</strong>
-                            <strong>({{ getHqStateCode($sql->T_StateHq) }})</strong>, and
-                            then you will be placed at <strong>{{ getHQ($sql->F_LocationHq) }}</strong>
-                            <strong>({{ getHqStateCode($sql->F_StateHq) }})</strong>,
-                        @elseif ($sql->TempS == 1)
-                            with place of posting being <strong>{{ getHQ($sql->T_LocationHq) }}
-                                ({{ getHqStateCode($sql->T_StateHq) }})</strong>.
-                        @else
-                            with place of posting being <strong>{{ getHQ($sql->F_LocationHq) }}
-                                ({{ getHqStateCode($sql->F_StateHq) }})</strong>.
-                        @endif
-
+                        <b>Grade-{{ getGradeValue($sql->Grade) }}</b> at {{ getCompanyName($sql->Company) }}
+                        (<strong>"Company"</strong>). The said appointment shall be governed by the terms and
+                        conditions, specified
+                        hereinbelow, apart from other service rules and conditions that are applicable or may become
+                        applicable from time to time, at the sole discretion of the Company.
                     </p>
-                    <br>
-                    <p style="text-align:justify">Your compensation as CTC will be <b>Rs. {{ $sql->CTC }} /- per
-                            annum.</b>
-                        Please note that the
-                        salaries, allowances, facilities and other sums payable under this appointment are subject to
-                        the
-                        application of Income Tax and you shall be liable for the same.</p>
 
-                    <br>
-                    <p style="text-align:justify">Please note that the Management views the compensation offered to you
-                        as an
-                        extremely confidential matter and any leakage of the same shall be viewed as a serious breach of
-                        this confidence and conditions of employment at your level.</p>
-                    <br>
-                    <p style="text-align:justify">Please sign and return a copy of this letter as a token of your
-                        acceptance
-                        of
-                        the “Terms and Conditions of Employment” and return it to HR.</p>
-                    <br>
-                    <p style="text-align:justify">We wish you a long and successful association with
-                        {{ getCompanyName($sql->Company) }}
-                    </p>
-                    <br><br>
+                    <ul style="list-style-type:square">
+                        <li>
+                            <strong>Commencement of Service:</strong> The date of your appointment will be
+                            {{ date('d-m-Y', strtotime($sql->JoinOnDt)) }} ("<strong>Appointment Date</strong>").
+                        </li>
 
-                    <p>Yours Faithfully,</p>
-                    <br>
-                    <p style="margin-bottom: 100px;"><b>For, {{ getCompanyName($sql->Company) }}</b></p>
+                        <li>
 
-                    <p style="margin-bottom:2px;">----------------------------<span
-                            style="float:right">----------------------------</span></p>
-                    <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b><span style="float:right">
-                            {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }}
-                        </span></p>
-                    <p><b>{{ $sql->SigningAuth }}</b>
-                    </p>
-                    <br><br><br>
-                    <b>Enclosed: Terms & conditions of Employment</b>
-                </div>
-            </div>
-        </div>
+                            @if ($sql->ServiceCondition == 'Training' && $sql->OrientationPeriod != null && $sql->Stipend != null)
+                                <p><strong>Place of Posting:</strong> You shall report at
+                                    <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>,
+                                    for an orientation program of {{ $sql->OrientationPeriod }} months.
+                                </p>
+                                <p>After completion of the orientation period, you shall be on a Training period of 12
+                                    months and during the period of training, you may be allocated various assignments
+                                    at different locations. </p>
+                                <p>However, you may be required to (i) relocate to other locations in India; and/or (ii)
+                                    undertake such travel in India, (iii) overseas locations, from time to time, as may
+                                    be necessary in the interests of the Company's business.</p>
+                            @elseif($sql->TempS == 1 && $sql->FixedS == 1)
+                                <p><strong>Place of Posting:</strong> For initial {{ $sql->TempM }} months, your
+                                    temporary headquarter will be
+                                    <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
+                                    and then
+                                    your principal place of employment shall be at
+                                    <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>.
+                                    However, you may be
+                                    required to (i) relocate to other locations in India; and/or (ii) undertake such
+                                    travel in India, (iii) overseas locations, from time to time, as may be necessary in
+                                    the interests of the Company's business.
+                                </p>
+                            @else
+                                <p><strong>Place of Posting:</strong> Your principal place of employment shall be at
+                                    <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>.
+                                    However, you may be required
+                                    to (i) relocate to other locations in India; and/or (ii) undertake such travel in
+                                    India, (iii) or overseas, from time to time, as may be necessary in the interests of
+                                    the Company's business.
+                                </p>
+                            @endif
+                        </li>
+                        <li>
+                            <strong>Relevant documents:</strong> Your appointment and continuance in service with the
+                            Company is subject to submission of documents as mentioned in the offer letter, by your
+                            Appointment Date.
+                        </li>
 
-        <div id="terms_con">
-            <div class="page">
-
-                <div class="subpage">
-                    <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
-                        <span style="float: right"><b>Date: {{ date('d-m-Y', strtotime($sql->A_Date)) }} </span></b>
-                    </p><br>
-
-                    <b>
-                        <p class="text-center"><u>TERMS AND CONDITIONS OF EMPLOYMENT</u></p>
-                    </b>
-                    <ol>
-
-                        @if ($sql->ServiceCondition == 'Training')
-                            <li>You shall be on Training for a period of 12 months from the date of your joining.
-                                The above training period may be extended for another 3 months at the discretion of the
-                                Management.
-                            </li>
-                        @elseif ($sql->ServiceCondition == 'Probation')
-                            <li>You shall be on Probation for a period of 06 months from the date of your joining.
-                                The above probation period may be extended for another 3 months at the discretion of the
-                                Management.
-                            </li>
-                        @endif
-
-
-                        @if ($sql->ServiceCondition == 'Training' || $sql->ServiceCondition == 'Probation')
-                            <li>On expiry of the above {{ $sql->ServiceCondition }} period or extension thereof
-                                unless you are confirmed in writing, you will be deemed to be as such.</li>
-
-                            <li>While on {{ $sql->ServiceCondition }} you will be entitled to a salary and
-                                entitlements as explained in Annexure A & B as provided with your offer letter.</li>
-
-                        @else
-                            <li>You will be entitled to a salary and entitlements as explained in Annexure A & B as
-                                provided with your offer letter.</li>
-
-                        @endif
-
-
-                        @if ($sql->ServiceCondition == 'Training' || $sql->ServiceCondition == 'Probation')
-                            <li>While on {{ $sql->ServiceCondition }} you will perform your duties assigned to you,
-                                including any other work assigned by the superiors. Your performance will be under
-                                review and assessment by the management, and if management is not satisfied with your
-                                ability or performance, your service is liable to be terminated without notice and
-                                without assigning any reason.<br>
-                                @if ($sql->Department == 6 || $sql->Department == 3)
-                                    In case of discontinuation of service during the period of
-                                    <?= $sql->ServiceCondition ?>
-                                    at your end you shall give 1 month notice or shall pay 1 month’s wages in lieu of
-                                    notice. However, the management may terminate your service during
-                                    <?= $sql->ServiceCondition ?> period immediately without any notice at any point of
-                                    time without assigning any reason. After confirmation, the employment can end
-                                    through a 3 month notice or payment of 3month wages in lieu thereof from either
-                                    side.
-                                @elseif ($sql->Department == 2)
-                                    @if ($sql->A_Date >= '2021-08-06')
-                                        In case of discontinuation of service at your end you shall give 3-month notice
-                                        or shall pay 3 month’s wages in lieu of notice. However, the management may
-                                        terminate your service during {{ $sql->ServiceCondition }} period immediately
-                                        without any notice at any point of time without assigning any reason. After
-                                        confirmation, the employment can end through a 3 month notice or payment of 3
-                                        month wages in lieu thereof from either side.
-                                    @else
-                                        In case of discontinuation of service at your end you shall give 1-month notice
-                                        or shall pay 1 month’s wages in lieu of notice. However, the management may
-                                        terminate your service during <?= $sql->ServiceCondition ?> period immediately
-                                        without any notice at any point of time without assigning any reason. After
-                                        confirmation, the employment can end through a 1 month notice or payment of 1
-                                        month wages in lieu thereof from either side.
-                                    @endif
-
-                                @elseif ($sql->Department == 24)
-
-                                    @if ($sql->A_Date >= '2021-08-18')
-                                        In case of discontinuation of service during the period of
-                                        {{ $sql->ServiceCondition }}
-                                        at your end you shall give 15 days’ notice or shall pay 3 month wages in lieu of
-                                        notice.
-                                        However, the management may terminate your service during
-                                        {{ $sql->ServiceCondition }} period
-                                        immediately without any notice at any point of time without assigning any
-                                        reason. After confirmation,
-                                        the employment can end through a 3 month notice or payment of 3 month wages in
-                                        lieu thereof from
-                                        either side.
-                                    @else
-                                        In case of discontinuation of service during the period of
-                                        {{ $sql->ServiceCondition }} at your end you
-                                        shall give 15 days’ notice or shall pay 15 days wages in lieu of notice.
-                                        However,
-                                        the management may terminate your service during {{ $sql->ServiceCondition }}
-                                        period immediately without any
-                                        notice at any point of time without assigning any reason. After confirmation,
-                                        the employment can end through a 1 month notice or payment of 1 month wages in
-                                        lieu thereof from
-                                        either side.
-                                    @endif
-
-                                @else
-                                    In case of discontinuation of service during the period of
-                                    <?= $sql->ServiceCondition ?>
-                                    at
-                                    your end you
-                                    shall give 15 days’ notice or shall pay 15 days wages in lieu of notice. However,
-                                    the
-                                    management
-                                    may terminate your service during {{ $sql->ServiceCondition }} period immediately
-                                    without any
-                                    notice at any point of time without assigning any reason. After confirmation, the
-                                    employment
-                                    can
-                                    end through a 1 month notice or payment of 1 month wages in lieu thereof from either
-                                    side.
-                                @endif
-
-                            </li>
-                        @else
-
-                            <li>You will perform your duties assigned to you,
-                                including any other work assigned by the superiors. Your performance will be under
-                                review
-                                and
-                                assessment by the management, and if management is not satisfied with your ability or
-                                performance, your service is liable to be terminated without notice and without
-                                assigning
-                                any
-                                reason.<br>
-                                In case of discontinuation of service the employment can
-                                end through a 1 month notice or payment of 1 month wages in lieu thereof from either
-                                side.
-                            </li>
-                        @endif
-
-
+                        <li>
+                            <strong>Reporting / Duties and responsibilities:</strong>
+                            <ol type="a">
+                                <li>Currently, you will report to
+                                    <strong>{{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong>
+                                    (<strong>“Manager”</strong>) or such
+                                    other person as may be suggested by the Company, from time to time.
+                                </li>
+                                <li>You will perform all the duties & responsibilities assigned to you from time to
+                                    time based on business requirement of the Company or any other incidental work, if
+                                    required by your Manger or other superiors at the Company. It may be subject to
+                                    changes at the sole discretion of the Company.</li>
+                            </ol>
+                        </li>
                         @if ($sql->ServiceBond == 'Yes')
                             <li>
-                                <p>You shall sign and submit a service bond for continuation of your service at you own
-                                    free
-                                    will,discretion and judgement and agrees to serve the Company continuously for a
-                                    minimum
-                                    period of {{ $sql->ServiceBondYears }} years from the date of your appointment
-                                    with
-                                    the
-                                    Company
-                                    and shall not leave the services of the company before successful completion of the
-                                    said
-                                    period.</p>
-
-                                <p> If you leave the employement of the Company or brings about any situation as
-                                    compelling
-                                    the Company to terminate your service during the validity of the Service period, you
-                                    unconditionally agree to pay, on demand, to the Company a sum of
-                                    {{ $sql->ServiceBondRefund }}% of annual CTC as per the prevailing CTC rate(on
-                                    date
-                                    of leaving).</p>
-                                @if ($sql->A_Date >= '2021-10-18')
-                                    <p>The Service Bond shall be furnished by you within the same day & date of your
-                                        appointment. In case of failure to do so, your appointment under this agreement
-                                        shall
-                                        come to an end on the 7th Day from the date of your appointment.</p>
+                                <strong>Service Bond:</strong> You shall sign and submit a service bond for continuation
+                                of
+                                your service at your own free will, discretion and judgement and agree to serve the
+                                Company
+                                continuously for a minimum period of<b>{{ $sql->ServiceBondYears }} </b> years from
+                                the Appointment Date (<strong>“Bond
+                                    Period”</strong>) and shall not leave the services of the Company prior to the
+                                expiry of the Bond
+                                Period.
+                            </li>
+                        @endif
+                        @if ($sql->ServiceCondition == 'Probation' || $sql->ServiceCondition == 'Training')
+                            <li>
+                                <strong>Probation / Training Period: </strong>
+                                <ol type="a">
+                                    <li>
+                                        You will be on {{ $sql->ServiceCondition }} for a period of
+                                        {{ $sql->ServiceCondition == 'Probation' ? '6 (Six)' : '12 (Twelve)' }}
+                                        months
+                                        from the Appointment Date (<strong>“Probation Date”</strong>) which maybe either
+                                        extended or may
+                                        be
+                                        dispensed, at the sole discretion of the Company. Unless confirmed in writing,
+                                        you
+                                        will be deemed as a
+                                        {{ $sql->ServiceCondition == 'Probation' ? 'probationer' : 'trainee' }} after
+                                        expiry of the initial or
+                                        extended
+                                        {{ $sql->ServiceCondition }} Period.
+                                    </li>
+                                    <li>
+                                        Upon satisfactory completion of the {{ $sql->ServiceCondition }} Period and a
+                                        subsequent
+                                        performance
+                                        evaluation, your position may be confirmed or extended at the sole discretion of
+                                        the
+                                        Company.
+                                    </li>
+                                    <li>
+                                        Based on your performance during the {{ $sql->ServiceCondition }} Period, the
+                                        Company reserves the
+                                        right to reduce/dispense with or extend the {{ $sql->ServiceCondition }}
+                                        Period at its sole
+                                        discretion
+                                        or terminate your services with immediate effect, without giving any notice or
+                                        assigning any reasons thereof.
+                                    </li>
+                                </ol>
+                            </li>
+                        @endif
+                        <li>
+                            <strong>Remuneration:</strong>
+                            <ol type="a">
+                                @if ($sql->ServiceCondition == 'Training' && $sql->OrientationPeriod != null && $sql->Stipend != null)
+                                    <li>During the period of Orientation, you shall receive a consolidated stipend of
+                                        Rs. {{ $sql->Stipend }}/- per month.
+                                        After completion of your Orientation period, your annual cost to company (CTC)
+                                        and entitlements details shall be as mentioned in the Annexures A and B attached
+                                        hereto and effective from the Appointment Date, until further revisions are made
+                                        by Company at its sole discretion.
+                                    </li>
                                 @else
-                                    <p>The Service Bond shall be furnished by you within 15 days from the date of your
-                                        appointment. In case of failure to do so, your appointment under this agreement
-                                        shall
-                                        come to an end on the 30th Day from the date of your appointment.</p>
+                                    <li>Your annual cost to company (CTC) and other benefits will be as set out in
+                                        Annexure A and Annexure B hereto and effective from the Appointment Date, until
+                                        further revisions are made by Company at its sole discretion.</li>
                                 @endif
-                            </li>
-                        @endif
+                                <li>You will be always governed by the policies, procedures and rules of the Company
+                                    related to the salary, allowances, benefits, and perquisites which are specified in
+                                    the Annexure A of this appointment letter. Further, the Company may modify or change
+                                    such allowances, benefits, and perquisites from time to time in accordance with its
+                                    policies.</li>
+                            </ol>
+                        </li>
 
-                        <li>As per the business requirements at the discretion of management, you may be transferred to
-                            any
-                            other section or department in the same establishment or you may be transferred to any other
-                            establishment either in existence or would come into existence under any management anywhere
-                            in
-                            the country without any additional benefits. While in service at the transferred place you
-                            will
-                            be governed by the rules applicable at the transferred place.</li>
-
-
-                        @if ($sql->ServiceCondition == 'Training' || $sql->ServiceCondition == 'Probation')
-                            <li>On satisfactory completion of your <?= $sql->ServiceCondition ?> you may be placed in
-                                the
-                                proper grade or
-                                designation and may be confirmed in writing, if found suitable. <br>
-                                You may also be sent on deputation to any other organization under the same management
-                                or
-                                under
-                                different management anywhere in the country.
-                            </li>
-                        @else
-                            <li>You may also be sent on deputation to any other organization under the same management
-                                or
-                                under
-                                different management anywhere in the country.
-                            </li>
-                        @endif
-
-
-                        <li>The terms & conditions of the employment & agreement shall be applicable to you. You will
-                            also
-                            be governed by the service rules/standing order/companies rules/regulations & policies
-                            applicable to you during the period of service.</li>
-                        <li>On cessation of your employment for any reason whatsoever, you will hand over each property
-                            or
-                            article or document entrusted to you by the company during the course of employment.</li>
-                        <li>"Superannuation/Retirement: You will be superannuated / retire from the services of the
-                            company
-                            on attaining the age of 60 years as determined by the company policy, unless and otherwise
-                            extended by the company."</li>
-                    </ol>
-
-                    <p><b>For, {{ getCompanyName($sql->Company) }}</b></p>
-                    <br>
-                    <p style="margin-bottom:0.5px;">----------------------------<span></p>
-                    <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b></p>
-                    <p><b><?= $sql->SigningAuth ?> </b>
+                    </ul>
 
 
 
-                    <p class="text-justify">I, <b> {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }},
-                            S/D/o.
-                            <b> {{ $sql->FatherName }}</b> have
-                            read and understand the terms and conditions of employment and i accept them fully.</p><br>
-                    <div class="row" style="margin-top: 20px;">
-                        <div class="col text-center">--------------- <p>Location</p>
-                        </div>
-                        <div class="col text-center">---------------<p>Date</p>
-                        </div>
-                        <div class="col text-center">---------------<p>{{ $sql->Title }} {{ $sql->FName }}
-                                {{ $sql->MName }} {{ $sql->LName }}</p>
-                        </div>
-                    </div>
                 </div>
+            </div>
 
+            <div class="page">
+                <div class="subpage ml-3">
+                    <ul type="none">
+                        <li>
+                            <ol type="a" start="3">
+                                <li>You shall be entitled for statutory benefits like Provident Fund, ESIC, Bonus and
+                                    Gratuity as per the relevant statutory acts and the relevant rules framed there
+                                    under.</li>
+                                <li>The payment of salary and benefits payable under this appointment shall be
+                                    subject to deduction of income tax as per the prevailing income tax rates and other
+                                    statutory deductions, as may be required in accordance with the applicable
+                                    legislations, in force from time to time.</li>
+                                <li>The Company views the compensation offered to you as an extremely confidential
+                                    matter and any leakage of the same shall be viewed as a serious breach of the
+                                    confidence and conditions of employment at your level.</li>
+                            </ol>
+                        </li>
+                    </ul>
+                    <ul style="list-style-type:square">
+
+                        <li>
+                            <strong>Transfer & Deputation: </strong>As per the business requirements and at the sole
+                            discretion of Company, you may be transferred or sent on deputation to any other section,
+                            department or location in the same establishment or you may be transferred to any other
+                            establishment (existing or which may be set up in future) under the control of the Company,
+                            anywhere in the country with or without any additional benefits.
+                        </li>
+                        <li>
+                            <strong>Termination of services: </strong>
+                            <ol type="a">
+                                <li>In case of discontinuation of service, for more than [insert] days, during the
+                                    Probation Period, this contract may be terminated by the Company with immediate
+                                    effect and without any compensation thereof.</li>
+
+                                @php
+                                    if ($sql->Department == 6 || $sql->Department == 3) {
+                                        $noticePeriod = '3 (three)';
+                                    } else {
+                                        $noticePeriod = '1 (one)';
+                                    }
+                                @endphp
+
+                                <li>Upon your confirmation, your employment with the Company can be terminated by either
+                                    party giving to other a notice period of
+
+                                    {{ $noticePeriod }}
+                                    months’ notice in
+                                    writing or {{ $noticePeriod }} months’ wages in lieu
+                                    of
+                                    such notice.
+                                    However, in the event of your resignation, the Company at its sole discretion
+                                    will
+                                    have an option to accept the same and relieve you prior to completion of the
+                                    stipulated notice period of {{ $noticePeriod }} months’, without any pay in lieu
+                                    of
+                                    the notice period.
+                                </li>
+                                <li>Your performance will be under review and assessment by the Company from time to
+                                    time, and if Company is not satisfied with your ability or performance, the Company
+                                    has the right to terminate your employment, with or without notice or wages in lieu
+                                    thereof and without assigning of any reason. </li>
+                                <li>However, in the event of any gross misconduct or commission of a serious breach
+                                    by you, either during the period of probation or after confirmation, the company
+                                    reserves its rights to terminate your employment without giving any notice or wages
+                                    in lieu thereof and/or assigning of any reasons.</li>
+                            </ol>
+                        </li>
+                        <li>
+                            <strong>Retirement: </strong>You will retire from the services of the Company on attaining
+                            the age of 60 (Sixty) years, unless and otherwise extended by the company in writing.
+                            Date of birth entered in your service record and as verified by you will be considered for
+                            the purpose of determining your date of retirement.
+                        </li>
+                        <li>
+                            <strong>Medical Fitness:</strong> This appointment and its continuance are subject to your
+                            being sound and remaining medically (physically and mentally) fit. In case of any
+                            fitness/health related issues you hold or develop at a later stage that affects your
+                            performance as expected by the Company, the Company has the right to get you medically
+                            examined by any certified medical practitioner during the period of your service in case you
+                            don’t regain your fitness within the said period of 30 days, your services shall be liable
+                            to be terminated at the sole discretion of the Company.
+                        </li>
+                        <li>
+                            <strong>General Conditions: </strong>
+                            <ol type="a">
+                                <li>You will intimate in writing to the Company any change of address within a week
+                                    from such change, failing which any communication sent to you on your last recorded
+                                    address shall be deemed to have served on you.</li>
+                                <li>You may be selected and sponsored by the Company to visit other countries to
+                                    undergo specialized technical training/Attend Conference or Seminar/Business tour or
+                                    Study tour for meeting the business requirements of the Company and in such case,
+                                    you shall be governed by the Overseas Travel Policy of the Company.</li>
+                                <li>This appointment is offered on the basis of the information’s furnished by you.
+                                    If at any time it is found the employment has been obtained by furnishing
+                                    /misleading insufficient information or withheld material information, the Company
+                                    will have the right to terminate your services at any time without giving any notice
+                                    or any compensation in lieu thereof.</li>
+                            </ol>
+                        </li>
+                    </ul>
+
+                    <br><br>
+
+
+                </div>
+            </div>
+
+            <div class="page">
+                <div class="subpage ml-3">
+                    <ul type="none">
+                        <li>
+                            <ol type="a" start="4">
+                                <li>On cessation of your employment for any reason whatsoever, you will hand over
+                                    every property or article or document entrusted to you by the company during your
+                                    period of employment.</li>
+                                <li>Your appointment is valid subject to your acceptance of the terms and conditions of
+                                    this letter of appointment and submission of signed duplicate copy of this letter
+                                    and Service Agreement and Service Bond attached as Annexure A and Annexure B
+                                    respectively by you to the Company within same day from the date of issue of this
+                                    letter.<br>
+                                    In case of failure to submit the signed copy of the above-mentioned documents to the
+                                    Company, your services as per this Appointment Letter shall come to an end
+                                    automatically on the 7th (Seventh) Day from the date of issue of this letter and the
+                                    Company shall not be liable to pay any compensation to the you for such period.
+                                </li>
+                            </ol>
+                        </li>
+                    </ul>
+                    <ul style="list-style-type:square">
+                        <li>This agreement shall be governed by laws of India. All matters related to this agreement
+                            shall be subject to the exclusive jurisdiction of the courts at Raipur, Chhattisgarh.</li>
+                    </ul>
+                    <br>
+                    <p>We wish you a long and successful association with the Company.</p>
+                    <br><br>
+                    <p><strong>For, {{ getCompanyName($sql->Company) }}</strong></p>
+                    <br>
+                    <br>
+                    ------------------------------------
+                    <p style="margin: 0px;"><strong>Authorized Signatory,</strong></p>
+                    <p><strong>{{ $sql->SigningAuth }}</strong></p>
+
+                    --------------------------------------------------------------------------------------------------------------------
+                    @php
+                        if ($sql->MaritalStatus != '' || $sql->MaritalStatus != null) {
+                            if ($sql->MaritalStatus == 'Single') {
+                                if ($sql->Gender == 'M') {
+                                    $x = 'S/o. ' . $sql->FatherTitle . ' ' . $sql->FatherName;
+                                } else {
+                                    $x = 'D/o. ' . $sql->FatherTitle . ' ' . $sql->FatherName;
+                                }
+                            } else {
+                                if ($sql->Gender == 'M') {
+                                    $x = 'S/o. ' . $sql->FatherTitle . ' ' . $sql->FatherName;
+                                } else {
+                                    $x = 'W/o. ' . $sql->FatherTitle . ' ' . $sql->SpouseName;
+                                }
+                            }
+                        } else {
+                            if ($sql->Gender == 'M') {
+                                $x = 'S/o. ' . $sql->FatherTitle . ' ' . $sql->FatherName;
+                            } else {
+                                $x = 'D/o. ' . $sql->FatherTitle . ' ' . $sql->FatherName;
+                            }
+                        }
+                    @endphp
+                    <p style="text-align: justify">I, <strong>{{ $sql->Title }} {{ $sql->FName }}
+                            {{ $sql->MName }}
+                            {{ $sql->LName }}</strong>, <strong>{{ $x }}</strong> have read and
+                        understood the terms and conditions of this appointment letter and hereby signify my acceptance
+                        of the same during my entire tenure of service.</p>
+                    <br>
+                    <div class="d-flex justify-content-between" style="height: 16px;">
+
+                        <p><strong>------</strong></p>
+
+
+                        <p><strong>-----------</strong></p>
+
+
+                        <p><strong>---------------</strong></p>
+
+                    </div>
+                    <div class="d-flex justify-content-between">
+
+                        <p><strong>Location</strong></p>
+
+
+                        <p><strong>Date</strong></p>
+
+
+                        <p><strong>Employee Signature</strong></p>
+
+                    </div>
+                    <br><br>
+                    <strong>
+                        <p>Enclosed:</p>
+                    </strong>
+                    <ol type="1">
+                        <li>Annexure A- CTC</li>
+                        <li>Annexure B- Entitlements</li>
+                        <li>Annexure C- Service Agreement</li>
+                        @if ($sql->ServiceBond == 'Yes')
+                            <li>Annexure D- Service Bond </li>
+                        @endif
+                    </ol>
+                </div>
             </div>
         </div>
+
     </div>
 
 

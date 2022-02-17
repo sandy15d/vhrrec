@@ -855,8 +855,9 @@ class ImportController extends Controller
       
 
         $getOfBasic = $connection->table('offerletterbasic')->get();
-    
+
         $offerletterbasic_array = array();
+        $offerletterbasic_array1 = array();
         foreach ($getOfBasic as $key => $value) {
             $temp = array();
             $JCId  = DB::table('jobapply')->where('JAId', $value->JAId)->select('JCId')->first();
@@ -915,7 +916,7 @@ class ImportController extends Controller
             $temp['SendReview'] = $value->SendReview;
             $temp['SendForRefChk'] = $value->SendForRefChk;
             $temp['CreatedTime'] = $value->CreatedTime;
-            $temp['Year'] = date('Y',strtotime($value->CreatedTime));
+            $temp['Year'] = date('Y', strtotime($value->CreatedTime));
             $temp['CreatedBy'] = $value->CreatedBy;
             $temp['LastUpdated'] = $value->LastUpdated;
             $temp['UpdatedBy'] = $value->UpdatedBy;
@@ -924,7 +925,60 @@ class ImportController extends Controller
 
         $importOfBasic = DB::table('offerletterbasic')->insert($offerletterbasic_array);
 
-        
+        foreach ($getOfBasic as $key => $value) {
+            $temp = array();
+            $JCId  = DB::table('jobapply')->where('JAId', $value->JAId)->select('JCId')->first();
+            if (isset($JCId->JCId)) {
+                $JCId = $JCId->JCId;
+            } else {
+
+                $JCId = 0;
+            }
+            $Month = date('M', strtotime($value->CreatedTime));
+            $Year = date('Y', strtotime($value->CreatedTime));
+            $temp['Seq'] = 1;
+            $temp['JAId'] = $value->JAId;
+            $temp['RevisionRemark'] = '';
+            $temp['Company'] = $value->Company;
+            $temp['Grade'] = $value->Grade;
+            $temp['Department'] = $value->Department;
+            $temp['Designation'] = $value->Designation;
+            $temp['LtrNo'] = getCompanyCode($value->Company) . '_OL/' . getDepartmentCode($value->Department) . '/' . $Month . '-' . $Year . '/' . $JCId;
+            $temp['LtrDate'] = $value->LastUpdated;
+            $temp['TempS'] = $value->TempS;
+            $temp['T_StateHq'] = $value->T_StateHq;
+            $temp['T_LocationHq'] = $value->T_LocationHq;
+            $temp['T_City'] = $value->T_City;
+            $temp['TempM'] = $value->TempM;
+            $temp['FixedS'] = $value->FixedS;
+            $temp['F_StateHq'] = $value->F_StateHq;
+            $temp['F_LocationHq'] = $value->F_LocationHq;
+            $temp['F_City'] = $value->F_City;
+            $temp['Functional_R'] = $value->Functional_R;
+            $temp['Functional_Dpt'] = $value->Functional_Dpt;
+            $temp['F_ReportingManager'] = $value->F_ReportingManager;
+            $temp['Admins_R'] = $value->Admins_R;
+            $temp['Admins_Dpt'] = $value->Admins_Dpt;
+            $temp['A_ReportingManager'] = $value->A_ReportingManager;
+            $temp['CTC'] = $value->CTC;
+            $temp['ServiceCondition'] = $value->ServiceCondition;
+            $temp['OrientationPeriod'] = $value->OrientationPeriod;
+            $temp['Stipend'] = $value->Stipend;
+            $temp['AFT_Grade'] = $value->AFT_Grade;
+            $temp['AFT_Designation'] = $value->AFT_Designation;
+            $temp['ServiceBond'] = $value->ServiceBond;
+            $temp['ServiceBondYears'] = $value->ServiceBondYears;
+            $temp['ServiceBondRefund'] = $value->ServiceBondRefund;
+            $temp['PreMedicalCheckUp'] = $value->PreMedicalCheckUp;
+            $temp['Remarks'] = $value->Remarks;
+            $temp['SigningAuth'] = $value->SigningAuth;
+
+            $temp['CreatedBy'] = $value->CreatedBy;
+           
+            $offerletterbasic_array1[] = $temp;
+        }
+        $importOFHistory = DB::table('offerletterbasic_history')->insert($offerletterbasic_array1);
+      
         $getCandJoining = $connection->table('candjoining')->get();
    
         $candjoining_array = array();
@@ -950,10 +1004,11 @@ class ImportController extends Controller
             $candjoining_array[] = $temp;
         }
         $importCandidateJoining = DB::table('candjoining')->insert($candjoining_array);
-       
+      
 
         $getCTC = $connection->table('candidate_ctc')->get();
         $ctc_arry = array();
+      
         foreach ($getCTC as $key => $value) {
             $temp = array();
             $temp['CTCId'] = $value->CTCId;
@@ -983,7 +1038,30 @@ class ImportController extends Controller
         }
         $importCTC = DB::table('candidate_ctc')->insert($ctc_arry);
 
-     
+
+        foreach ($getCTC as $key => $value) {
+            $updateCTCHistory = DB::table('offerletterbasic_history')->where('JAId', $value->JAId)->update([
+                'basic' => $value->basic,
+                'hra' => $value->hra,
+                'bonus' => $value->bonus,
+                'special_alw' => $value->special_alw,
+                'grsM_salary' => $value->grsM_salary,
+                'emplyPF' => $value->emplyPF,
+                'emplyESIC' => $value->emplyESIC,
+                'netMonth' => $value->netMonth,
+                'lta' => $value->lta,
+                'childedu' => $value->childedu,
+                'anualgrs' => $value->anualgrs,
+                'gratuity' => $value->gratuity,
+                'emplyerPF' => $value->emplyerPF,
+                'emplyerESIC' => $value->emplyerESIC,
+                'medical' => $value->medical,
+                'total_ctc' => $value->total_ctc,
+
+            ]);
+        }
+
+       */
         $getENT = $connection->table('candidate_entitlement')->get();
         $ent_array = array();
         foreach ($getENT as $key => $value) {
@@ -1040,8 +1118,55 @@ class ImportController extends Controller
             $ent_array[] = $temp;
         }
         $importENT = DB::table('candidate_entitlement')->insert($ent_array);
-          
 
+        foreach ($getENT as $key => $value) {
+
+
+            if ($value->TravelClass == 'Sleeper') {
+                $Train_Class = 'Sleeper';
+            } elseif ($value->TravelClass == '3 AC') {
+                $Train_Class = 'AC-III';
+            } elseif ($value->TravelClass == '2 AC') {
+                $Train_Class = 'AC-II';
+            } else {
+                $Train_Class = 'AC-I';
+            }
+
+            if ($value->Flight == 'flight_approval_based') {
+                $Flight_Remark = 'Flight Approval Based';
+            } elseif ($value->Flight == 'flight_need_based') {
+                $Flight_Remark = 'Flight Need Approval';
+            } else {
+                $Flight_Remark = '';
+            }
+            $updateEntHistory = DB::table('offerletterbasic_history')->where('JAId', $value->JAId)->update([
+                'LoadCityA' => $value->LoadCityA,
+                'LoadCityB' => $value->LoadCityB,
+                'LoadCityC' => $value->LoadCityC,
+                'DAOut' => $value->DAOut,
+                'DAHq' => $value->DAHq,
+                'TwoWheel' => $value->TwoWheel,
+                'FourWheel' => $value->FourWheel,
+                'Train' => ($value->TravelMode == 'Bus/Train') ? 'Y' : 'N',
+                'Train_Class' => $Train_Class,
+                'Flight' => ($value->Flight != null) ? 'Y' : 'N',
+                'Flight_Class' => 'Economy',
+                'Flight_Remark' => $Flight_Remark,
+                'Mobile' => $value->Mobile,
+                'MExpense' => $value->MExpense,
+                'MTerm' => $value->MTerm,
+                'GPRS' => $value->GPRS,
+                'Laptop' => $value->Laptop,
+                'HealthIns' => ((int)($value->HealthIns) * 100000),
+                'TravelLine' => $value->TravelLine,
+                'TwoWheelLine' => $value->TwoWheelLine,
+                'FourWheelLine' => $value->FourWheelLine,
+            ]);
+        }
+
+
+        /*
+     
         $getAppointing = $connection->table('appointing')
             ->leftJoin('service_agreement', 'appointing.JAId', '=', 'service_agreement.JAId')
             ->leftJoin('service_bond', 'appointing.JAId', '=', 'service_bond.JAId')
@@ -1130,7 +1255,7 @@ class ImportController extends Controller
             $ans_array[] = $temp;
         }
         $importAns = DB::table('about_answer')->insert($ans_array);
-        */
+   
 
         $getPFESIC = $connection->select("SELECT * FROM `jf_pf_esic` WHERE UAN !='' OR pf_acc_no !='' OR esic_no !=''");
         $pf_esic_array = array();
@@ -1143,7 +1268,8 @@ class ImportController extends Controller
             $pf_esic_array[] = $temp;
         }
         $importPF = DB::table('jf_pf_esic')->insert($pf_esic_array);
-        if ($importPF) {
+        */
+        if ($importENT) {
             DB::commit();
             return response()->json(['status' => 200, 'msg' => 'Data Imported Successfully..!!']);
         } else {

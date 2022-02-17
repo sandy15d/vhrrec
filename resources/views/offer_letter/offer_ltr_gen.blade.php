@@ -126,6 +126,7 @@ use function App\Helpers\getDesignation;
 use function App\Helpers\getHqStateCode;
 use function App\Helpers\getHq;
 use function App\Helpers\getDepartmentCode;
+use function App\Helpers\getDepartment;
 use function App\Helpers\getCompanyCode;
 use function App\Helpers\getCompanyName;
 use function App\Helpers\getFullName;
@@ -187,234 +188,131 @@ $elg = DB::table('candidate_entitlement')
                     </b>
                     <p>We are pleased to offer you the position of <b>{{ getDesignation($sql->Designation) }}</b> at
                         <b>Grade - {{ getGradeValue($sql->Grade) }}</b> in
-                        <b>{{ getDepartmentCode($sql->Department) }}</b>
-                        Department of <b>{{ getCompanyName($sql->Company) }}</b>
+                        <b>{{ getDepartment($sql->Department) }}</b>
+                        Department of {{ getCompanyName($sql->Company) }} (<strong>"Company"</strong>)
                     </p>
                     <p>This offer is subject to following terms and conditions:</p>
                     <ol>
                         @if ($sql->ServiceCondition == 'Training' && $sql->OrientationPeriod != null && $sql->Stipend != null)
-                            <li>You shall join at <strong>{{ getHq($sql->F_LocationHq) }}</strong>
-                                <strong>({{ getHqStateCode($sql->F_StateHq) }})</strong>, for an orientation program
-                                of
-                                {{ $sql->OrientationPeriod }} months. During the
-                                period of orientation, you shall receive a consolidated stipend of Rs.
-                                {{ $sql->Stipend }}/- per month. After completion of the orientation period, you
-                                shall be
-                                on a Training period of 12 months and during the period of training, you will be
-                                allocated
-                                various assignments at different
-                                locations.
+                            <li>You shall report at
+                                <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>,
+                                for an orientation program of {{ $sql->OrientationPeriod }} months.
+                                After completion of the orientation period, you shall be on a Training period of 12
+                                months and during the period of training, you may be allocated various assignments at
+                                different locations.
+                                However, you may be required to (i) relocate to other locations in India; and/or (ii)
+                                undertake such travel in India, (iii) overseas locations, from time to time, as may be
+                                necessary in the interests of the Company's business.
+                            </li>
+                        @elseif($sql->TempS == 1 && $sql->FixedS == 1)
+                            <li>For initial {{ $sql->TempM }} months, your temporary headquarter will be
+                                <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
+                                and then
+                                your principal place of employment shall be at
+                                <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>.
+                                However, you may be
+                                required to (i) relocate to other locations in India; and/or (ii) undertake such travel
+                                in India, (iii) overseas locations, from time to time, as may be necessary in the
+                                interests of the Company's business.
                             </li>
                         @else
-                            @if ($sql->TempS != 1)
-                                @if ($sql->Department == 2) {{-- R&D Department --}}
-                                    <li>You will be placed at <strong>{{ $sql->F_LocationHq }}</strong>
-                                        <strong>({{ getHqStateCode($sql->F_StateHq) }})</strong>, which the Company,
-                                        in
-                                        its
-                                        business interest can change in future.
-                                    </li>
-                                @else
-                                    <li>Your headquarter will be at
-                                        <strong>{{ getHq($sql->F_LocationHq) }}</strong>
-                                        <strong>({{ getHqStateCode($sql->F_StateHq) }})</strong>, which the Company,
-                                        in
-                                        its
-                                        business interest can change in future.
-                                    </li>
-                                @endif
-                            @else
-                                @if ($sql->Department == 2) {{-- R&D Department --}}
-                                    @if ($sql->TempS == 1 && $sql->FixedS == 0)
-                                        {{-- if temp hq and no permanent --}}
-                                        <li>
-                                            You shall be placed at <strong>({{ getHq($sql->T_LocationHq) }},
-                                                {{ getHqStateCode($sql->T_StateHq) }})</strong> during the initial
-                                            training
-                                            period. After successful completion of training you will be stationed at any
-                                            of
-                                            the R&D locations of the company.
-                                        </li>
-                                    @else
-                                        <li>For initial {{ $sql->TempM }} months, your temporary headquarter will be
-                                            <strong>{{ getHq($sql->T_LocationHq) }}</strong>
-                                            <strong>({{ getHqStateCode($sql->T_StateHq) }})</strong>, and
-                                            then you will be placed at
-                                            <strong>{{ getHq($sql->F_LocationHq) }}</strong>
-                                            <strong>({{ getHqStateCode($sql->F_StateHq) }})</strong>, which the
-                                            Company, in
-                                            its
-                                            business interest can change in future.
-                                        </li>
-                                    @endif
-                                @else
-                                    @if ($sql->TempS == 1 && $sql->FixedS == 0)
-                                        {{-- if temp hq and no permanent --}}
-                                        <li>For initial {{ $sql->TempM }} months, your temporary headquarter will be
-                                            <strong>{{ getHq($sql->T_LocationHq) }}</strong>
-                                            <strong>({{ getHqStateCode($sql->T_StateHq) }})</strong>, which the
-                                            Company, in
-                                            its
-                                            business interest can change in future.
-                                        </li>
-                                    @else
-                                        <li>For initial {{ $sql->TempM }} months, your temporary headquarter will be
-                                            <strong>{{ getHq($sql->T_LocationHq) }}</strong>
-                                            <strong>({{ getHqStateCode($sql->T_StateHq) }})</strong>, and
-                                            then your permanent headquarter will be
-                                            <strong>{{ getHq($sql->F_LocationHq) }}</strong>
-                                            <strong>({{ getHqStateCode($sql->F_StateHq) }})</strong>, which the
-                                            Company, in
-                                            its
-                                            business interest can change in future.
-                                        </li>
-                                    @endif
-                                @endif
-                            @endif
+                            <li>Your principal place of employment shall be at
+                                <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>.
+                                However, you may be
+                                required to (i) relocate to other locations in India; and/or (ii) undertake such travel
+                                in India, (iii) overseas locations, from time to time, as may be necessary in the
+                                interests of the Company's business.
+                            </li>
                         @endif
 
                         @if ($sql->Functional_R != 0 && $sql->Admins_R != 0)
                             <li>For administrative purpose you shall be reporting to
-                                <b>{{ getFullName($sql->A_ReportingManager) }},
-                                    {{ getEmployeeDesignation($sql->A_ReportingManager) }}</b>
+                                <strong>{{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong>
                                 and for technical purpose you shall be reporting to
-                                <b>{{ getFullName($sql->F_ReportingManager) }},
-                                    {{ getEmployeeDesignation($sql->F_ReportingManager) }}</b>
+                                <strong>{{ getEmployeeDesignation($sql->F_ReportingManager) }}</strong>
                                 and will work under the supervision of such officers as may be decided upon by the
-                                Management
-                                from time to time.
+                                Management from time to time.
                             </li>
-                        @elseif ($sql->Admins_R == 1 && $sql->Functional_R == 0)
-                            <li>You will report to <b>{{ getFullName($sql->A_ReportingManager) }},
-                                    {{ getEmployeeDesignation($sql->A_ReportingManager) }} </b>, and will work
-                                under the
-                                supervision of such officers as may be decided upon by the management from time to time.
-                            </li>
+
                         @else
-                            <li>You will work under the supervision of such officers as may be decided upon by the
-                                Management
-                                from time to time.</li>
+                            <li>You will report to
+                                <strong>{{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong> and will
+                                work under the supervision of such officers as may be decided upon by the management of
+                                the Company, from time to time.
+                            </li>
                         @endif
 
 
                         @if ($sql->ServiceCondition == 'Training' && $sql->OrientationPeriod != null && $sql->Stipend != null)
-                            <li>After completion of the orientation period, you shall be on a Training period of 12
-                                months and
-                                after completion of the training period you will be confirmed subject to your
-                                satisfactory
-                                performance during such period.</li>
+                            <li>After completion of the Orientation period, You shall be on training for a period of 1
+                                year from the Appointment Date <strong>(“Training Period”)</strong> and after completion
+                                of the Training
+                                Period, you will be confirmed subject to your satisfactory performance.</li>
                         @elseif ($sql->ServiceCondition == 'Training' && $sql->AFT_Grade != 0)
-                            <li>You shall be on a Training period of 12 months from the date of your appointment and
-                                after
-                                completion of the training period and subject to your satisfactory performance you will
-                                be
-                                confirmed on the post of <b>{{ getDesignation($sql->AFT_Designation) }}</b> at Grade
-                                <b>{{ getGradeValue($sql->AFT_Grade) }}</b>.
+                            <li>You shall be on training for a period of 1 year from the Appointment Date
+                                <strong>(“Training Period”)</strong> and after completion of the Training Period, you
+                                will be confirmed on the post of <b>{{ getDesignation($sql->AFT_Designation) }}</b>
+                                at Grade
+                                <b>{{ getGradeValue($sql->AFT_Grade) }}</b> subject to your satisfactory performance.
+                                .
                             </li>
                         @elseif ($sql->ServiceCondition == 'Training')
-                            <li>You shall be on a Training period of 12 months from the date of your appointment and
-                                after
-                                completion of the training period you will be confirmed subject to your satisfactory
-                                performance
-                                during such period.</li>
+                            <li>You shall be on training for a period of 1 year from the Appointment Date
+                                <strong>(“Training Period”)</strong> and after completion of the Training Period, you
+                                will be confirmed subject to your satisfactory performance.
+                            </li>
 
                         @elseif ($sql->ServiceCondition == 'Probation')
-                            <li>You shall be on a probationary period of six months from the date of your appointment
-                                and after
-                                completion of the probationary period you will be confirmed subject to your satisfactory
-                                performance during such period.</li>
+                            <li>You shall be on probation for a period of 6 (Six) months from the Appointment Date
+                                <strong>(“Probation Period”)</strong> and after completion of the Probation Period, you
+                                will be confirmed
+                                subject to your satisfactory performance.
+                            </li>
                         @endif
 
                         @if ($sql->ServiceBond == 'Yes')
                             <li>At the time of your appointment, you shall sign a service bond providing your consent to
-                                serve
-                                the company for a minimum period of <b>{{ $sql->ServiceBondYears }} </b>years from
-                                your
-                                date of appointment. In the event of
-                                dishonor of this service bond, you shall be liable to pay the company a sum of
-                                <b>{{ $sql->ServiceBondRefund }}</b>% of your
-                                annual CTC as per the prevailing CTC rate (as on date of leaving).
+                                serve the company for a minimum period of <b>{{ $sql->ServiceBondYears }} </b>years
+                                from the Appointment Date. In the event of dishonor of this service bond, you shall be
+                                liable to pay the company a sum of <b>{{ $sql->ServiceBondRefund }} %</b> of your
+                                annual
+                                CTC as per the prevailing CTC rate {as on date of leaving}
                             </li>
                         @endif
 
 
                         @if ($sql->Company == 1)
                             {{-- VSPL --}}
-                            @if ($sql->Department == 6 || $sql->Department == 3)
-                                {{-- PD & Salse Department --}}
-                                @if ($sql->ServiceCondition == 'nopnot')
-                                    <li>In case of discontinuation of service, you shall serve the notice period of
-                                        three months in
-                                        advance
-                                        or salary in lieu of notice period.</li>
+                            @if ($sql->ServiceCondition == 'nopnot')
+                                @if ($sql->Department == 6 || $sql->Department == 3)
+                                    {{-- Salses && PD --}}
+                                    <li>During your employment Period, either you or the Company may terminate this
+                                        employment by giving 3 (Three) months’ notice in writing or salary in lieu
+                                        of
+                                        such notice period.</li>
                                 @else
-                                    <li>In case of discontinuation of service, during the period of
-                                        {{ $sql->ServiceCondition }} the
-                                        notice period will be
-                                        one month and after confirmation of the service the notice period will be of
-                                        three months.</li>
-                                @endif
-                            @elseif ($sql->Department == 2)
-                                {{-- R&D Department --}}
-                                @if ($sql->ServiceCondition == 'nopnot')
-                                    @if ($sql->ctc_date >= '2021-08-06')
-                                        <li>In case of discontinuation of service, you shall serve the notice period of
-                                            three month in advance or salary in lieu of notice period.</li>
-                                    @else
-                                        <li>In case of discontinuation of service, you shall serve the notice period of
-                                            one month in advance or salary in lieu of notice period.</li>
-                                    @endif
-                                @else
-                                    @if ($sql->ctc_date >= '2021-08-06')
-                                        <li>In case of discontinuation of service, during the period of
-                                            {{ $sql->ServiceCondition }} and after confirmation, you
-                                            shall serve the notice period of three month in advance or salary in lieu of
-                                            notice period. </li>
-                                    @else
-                                        <li>In case of discontinuation of service, during the period of
-                                            {{ $sql->ServiceCondition }} and after confirmation, you
-                                            shall serve the notice period of one month in advance or salary in lieu of
-                                            notice period. </li>
-                                    @endif
-                                @endif
-                            @elseif ($sql->Department == 24)
-                                @if ($sql->ServiceCondition == 'nopnot')
-                                    @if ($sql->ctc_date >= '2021-08-06')
-                                        <li>In case of discontinuation of service, you shall serve the notice period of
-                                            three months in advance
-                                            or salary in lieu of notice period.</li>
-                                    @else
-                                        <li>In case of discontinuation of service, you shall serve the notice period of
-                                            one month in advance
-                                            or salary in lieu of notice period.</li>
-                                    @endif
-                                @else
-                                    @if ($sql->ctc_date >= '2021-08-06')
-                                        <li>In case of discontinuation of service, during the period of
-                                            {{ $sql->ServiceCondition }} the
-                                            notice period will be one month and after confirmation of the service the
-                                            notice period will be of
-                                            three months. </li>
-                                    @else
-                                        <li>In case of discontinuation of service, during the period of
-                                            {{ $sql->ServiceCondition }} the
-                                            notice period will be 15 days and after confirmation of the service the
-                                            notice period will be of
-                                            one month. </li>
-                                    @endif
+                                    <li>During your employment Period, either you or the Company may terminate this
+                                        employment by giving 1 (One) months’ notice in writing or salary in lieu
+                                        of
+                                        such notice period.</li>
                                 @endif
                             @else
-                                @if ($sql->ServiceCondition == 'nopnot')
-                                    <!---  All Other Department--->
-                                    <li>In case of discontinuation of service, you shall serve the notice period of one
-                                        month in advance
-                                        or salary in lieu of notice period.</li>
+                                @if ($sql->Department == 6 || $sql->Department == 3 || $sql->Department == 2)
+                                    {{-- Salses && PD  && R&D --}}
+                                    <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
+                                        terminate this
+                                        employment by giving 1 (One) months’ notice in writing or salary in lieu
+                                        of such notice period. Pursuant to your confirmation, the aforementioned notice
+                                        period shall be of @if ($sql->Department == 6 || $sql->Department == 3)
+                                        3 (Three) months @else 1 (One) month
+                                        @endif in writing or the salary in lieu thereof.
+                                    </li>
                                 @else
-                                    <li>In case of discontinuation of service, during the period of
-                                        {{ $sql->ServiceCondition }} the
-                                        notice period will be 15 days and after confirmation of the service the notice
-                                        period will be of
-                                        one month. </li>
+                                    <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
+                                        terminate this
+                                        employment by giving 15 days’ notice in writing or salary in lieu
+                                        of such notice period. Pursuant to your confirmation, the aforementioned notice
+                                        period shall be of 1 (One) month in writing or the salary in lieu thereof.</li>
                                 @endif
                             @endif
                         @elseif ($sql->Company == 3)
@@ -427,24 +325,28 @@ $elg = DB::table('candidate_entitlement')
                         @endif
 
                         @if ($sql->ServiceCondition == 'Training' && $sql->OrientationPeriod != null && $sql->Stipend != null)
-                            <li>After completion of your orientation period, your salary (CTC) and entitlements details
-                                shall be
-                                as mentioned in the Annexures A and B.</li>
+                            <li>During the period of Orientation, you shall receive a consolidated stipend of Rs.
+                                {{ $sql->Stipend }}/- per month.
+                                After completion of your Orientation period, your annual CTC and entitlements details
+                                shall be as mentioned in the Annexures A and B attached hereto.
+                            </li>
                         @else
-                            <li>Your salary (CTC) and entitlements details shall be as mentioned in the Annexures A and
-                                B.</li>
+                            <li>Your annual CTC and entitlements details shall be as mentioned in the Annexures A and B
+                                attached hereto.</li>
                         @endif
 
-                        <li>You shall look after all the duties & responsibilities assigned to you from time to time
-                            based on business requirement. It may be subject to changes as management deems fit.</li>
-                        <li>Your service will be governed by the Company’s service rules and conditions which will be
-                            detailed in the appointment letter.</li>
+                        <li>You shall look after all the duties & responsibilities assigned to you from time to time,
+                            based on the business requirement. It may be subject to changes at the sole discretion of
+                            the Company.</li>
+                        <li>Your employment with the Company will be governed by the Company’s service rules and
+                            conditions which will be detailed in your appointment letter, issued pursuant to your
+                            acceptance of this offer. Your employment with the Company will be bound by all policies and
+                            procedures of the Company, as may be drafted, revised, amended and/or updated from time to
+                            time. </li>
                         <li>The validity of this offer letter and continuation of your service is subject to your being
                             found physically, mentally, and medically fit and remaining so during your service.</li>
 
-                        @if ($sql->PreMedicalCheckUp == 'Yes')
 
-                        @endif
                     </ol>
                     <p>We are glad that very soon you will be part of our team. We look forward to your long and
                         meaningful
@@ -460,7 +362,8 @@ $elg = DB::table('candidate_entitlement')
                         @else
                             D/o.
                         @endif
-                        {{ $sql->FatherTitle }} {{ $sql->FatherName }} have read and understood the above
+                        {{ $sql->FatherTitle }} {{ ucwords(strtolower($sql->FatherName)) }} have read and
+                        understood the above
                         terms
                         and
                         conditions and
@@ -546,9 +449,10 @@ $elg = DB::table('candidate_entitlement')
                                         readonly>
                                 </td>
                             </tr>
-                            <tr>
+
+                            <tr id="esic_tr" class="{{ $ctc->grsM_salary > 21000 ? 'd-none' : '' }}">
                                 <td>Employee’s ESIC Contribution </td>
-                                <td><input type="text" class="form-control text-center" id="emplyESIC"
+                                <td><input type=" text" class="form-control text-center" id="emplyESIC"
                                         style="height: 21px;border: 0px none;" value="{{ $ctc->emplyESIC ?? '' }}"
                                         readonly>
                                 </td>
@@ -613,7 +517,7 @@ $elg = DB::table('candidate_entitlement')
                                         readonly>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr id="empesic_tr" class="{{ $ctc->grsM_salary > 21000 ? 'd-none' : '' }}">
                                 <td>Employer’s ESIC contribution</td>
                                 <td><input type="text" class="form-control text-center" id="emplyerESIC"
                                         style="height: 21px;border: 0px none;" value="{{ $ctc->emplyerESIC ?? '' }}"
@@ -799,27 +703,27 @@ $elg = DB::table('candidate_entitlement')
                                     </script>
                                 </td>
                             </tr>
-                           
-                                <tr id="flight_class_tr" class="{{ $elg->Flight == 'Y' ? '' : 'd-none' }}">
-                                    <td></td>
-                                    <td>Flight</td>
-                                    <td>
-                                        <select id="Flight_Class" name="Flight_Class" class="frminp"
-                                            style=" height:20px;border: 0px none;">
-                                            <option disabled selected>Select Travel Class</option>
-                                            <option value="Economy">Economy</option>
-                                            <option value="Business">Business</option>
-                                        </select>
-                                        <script>
-                                            $('#Flight_Class').val('{{ $elg->Flight_Class ?? '' }}');
-                                        </script>
-                                        <br><br> <input type="text" name="Flight_Remark" id="Flight_Remark"
-                                            value="{{ $elg->Flight_Remark ?? '' }}"
-                                            style=" height:20px;border: 0px none;" class="form-control text-left">
 
-                                    </td>
-                                </tr>
-                         
+                            <tr id="flight_class_tr" class="{{ $elg->Flight == 'Y' ? '' : 'd-none' }}">
+                                <td></td>
+                                <td>Flight</td>
+                                <td>
+                                    <select id="Flight_Class" name="Flight_Class" class="frminp"
+                                        style=" height:20px;border: 0px none;">
+                                        <option disabled selected>Select Travel Class</option>
+                                        <option value="Economy">Economy</option>
+                                        <option value="Business">Business</option>
+                                    </select>
+                                    <script>
+                                        $('#Flight_Class').val('{{ $elg->Flight_Class ?? '' }}');
+                                    </script>
+                                    <br><br> <input type="text" name="Flight_Remark" id="Flight_Remark"
+                                        value="{{ $elg->Flight_Remark ?? '' }}"
+                                        style=" height:20px;border: 0px none;" class="form-control text-left">
+
+                                </td>
+                            </tr>
+
 
                             <tr>
                                 <td class="text-center">7</td>
@@ -1058,9 +962,13 @@ $elg = DB::table('candidate_entitlement')
             var emplyESIC = 0;
             if (grsM_salary > 21000) {
                 $('#emplyESIC').val(0).attr('disabled', true);
+                $("#esic_tr").addClass('d-none');
+                $("#empesic_tr").addClass('d-none');
             } else {
                 var emplyESIC = Math.round(parseFloat(grsM_salary * 0.75 / 100));
                 $('#emplyESIC').val(emplyESIC).attr('disabled', false);
+                $("#esic_tr").removeClass('d-none');
+                $("#empesic_tr").removeClass('d-none');
             }
             var netMonth = Math.round(parseFloat(grsM_salary - (emplyPF + emplyESIC)));
             $('#netMonth').val(netMonth);

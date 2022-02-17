@@ -61,6 +61,8 @@ $Rec = DB::table('jobapply')
         'jf_pf_esic.Passport',
         'master_country.CountryName',
         'appointing.AppLtrGen',
+        'appointing.AgrLtrGen',
+        'appointing.BLtrGen',
     )
     ->first();
 
@@ -337,7 +339,9 @@ $candidate_log = DB::table('candidate_log')
 
                                     <li>
                                         <div class="title">Religion<span style="float: right">:</span></div>
-                                        <div class="text">{{ $Rec->Religion ?? '-' }} @if ($Rec->Religion == 'Others')<span class="text-danger">({{ $Rec->OtherReligion }})</span> @endif
+                                        <div class="text">{{ $Rec->Religion ?? '-' }} @if ($Rec->Religion == 'Others')
+                                                <span class="text-danger">({{ $Rec->OtherReligion }})</span>
+                                            @endif
                                         </div>
                                     </li>
 
@@ -362,7 +366,9 @@ $candidate_log = DB::table('candidate_log')
                                     </li>
                                     <li>
                                         <div class="title">Category<span style="float: right">:</span></div>
-                                        <div class="text">{{ $Rec->Caste ?? '-' }}@if ($Rec->Caste == 'Other')<span class="text-danger">({{ $Rec->OtherCaste }})</span> @endif
+                                        <div class="text">{{ $Rec->Caste ?? '-' }}@if ($Rec->Caste == 'Other')
+                                                <span class="text-danger">({{ $Rec->OtherCaste }})</span>
+                                            @endif
                                         </div>
                                     </li>
 
@@ -1435,8 +1441,6 @@ $candidate_log = DB::table('candidate_log')
                                                     <td>{{ $Rec->FwdTechScr }}</td>
                                                 </tr>
                                                 @if ($Rec->FwdTechScr == 'Yes')
-
-
                                                     <tr>
                                                         <td>Technical Screening Sent Date</td>
                                                         <td> {{ date('d-M-Y', strtotime($Rec->ReSentForScreen)) }}</td>
@@ -1539,10 +1543,13 @@ $candidate_log = DB::table('candidate_log')
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Offer Letter Basic Details
-                                    <a href="#" class="edit-icon" data-bs-toggle="modal"
-                                        data-bs-target="#OfferLtrModal" id="offerltredit" data-id="{{ $Rec->JAId }}">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
+                                    @if ($OfBasic == null || $OfBasic->Answer == 'Rejected')
+                                        <a href="#" class="edit-icon" data-bs-toggle="modal"
+                                            data-bs-target="#OfferLtrModal" id="offerltredit"
+                                            data-id="{{ $Rec->JAId }}">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                    @endif
                                 </h6>
                                 <ul class="personal-info">
                                     <li>
@@ -1661,12 +1668,14 @@ $candidate_log = DB::table('candidate_log')
                     <div class="col-md-7 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
+                                @if ($OfBasic == null || $OfBasic->Answer == 'Rejected')
                                 <h6 class="card-title">Offer Letter Generation & Review
                                     <a href="javascript:void(0);" class="edit-icon" id="offerltrgen"
                                         data-id="{{ $Rec->JAId }}">
                                         <i class="fa fa-pencil"></i>
                                     </a>
                                 </h6>
+                                @endif
                                 <ul class="personal-info">
                                     <li>
                                         <div class="title" style="width: 150px;">Offer Letter Generate<span
@@ -1820,12 +1829,15 @@ $candidate_log = DB::table('candidate_log')
                                             <div class="title" style="width: 150px;"> Service Agreement <span
                                                     style="float: right">:</span> </div>
                                             <div class="text  text-dark">
-                                                @if ($Rec->AppLtrGen == 'Yes')
+                                                @if ($Rec->AgrLtrGen == 'No' || $Rec->AgrLtrGen == null)
                                                     <i class="fa fa-pencil text-primary" aria-hidden="true"
                                                         onclick="ServiceAgrGen({{ $Rec->JAId }})"
                                                         style="font-size: 16px;cursor: pointer; display: ">Generate </i>
                                                 @else
-                                                    -
+                                                    <a href="{{ route('service_agreement') }}?jaid={{ base64_encode($JAId) }}"
+                                                        target="_blank"> View</a> | <a href="javascript:void(0);"
+                                                        onclick="PrintServiceAgreementLetter('{{ route('service_agreement_print') }}?jaid={{ base64_encode($Rec->JAId) }}');">
+                                                        Print</a>
                                                 @endif
 
                                             </div>
@@ -1891,7 +1903,7 @@ $candidate_log = DB::table('candidate_log')
                                         </li>
                                         @if ($OfBasic->Joined == 'Yes')
                                             <li>
-                                                <div class="title" style="width: 150px;">Position Code<span
+                                                <div class="title" style="width: 150px;">Emp Code<span
                                                         style="float: right">:</span></div>
                                                 <div class="text">
                                                     <input type="text"
@@ -1908,7 +1920,7 @@ $candidate_log = DB::table('candidate_log')
                                                 </div>
                                             </li>
                                             <li>
-                                                <div class="title" style="width: 150px;">Emp Code<span
+                                                <div class="title" style="width: 150px;">Position Code<span
                                                         style="float: right">:</span></div>
                                                 <div class="text">
                                                     <input type="text"
@@ -6588,6 +6600,12 @@ $candidate_log = DB::table('candidate_log')
         }
 
         function PrintAppointmentLetter(url) {
+            $("<iframe>") // create a new iframe element
+                .hide() // make it invisible
+                .attr("src", url) // point the iframe to the page you want to print
+                .appendTo("body");
+        }
+        function PrintServiceAgreementLetter(url) {
             $("<iframe>") // create a new iframe element
                 .hide() // make it invisible
                 .attr("src", url) // point the iframe to the page you want to print
