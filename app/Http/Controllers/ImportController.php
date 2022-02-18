@@ -15,7 +15,7 @@ class ImportController extends Controller
     {
         DB::beginTransaction();
         $connection = DB::connection('mysql3');
-        /*
+
         $getMRF = $connection->table('manpowerrequisition')->select('*')->get();
         $mrf_array = array();
         foreach ($getMRF as $key => $value) {
@@ -677,6 +677,7 @@ class ImportController extends Controller
         }
 
         $importCandidates = DB::table('jobcandidates')->insert($candidates_array);
+
         $getCandidates = $connection->table('jobcandidates')->select('*')->skip(3000)->take(500)->get();
         $candidates_array = array();
         foreach ($getCandidates as $key => $value) {
@@ -772,9 +773,105 @@ class ImportController extends Controller
 
             $candidates_array[] = $temp;
         }
-
         $importCandidates = DB::table('jobcandidates')->insert($candidates_array);
 
+
+        $getCandidates = $connection->table('jobcandidates')->select('*')->skip(3500)->take(500)->get();
+        $candidates_array = array();
+        foreach ($getCandidates as $key => $value) {
+            $temp = array();
+            $temp['JCId'] = $value->JCId;
+            $temp['ReferenceNo'] = $value->RollNo ?? '';
+            $temp['Title'] = $value->NameTitle;
+            $temp['FName'] = $value->FName;
+            $temp['MName'] = $value->MName;
+            $temp['LName'] = $value->LName;
+            $temp['DOB'] = $value->DOB;
+            $temp['Gender'] = $value->Gender;
+            $temp['FatherTitle'] = 'Mr.';
+            $temp['FatherName'] = $value->FatherName;
+            $temp['Email'] = $value->Email1;
+            $temp['Phone'] = $value->Contact1;
+            $temp['Email2'] = $value->Email2;
+            $temp['Phone2'] = $value->Contact2;
+            $temp['AddressLine1'] = $value->Address;
+            $temp['AddressLine2'] = '';
+            $temp['AddressLine3'] = '';
+            $temp['State'] = $value->State;
+            $temp['District'] = $value->Dist;
+            $temp['City'] = $value->City;
+            $temp['PinCode'] = $value->PinCode;
+            $temp['Aadhaar'] = $value->Aadhar;
+            $temp['Education'] = null;
+            $temp['Specialization'] = null;
+            $temp['CGPA'] = null;
+            $temp['PassingYear'] = null;
+            $temp['College'] = null;
+            $temp['OtherCollege'] = null;
+            $temp['StudentId'] = null;
+            $temp['Nationality'] = 1;
+            $temp['Religion'] = null;
+            $temp['OtherReligion'] = null;
+            $temp['Caste'] = $value->Caste ?? null;
+            $temp['OtherCaste'] = $value->OtherCaste ?? null;
+            $temp['MaritalStatus'] = $value->MaritalStatus ?? null;
+            $temp['MarriageDate'] = $value->marriage_dt ?? null;
+            $temp['SpouseName'] = null;
+            $temp['Professional'] = $value->ProfessOrFresher;
+            $temp['PresentCompany'] = $value->CurCompany;
+            $temp['Designation'] = $value->CurDesignation;
+            $temp['JobStartDate'] = $value->JobStartDate;
+            $temp['JobEndDate'] = $value->JobEndDate;
+            $temp['StillEmp'] = $value->StillEmployed;
+            $temp['GrossSalary'] = $value->GMonthlySalary;
+            $temp['CTC'] = $value->AnnualCTC;
+            $temp['NoticePeriod'] = null;
+            $temp['ResignReason'] = null;
+            $temp['Reporting'] = null;
+            $temp['RepDesig'] = null;
+            $temp['JobResponsibility'] = null;
+            $temp['DAHq'] = null;
+            $temp['DAOutHq'] = null;
+            $temp['PetrolAlw'] = null;
+            $temp['PhoneAlw'] = null;
+            $temp['HotelElg'] = null;
+            $temp['Medical'] = null;
+            $temp['GrpTermIns'] = null;
+            $temp['GrpPersonalAccIns'] = null;
+            $temp['MobileHandset'] = null;
+            $temp['MobileBill'] = null;
+            $temp['TravelElg'] = null;
+            $temp['ExpectedCTC'] = $value->ExpCTC;
+            $temp['TotalYear'] = null;
+            $temp['TotalMonth'] = null;
+            $temp['Reference'] = null;
+            $temp['RefPerson'] = null;
+            $temp['RefCompany'] = null;
+            $temp['RefDesignation'] = null;
+            $temp['RefContact'] = null;
+            $temp['RefMail'] = null;
+            $temp['Resume'] = null;
+            $temp['CandidateImage'] = $value->CandidateImg;
+            $temp['EmailOTP'] = $value->EmailOTP;
+            $temp['SmsOTP'] = $value->SMSOTP;
+            $temp['Verified'] = $value->Verified;
+            $temp['PlacementDate'] = null;
+            $temp['BlackList'] = 0;
+            $temp['BlackListRemark'] = null;
+            $temp['UnBlockRemark'] = null;
+            $temp['FIROB_Test'] = 0;
+            $temp['InterviewSubmit'] = $value->InterviewSubmit;
+            $temp['FinalSubmit'] = $value->FinalSubmit;
+            $temp['VNR_Acq'] = 'N';
+            $temp['VNR_Acq_Business'] = 'N';
+            $temp['OtherSeedRelation'] = 'N';
+            $temp['CreatedTime'] = $value->CreatedTime;
+            $temp['LastUpdated'] = $value->LastUpdated;
+            $temp['UpdatedBy'] = $value->UpdatedBy;
+
+            $candidates_array[] = $temp;
+        }
+        $importCandidates = DB::table('jobcandidates')->insert($candidates_array);
 
         $getJobApply = $connection->table('jobapply')->leftJoin('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')->select('jobapply.*', 'jobpost.CompanyId')->get();
         $jobapply_array = array();
@@ -850,9 +947,9 @@ class ImportController extends Controller
             $temp['UpdatedBy'] = $value->UpdatedBy;
             $screen2ndround_array[] = $temp;
         }
-        
+
         $import2ndScreening = DB::table('screen2ndround')->insert($screen2ndround_array);
-      
+
 
         $getOfBasic = $connection->table('offerletterbasic')->get();
 
@@ -974,13 +1071,13 @@ class ImportController extends Controller
             $temp['SigningAuth'] = $value->SigningAuth;
 
             $temp['CreatedBy'] = $value->CreatedBy;
-           
+
             $offerletterbasic_array1[] = $temp;
         }
         $importOFHistory = DB::table('offerletterbasic_history')->insert($offerletterbasic_array1);
-      
+
         $getCandJoining = $connection->table('candjoining')->get();
-   
+
         $candjoining_array = array();
         foreach ($getCandJoining as $key => $value) {
             $temp = array();
@@ -1004,11 +1101,11 @@ class ImportController extends Controller
             $candjoining_array[] = $temp;
         }
         $importCandidateJoining = DB::table('candjoining')->insert($candjoining_array);
-      
+
 
         $getCTC = $connection->table('candidate_ctc')->get();
         $ctc_arry = array();
-      
+
         foreach ($getCTC as $key => $value) {
             $temp = array();
             $temp['CTCId'] = $value->CTCId;
@@ -1061,7 +1158,7 @@ class ImportController extends Controller
             ]);
         }
 
-       */
+
         $getENT = $connection->table('candidate_entitlement')->get();
         $ent_array = array();
         foreach ($getENT as $key => $value) {
@@ -1165,14 +1262,14 @@ class ImportController extends Controller
         }
 
 
-        /*
-     
+
+
         $getAppointing = $connection->table('appointing')
             ->leftJoin('service_agreement', 'appointing.JAId', '=', 'service_agreement.JAId')
             ->leftJoin('service_bond', 'appointing.JAId', '=', 'service_bond.JAId')
             ->select('appointing.AppointId', 'appointing.JAId', 'appointing.A_Date', 'appointing.AppLetter', 'appointing.CreatedTime', 'appointing.CreatedBy', 'appointing.LastUpdated', 'appointing.UpdatedBy', 'service_agreement.ServAgr', 'service_agreement.A_Date as agr_date', 'service_bond.B_Date', 'service_bond.ServBond')
             ->get();
-       
+
         $appointing_array = array();
         foreach ($getAppointing as $key => $value) {
             $temp = array();
@@ -1180,7 +1277,7 @@ class ImportController extends Controller
             $Company = $query->SelectedForC;
             $Department = $query->SelectedForD;
             $JoinOnDt = $query->JoinOnDt;
-            $ServiceBond = $query->ServiceBond ;
+            $ServiceBond = $query->ServiceBond;
             $temp['AppointId'] = $value->AppointId;
             $temp['JAId'] = $value->JAId;
             $temp['A_Date'] = $value->A_Date;
@@ -1242,7 +1339,7 @@ class ImportController extends Controller
         group by JCId
         order by JCId");
         $ans_array = array();
-      
+
         foreach ($getAns as $key => $value) {
             $temp = array();
             $temp['JCId'] = $value->JCId;
@@ -1255,7 +1352,7 @@ class ImportController extends Controller
             $ans_array[] = $temp;
         }
         $importAns = DB::table('about_answer')->insert($ans_array);
-   
+
 
         $getPFESIC = $connection->select("SELECT * FROM `jf_pf_esic` WHERE UAN !='' OR pf_acc_no !='' OR esic_no !=''");
         $pf_esic_array = array();
@@ -1268,7 +1365,7 @@ class ImportController extends Controller
             $pf_esic_array[] = $temp;
         }
         $importPF = DB::table('jf_pf_esic')->insert($pf_esic_array);
-        */
+
         if ($importENT) {
             DB::commit();
             return response()->json(['status' => 200, 'msg' => 'Data Imported Successfully..!!']);
