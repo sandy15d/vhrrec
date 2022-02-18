@@ -164,10 +164,19 @@ class JobApplicationController extends Controller
             ->where('jobapply.Type', '!=', 'Campus')
             ->where('jobcandidates.Nationality', session('Set_Country'))
             ->orderBy('jobapply.ApplyDate', 'desc');
-
-
         $total_candidate = $candidate_list->count();
-        $candidate_list = $candidate_list->paginate(10);
+
+        if ($Department != '' || $Company != '' || $Year != '' || $Month != '' || $Source != '' || $Gender != '' || $Education != '' || $Name != '') {
+            $candidate_list = $candidate_list->paginate(10);
+            $candidate_list->appends(['Company' => $Company, 'Department' => $Department, 'Year' => $Year, 'Month' => $Month, 'Source' => $Source, 'Gender' => $Gender, 'Education' => $Education, 'Name' => $Name]);
+        } else {
+            $candidate_list = $candidate_list->paginate(10);
+        }
+
+
+
+
+
 
         $total_available = DB::table('jobapply')
             ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
@@ -483,7 +492,7 @@ class JobApplicationController extends Controller
         $district_list = DB::table("master_district")->orderBy('DistrictName', 'asc')->pluck("DistrictName", "DistrictId");
         $education_list = DB::table("master_education")->orderBy('EducationCode', 'asc')->pluck("EducationCode", "EducationId");
         $specialization_list = DB::table("master_specialization")->orderBy('Specialization', 'asc')->pluck("Specialization", "SpId");
-     
+
         return view('jobportal.candidate_interview_form', compact('state_list', 'district_list', 'education_list', 'specialization_list'));
     }
 

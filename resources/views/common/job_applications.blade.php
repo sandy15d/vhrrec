@@ -326,7 +326,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
 
                 </div>
 
-                {{ $candidate_list->links('vendor.pagination.custom') }}
+                {{ $candidate_list->appends([])->links('vendor.pagination.custom') }}
             </div>
 
             <div class="col-3">
