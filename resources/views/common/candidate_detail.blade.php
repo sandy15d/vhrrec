@@ -71,7 +71,7 @@ $firobid = base64_encode($Rec->JCId);
 
 $OfBasic = DB::table('offerletterbasic')
     ->leftJoin('candjoining', 'candjoining.JAId', '=', 'offerletterbasic.JAId')
-    ->select('offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.RejReason', 'candjoining.EmpCode', 'candjoining.Verification', 'candjoining.Joined', 'candjoining.PositionCode', 'candjoining.ForwardToESS')
+    ->select('offerletterbasic.*', 'candjoining.JoinOnDt',  'candjoining.EmpCode', 'candjoining.Verification', 'candjoining.Joined', 'candjoining.PositionCode', 'candjoining.ForwardToESS')
     ->where('offerletterbasic.JAId', $JAId)
     ->first();
 
