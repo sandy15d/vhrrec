@@ -369,7 +369,7 @@ $sql = DB::table('jobpost')
                                         <p style="font-size: 15px;">Thanks for checking out our job openings. if you
                                             don't see any opportunities, please submit your resume & we'll get back to
                                             you if there any suitable openings that match your profile. <a
-                                                href="javascript:void(0);" class="text-danger"><b>Submit your
+                                                href="{{route('apply_form')}}" class="text-danger"><b>Submit your
                                                     resume</b></a></p>
 
                                     </div>

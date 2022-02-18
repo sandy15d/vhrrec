@@ -58,6 +58,9 @@ Route::group(['prefix' => 'jobportal'], function () {
     Route::get('campus_apply_form', [JobController::class, 'campus_apply_form'])->name('campus_apply_form');
     Route::post('campus_apply', [JobController::class, 'campus_apply'])->name('campus_apply');
 
+    Route::get('apply_form',[JobController::class, 'apply_form'])->name('apply_form');
+    Route::post('apply_without_post',[JobController::class, 'apply_without_post'])->name('apply_without_post');
+
     Route::get('trainee_apply_form', [JobController::class, 'trainee_apply_form'])->name('trainee_apply_form');
     Route::post('trainee_apply', [JobController::class, 'trainee_apply'])->name('trainee_apply');
 

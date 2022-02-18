@@ -53,11 +53,19 @@ class JobController extends Controller
     public function job_apply(Request $request)
     {
 
-        $JPId = $request->JPId;
-        $jobPost = master_post::find($JPId);
-        $CompanyId = $jobPost->CompanyId;
-        $DepartmentId = $jobPost->DepartmentId;
-        $Title = $jobPost->Title;
+        if (isset($request->JPId)) {
+            $JPId = $request->JPId;
+            $jobPost = master_post::find($JPId);
+            $CompanyId = $jobPost->CompanyId;
+            $DepartmentId = $jobPost->DepartmentId;
+            $Title = $jobPost->Title;
+        } else {
+            $JPId = 0;
+            $CompanyId = 0;
+            $DepartmentId = 0;
+            $Title = '';
+        }
+
 
         $EmailOTP = rand(100000, 999999);
         $SmsOTP = rand(100000, 999999);
@@ -543,5 +551,14 @@ class JobController extends Controller
             UserNotification::notifyUser($jobCreatedBy, 'Candidate Applied', $request->Title . ' ' . $request->FName . ' ' . $request->LName . ' applied for SIP/Trainee');
             return response()->json(['status' => 200, 'msg' => ' successfully created.', 'jcid' => $JCId]);
         }
+    }
+
+    public function apply_form()
+    {
+        $country_list = DB::table("master_country")->orderBy('CountryId', 'asc')->pluck("CountryName", "CountryId");
+        $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
+        $education_list = DB::table("master_education")->where('Status', 'A')->orderBy('EducationCode', 'asc')->pluck("EducationCode", "EducationId");
+        $resume_list = DB::table("master_resumesource")->where('Status', 'A')->where('ResumeSouId', '!=', '7')->orderBy('ResumeSouId', 'asc')->pluck("ResumeSource", "ResumeSouId");
+        return view('jobportal.apply_form', compact('country_list', 'institute_list', 'education_list', 'resume_list'));
     }
 }
