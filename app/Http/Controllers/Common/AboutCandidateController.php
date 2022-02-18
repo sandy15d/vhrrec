@@ -880,10 +880,34 @@ class AboutCandidateController extends Controller
     {
         return view('onboarding.service_agreement');
     }
+    
     public function service_agreement_print()
     {
         return view('onboarding.service_agreement_print');
     }
+
+    public function service_bond_generate(Request $request)
+    {
+        $JAId = $request->JAId;
+        $ltrno = $request->ltrno;
+        $query = DB::table('appointing')->where('JAId', $JAId)->update(['BLtrNo' => $ltrno, 'B_Date' => date('Y-m-d'), 'BLtrGen' => 'Yes', 'LastUpdated' => date('Y-m-d H:i:s'), 'UpdatedBy' => Auth::user()->id]);
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Service Bond Generated Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function service_bond()
+    {
+        return view('onboarding.service_bond');
+    }
+    
+    public function service_bond_print()
+    {
+        return view('onboarding.service_bond_print');
+    }
+
 
     public function send_for_ref_chk(Request $request)
     {

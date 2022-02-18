@@ -1669,12 +1669,12 @@ $candidate_log = DB::table('candidate_log')
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
                                 @if ($OfBasic == null || $OfBasic->Answer == 'Rejected')
-                                <h6 class="card-title">Offer Letter Generation & Review
-                                    <a href="javascript:void(0);" class="edit-icon" id="offerltrgen"
-                                        data-id="{{ $Rec->JAId }}">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
-                                </h6>
+                                    <h6 class="card-title">Offer Letter Generation & Review
+                                        <a href="javascript:void(0);" class="edit-icon" id="offerltrgen"
+                                            data-id="{{ $Rec->JAId }}">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                    </h6>
                                 @endif
                                 <ul class="personal-info">
                                     <li>
@@ -1846,12 +1846,15 @@ $candidate_log = DB::table('candidate_log')
                                             <div class="title" style="width: 150px;"> Service Bond <span
                                                     style="float: right">:</span> </div>
                                             <div class="text  text-dark">
-                                                @if ($Rec->AppLtrGen == 'Yes')
+                                                @if ($Rec->BLtrGen == 'No' || $Rec->BLtrGen == null)
                                                     <i class="fa fa-pencil text-primary" aria-hidden="true"
-                                                        onclick="appointmentGen({{ $Rec->JAId }})"
+                                                        onclick="ServiceBondGen({{ $Rec->JAId }})"
                                                         style="font-size: 16px;cursor: pointer; display: ">Generate </i>
                                                 @else
-                                                    -
+                                                    <a href="{{ route('service_agreement') }}?jaid={{ base64_encode($JAId) }}"
+                                                        target="_blank"> View</a> | <a href="javascript:void(0);"
+                                                        onclick="PrintServiceBondLetter('{{ route('service_bond_print') }}?jaid={{ base64_encode($Rec->JAId) }}');">
+                                                        Print</a>
                                                 @endif
                                             </div>
                                         </li>
@@ -6605,7 +6608,15 @@ $candidate_log = DB::table('candidate_log')
                 .attr("src", url) // point the iframe to the page you want to print
                 .appendTo("body");
         }
+
         function PrintServiceAgreementLetter(url) {
+            $("<iframe>") // create a new iframe element
+                .hide() // make it invisible
+                .attr("src", url) // point the iframe to the page you want to print
+                .appendTo("body");
+        }
+
+        function PrintServiceBondLetter(url) {
             $("<iframe>") // create a new iframe element
                 .hide() // make it invisible
                 .attr("src", url) // point the iframe to the page you want to print
@@ -6905,6 +6916,11 @@ $candidate_log = DB::table('candidate_log')
         function ServiceAgrGen(JAId) {
             var JAId = btoa(JAId);
             window.open('{{ route('service_agreement') }}?jaid=' + JAId, '_blank');
+        }
+
+        function ServiceBondGen(JAId) {
+            var JAId = btoa(JAId);
+            window.open('{{ route('service_bond') }}?jaid=' + JAId, '_blank');
         }
     </script>
     <script>

@@ -579,7 +579,9 @@ $sql = DB::table('jobapply')
                         if (data.status == 200) {
 
                             toastr.success(data.msg);
-
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 1000);
                         } else {
                             toastr.error(data.msg);
                         }

@@ -170,6 +170,10 @@ Route::get('service_agreement', [AboutCandidateController::class, 'service_agree
 Route::get('service_agreement_print', [AboutCandidateController::class, 'service_agreement_print'])->name('service_agreement_print');
 Route::post('service_agreement_generate', [AboutCandidateController::class, 'service_agreement_generate'])->name('service_agreement_generate');
 
+Route::get('service_bond', [AboutCandidateController::class, 'service_bond'])->name('service_bond');
+Route::get('service_bond_print', [AboutCandidateController::class, 'service_bond_print'])->name('service_bond_print');
+Route::post('service_bond_generate', [AboutCandidateController::class, 'service_bond_generate'])->name('service_bond_generate');
+
 Route::post('send_for_ref_chk', [AboutCandidateController::class, 'send_for_ref_chk'])->name('send_for_ref_chk');
 Route::get('reference_check', [AboutCandidateController::class, 'reference_check'])->name('reference_check');
 Route::get('view_reference_check', [AboutCandidateController::class, 'view_reference_check'])->name('view_reference_check');
