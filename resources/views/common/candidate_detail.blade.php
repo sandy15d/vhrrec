@@ -1543,13 +1543,12 @@ $candidate_log = DB::table('candidate_log')
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Offer Letter Basic Details
-                                    @if ($OfBasic == null || $OfBasic->Answer == 'Rejected' || $OfBasic->Answer == 'null')
-                                        <a href="#" class="edit-icon" data-bs-toggle="modal"
-                                            data-bs-target="#OfferLtrModal" id="offerltredit"
-                                            data-id="{{ $Rec->JAId }}">
-                                            <i class="fa fa-pencil"></i>
-                                        </a>
-                                    @endif
+
+                                    <a href="#" class="edit-icon" data-bs-toggle="modal"
+                                        data-bs-target="#OfferLtrModal" id="offerltredit" data-id="{{ $Rec->JAId }}">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+
                                 </h6>
                                 <ul class="personal-info">
                                     <li>
@@ -1668,14 +1667,13 @@ $candidate_log = DB::table('candidate_log')
                     <div class="col-md-7 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
-                                @if ($OfBasic == null || $OfBasic->Answer == 'Rejected' || $OfBasic->Answer == 'null')
-                                    <h6 class="card-title">Offer Letter Generation & Review
-                                        <a href="javascript:void(0);" class="edit-icon" id="offerltrgen"
-                                            data-id="{{ $Rec->JAId }}">
-                                            <i class="fa fa-pencil"></i>
-                                        </a>
-                                    </h6>
-                                @endif
+                                <h6 class="card-title">Offer Letter Generation & Review
+                                    <a href="javascript:void(0);" class="edit-icon" id="offerltrgen"
+                                        data-id="{{ $Rec->JAId }}">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                </h6>
+
                                 <ul class="personal-info">
                                     <li>
                                         <div class="title" style="width: 150px;">Offer Letter Generate<span
