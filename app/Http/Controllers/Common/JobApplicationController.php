@@ -157,7 +157,7 @@ class JobApplicationController extends Controller
             $usersQuery->where("jobcandidates.FName", 'like', "%$Name%");
         }
 
-        $candidate_list = $usersQuery->select('jobapply.JAId', 'jobapply.ResumeSource', 'jobapply.Type', 'jobapply.ApplyDate', 'jobapply.Status', 'jobapply.FwdTechScr', 'jobcandidates.JCId', 'jobcandidates.ReferenceNo', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.Phone', 'jobcandidates.Email', 'jobcandidates.City', 'jobcandidates.Education', 'jobcandidates.Specialization', 'jobcandidates.Professional', 'jobcandidates.JobStartDate', 'jobcandidates.JobEndDate', 'jobcandidates.PresentCompany', 'jobcandidates.Designation', 'jobcandidates.Verified', 'jobcandidates.CandidateImage', 'jobcandidates.BlackList', 'jobcandidates.BlackListRemark', 'jobcandidates.UnBlockRemark', 'jobapply.JPId', 'jobpost.DesigId')
+        $candidate_list = $usersQuery->select('jobapply.JAId', 'jobapply.ResumeSource', 'jobapply.Type', 'jobapply.ApplyDate', 'jobapply.Status', 'jobapply.FwdTechScr', 'jobcandidates.JCId', 'jobcandidates.ReferenceNo', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherName', 'jobcandidates.Email', 'jobcandidates.DOB', 'jobcandidates.Phone', 'jobcandidates.Email', 'jobcandidates.City', 'jobcandidates.Education', 'jobcandidates.Specialization', 'jobcandidates.Professional', 'jobcandidates.JobStartDate', 'jobcandidates.JobEndDate', 'jobcandidates.PresentCompany', 'jobcandidates.Designation', 'jobcandidates.Verified', 'jobcandidates.CandidateImage', 'jobcandidates.BlackList', 'jobcandidates.BlackListRemark', 'jobcandidates.UnBlockRemark', 'jobapply.JPId', 'jobpost.DesigId')
             ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
             ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
             ->leftJoin('screening', 'jobapply.JAId', '=', 'screening.JAId')
@@ -1816,6 +1816,31 @@ class JobApplicationController extends Controller
             return response()->json(['status' => 400, 'msg' => 'Please upload all documents']);
         } else {
             return response()->json(['status' => 200, 'msg' => 'All documents uploaded successfully']);
+        }
+    }
+
+    public function get_duplicate_record(Request $request)
+    {
+        $FName = $request->FName;
+        $Email = $request->Email;
+        $Dob = $request->Dob;
+        $Phone = $request->Phone;
+        $FatherName = $request->FatherName;
+        $candidate_list = DB::select("SELECT jobcandidates.*,jobpost.Title as jobtitle,jobapply.ApplyDate,jobapply.JAId  FROM `jobcandidates` LEFT JOIN jobapply ON jobapply.JCId = jobcandidates.JCId LEFT JOIN jobpost ON jobpost.JPId = jobapply.JPId WHERE  `Phone` = '$Phone' or `Email` = '$Email' or ('FName' = '$FName' and 'DOB' = '$Dob' and 'FatherName' = '$FatherName')");
+
+        return view('common.duplicate_record', compact('candidate_list'));
+    }
+
+    public function delete_duplicate_record(Request $request)
+    {
+        $JCId = $request->JCId;
+        $query = jobcandidate::find($JCId)->delete();
+        $query1 = jobapply::where('JCId', $JCId)->delete();
+        $query2 = DB::table('candidate_log')->where('JCId', $JCId)->delete();
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Record has been deleted successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         }
     }
 }

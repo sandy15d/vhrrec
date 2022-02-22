@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
 
 use App\Models\Admin\master_designation;
@@ -39,6 +40,7 @@ class DesignationController extends Controller
             $temp['DesigId'] = $value['DesigId'];
             $temp['DesigName'] = $value['DesigName'];
             $temp['DesigCode'] = $value['DesigCode'];
+            $temp['Desig_ShortCode'] = $value['Desig_ShortCode'];
             $temp['CompanyId'] = $value['CompanyId'];
             $temp['DesigStatus'] = $value['DesigStatus'];
             array_push($data, $temp);

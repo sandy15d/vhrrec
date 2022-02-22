@@ -143,8 +143,11 @@ class JobController extends Controller
         $jobApply->Company = $CompanyId;
         $jobApply->Department = $DepartmentId;
         $jobApply->save();
-
-        CandidateActivityLog::addToCandLog($JCId, $request->Aadhaar, 'Applied for ' . $Title . ' in ' . getCompanyCode($CompanyId));
+        if ($JPId != 0) {
+            CandidateActivityLog::addToCandLog($JCId, $request->Aadhaar, 'Applied for ' . $Title . ' in ' . getCompanyCode($CompanyId));
+        } else {
+            CandidateActivityLog::addToCandLog($JCId, $request->Aadhaar, 'Candidate Applied without Job Post');
+        }
         if (!$jobApply) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {

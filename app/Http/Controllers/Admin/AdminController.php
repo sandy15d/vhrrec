@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use DateTime;
+
 use App\Models\master_mrf;
 use App\Helpers\LogActivity;
 use Illuminate\Http\Request;
@@ -11,8 +11,6 @@ use App\Helpers\UserNotification;
 use App\Mail\MrfStatusChangeMail;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\LogBookActivity;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
@@ -510,12 +508,12 @@ class AdminController extends Controller
             })
             ->addColumn('days_to_fill', function ($sql) {
                 if ($sql->Status == 'Close') {
-                return    \Carbon\Carbon::parse($sql->AllocatedDt)->diff($sql->CloseDt)->format('%d days');
+                    return    \Carbon\Carbon::parse($sql->AllocatedDt)->diff($sql->CloseDt)->format('%d days');
                 } else {
                     return '';
                 }
             })
-            ->rawColumns(['actions','days_to_fill'])
+            ->rawColumns(['actions', 'days_to_fill'])
             ->make(true);
     }
 

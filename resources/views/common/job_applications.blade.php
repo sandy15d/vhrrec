@@ -4,6 +4,7 @@ use function App\Helpers\getEducationCodeById;
 use function App\Helpers\getSpecializationbyId;
 use function App\Helpers\getResumeSourceById;
 use function App\Helpers\getStateName;
+use function App\Helpers\CheckDuplicate;
 $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
 @endphp
 @extends('layouts.master')
@@ -105,7 +106,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                             <span style="font-weight: bold;">↱</span>
                             <label class="text-primary"><input id="checkall" type="checkbox" name="">&nbsp;Check
                                 all</label>
-                            <i class="text-muted" style="font-size: 13px;">With selected:</i> 
+                            <i class="text-muted" style="font-size: 13px;">With selected:</i>
                             <label class="text-primary " style=" cursor: pointer;" data-bs-toggle="modal"
                                 data-bs-target="#TechScreeningModal"><i class="fas fa-share text-primary"></i> Fwd. for
                                 Technical
@@ -146,7 +147,17 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                             <span
                                                                 style="color: #275A72;font-weight: bold;padding-bottom: 10px;">
                                                                 {{ $row->FName }} {{ $row->MName }} {{ $row->LName }}
-                                                                (Ref.No {{ $row->ReferenceNo }} ) </span>
+                                                                (Ref.No {{ $row->ReferenceNo }} ) </span> <span>
+                                                                @php
+                                                                    
+                                                                    $dup = CheckDuplicate($row->FName, $row->Phone, $row->Email, $row->DOB, $row->FatherName);
+                                                                
+                                                                @endphp
+
+                                                                @if ($dup >1)
+                                                                    <span class="badge badge-danger"><a href="{{route('get_duplicate_record')}}?Fname={{$row->FName}}&Phone={{$row->Phone}}&Email={{$row->Email}}&DOB={{$row->DOB}}&FatherName={{$row->FatherName}}" class="text-white" target="_blank">Duplicate</a></span>
+                                                                @endif
+                                                            </span>
                                                         </label>
                                                     </td>
                                                 </tr>
@@ -290,10 +301,10 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                 <img src="{{ URL::to('/') }}/assets/images/user1.png"
                                                     style="width: 100px; height: 100px;" class="img-fluid rounded" />
                                             @else
-                                            <a href="#" class="pop">
-                                                <img src="{{ URL::to('/') }}/uploads/Picture/{{ $row->CandidateImage }}"
-                                                    style="width: 100px; height: 100px;" class="img-fluid rounded" />
-                                            </a>
+                                                <a href="#" class="pop">
+                                                    <img src="{{ URL::to('/') }}/uploads/Picture/{{ $row->CandidateImage }}"
+                                                        style="width: 100px; height: 100px;" class="img-fluid rounded" />
+                                                </a>
                                             @endif
                                         </center>
                                         <center>
@@ -743,15 +754,15 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                         </center>
                                     </span>
                                     <center>
-                                       
-                                            <label>
-                                                <input type="file" name="CandidateImage" id="CandidateImage"
-                                                    class="btn btn-sm mb-1 " style="width: 100px;display: none;"
-                                                    accept="image/png, image/gif, image/jpeg"><span
-                                                    class="btn btn-sm btn-light shadow-sm text-primary">Upload
-                                                    photo</span>
-                                            </label>
-                                      
+
+                                        <label>
+                                            <input type="file" name="CandidateImage" id="CandidateImage"
+                                                class="btn btn-sm mb-1 " style="width: 100px;display: none;"
+                                                accept="image/png, image/gif, image/jpeg"><span
+                                                class="btn btn-sm btn-light shadow-sm text-primary">Upload
+                                                photo</span>
+                                        </label>
+
                                     </center>
                                 </div>
                             </div>
@@ -765,15 +776,15 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
             </div>
         </div>
     </div>
-    <div class="modal fade" id="imagemodal" tabindex="-1"  aria-labelledby="myModalLabel"
-        aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade" id="imagemodal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true"
+        data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                 
+
                     <img src="" class="imagepreview" style="width: 100%;">
                 </div>
             </div>

@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\CommunicationController;
 use App\Http\Controllers\Recruiter\RecruiterController;
 use App\Http\Controllers\Common\AboutCandidateController;
 use App\Http\Controllers\Common\JobApplicationController;
+use App\Http\Controllers\Common\PositionCodeController;
 use App\Http\Controllers\DepartmentVertical;
 use App\Http\Controllers\ElgController;
 use App\Http\Controllers\ImportController;
@@ -58,8 +59,8 @@ Route::group(['prefix' => 'jobportal'], function () {
     Route::get('campus_apply_form', [JobController::class, 'campus_apply_form'])->name('campus_apply_form');
     Route::post('campus_apply', [JobController::class, 'campus_apply'])->name('campus_apply');
 
-    Route::get('apply_form',[JobController::class, 'apply_form'])->name('apply_form');
-    Route::post('apply_without_post',[JobController::class, 'apply_without_post'])->name('apply_without_post');
+    Route::get('apply_form', [JobController::class, 'apply_form'])->name('apply_form');
+    Route::post('apply_without_post', [JobController::class, 'apply_without_post'])->name('apply_without_post');
 
     Route::get('trainee_apply_form', [JobController::class, 'trainee_apply_form'])->name('trainee_apply_form');
     Route::post('trainee_apply', [JobController::class, 'trainee_apply'])->name('trainee_apply');
@@ -81,6 +82,7 @@ Route::group(['prefix' => 'jobportal'], function () {
 Route::post('setTheme', [CommonController::class, 'setTheme'])->name('setTheme');
 Route::get('getDepartment', [CommonController::class, 'getDepartment'])->name('getDepartment');
 Route::get('getDesignation', [CommonController::class, 'getDesignation'])->name('getDesignation');
+Route::get('getGrade', [CommonController::class, 'getGrade'])->name('getGrade');
 Route::get('getReportingManager', [CommonController::class, 'getReportingManager'])->name('getReportingManager');
 Route::get('getResignedEmployee', [CommonController::class, 'getResignedEmployee'])->name('getResignedEmployee');
 Route::get('getResignedEmpDetail', [CommonController::class, 'getResignedEmpDetail'])->name('getResignedEmpDetail');
@@ -195,6 +197,8 @@ Route::get('ImportFromOld', [ProcessToEss::class, 'ImportFromOld'])->name('Impor
 
 Route::get('job_response', [JobApplicationController::class, 'job_response'])->name('job_response');
 Route::get('job_applications', [JobApplicationController::class, 'job_applications'])->name('job_applications');
+Route::get('get_duplicate_record', [JobApplicationController::class, 'get_duplicate_record'])->name('get_duplicate_record');
+Route::post('delete_duplicate_record', [JobApplicationController::class, 'delete_duplicate_record'])->name('delete_duplicate_record');
 Route::post('getJobResponseSummary', [JobApplicationController::class, 'getJobResponseSummary'])->name('getJobResponseSummary');
 Route::post('getCandidates', [JobApplicationController::class, 'getCandidates'])->name('getCandidates');
 Route::post('update_hrscreening', [JobApplicationController::class, 'update_hrscreening'])->name('update_hrscreening');
@@ -559,3 +563,9 @@ Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackH
 Route::get('Firob_Reports', [Reports::class, 'Firob_Reports'])->name('Firob_Reports');
 
 Route::get('Import', [ImportController::class, 'Import'])->name('Import');
+
+Route::get('position_code', [PositionCodeController::class, 'show_position_code'])->name('position_code');
+Route::post('show_all_position_code', [PositionCodeController::class, 'show_all_position_code'])->name('show_all_position_code');
+Route::post('unused_position_code', [PositionCodeController::class, 'unused_position_code'])->name('unused_position_code');
+Route::post('SyncPositionCode', [PositionCodeController::class, 'SyncPositionCode'])->name('SyncPositionCode');
+Route::post('add_position_code', [PositionCodeController::class, 'add_position_code'])->name('add_position_code');

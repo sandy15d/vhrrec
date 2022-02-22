@@ -53,16 +53,16 @@
                     name: 'DesigCode'
                 },
                 {
-                    data:'DepartmentCode',
-                    name:'DepartmentCode'
+                    data: 'DepartmentCode',
+                    name: 'DepartmentCode'
                 },
                 {
                     data: 'CompanyCode',
                     name: 'CompanyCode'
                 },
                 {
-                    data:'DesigStatus',
-                    name:'DesigStatus'
+                    data: 'DesigStatus',
+                    name: 'DesigStatus'
                 }
             ],
 
@@ -82,14 +82,11 @@
                 confirmButtonColor: '#556ee6',
                 width: 400,
                 allowOutsideClick: false,
-                onBeforeOpen: () => {
-                    Swal.showLoading()
-                },
 
             }).then(function(result) {
                 if (result.value) {
                     $.post(url, function(data) {
-                        if (data.status==200) {
+                        if (data.status == 200) {
                             $('#designationtable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
                         } else {

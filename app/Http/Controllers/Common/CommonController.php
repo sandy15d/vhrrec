@@ -95,6 +95,18 @@ class CommonController extends Controller
         return response()->json($designation);
     }
 
+    public function getGrade(Request $request)
+    {
+        $company = $request->CompanyId;
+        if ($company == 1) {
+            $grade_list = DB::table("master_grade")->where('GradeStatus', 'A')->where('CompanyId', $company)->where('GradeId', '>=', '61')->orderBy('GradeValue', 'ASC')->pluck("GradeId", "GradeValue");
+        } else {
+            $grade_list = DB::table("master_grade")->where('GradeStatus', 'A')->where('CompanyId', $company)->orderBy('GradeValue', 'desc')->orderBy('GradeValue', 'ASC')->pluck("GradeId", "GradeValue");
+        }
+
+        return response()->json($grade_list);
+    }
+
     public function getState()
     {
         $State = DB::table("states")->where('CountryId', session('Set_Country'))->orderBy('StateName', 'asc')->pluck("StateId", "StateName");
@@ -378,7 +390,7 @@ class CommonController extends Controller
         ];
         Mail::to($request->eMailId)->send(new CandidateMail($details));
 
-       /*  if (count(Mail::failures()) > 0) {
+        /*  if (count(Mail::failures()) > 0) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
             return response()->json(['status' => 200, 'msg' => 'Mail has been sent successfully.']);

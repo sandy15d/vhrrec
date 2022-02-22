@@ -204,6 +204,7 @@ use function App\Helpers\has_permission;
                             <li> <a href="/admin/resumesource"><i class="bx bx-right-arrow-alt"></i>Resume Source</a>
                             </li>
                             <li> <a href="/admin/employee"><i class="bx bx-right-arrow-alt"></i>Employee</a></li>
+                            <li> <a href="/position_code"><i class="bx bx-right-arrow-alt"></i>Position Code</a></li>
                             <li> <a href="/admin/department_vertical"><i class="bx bx-right-arrow-alt"></i>Department
                                     Vertical</a></li>
                             <li>

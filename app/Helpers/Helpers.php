@@ -45,7 +45,7 @@ function getEmployeeEmailId($empid)
 
 function getEmpIdByEmpCode($empCode)
 {
-	
+
 	if ($empCode == null) {
 		return "";
 	} else {
@@ -67,7 +67,7 @@ function getEmployeeDesignation($empid)
 
 function getCompanyCode($companyId)
 {
-	
+
 	if ($companyId == null) {
 		return "";
 	} else {
@@ -372,4 +372,11 @@ function has_permission($resultArray, $pageName)
 		}
 	}
 	return false;
+}
+
+function CheckDuplicate($Fname, $Phone, $Email, $Dob, $FatherName)
+{
+	$sql  = DB::select("SELECT COUNT(*) as total FROM `jobcandidates` WHERE  (`Phone` = '$Phone')   or (`Email` = '$Email' )or ('FName' = '$Fname' and 'DOB' = '$Dob' and 'FatherName' = '$FatherName')");
+	$count = $sql[0]->total;
+	return $count;
 }
