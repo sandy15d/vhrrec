@@ -41,6 +41,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
         }
 
     </style>
+    <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/ribbon.css" />
     <div class="page-content">
         <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
             <div class="col">
@@ -151,11 +152,14 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                 @php
                                                                     
                                                                     $dup = CheckDuplicate($row->FName, $row->Phone, $row->Email, $row->DOB, $row->FatherName);
-                                                                
+                                                                    
                                                                 @endphp
 
-                                                                @if ($dup >1)
-                                                                    <span class="badge badge-danger"><a href="{{route('get_duplicate_record')}}?Fname={{$row->FName}}&Phone={{$row->Phone}}&Email={{$row->Email}}&DOB={{$row->DOB}}&FatherName={{$row->FatherName}}" class="text-white" target="_blank">Duplicate</a></span>
+                                                                @if ($dup > 1)
+                                                                    <span class="badge badge-danger"><a
+                                                                            href="{{ route('get_duplicate_record') }}?Fname={{ $row->FName }}&Phone={{ $row->Phone }}&Email={{ $row->Email }}&DOB={{ $row->DOB }}&FatherName={{ $row->FatherName }}"
+                                                                            class="text-white"
+                                                                            target="_blank">Duplicate</a></span>
                                                                 @endif
                                                             </span>
                                                         </label>
@@ -466,6 +470,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                             <option value="" disabled selected></option>
                             <option value="Selected">Selected</option>
                             <option value="Rejected">Rejected</option>
+                            <option value="Irrelevant">Irrelevant</option>
                         </select>
 
                         <textarea name="RejectRemark" id="RejectRemark" cols="30" rows="3"
