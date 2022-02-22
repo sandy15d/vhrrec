@@ -123,6 +123,18 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
 $candidate_log = DB::table('candidate_log')
     ->where('JCId', $JCId)
     ->get();
+
+if ($OfBasic != null && $OfBasic->Grade != null) {
+    $position_code_list = DB::table('position_codes')
+        ->where('company_id', $OfBasic->Company)
+        ->where('department_id', $OfBasic->Department)
+        ->where('grade_id', $OfBasic->Grade)
+        ->where('is_available', 'Yes')
+        ->pluck('position_code');
+} else {
+    $position_code_list = [];
+}
+
 @endphp
 @extends('layouts.master')
 @section('title', 'Candidate Detail')
@@ -251,13 +263,7 @@ $candidate_log = DB::table('candidate_log')
                                                             Letter</a>
                                                     </div>
                                                 @endif
-
-
-
                                             </li>
-
-
-
                                         </ul>
                                     </div>
                                 </div>
@@ -1799,11 +1805,14 @@ $candidate_log = DB::table('candidate_log')
 
                 <div class="row">
                     @if ($OfBasic != null && $OfBasic->Answer == 'Accepted')
-                        <div class="col-md-5 d-flex">
+                        <div class="col-md-6 d-flex">
                             <div class="card profile-box flex-fill">
                                 <div class="card-body">
                                     <h6 class="card-title">Joining Details </h6>
                                     <ul class="personal-info">
+                                        <li>
+                                           
+                                        </li>
                                         <li>
                                             <div class="title" style="width: 150px;"> Appointment Letter <span
                                                     style="float: right">:</span> </div>
@@ -1923,11 +1932,22 @@ $candidate_log = DB::table('candidate_log')
                                                 <div class="title" style="width: 150px;">Position Code<span
                                                         style="float: right">:</span></div>
                                                 <div class="text">
-                                                    <input type="text"
+                                                   {{--  <input type="text"
                                                         class="form-control frminp form-control-sm d-inline-block"
                                                         id="PositionCode" name="PositionCode" readonly=""
                                                         style="width: 100px;"
-                                                        value="{{ $OfBasic->PositionCode ?? '' }}">
+                                                        value="{{ $OfBasic->PositionCode ?? '' }}"> --}}
+
+                                                        <select name="PositionCode" id="PositionCode" class="form-select form-select-sm d-inline-block" style="width: 170px;" disabled>
+                                                            <option value="">Select</option>
+                                                            @foreach ($position_code_list as $key=>$value)
+                                                                <option value="{{$value}}">{{$value}}</option>
+                                                            @endforeach
+                                                            @if ($OfBasic->PositionCode != '')
+                                                                <option value="{{$OfBasic->PositionCode}}" selected>{{$OfBasic->PositionCode}}</option>
+                                                            @endif
+                                                        </select>
+                                                        
                                                     <i class="fa fa-pencil text-primary" aria-hidden="true" id="PosEnbl"
                                                         onclick="PosEnbl()"
                                                         style="font-size: 16px;cursor: pointer; display: "></i>
@@ -1943,7 +1963,7 @@ $candidate_log = DB::table('candidate_log')
                             </div>
                         </div>
                     @endif
-                    <div class="col-md-7 d-flex">
+                    <div class="col-md-6 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Links
@@ -7685,7 +7705,7 @@ $candidate_log = DB::table('candidate_log')
         });
 
         function PosEnbl() {
-            $('#PositionCode').prop('readonly', false);
+            $('#PositionCode').prop('disabled', false);
             $('#PosEnbl').hide(500);
             $('#PositionCodeSave').show(500);
             $('#posCancle').show(500);

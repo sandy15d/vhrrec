@@ -90,7 +90,7 @@ class AboutCandidateController extends Controller
 
                 ]
             );
-       
+
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
@@ -880,7 +880,7 @@ class AboutCandidateController extends Controller
     {
         return view('onboarding.service_agreement');
     }
-    
+
     public function service_agreement_print()
     {
         return view('onboarding.service_agreement_print');
@@ -902,7 +902,7 @@ class AboutCandidateController extends Controller
     {
         return view('onboarding.service_bond');
     }
-    
+
     public function service_bond_print()
     {
         return view('onboarding.service_bond_print');
@@ -1007,8 +1007,10 @@ class AboutCandidateController extends Controller
     {
         $JAId = $request->JAId;
         $PositionCode = $request->PositionCode;
-        $query = DB::table('candjoining')->where('JAId', $JAId)->update(['PositionCode' => $PositionCode]);
+        $query = DB::table('candjoining')->where('JAId', $JAId)->update(['PositionCode' => $PositionCode, 'LastUpdated' => now(), 'UpdatedBy' => Auth::user()->id]);
+
         if ($query) {
+            $sql = DB::table('position_codes')->where('position_code', $PositionCode)->update(['is_available' => 'No']);
             return response()->json(['status' => 200, 'msg' => 'Data Saved Successfully']);
         } else {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
