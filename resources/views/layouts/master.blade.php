@@ -61,6 +61,18 @@ use function App\Helpers\has_permission;
 
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
     <title>HR Recruitment | @yield('title')</title>
+    <script>
+        $(document).ready(function() {
+            $('a[data-bs-toggle="tab"]').on('show.bs.tab', function(e) {
+           
+                localStorage.setItem('activeTab', $(e.target).attr('href'));
+            });
+            var activeTab = localStorage.getItem('activeTab');
+            if (activeTab) {
+                $('#myTab a[href="' + activeTab + '"]').tab('show');
+            }
+        });
+    </script>
     <style>
         .btn--red {
             color: #fff;
@@ -414,7 +426,8 @@ use function App\Helpers\has_permission;
                                             Application</a></li>
                                 @endif
                                 @if (has_permission($resultArray, 'Trainee Tracker'))
-                                    <li> <a href="/trainee_screening_tracker"><i class="bx bx-right-arrow-alt"></i>SIP /
+                                    <li> <a href="/trainee_screening_tracker"><i class="bx bx-right-arrow-alt"></i>SIP
+                                            /
                                             Trainee Tracker</a></li>
                                 @endif
                                 @if (has_permission($resultArray, 'Active Trainee'))

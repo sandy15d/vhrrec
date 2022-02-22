@@ -1537,7 +1537,6 @@ $candidate_log = DB::table('candidate_log')
             </div>
 
             <div class="tab-pane fade" id="job_offer">
-
                 <div class="row">
                     <div class="col-md-5 d-flex">
                         <div class="card profile-box flex-fill">
