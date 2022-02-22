@@ -169,6 +169,7 @@ use function App\Helpers\getStateName;
                             <option value="" disabled selected></option>
                             <option value="Selected">Selected</option>
                             <option value="Rejected">Rejected</option>
+                            <option value="Irrelevant">Irrelevant</option>
                         </select>
 
                         <textarea name="RejectRemark" id="RejectRemark" cols="30" rows="3"
