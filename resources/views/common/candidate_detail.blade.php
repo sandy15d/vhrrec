@@ -71,7 +71,7 @@ $firobid = base64_encode($Rec->JCId);
 
 $OfBasic = DB::table('offerletterbasic')
     ->leftJoin('candjoining', 'candjoining.JAId', '=', 'offerletterbasic.JAId')
-    ->select('offerletterbasic.*', 'candjoining.JoinOnDt',  'candjoining.EmpCode', 'candjoining.Verification', 'candjoining.Joined', 'candjoining.PositionCode', 'candjoining.ForwardToESS')
+    ->select('offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.EmpCode', 'candjoining.Verification', 'candjoining.Joined', 'candjoining.PositionCode', 'candjoining.ForwardToESS')
     ->where('offerletterbasic.JAId', $JAId)
     ->first();
 
@@ -1543,7 +1543,7 @@ $candidate_log = DB::table('candidate_log')
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Offer Letter Basic Details
-                                    @if ($OfBasic == null || $OfBasic->Answer == 'Rejected')
+                                    @if ($OfBasic == null || $OfBasic->Answer == 'Rejected' || $OfBasic->Answer == 'null')
                                         <a href="#" class="edit-icon" data-bs-toggle="modal"
                                             data-bs-target="#OfferLtrModal" id="offerltredit"
                                             data-id="{{ $Rec->JAId }}">
@@ -1668,7 +1668,7 @@ $candidate_log = DB::table('candidate_log')
                     <div class="col-md-7 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
-                                @if ($OfBasic == null || $OfBasic->Answer == 'Rejected')
+                                @if ($OfBasic == null || $OfBasic->Answer == 'Rejected' || $OfBasic->Answer == 'null')
                                     <h6 class="card-title">Offer Letter Generation & Review
                                         <a href="javascript:void(0);" class="edit-icon" id="offerltrgen"
                                             data-id="{{ $Rec->JAId }}">
