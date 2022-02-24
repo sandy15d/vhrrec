@@ -476,6 +476,7 @@ use function App\Helpers\has_permission;
                         </a>
                         <ul>
                             <li> <a href="/Firob_Reports"><i class="bx bx-right-arrow-alt"></i>FIRO B Test</a></li>
+                           {{--  <li> <a href="/candidate_vs_job"><i class="bx bx-right-arrow-alt"></i>Candidate VS JobPost</a></li> --}}
 
                         </ul>
                     </li>

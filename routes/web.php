@@ -39,6 +39,7 @@ use App\Http\Controllers\ElgController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\ProcessToEss;
 use App\Http\Controllers\Recruiter\MrfAllocatedController;
+use App\Http\Controllers\Report\CandidateVsJobController;
 use App\Http\Controllers\Report\Reports;
 
 Route::get('/', function () {
@@ -179,6 +180,10 @@ Route::get('service_bond', [AboutCandidateController::class, 'service_bond'])->n
 Route::get('service_bond_print', [AboutCandidateController::class, 'service_bond_print'])->name('service_bond_print');
 Route::post('service_bond_generate', [AboutCandidateController::class, 'service_bond_generate'])->name('service_bond_generate');
 
+Route::get('conf_agreement', [AboutCandidateController::class, 'conf_agreement'])->name('conf_agreement');
+Route::get('conf_agreement_print', [AboutCandidateController::class, 'conf_agreement_print'])->name('conf_agreement_print');
+Route::post('conf_agreement_generate', [AboutCandidateController::class, 'conf_agreement_generate'])->name('conf_agreement_generate');
+
 Route::post('send_for_ref_chk', [AboutCandidateController::class, 'send_for_ref_chk'])->name('send_for_ref_chk');
 Route::get('reference_check', [AboutCandidateController::class, 'reference_check'])->name('reference_check');
 Route::get('view_reference_check', [AboutCandidateController::class, 'view_reference_check'])->name('view_reference_check');
@@ -286,15 +291,6 @@ Route::post('saveEmpCode', [OfferLtrController::class, 'saveEmpCode'])->name('sa
 
 Route::get('candidate_joining', [OfferLtrController::class, 'candidate_joining'])->name('candidate_joining');
 
-
-
-
-
-
-
-
-
-
 Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');
 Route::get('get_all_manual_mrf_created_by_me', [ManualEntryController::class, 'get_all_manual_mrf_created_by_me'])->name('get_all_manual_mrf_created_by_me');
 Route::get('mrf', [ManualEntryController::class, 'mrf'])->name('mrf');
@@ -333,10 +329,6 @@ Route::post('updateCosting', [CampusController::class, 'updateCosting'])->name('
 Route::post('getCostingDetail', [CampusController::class, 'getCostingDetail'])->name('getCostingDetail');
 
 
-
-
-
-
 Route::get('trainee_mrf_allocated', [TraineeController::class, 'trainee_mrf_allocated'])->name('trainee_mrf_allocated');
 Route::post('getAllTraineeAllocatedMrf', [TraineeController::class, 'getAllTraineeAllocatedMrf'])->name('getAllTraineeAllocatedMrf');
 Route::get('trainee_applications', [TraineeController::class, 'trainee_applications'])->name('trainee_applications');
@@ -357,8 +349,6 @@ Route::post('save_trainee_detail', [TraineeController::class, 'save_trainee_deta
 Route::post('get_expense_list', [TraineeController::class, 'get_expense_list'])->name('get_expense_list');
 Route::post('add_expense', [TraineeController::class, 'add_expense'])->name('add_expense');
 Route::post('map_trainee_to_job', [TraineeController::class, 'map_trainee_to_job'])->name('map_trainee_to_job');
-
-
 
 
 Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventBackHistory']], function () {
@@ -561,6 +551,10 @@ Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackH
 
 //=============================REPORTS=====================================================//
 Route::get('Firob_Reports', [Reports::class, 'Firob_Reports'])->name('Firob_Reports');
+Route::get('candidate_vs_job', [CandidateVsJobController::class, 'index'])->name('candidate_vs_job');
+
+
+//==========================================================================================
 
 Route::get('Import', [ImportController::class, 'Import'])->name('Import');
 

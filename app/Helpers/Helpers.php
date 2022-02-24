@@ -380,3 +380,8 @@ function CheckDuplicate($Fname, $Phone, $Email, $Dob, $FatherName)
 	$count = $sql[0]->total;
 	return $count;
 }
+
+function getJobTitle()
+{
+	# code...
+}

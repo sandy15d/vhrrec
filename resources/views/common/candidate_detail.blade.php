@@ -63,6 +63,7 @@ $Rec = DB::table('jobapply')
         'appointing.AppLtrGen',
         'appointing.AgrLtrGen',
         'appointing.BLtrGen',
+        'appointing.ConfLtrGen',
     )
     ->first();
 
@@ -1810,9 +1811,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                 <div class="card-body">
                                     <h6 class="card-title">Joining Details </h6>
                                     <ul class="personal-info">
-                                        <li>
-                                           
-                                        </li>
+                                      
                                         <li>
                                             <div class="title" style="width: 150px;"> Appointment Letter <span
                                                     style="float: right">:</span> </div>
@@ -1864,6 +1863,27 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                 @endif
                                             </div>
                                         </li>
+
+                                        @if ($OfBasic->Department == 2 || $OfBasic->Department == 3 || $OfBasic->Department == 4 || $OfBasic->Department == 25 || $OfBasic->Department == 27 || $OfBasic->Department == 40 || $OfBasic->Department == 44)
+                                            <li>
+                                                <div class="title" style="width: 150px;"> Conf. Agreement <span
+                                                        style="float: right">:</span> </div>
+                                                <div class="text  text-dark">
+                                                    @if ($Rec->ConfLtrGen == 'No' || $Rec->ConfLtrGen == null)
+                                                        <i class="fa fa-pencil text-primary" aria-hidden="true"
+                                                            onclick="ConfidentialityAgrGen({{ $Rec->JAId }})"
+                                                            style="font-size: 16px;cursor: pointer; display: ">Generate </i>
+                                                    @else
+                                                        <a href="{{ route('conf_agreement') }}?jaid={{ base64_encode($JAId) }}"
+                                                            target="_blank"> View</a> | <a href="javascript:void(0);"
+                                                            onclick="PrintConfidentialityAgreementLetter('{{ route('conf_agreement_print') }}?jaid={{ base64_encode($Rec->JAId) }}');">
+                                                            Print</a>
+                                                    @endif
+
+                                                </div>
+                                            </li>
+                                            
+                                        @endif
 
                                         <li>
                                             <div class="title" style="width: 150px;"> Verify Joining Form <span
@@ -2034,7 +2054,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                 <br>
                                 <br>
                                 @if ($OfBasic != null)
-                                    @if ($OfBasic->ForwardToESS == 'No' || ($OfBasic->ForwardToESS == null && $OfBasic->Joined == 'Yes'))
+                                    @if ($OfBasic->ForwardToESS == 'No' &&  $OfBasic->Joined == 'Yes' && $OfBasic->EmpCode != '')
                                         <center><button class="btn btn-sm btn-primary" id="ProcessToEss">Process Data to
                                                 Ess
                                             </button>
@@ -6640,6 +6660,13 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                 .appendTo("body");
         }
 
+        function PrintConfidentialityAgreementLetter(url) {
+            $("<iframe>") // create a new iframe element
+                .hide() // make it invisible
+                .attr("src", url) // point the iframe to the page you want to print
+                .appendTo("body");
+        }
+
         function getOfHistory(JAId) {
             var JAId = JAId;
             var route = "{{ route('offer_ltr_history') }}";
@@ -6938,6 +6965,11 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
         function ServiceBondGen(JAId) {
             var JAId = btoa(JAId);
             window.open('{{ route('service_bond') }}?jaid=' + JAId, '_blank');
+        }
+
+        function ConfidentialityAgrGen(JAId) {
+            var JAId = btoa(JAId);
+            window.open('{{ route('conf_agreement') }}?jaid=' + JAId, '_blank');
         }
     </script>
     <script>

@@ -909,6 +909,33 @@ class AboutCandidateController extends Controller
     }
 
 
+    public function conf_agreement_generate(Request $request)
+    {
+        $JAId = $request->JAId;
+      
+        $query = DB::table('appointing')->where('JAId', $JAId)->update(['ConfLtrDate' => date('Y-m-d'), 'ConfLtrGen' => 'Yes', 'LastUpdated' => date('Y-m-d H:i:s'), 'UpdatedBy' => Auth::user()->id]);
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Confidentiality Agreement Generated Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function conf_agreement()
+    {
+        return view('onboarding.conf_agreement');
+    }
+
+    public function conf_agreement_print()
+    {
+        return view('onboarding.conf_agreement_print');
+    }
+
+
+
+
+
+
     public function send_for_ref_chk(Request $request)
     {
         $JAId = $request->ReferenceChkJAId;
