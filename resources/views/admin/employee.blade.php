@@ -110,6 +110,7 @@
         //===================== Synchonize Company Data from ESS===================
         $(document).on('click', '#syncEmployee', function() {
             var url = '<?= route('syncEmployee') ?>';
+            $('#syncEmployee').html('<i class="fa fa-spinner fa-spin"></i> Loading...');
             swal.fire({
                 title: 'Are you sure?',
                 html: 'Synchronize Employee Data from ESS',
@@ -129,10 +130,12 @@
                 if (result.value) {
                     $.post(url, function(data) {
                         if (data.status == 200) {
+                            $('#syncEmployee').html('Sync');
                             $('#employeetable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
 
                         } else {
+                            $('#syncEmployee').html('Sync');
                             toastr.error(data.msg);
                         }
                     }, 'json');

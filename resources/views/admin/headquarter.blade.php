@@ -61,6 +61,7 @@
         //===================== Synchonize Company Data from ESS===================
         $(document).on('click', '#syncHeadquarter', function() {
             var url = '<?= route('syncHeadquarter') ?>';
+            $('#syncHeadquarter').html('<i class="fa fa-spinner fa-spin"></i> Loading...');
             swal.fire({
                 title: 'Are you sure?',
                 html: 'Synchronize Headquaeter Data from ESS',
@@ -72,16 +73,16 @@
                 confirmButtonColor: '#556ee6',
                 width: 400,
                 allowOutsideClick: false,
-                onBeforeOpen: () => {
-                    Swal.showLoading()
-                },
+               
 
             }).then(function(result) {
                 if (result.value) {
                     $.post(url, function(data) {
+                        
                         if (data.status==200) {
                             $('#headquartertable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
+                            $('#syncHeadquarter').html('Sync');
                         } else {
                             toastr.error(data.msg);
                         }

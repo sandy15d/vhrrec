@@ -274,6 +274,7 @@
         //===================== Synchonize State Data from ESS===================
         $(document).on('click', '#syncState', function() {
             var url = '<?= route('syncState') ?>';
+            $('#syncState').html('<i class="fa fa-spinner fa-spin"></i> Loading...');
             swal.fire({
                 title: 'Are you sure?',
                 html: 'Synchronize State Data from ESS',
@@ -292,10 +293,12 @@
                 if (result.value) {
                     $.post(url, function(data) {
                         if (data.status == 200) {
+                            $('#syncState').html('Sync');
                             $('#Statetable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
                         } else {
                             toastr.error(data.msg);
+                            $('#syncState').html('Sync');
                         }
                     }, 'json');
                 }

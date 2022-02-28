@@ -260,6 +260,7 @@
         $(document).on('click', '#deleteBtn', function() {
             var CompanyId = $(this).data('id');
             var url = '<?= route('deleteCompany') ?>';
+
             swal.fire({
                 title: 'Are you sure?',
                 html: 'You want to <b>Delete</b> this Company',
@@ -292,6 +293,7 @@
         //===================== Synchonize Company Data from ESS===================
         $(document).on('click','#syncCompany',function(){
             var url = '<?= route('syncCompany') ?>';
+            $('#syncCompany').html('<i class="fa fa-spinner fa-spin"></i> Loading...');
             swal.fire({
                 title: 'Are you sure?',
                 html: 'Synchronize Company Data from ESS',
@@ -310,11 +312,13 @@
                     $.post(url, function(data) {
                         if (data.status==200) {
                             $('#loader').modal('hide');
+                            $('#syncCompany').html('Sync');
                             $('#companytable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
 
                         } else {
                             toastr.error(data.msg);
+                            $('#syncCompany').html('Sync');
                         }
                     }, 'json');
                 }

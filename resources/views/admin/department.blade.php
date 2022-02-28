@@ -66,6 +66,7 @@
         //===================== Synchonize Company Data from ESS===================
         $(document).on('click', '#syncDepartment', function() {
             var url = '<?= route('syncDepartment') ?>';
+            $('#syncDepartment').html('<i class="fa fa-spinner fa-spin"></i> Loading...');
             swal.fire({
                 title: 'Are you sure?',
                 html: 'Synchronize Department Data from ESS',
@@ -85,9 +86,11 @@
                 if (result.value) {
                     $.post(url, function(data) {
                         if (data.status==200) {
+                            $('#syncDepartment').html('Sync');
                             $('#departmenttable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
                         } else {
+                            $('#syncDepartment').html('Sync');
                             toastr.error(data.msg);
                         }
                     }, 'json');

@@ -60,6 +60,7 @@
 
         //===================== Synchonize Company Data from ESS===================
         $(document).on('click', '#syncGrade', function() {
+            $('#syncGrade').html('<i class="fa fa-spinner fa-spin"></i> Loading...');
             var url = '<?= route('syncGrade') ?>';
             swal.fire({
                 title: 'Are you sure?',
@@ -80,9 +81,11 @@
                 if (result.value) {
                     $.post(url, function(data) {
                         if (data.status==200) {
+                            $('#syncGrade').html('Sync');
                             $('#gradetable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
                         } else {
+                            $('#syncGrade').html('Sync');
                             toastr.error(data.msg);
                         }
                     }, 'json');

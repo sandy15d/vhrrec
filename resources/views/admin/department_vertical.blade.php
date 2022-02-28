@@ -61,6 +61,7 @@
         //===================== Synchonize Company Data from ESS===================
         $(document).on('click', '#syncVertical', function() {
             var url = '<?= route('syncVertical') ?>';
+            $('#syncVertical').html('<i class="fa fa-spinner fa-spin"></i> Loading...');
             swal.fire({
                 title: 'Are you sure?',
                 html: 'Synchronize Department Vertical Data from ESS',
@@ -80,10 +81,12 @@
                 if (result.value) {
                     $.post(url, function(data) {
                         if (data.status==200) {
+                            $('#syncVertical').html('Sync');
                             $('#verticaltable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
                         } else {
                             toastr.error(data.msg);
+                            $('#syncVertical').html('Sync');
                         }
                     }, 'json');
                 }
