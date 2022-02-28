@@ -3,6 +3,6 @@
 
 <p>{{$details['Message']}}</p>
 
-Thanks,<br>
-VNR Recruitment
+Thanks and Regards,<br>
+{{$details['Recruiter']}}
 @endcomponent

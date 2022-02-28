@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
 
 use App\Models\Admin\master_employee;
@@ -28,7 +29,7 @@ class EmployeeController extends Controller
 
         return datatables()->of($employee)
             ->addIndexColumn()
-            ->addColumn('chk',function(){
+            ->addColumn('chk', function () {
                 return '<input type="checkbox" class="select_all">';
             })
             ->addColumn('fullname', function ($employee) {
@@ -76,7 +77,7 @@ class EmployeeController extends Controller
             $temp['Location'] = $value['HqId'];
             $temp['CTC'] = $value['Tot_CTC'];
             $temp['Title'] = $value['Title'];
-
+            $temp['CountryId'] = 1;
             array_push($data, $temp);
         }
         $query = master_employee::insert($data);

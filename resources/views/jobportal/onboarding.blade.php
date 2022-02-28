@@ -3377,8 +3377,8 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                     if (res) {
                         SpecializationList = '<option value="">Select</option>';
                         $.each(res, function(key, value) {
-                            SpecializationList = SpecializationList + '<option value="' + value + '">' +
-                                key +
+                            SpecializationList = SpecializationList + '<option value="' + key + '">' +
+                                value +
                                 '</option>';
                         });
                     }

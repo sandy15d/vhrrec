@@ -99,7 +99,7 @@ $chk = DB::table('jobcandidates')
                                                         <tr>
                                                             <td style="padding: 0px 5px;">Remaining Time</td>
                                                             <td>
-                                                                : <span class="timer-title time-started">00:00:00</span>
+                                                                : <span class="timer-title time-started" style="font-size: 20px;">00:00:00</span>
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -252,7 +252,7 @@ $chk = DB::table('jobcandidates')
 
                                                     <div class="col-md-12"
                                                         style="border-top:1px solid #808080;padding-top:10px;"> <button
-                                                            class="mb5 full-width btn btn-sm btn-success btn-save-answer">Save
+                                                            class="mb5 full-width btn btn-sm btn-success btn-save-answer" >Save
                                                             &amp; Next</button>&nbsp;&nbsp;
                                                         <button
                                                             class="mb5 full-width btn btn-sm btn-default btn-reset-answer">Clear
@@ -262,7 +262,7 @@ $chk = DB::table('jobcandidates')
                                                 <div class="panel-footer">
                                                     <div class="row">
                                                         <div class="col-md-12"> <button
-                                                                class="btn btn-success btn-submit-all-answers pull-right">Submit</button>&nbsp;&nbsp;
+                                                                class="btn btn-success btn-submit-all-answers pull-right" style="display: none">Submit</button>&nbsp;&nbsp;
                                                             {{-- <a href="javascript:void(0);" class="btn btn-default pull-left"
                                                             id="btnPrevQue">
                                                             << Back </a>&nbsp;&nbsp; <a href="javascript:void(0);"
@@ -661,7 +661,7 @@ $chk = DB::table('jobcandidates')
                         e.removeClass("que-not-attempted")),
                     OpenCurrentQue($(this));
             }); */
-
+let Count = 1;
             $(".btn-save-answer").click(function(e) {
                 e.preventDefault();
                 var t = $(".test-questions").find("li.active"),
@@ -722,6 +722,11 @@ $chk = DB::table('jobcandidates')
                         console.log(data.msg);
                     }
                 }, 'json');
+
+                Count++;
+                if(Count ==55){
+                    $(".btn-submit-all-answers").css("display","block");
+                }
             });
 
             $(".btn-reset-answer").click(function(e) {

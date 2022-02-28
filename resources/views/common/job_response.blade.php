@@ -37,6 +37,7 @@ use function App\Helpers\getStateName;
         }
 
     </style>
+
     <div class="page-content">
         <!--breadcrumb-->
         <input type="hidden" name="ToDate" id="ToDate" value="{{ date('Y-m-d') }}">
@@ -255,6 +256,7 @@ use function App\Helpers\getStateName;
             </div>
         </div>
     </div>
+    
 @endsection
 @section('scriptsection')
     <script>

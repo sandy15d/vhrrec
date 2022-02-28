@@ -34,6 +34,7 @@ $upcomming_interview = DB::table('screening')
     ->Join('manpowerrequisition', 'jobpost.MRFId', '=', 'manpowerrequisition.MRFId')
     ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
     ->where('jobpost.Status', 'Open')
+    ->where('screening.ScreenStatus','Shortlist')
     ->where('manpowerrequisition.CountryId', session('Set_Country'))
     ->whereNull('screening.IntervStatus')
     ->count();

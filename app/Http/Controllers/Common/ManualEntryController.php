@@ -20,6 +20,7 @@ use function App\Helpers\getCompanyCode;
 use Illuminate\Support\Facades\Validator;
 use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getDesignationCode;
+use function App\Helpers\getEmailID;
 
 class ManualEntryController extends Controller
 {
@@ -50,9 +51,23 @@ class ManualEntryController extends Controller
         return view('common.recruiter_mrf_entry', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'userlist'));
     }
 
-    public function get_all_manual_mrf_created_by_me()
+    public function get_all_manual_mrf_created_by_me(Request $request)
     {
         $usersQuery = master_mrf::query();
+        $Company = $request->Company;
+        $Department = $request->Department;
+        $Year = $request->Year;
+        if ($Company != '') {
+
+            $usersQuery->where("manpowerrequisition.CompanyId", $Company);
+        }
+        if ($Department != '') {
+            $usersQuery->where("manpowerrequisition.DepartmentId", $Department);
+        }
+        if ($Year != '') {
+            $usersQuery->whereBetween('manpowerrequisition.CreatedTime', [$Year . '-01-01', $Year . '-12-31']);
+        }
+
         if (Auth::user()->role == 'R') {
 
             $usersQuery->where('CreatedBy', Auth::user()->id);
@@ -541,7 +556,7 @@ class ManualEntryController extends Controller
             $MRF->DesigId = $request->Designation;
             $MRF->Positions = array_sum($ManPower);
             $MRF->LocationIds = $locArray_str;
-            $MRF->MinCTC = $request->MinCTC;
+           // $MRF->MinCTC = $request->MinCTC;
             $MRF->MaxCTC = $request->MaxCTC;
             $MRF->WorkExp = $request->WorkExp;
             $MRF->Remarks = $request->Remark;
@@ -574,6 +589,7 @@ class ManualEntryController extends Controller
                 ];
                 if (CheckCommControl(3) == 1) {  //if MRF created by Recruiter  communication control is on
                     Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+                    Mail::to(getEmailID($request->OnBehalf))->send(new MrfCreationMail($details));
                 }
                 return response()->json(['status' => 200, 'msg' => 'Manual Campus Hiring MRF has been successfully created.']);
             }

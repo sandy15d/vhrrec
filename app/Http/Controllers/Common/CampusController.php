@@ -149,7 +149,8 @@ class CampusController extends Controller
 
             ->editColumn('Collage', function ($mrf) {
                 $collage = unserialize($mrf->EducationInsId);
-                return getCollegeById($collage[0]);
+
+                return getCollegeById($collage);
             })
             ->editColumn('LocationIds', function ($mrf) {
                 if ($mrf->LocationIds != '') {
@@ -360,7 +361,7 @@ class CampusController extends Controller
             ->editColumn('College', function ($data) {
 
                 $College = unserialize($data->EducationInsId);
-                return getCollegeById($College[0]);
+                return getCollegeById($College);
             })
 
             ->editColumn('Department', function ($data) {
@@ -405,9 +406,7 @@ class CampusController extends Controller
                 return $data->FName . ' ' . $data->MName . ' ' . $data->LName;
             })
 
-            ->addColumn('University', function ($data) {
-                return getCollegeCode($data->College);
-            })
+
 
             ->addColumn('Qualification', function ($data) {
                 $x = getEducationCodeById($data->Education);
@@ -418,8 +417,11 @@ class CampusController extends Controller
             })
 
             ->addColumn('PlacementDate', function ($data) {
-
-                $x = '<input type="date" class="frminp d-inline-block form-control form-control-sm" readonly style="width:130px;" id="PlacementDate' . $data->JCId . '" value="' . $data->PlacementDate . '"><i class="fa fa-pencil-square-o text-primary" aria-hidden="true" id="PDateEdit" onclick="PDateEnbl(' . $data->JCId . ',this)" style="font-size:16px; cursor:pointer;"></i><button class="btn btn-sm frmbtn btn-primary" style="display:none;" id="PDateSave' . $data->JCId . '" onclick="SavePlacementDate(' . $data->JCId . ',this)">Save</button><button class="btn btn-sm frmbtn btn-danger" style="display: none;" id="PDateCanc' . $data->JCId . '" onclick="window.location.reload();">Cancel</button>';
+                if ($data->PlacementDate != null) {
+                    $x = '<input type="date" class="frminp d-inline-block form-control form-control-sm" readonly style="width:130px;" id="PlacementDate' . $data->JCId . '" value="' . $data->PlacementDate . '"><i class="fa fa-pencil-square-o text-primary" aria-hidden="true" id="PDateEdit" onclick="PDateEnbl(' . $data->JCId . ',this)" style="font-size:16px; cursor:pointer;"></i><button class="btn btn-sm frmbtn btn-primary" style="display:none;" id="PDateSave' . $data->JCId . '" onclick="SavePlacementDate(' . $data->JCId . ',this)">Save</button><button class="btn btn-sm frmbtn btn-danger" style="display: none;" id="PDateCanc' . $data->JCId . '" onclick="window.location.reload();">Cancel</button>';
+                } else {
+                    $x = '<input type="checkbox" class="camcand" name="camcand" data-id="' . $data->JAId . '" name="selectCand_date" id="selectCand_date" value="' . $data->JAId . '"/> <input type="date" class="frminp d-inline-block form-control form-control-sm" readonly style="width:130px;" id="PlacementDate' . $data->JCId . '" value="' . $data->PlacementDate . '"><i class="fa fa-pencil-square-o text-primary" aria-hidden="true" id="PDateEdit" onclick="PDateEnbl(' . $data->JCId . ',this)" style="font-size:16px; cursor:pointer;"></i><button class="btn btn-sm frmbtn btn-primary" style="display:none;" id="PDateSave' . $data->JCId . '" onclick="SavePlacementDate(' . $data->JCId . ',this)">Save</button><button class="btn btn-sm frmbtn btn-danger" style="display: none;" id="PDateCanc' . $data->JCId . '" onclick="window.location.reload();">Cancel</button>';
+                }
                 return $x;
             })
 
@@ -487,6 +489,49 @@ class CampusController extends Controller
         }
     }
 
+
+    public function SetAllCampusDate(Request $request)
+    {
+        $JAId = $request->JAId;
+        $sql = 0;
+        for ($i = 0; $i < Count($JAId); $i++) {
+            $query = jobapply::find($JAId[$i]);
+            $str = jobcandidate::find($query->JCId);
+            $str->PlacementDate = now();
+            $str->UpdatedBy = Auth::user()->id;
+            $str->LastUpdated = now();
+            $str->save();
+            $sql = 1;
+        }
+
+        if ($sql == 0) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'Campus Placement Date has been changed successfully.']);
+        }
+    }
+
+    public function SetAllCampusTechScrStatus(Request $request)
+    {
+        $JAId = $request->JAId;
+        $sql = 0;
+        for ($i = 0; $i < Count($JAId); $i++) {
+            $query = screening::find($JAId[$i]);
+            $query->ScreenStatus = $request->techStatus;
+            $query->UpdatedBy = Auth::user()->id;
+            $query->LastUpdated = now();
+            $query->save();
+
+            $sql = 1;
+        }
+
+        if ($sql == 0) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'Candidate Technical Screening Status Successfully Changed']);
+        }
+    }
+
     public function campus_screening_tracker()
     {
         $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
@@ -533,8 +578,13 @@ class CampusController extends Controller
 
         return datatables()->of($data)
             ->addIndexColumn()
-            ->addColumn('chk', function () {
-                return '<input type="checkbox" class="select_all">';
+            ->addColumn('chk', function ($data) {
+                if ($data->ScreenStatus == '' || $data->ScreenStatus == null) {
+                    return "<input type='checkbox' class='japchks' data-id='$data->JAId' name='selectCand' id='selectCand' value='$data->JAId'>";
+                } else {
+
+                    return '';
+                }
             })
             ->editColumn('Department', function ($data) {
                 return getDepartment($data->ScrDpt);

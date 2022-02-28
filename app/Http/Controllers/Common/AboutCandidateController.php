@@ -912,7 +912,7 @@ class AboutCandidateController extends Controller
     public function conf_agreement_generate(Request $request)
     {
         $JAId = $request->JAId;
-      
+
         $query = DB::table('appointing')->where('JAId', $JAId)->update(['ConfLtrDate' => date('Y-m-d'), 'ConfLtrGen' => 'Yes', 'LastUpdated' => date('Y-m-d H:i:s'), 'UpdatedBy' => Auth::user()->id]);
         if ($query) {
             return response()->json(['status' => 200, 'msg' => 'Confidentiality Agreement Generated Successfully']);
@@ -1022,7 +1022,8 @@ class AboutCandidateController extends Controller
     {
         $JAId = $request->JAId;
         $Joined = $request->Joined;
-        $query = DB::table('candjoining')->where('JAId', $JAId)->update(['Joined' => $Joined]);
+        $RemarkHr = $request->RemarkHr;
+        $query = DB::table('candjoining')->where('JAId', $JAId)->update(['Joined' => $Joined, 'NoJoiningRemark' => $RemarkHr]);
         if ($query) {
             return response()->json(['status' => 200, 'msg' => 'Data Saved Successfully']);
         } else {

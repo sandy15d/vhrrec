@@ -608,7 +608,7 @@
                 $('#MRFId').val(data.MRFDetails.MRFId);
                 $('#Designation').val(data.Designation);
                 $('#JobCode').val(data.MRFDetails.JobCode);
-
+                $("#PayPackage").val('Rs. ' +data.MRFDetails.MaxCTC + ' CTC Per Annum');
                 CKEDITOR.instances['JobInfo'].setData(data.MRFDetails.Info);
 
                 KPCount = (data.KPDetails).length;
@@ -871,8 +871,8 @@
                 success: function(res) {
                     if (res) {
                         $.each(res, function(key, value) {
-                            SpecializationList = SpecializationList + '<option value="' + value + '">' +
-                                key +
+                            SpecializationList = SpecializationList + '<option value="' + key + '">' +
+                                value +
                                 '</option>';
                         });
                     }

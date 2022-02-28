@@ -95,12 +95,19 @@
                 <div class=" bg-white  shadow-sm rounded stickThis " style="font-size: 14px;">
                     &nbsp;<span style="font-weight: bold;">↱</span>&nbsp;
                     <label class="text-primary"><input id="checkall" type="checkbox" name="">&nbsp;Check all</label>
-                    <i class="text-muted" style="font-size: 13px;">With selected:</i> 
+                    <i class="text-muted" style="font-size: 13px;">With selected:</i>
                     <span class="d-inline">
                         <label class="text-primary" style="font-size: 13px; cursor: pointer;"
                             onclick="SendForScreening()"><i class="fas fa-long-arrow-alt-right"></i> Fwd. to Screening
                             Stage</label> &nbsp;
                     </span>
+
+                    <span style="float:right;">↱ <label class="text-primary"><input id="checkall_date" type="checkbox"
+                                name="">&nbsp;Check all <label class="text-danger"
+                                style="font-size: 13px; cursor: pointer;" onclick="SetAllCampusDate()"><i
+                                    class="fas fa-long-arrow-alt-right text-danger"></i> Set Date</label></label>
+                    </span>
+
 
                 </div>
                 <table class="table table-hover table-striped table-condensed align-middle text-center table-bordered"
@@ -116,7 +123,7 @@
                             <td>Qualification</td>
                             <td>CGPA</td>
                             <td>Mobile</td>
-                            <td>Email</td>
+                           {{--  <td>Email</td> --}}
                             <td>Campus Placement Date</td>
                         </tr>
                     </thead>
@@ -349,8 +356,8 @@
                         name: 'University'
                     },
                     {
-                        data:'StudentId',
-                        name:'StudentId'
+                        data: 'StudentId',
+                        name: 'StudentId'
                     },
                     {
                         data: 'StudentName',
@@ -369,10 +376,10 @@
                         name: 'Phone'
                     },
 
-                    {
+                    /* {
                         data: 'Email',
                         name: 'Email'
-                    },
+                    }, */
                     {
                         data: 'PlacementDate',
                         name: 'PlacementDate'
@@ -459,6 +466,51 @@
                 if (confirm('Are you sure to Send Selected Candidates to Screening Stage?')) {
                     $.ajax({
                         url: '{{ url('SendForScreening') }}',
+                        method: 'POST',
+                        data: {
+                            JAId: sc,
+                        },
+                        success: function(data) {
+                            if (data.status == 400) {
+                                alert('Something went wrong..!!');
+                            } else {
+                                toastr.success(data.msg);
+                                $('#CandidateRecords').DataTable().ajax.reload(null, false);
+                            }
+                        }
+                    });
+                }
+
+            } else {
+                alert('No Candidate Selected!\nPlease select atleast one candidate to proceed.');
+            }
+
+        }
+
+
+
+        $('#checkall_date').click(function() {
+            if ($(this).prop("checked") == true) {
+                $('.camcand').prop("checked", true);
+            } else if ($(this).prop("checked") == false) {
+                $('.camcand').prop("checked", false);
+            }
+        });
+
+        
+
+        function SetAllCampusDate() {
+            var sc = [];
+            $("input[name='camcand']").each(function() {
+                if ($(this).prop("checked") == true) {
+                    var value = $(this).val();
+                    sc.push(value);
+                }
+            });
+            if (sc.length > 0) {
+                if (confirm('Are you sure to Set Campus Date for Selected Candidates?')) {
+                    $.ajax({
+                        url: '{{ url('SetAllCampusDate') }}',
                         method: 'POST',
                         data: {
                             JAId: sc,

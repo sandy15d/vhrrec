@@ -11,6 +11,8 @@ use App\Helpers\UserNotification;
 use App\Mail\MrfStatusChangeMail;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\LogBookActivity;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
@@ -526,8 +528,44 @@ class AdminController extends Controller
 
     public function userlogs()
     {
-        $logs = DB::table('logbook')->orderBy('id', 'desc')->get();
 
-        return view('admin.userlogs', compact('logs'));
+        $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
+        $user = User::pluck('name', 'id');
+        return view('admin.userlogs', compact('months', 'user'));
+    }
+
+    public function getAllLogs(Request $request)
+    {
+        $usersQuery = LogBookActivity::query();
+        $User = $request->User;
+
+        $Year = $request->Year;
+        $Month = $request->Month;
+
+        if ($User != '') {
+
+            $usersQuery->where("user_id", $User);
+        }
+
+        if ($Year != '') {
+            $usersQuery->whereBetween('created_at', [$Year . '-01-01', $Year . '-12-31']);
+        }
+        if ($Month != '') {
+            if ($Year != '') {
+                $usersQuery->whereBetween('created_at', [$Year . '-' . $Month . '-01', $Year . '-' . $Month . '-31']);
+            } else {
+                $usersQuery->whereBetween('created_at', [date('Y') . '-' . $Month . '-01', date('Y') . '-' . $Month . '-31']);
+            }
+        }
+
+        $query = $usersQuery->select('*')
+            ->orderBy('id', 'DESC');
+
+        return datatables()->of($query)
+            ->addIndexColumn()
+            ->editColumn('date', function ($query) {
+                return date('d-m-Y', strtotime($query->created_at));
+            })
+            ->make(true);
     }
 }

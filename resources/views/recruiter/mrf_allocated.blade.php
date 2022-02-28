@@ -440,6 +440,7 @@
         CKEDITOR.replace('editJobInfo');
 
         var MrfStatus = 'Open';
+        
         $('#MRFTable').DataTable({
             processing: true,
             serverSide: true,
@@ -587,7 +588,7 @@
 
         function GetAllocatedMrf() {
             $('#MRFTable').DataTable().draw(true);
-            //$('#MRFTable').DataTable().ajax.reload(null, false);
+          
         }
 
 
@@ -963,8 +964,8 @@
                 success: function(res) {
                     if (res) {
                         $.each(res, function(key, value) {
-                            SpecializationList = SpecializationList + '<option value="' + value + '">' +
-                                key +
+                            SpecializationList = SpecializationList + '<option value="' + key + '">' +
+                                value +
                                 '</option>';
                         });
                     }

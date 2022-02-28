@@ -131,10 +131,10 @@
                                         <td>
                                             <table class="table borderless" style="margin-bottom: 0px;">
                                                 <tr>
-                                                    <td><input type="text" name="MinCTC" id="MinCTC"
-                                                            class="form-control form-control-sm" placeholder="Min"></td>
+                                                   
                                                     <td><input type="text" name="MaxCTC" id="MaxCTC"
                                                             class="form-control form-control-sm" placeholder="Max"> </td>
+                                                            <td> CTC per annum</td>
                                                 </tr>
                                             </table>
                                         </td>

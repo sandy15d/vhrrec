@@ -19,7 +19,7 @@ use function App\Helpers\getCompanyCode;
 use function App\Helpers\getDepartmentCode;
 
 use function App\Helpers\getDesignationCode;
-
+use function App\Helpers\getFullName;
 
 class CommonController extends Controller
 {
@@ -223,8 +223,8 @@ class CommonController extends Controller
     public function getAllSP()
     {
 
-        $Sp = DB::table("master_specialization")->orderBy('Specialization', 'asc')->pluck("SpId", "Specialization");
-        $sql = DB::getQueryLog();
+        $Sp = DB::table("master_specialization")->orderBy('Specialization', 'asc')->pluck("Specialization", "SpId");
+     
 
         return response()->json($Sp);
     }
@@ -383,10 +383,13 @@ class CommonController extends Controller
 
     public function sendMailToCandidate(Request $request)
     {
+        $RId = Auth::user()->id;
+        $Recruiter = getFullName($RId);
         $details = [
             "subject" => $request->Subject,
             "Candidate" => $request->CandidateName,
             "Message" => $request->eMailMsg,
+            "Recruiter" => $Recruiter
         ];
         Mail::to($request->eMailId)->send(new CandidateMail($details));
 

@@ -777,8 +777,8 @@ $query = DB::table('screening')
                 success: function(res) {
                     if (res) {
                         $.each(res, function(key, value) {
-                            SpecializationList = SpecializationList + '<option value="' + value + '">' +
-                                key +
+                            SpecializationList = SpecializationList + '<option value="' + key + '">' +
+                                value +
                                 '</option>';
                         });
                     }

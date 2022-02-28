@@ -72,7 +72,7 @@ $firobid = base64_encode($Rec->JCId);
 
 $OfBasic = DB::table('offerletterbasic')
     ->leftJoin('candjoining', 'candjoining.JAId', '=', 'offerletterbasic.JAId')
-    ->select('offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.EmpCode', 'candjoining.Verification', 'candjoining.Joined', 'candjoining.PositionCode', 'candjoining.ForwardToESS')
+    ->select('offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.EmpCode', 'candjoining.Verification', 'candjoining.Joined', 'candjoining.PositionCode', 'candjoining.ForwardToESS', 'candjoining.NoJoiningRemark')
     ->where('offerletterbasic.JAId', $JAId)
     ->first();
 
@@ -361,7 +361,6 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                         <div class="text">
                                             @if ($Rec->MarriageDate != null)
                                                 {{ date('d-M-Y', strtotime($Rec->MarriageDate)) }}
-
                                             @else
                                                 -
                                             @endif
@@ -430,7 +429,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                     <div class="col-md-5 d-flex">
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
-                                <h6 class="card-title">Bank Informations <a href="#" class="edit-icon"
+                                <h6 class="card-title">Bank Informations & Other<a href="#" class="edit-icon"
                                         data-bs-toggle="modal" data-bs-target="#bank_info_modal" onclick="GetBankInfo();"><i
                                             class="fa fa-pencil"></i></a></h6>
                                 <ul class="personal-info">
@@ -550,7 +549,6 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                         <div class="text">
                                             @if ($Rec->pre_state != null)
                                                 {{ getStateName($Rec->pre_state) }}
-
                                             @else
                                                 -
                                             @endif
@@ -588,7 +586,6 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                         <div class="text">
                                             @if ($Rec->perm_dist != null)
                                                 {{ getDistrictName($Rec->perm_dist) }}
-
                                             @else
                                                 -
                                             @endif
@@ -599,7 +596,6 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                         <div class="text">
                                             @if ($Rec->perm_state != null)
                                                 {{ getStateName($Rec->perm_state) }}
-
                                             @else
                                                 -
                                             @endif
@@ -659,7 +655,6 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                 <td>
                                                     @if ($item->Institute != null)
                                                         {{ getCollegeById($item->Institute) }}
-
                                                     @else
                                                         -
                                                     @endif
@@ -1594,7 +1589,6 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                 @else
                                                     {{ getGradeValue($OfBasic->Grade) ?? '-' }}
                                                 @endif
-
                                             @else
                                                 -
                                             @endif
@@ -1610,7 +1604,6 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                 @else
                                                     {{ getFullName($OfBasic->A_ReportingManager) ?? '-' }}
                                                 @endif
-
                                             @else
                                                 -
                                             @endif
@@ -1626,7 +1619,6 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                 @else
                                                     {{ $OfBasic->CTC ?? '-' }}
                                                 @endif
-
                                             @else
                                                 -
                                             @endif
@@ -1811,7 +1803,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                 <div class="card-body">
                                     <h6 class="card-title">Joining Details </h6>
                                     <ul class="personal-info">
-                                      
+
                                         <li>
                                             <div class="title" style="width: 150px;"> Appointment Letter <span
                                                     style="float: right">:</span> </div>
@@ -1882,7 +1874,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
 
                                                 </div>
                                             </li>
-                                            
+
                                         @endif
 
                                         <li>
@@ -1916,7 +1908,9 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                 <select name="Joined" id="Joined"
                                                     class="form-select form-select-sm frminp d-inline" disabled
                                                     style="width: 100px;">
-                                                    <option value="No">No</option>
+                                                    <option value=""></option>
+                                                    <option value="No" {{ $OfBasic->Joined == 'No' ? 'selected' : '' }}>
+                                                        No</option>
                                                     <option value="Yes"
                                                         {{ $OfBasic->Joined == 'Yes' ? 'selected' : '' }}>Yes
                                                     </option>
@@ -1930,6 +1924,17 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                     id="JoinedCancle" onclick="window.location.reload();">Cancel</button>
                                             </div>
                                         </li>
+                                        @if ($OfBasic != null && $OfBasic->NoJoiningRemark != null)
+                                            <li>
+                                                <div class="title" style="width: 150px;">Reason for Not Joining
+                                                    <span style="float: right">:</span>
+                                                </div>
+                                                <div class="text  text-danger">
+                                                    {{ $OfBasic->NoJoiningRemark }}
+                                                </div>
+                                            </li>
+                                        @endif
+
                                         @if ($OfBasic->Joined == 'Yes')
                                             <li>
                                                 <div class="title" style="width: 150px;">Emp Code<span
@@ -1952,22 +1957,26 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                 <div class="title" style="width: 150px;">Position Code<span
                                                         style="float: right">:</span></div>
                                                 <div class="text">
-                                                   {{--  <input type="text"
+                                                    {{-- <input type="text"
                                                         class="form-control frminp form-control-sm d-inline-block"
                                                         id="PositionCode" name="PositionCode" readonly=""
                                                         style="width: 100px;"
                                                         value="{{ $OfBasic->PositionCode ?? '' }}"> --}}
 
-                                                        <select name="PositionCode" id="PositionCode" class="form-select form-select-sm d-inline-block" style="width: 170px;" disabled>
-                                                            <option value="">Select</option>
-                                                            @foreach ($position_code_list as $key=>$value)
-                                                                <option value="{{$value}}">{{$value}}</option>
-                                                            @endforeach
-                                                            @if ($OfBasic->PositionCode != '')
-                                                                <option value="{{$OfBasic->PositionCode}}" selected>{{$OfBasic->PositionCode}}</option>
-                                                            @endif
-                                                        </select>
-                                                        
+                                                    <select name="PositionCode" id="PositionCode"
+                                                        class="form-select form-select-sm d-inline-block"
+                                                        style="width: 170px;" disabled>
+                                                        <option value="">Select</option>
+                                                        @foreach ($position_code_list as $key => $value)
+                                                            <option value="{{ $value }}">{{ $value }}
+                                                            </option>
+                                                        @endforeach
+                                                        @if ($OfBasic->PositionCode != '')
+                                                            <option value="{{ $OfBasic->PositionCode }}" selected>
+                                                                {{ $OfBasic->PositionCode }}</option>
+                                                        @endif
+                                                    </select>
+
                                                     <i class="fa fa-pencil text-primary" aria-hidden="true" id="PosEnbl"
                                                         onclick="PosEnbl()"
                                                         style="font-size: 16px;cursor: pointer; display: "></i>
@@ -2054,7 +2063,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                 <br>
                                 <br>
                                 @if ($OfBasic != null)
-                                    @if ($OfBasic->ForwardToESS == 'No' &&  $OfBasic->Joined == 'Yes' && $OfBasic->EmpCode != '')
+                                    @if ($OfBasic->ForwardToESS == 'No' && $OfBasic->Joined == 'Yes' && $OfBasic->EmpCode != '')
                                         <center><button class="btn btn-sm btn-primary" id="ProcessToEss">Process Data to
                                                 Ess
                                             </button>
@@ -2338,7 +2347,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title">Bank Information</h6>
+                    <h6 class="modal-title">Bank Information & Other</h6>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -4914,8 +4923,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                     if (res) {
                         SpecializationList = '<option value="">Select</option>';
                         $.each(res, function(key, value) {
-                            SpecializationList = SpecializationList + '<option value="' + value + '">' +
-                                key +
+                            SpecializationList = SpecializationList + '<option value="' + key + '">' +
+                                value +
                                 '</option>';
                         });
                     }
@@ -5638,6 +5647,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                 $('.tab-content').height('auto');
             }
         });
+
         $(document).on('click', '#addMember', function() {
             MemberCount++;
             familymember(MemberCount);
@@ -5805,6 +5815,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                 }
             });
         });
+
         $('#CandidateProfileForm').on('submit', function(e) {
             e.preventDefault();
             var form = this;
@@ -6373,7 +6384,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
 
                         $("#PermHQ").empty();
                         $("#PermHQ").append(
-                            '<option value="0">Select State</option>');
+                            '<option value="0">Select HQ</option>');
                         $.each(res.headquarter_list, function(key, value) {
                             $("#PermHQ").append('<option value="' + value + '">' + key +
                                 '</option>');
@@ -6389,7 +6400,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
 
                         $("#TempHQ").empty();
                         $("#TempHQ").append(
-                            '<option value="0">Select State</option>');
+                            '<option value="0">Select HQ</option>');
                         $.each(res.headquarter_list, function(key, value) {
                             $("#TempHQ").append('<option value="' + value + '">' + key +
                                 '</option>');
@@ -6972,6 +6983,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
             window.open('{{ route('conf_agreement') }}?jaid=' + JAId, '_blank');
         }
     </script>
+
     <script>
         /*
          * This is the plugin
@@ -7715,25 +7727,56 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
         $(document).on('click', '#SaveJoined', function() {
             var JAId = $('#JAId').val();
             var Joined = $('#Joined').val();
-            $.ajax({
-                url: '<?= route('JoinedSave') ?>',
-                method: 'POST',
-                data: {
-                    JAId: JAId,
-                    Joined: Joined
-                },
-                dataType: 'json',
-                success: function(data) {
-                    if (data.status == 400) {
-                        toastr.error(data.msg);
-                    } else {
-                        toastr.success(data.msg);
-                        window.location.reload();
+            var RemarkHr = '';
+            if (Joined == 'No') {
+                RemarkHr = prompt("Please Enter Candidate Not Joining Remark");
+                if (RemarkHr == null || RemarkHr == '') {
+                    toastr.error('Please Enter Remark');
+                } else {
 
-                    }
-                },
+                    $.ajax({
+                        url: '<?= route('JoinedSave') ?>',
+                        method: 'POST',
+                        data: {
+                            JAId: JAId,
+                            Joined: Joined,
+                            RemarkHr: RemarkHr
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.status == 400) {
+                                toastr.error(data.msg);
+                            } else {
+                                toastr.success(data.msg);
+                                window.location.reload();
 
-            });
+                            }
+                        },
+
+                    });
+                }
+            } else {
+                $.ajax({
+                    url: '<?= route('JoinedSave') ?>',
+                    method: 'POST',
+                    data: {
+                        JAId: JAId,
+                        Joined: Joined,
+                        RemarkHr: ''
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.status == 400) {
+                            toastr.error(data.msg);
+                        } else {
+                            toastr.success(data.msg);
+                            window.location.reload();
+
+                        }
+                    },
+
+                });
+            }
         });
 
         function PosEnbl() {

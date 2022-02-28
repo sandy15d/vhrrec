@@ -292,7 +292,7 @@ Route::post('saveEmpCode', [OfferLtrController::class, 'saveEmpCode'])->name('sa
 Route::get('candidate_joining', [OfferLtrController::class, 'candidate_joining'])->name('candidate_joining');
 
 Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');
-Route::get('get_all_manual_mrf_created_by_me', [ManualEntryController::class, 'get_all_manual_mrf_created_by_me'])->name('get_all_manual_mrf_created_by_me');
+Route::post('get_all_manual_mrf_created_by_me', [ManualEntryController::class, 'get_all_manual_mrf_created_by_me'])->name('get_all_manual_mrf_created_by_me');
 Route::get('mrf', [ManualEntryController::class, 'mrf'])->name('mrf');
 Route::get('new_mrf_manual', [ManualEntryController::class, 'new_mrf_manual'])->name('new_mrf_manual');
 Route::get('replacement_mrf_manual', [ManualEntryController::class, 'replacement_mrf_manual'])->name('replacement_mrf_manual');
@@ -320,6 +320,8 @@ Route::post('getCampusCandidates', [CampusController::class, 'getCampusCandidate
 Route::post('SavePlacementDate', [CampusController::class, 'SavePlacementDate'])->name('SavePlacementDate');
 Route::post('SaveTestScore', [CampusController::class, 'SaveTestScore'])->name('SaveTestScore');
 Route::post('SendForScreening', [CampusController::class, 'SendForScreening'])->name('SendForScreening');
+Route::post('SetAllCampusDate', [CampusController::class, 'SetAllCampusDate'])->name('SetAllCampusDate');
+Route::post('SetAllCampusTechScrStatus', [CampusController::class, 'SetAllCampusTechScrStatus'])->name('SetAllCampusTechScrStatus');
 Route::post('SaveFirstInterview_Campus', [CampusController::class, 'SaveFirstInterview_Campus'])->name('SaveFirstInterview_Campus');
 Route::post('SaveSecondInterview_Campus', [CampusController::class, 'SaveSecondInterview_Campus'])->name('SaveSecondInterview_Campus');
 Route::post('Save_Cmp_Dpt_Campus', [CampusController::class, 'Save_Cmp_Dpt_Campus'])->name('Save_Cmp_Dpt_Campus');
@@ -365,6 +367,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('getRecruiterName', [AdminController::class, 'getRecruiterName'])->name('getRecruiterName');
     Route::get('setting', [AdminController::class, 'setting'])->name('admin.setting');
     Route::get('userlogs', [AdminController::class, 'userlogs'])->name('admin.userlogs');
+    Route::post('getAllLogs', [AdminController::class, 'getAllLogs'])->name('getAllLogs');
 
 
     // ! ======================Master Company ========================//

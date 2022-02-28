@@ -70,7 +70,22 @@
         <!--end breadcrumb-->
 
         <div class="card border-top border-0 border-4 border-primary">
+
             <div class="card-body table-responsive">
+                <div class=" bg-white  shadow-sm rounded stickThis " style="font-size: 14px;">
+                    &nbsp;<span style="font-weight: bold;">↱</span>&nbsp;
+                    <label class="text-primary"><input id="checkall" type="checkbox" name="">&nbsp;Check all</label>
+                    <i class="text-muted" style="font-size: 13px;">With selected:</i>
+                    <span class="d-inline">
+                        <label class="text-primary" style="font-size: 13px; cursor: pointer;" data-bs-toggle="modal"
+                            data-bs-target="#TechScreeningModal"><i class="fas fa-long-arrow-alt-right"></i> Set Technical
+                            Screening
+                            Status</label> &nbsp;
+                    </span>
+
+
+
+                </div>
                 <table class="table  table-condensed align-middle text-center table-bordered table-striped"
                     id="CampusApplication" style="width: 100%; margin-right:20px;">
                     <thead class="text-center bg-primary bg-gradient text-light">
@@ -94,10 +109,79 @@
         </div>
 
     </div>
+    <div class="modal fade" id="TechScreeningModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog">
 
+            <div class="modal-content">
+                <div class="modal-body">
+
+
+                    <div class="row">
+                        <div class="col"><label for="techStatus">Technical Screening Status</label></div>
+                        <div class="col">
+                            <select name="techStatus" id="techStatus" class="form-select form-select-sm">
+                                <option value="">Select</option>
+                                <option value="Shortlist">Shortlist</option>
+                                <option value="Reject">Reject</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="SendForTechSceenBtn" class="btn btn-primary btn-sm">Save
+                        changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('scriptsection')
     <script>
+        $('#checkall').click(function() {
+            if ($(this).prop("checked") == true) {
+                $('.japchks').prop("checked", true);
+            } else if ($(this).prop("checked") == false) {
+                $('.japchks').prop("checked", false);
+            }
+        });
+
+        $(document).on('click', '#SendForTechSceenBtn', function() {
+            var JAId = [];
+            var techStatus = $('#techStatus').val();
+            $("input[name='selectCand']").each(function() {
+                if ($(this).prop("checked") == true) {
+                    var value = $(this).val();
+                    JAId.push(value);
+                }
+            });
+            if (JAId.length > 0) {
+                if (confirm('Are you sure to Set Tecnical Screening Status for Selected Candidates?')) {
+                    $.ajax({
+                        url: '{{ url('SetAllCampusTechScrStatus') }}',
+                        method: 'POST',
+                        data: {
+                            JAId: JAId,
+                            techStatus: techStatus
+                        },
+                        success: function(data) {
+                            if (data.status == 400) {
+                                alert('Something went wrong..!!');
+                            } else {
+                                toastr.success(data.msg);
+                                window.location.reload();
+                            }
+                        }
+                    });
+                }
+
+            } else {
+                alert('No Candidate Selected!\nPlease select atleast one candidate to proceed.');
+            }
+
+        });
+
         function GetDepartment() {
             var CompanyId = $('#Fill_Company').val();
             $.ajax({
@@ -266,10 +350,10 @@
                     Score: Score
                 },
                 dataType: 'json',
-                
+
                 success: function(data) {
                     if (data.status == 200) {
-                     
+
                         $('#CampusApplication').DataTable().ajax.reload(null, false);
                         toastr.success(data.msg);
                     } else {
@@ -278,6 +362,7 @@
                 }
             });
         }
+
         function editScreenStatus(id) {
             $('#ScreenStatus' + id).prop("disabled", false);
         }

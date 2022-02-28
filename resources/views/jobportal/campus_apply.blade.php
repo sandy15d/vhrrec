@@ -60,7 +60,7 @@ foreach ($Education as $edu) {
     array_push($e_list, $edu['e']);
 }
 $Institute = unserialize($get_mrf->EducationInsId);
-$Institute = $Institute[0];
+/* $Institute = $Institute[0]; */
 $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
 @endphp
 
@@ -221,6 +221,19 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                             </td>
                                                         </tr>
                                                         <tr>
+                                                            <td valign="middle">Nationality<font color="#FF0000">*
+                                                                </font>
+                                                            <td> <select name="Nationality" id="Nationality"
+                                                                    class="form-select form-select-sm reqinp" onchange="getState(this.value);">
+                                                                    <option value="">Select</option>
+                                                                    @foreach ($country_list as $key => $value)
+                                                                        <option value="{{ $key }}">
+                                                                            {{ $value }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                               </td>
+                                                        </tr>
+                                                        <tr>
                                                             <td valign="middle">Address<font color="#FF0000">*
                                                                 </font>
                                                             </td>
@@ -299,19 +312,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                             </td>
                                                         </tr>
 
-                                                        <tr>
-                                                            <td valign="middle">Nationality<font color="#FF0000">*
-                                                                </font>
-                                                            <td> <select name="Nationality" id="Nationality"
-                                                                    class="form-select form-select-sm reqinp" >
-                                                                    <option value="">Select</option>
-                                                                    @foreach ($country_list as $key => $value)
-                                                                        <option value="{{ $key }}">
-                                                                            {{ $value }}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                               </td>
-                                                        </tr>
+                                                      
                                                         <tr>
                                                             <td valign="middle">Aadhaar No.<font color="#FF0000">*
                                                                 </font>
@@ -684,14 +685,11 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
     <script src="{{ URL::to('/') }}/assets/js/bootstrap.bundle.min.js"></script>
     <!--plugins-->
     <script src="{{ URL::to('/') }}/assets/js/jquery.min.js"></script>
-    <script src="{{ URL::to('/') }}/assets/plugins/simplebar/js/simplebar.min.js"></script>
-    <script src="{{ URL::to('/') }}/assets/plugins/metismenu/js/metisMenu.min.js"></script>
-    <script src="{{ URL::to('/') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
+
     <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
 
-    <!--app JS-->
-    <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
+   
 
     <script>
         function isNumberKey(evt) {
@@ -758,6 +756,37 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                 $('#RefCompany').removeClass('reqinp');
                 $('#RefMail').removeClass('reqinp');
             }
+        }
+
+        function getState(CountryId) {
+            var CountryId = CountryId;
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getState1') }}?CountryId=" + CountryId,
+                async: false,
+                beforeSend: function() {
+                    $('#StateLoader').removeClass('d-none');
+                    $('#State').addClass('d-none');
+                },
+
+                success: function(res) {
+                    if (res) {
+                        setTimeout(function() {
+                                $('#StateLoader').addClass('d-none');
+                                $('#State').removeClass('d-none');
+                                $("#State").empty();
+                                $("#State").append(
+                                    '<option value="" selected disabled >Select State</option>');
+                                $.each(res, function(key, value) {
+                                    $("#State").append('<option value="' + value + '">' + key +
+                                        '</option>');
+                                });
+                            },
+                            500);
+
+                    }
+                }
+            });
         }
 
         function getLocation(StateId) {
