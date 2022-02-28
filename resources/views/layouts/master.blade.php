@@ -441,6 +441,13 @@ use function App\Helpers\has_permission;
                                 @endif
                             </ul>
                         </li>
+                        <li>
+                            <a href="/admin/sentemails" target="_blank">
+                                <div class="parent-icon"><i class='fadeIn animated bx bx-mail-send text-primary'></i>
+                                </div>
+                                <div class="menu-title">Sent Mails</div>
+                            </a>
+                        </li>
                     @endif
                     {{-- <li>
                         <a href="/">
@@ -459,13 +466,7 @@ use function App\Helpers\has_permission;
                         </a></li>
 
 
-                    <li>
-                        <a href="/admin/sentemails" target="_blank">
-                            <div class="parent-icon"><i class='fadeIn animated bx bx-mail-send text-primary'></i>
-                            </div>
-                            <div class="menu-title">Sent Mails</div>
-                        </a>
-                    </li>
+                    
 
 
                     <li>
