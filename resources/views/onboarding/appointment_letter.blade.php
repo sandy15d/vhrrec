@@ -460,8 +460,15 @@ $elg = DB::table('candidate_entitlement')
                                     period of employment.</li>
                                 <li>Your appointment is valid subject to your acceptance of the terms and conditions of
                                     this letter of appointment and submission of signed duplicate copy of this letter
-                                    and Service Agreement and Service Bond attached as Annexure A and Annexure B
-                                    respectively by you to the Company within same day from the date of issue of this
+                                    and Service Agreement 
+                                    @if ($sql->ServiceBond == 'Yes')
+                                    ,Service Bond 
+                                    @endif
+                                    attached as Annexure C 
+                                    @if ($sql->ServiceBond == 'Yes')
+                                    and Annexure D  respectively
+                                    @endif
+                                    by you to the Company within same day from the date of issue of this
                                     letter.<br>
                                     In case of failure to submit the signed copy of the above-mentioned documents to the
                                     Company, your services as per this Appointment Letter shall come to an end

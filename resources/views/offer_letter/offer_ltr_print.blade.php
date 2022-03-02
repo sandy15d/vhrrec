@@ -399,7 +399,7 @@ $elg = DB::table('candidate_entitlement')
                     <p class="text-center"><b>ANNEXURE A – COMPENSATION STRUCTURE</b></p>
                     <br>
                     <center>
-                        <table class="table">
+                        <table class="table" style="width: 90%">
                             <tr>
                                 <th class="text-center">Emolument Head</th>
                                 <th class="text-center">Amount (in Rs.)</th>
@@ -508,12 +508,18 @@ $elg = DB::table('candidate_entitlement')
                 <div class="subpage">
                     <p style="margin-bottom:80px;"></p>
                     <p style="font-size:16px;"><b>Ref:</b> {{ $sql->LtrNo }}
-                        <span style="float: right"><b>Date:</b> {{ $sql->LtrDate }}</span>
+                        <span style="float: right"><b>Date: </b>
+                            @if ($sql->LtrDate == null)
+                                {{ date('d-m-Y') }}
+                            @else
+                                {{ date('d-m-Y', strtotime($sql->LtrDate)) }}
+                            @endif
+                        </span>
                     </p><br>
                     <p class="text-center"><b>ANNEXURE B – ENTITLEMENTS</b></p>
                     <br>
                     <center>
-                        <table class="table">
+                        <table class="table" style="width: 90%">
                             @php
                                 $rowCount = 0;
                             @endphp
