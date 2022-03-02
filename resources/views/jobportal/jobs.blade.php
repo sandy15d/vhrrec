@@ -70,7 +70,8 @@ $sql = DB::table('jobpost')
                                     </div>
                                     <div class="row mb-2">
                                         <div class="col-sm-12 text-center">
-                                            <button id="bntSip" class="btn btn-warning btn-lg center-block" style="margin-right: 30px;"
+                                            <button id="bntSip" class="btn btn-warning btn-lg center-block"
+                                                style="margin-right: 30px;"
                                                 OnClick="btnSip_Click()">SIP/Internship</button>
                                             <button id="btnJob" class="btn btn-success btn-lg center-block"
                                                 OnClick="btnJob_Click()">Job Opportunities</button>
@@ -78,6 +79,8 @@ $sql = DB::table('jobpost')
                                     </div>
 
                                     <div class="form-body d-none" id="sip_internship">
+                                        @if (count($sql) > 0)
+                                      
                                         <h5 style="font-size: 24px; color: #008000; font-weight: 700;letter-spacing: 0px;"
                                             class="font-weight-bold">Current Openings for SIP/Internship at VNR</h5>
                                         <div class="table-responsive">
@@ -161,7 +164,6 @@ $sql = DB::table('jobpost')
                                                                                         @if ($item1['city'] != '' || $item1['city'] != 0)
                                                                                             {{ ')' }}
                                                                                         @endif
-
                                                                                     @endforeach
                                                                                 </td>
                                                                             </tr>
@@ -184,7 +186,8 @@ $sql = DB::table('jobpost')
                                                                                 <td>
                                                                                     @if ($item->TwoWheeler != null)
                                                                                         2 Wheeler reimbursement Rs.
-                                                                                        {{ $item->TwoWheeler }} per km.
+                                                                                        {{ $item->TwoWheeler }} per
+                                                                                        km.
                                                                                         <br>
                                                                                     @endif
                                                                                     @if ($item->DA != null)
@@ -209,7 +212,6 @@ $sql = DB::table('jobpost')
                                                                                         Now
                                                                                 </td>
                                                                             </tr>
-
                                                                         @endforeach
                                                                     </table>
                                                                 </div>
@@ -219,8 +221,12 @@ $sql = DB::table('jobpost')
                                                 </tbody>
                                             </table>
                                         </div>
+                                        @else
+                                       
+                                            <h5 class="mt-5">Thanks for showing your interest in VNR Seeds Pvt. Ltd.</h5>
+                                            <h6 class="text-danger">Currently we do not have any opportunity for SIP/ Internship.</h6>
+                                        @endif
 
-                                      
 
                                     </div>
                                     <div class="form-body d-none" id="regular_job">
@@ -335,7 +341,6 @@ $sql = DB::table('jobpost')
                                                                                         @if ($item1['city'] != '' || $item1['city'] != 0)
                                                                                             {{ ')' }}
                                                                                         @endif
-
                                                                                     @endforeach
                                                                                 </td>
                                                                             </tr>
@@ -364,7 +369,7 @@ $sql = DB::table('jobpost')
                                         <p style="font-size: 15px;">Thanks for checking out our job openings. if you
                                             don't see any opportunities, please submit your resume & we'll get back to
                                             you if there any suitable openings that match your profile. <a
-                                                href="{{route('apply_form')}}" class="text-danger"><b>Submit your
+                                                href="{{ route('apply_form') }}" class="text-danger"><b>Submit your
                                                     resume</b></a></p>
 
                                     </div>
