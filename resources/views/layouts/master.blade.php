@@ -315,7 +315,7 @@ use function App\Helpers\has_permission;
                 @endif
 
                 @if (Auth::user()->role == 'A' || Auth::user()->role == 'R')
-                    @if (has_permission($resultArray, 'Job & Response') || has_permission($resultArray, 'Job Applications'))
+                    @if (has_permission($resultArray, 'Job & Response') || has_permission($resultArray, 'Job Applications' || Auth::user()->role == 'A'))
                         <li>
                             <a href="javascript:;" class="has-arrow">
                                 <div class="parent-icon"><i class="lni lni-write text-warning"></i>
@@ -323,11 +323,11 @@ use function App\Helpers\has_permission;
                                 <div class="menu-title">Job Application Management</div>
                             </a>
                             <ul>
-                                @if (has_permission($resultArray, 'Job & Response'))
+                                @if (has_permission($resultArray, 'Job & Response' || Auth::user()->role == 'A'))
                                     <li> <a href="/job_response"><i class="bx bx-right-arrow-alt"></i>Job & Response</a>
                                     </li>
                                 @endif
-                                @if (has_permission($resultArray, 'Job Applications'))
+                                @if (has_permission($resultArray, 'Job Applications' || Auth::user()->role == 'A'))
                                     <li> <a href="/job_applications"><i class="bx bx-right-arrow-alt"></i>Job
                                             Application
                                             (Resume Databank)</a>
@@ -336,7 +336,7 @@ use function App\Helpers\has_permission;
                             </ul>
                         </li>
                     @endif
-                    @if (has_permission($resultArray, 'Screening Tracker') || has_permission($resultArray, 'Interview Tracker'))
+                    @if (has_permission($resultArray, 'Screening Tracker') || has_permission($resultArray, 'Interview Tracker' || Auth::user()->role == 'A'))
                         <li>
                             <a href="javascript:;" class="has-arrow">
                                 <div class="parent-icon"><i class="lni lni-timer  text-info"></i>
@@ -344,11 +344,11 @@ use function App\Helpers\has_permission;
                                 <div class="menu-title">Recruitment Tracker</div>
                             </a>
                             <ul>
-                                @if (has_permission($resultArray, 'Screening Tracker'))
+                                @if (has_permission($resultArray, 'Screening Tracker' || Auth::user()->role == 'A'))
                                     <li> <a href="/TechnicalScreening"><i class="bx bx-right-arrow-alt"></i>Screening
                                             Tracker</a></li>
                                 @endif
-                                @if (has_permission($resultArray, 'Interview Tracker'))
+                                @if (has_permission($resultArray, 'Interview Tracker' || Auth::user()->role == 'A'))
                                     <li> <a href="/interview_tracker"><i class="bx bx-right-arrow-alt"></i>Interview
                                             Tracker</a>
                                     </li>
@@ -356,7 +356,7 @@ use function App\Helpers\has_permission;
                             </ul>
                         </li>
                     @endif
-                    @if (has_permission($resultArray, 'Job Offers') || has_permission($resultArray, 'Candidates for Joining'))
+                    @if (has_permission($resultArray, 'Job Offers') || has_permission($resultArray, 'Candidates for Joining' || Auth::user()->role == 'A'))
                         <li>
                             <a href="javascript:;" class="has-arrow">
                                 <div class="parent-icon"><i class="fadeIn animated bx bx-walk  text-success"></i>
@@ -375,7 +375,7 @@ use function App\Helpers\has_permission;
                             </ul>
                         </li>
                     @endif
-                    @if (has_permission($resultArray, 'Campus MRF') || has_permission($resultArray, 'Campus Application') || has_permission($resultArray, 'Campus Screening Tracker') || has_permission($resultArray, 'Campus Hiring Tracker') || has_permission($resultArray, 'Campus Hiring Costing'))
+                    @if (has_permission($resultArray, 'Campus MRF') || has_permission($resultArray, 'Campus Application') || has_permission($resultArray, 'Campus Screening Tracker') || has_permission($resultArray, 'Campus Hiring Tracker') || has_permission($resultArray, 'Campus Hiring Costing' || Auth::user()->role == 'A'))
                         <li>
                             <a href="javascript:;" class="has-arrow">
                                 <div class="parent-icon"><i class="lni lni-ux  text-primary"></i>
@@ -383,32 +383,32 @@ use function App\Helpers\has_permission;
                                 <div class="menu-title">Campus Hirings</div>
                             </a>
                             <ul>
-                                @if (has_permission($resultArray, 'Campus MRF'))
+                                @if (has_permission($resultArray, 'Campus MRF' || Auth::user()->role == 'A'))
                                     <li> <a href="/campus_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Campus
                                             MRF</a>
                                     </li>
                                 @endif
-                                @if (has_permission($resultArray, 'Campus Application'))
+                                @if (has_permission($resultArray, 'Campus Application' || Auth::user()->role == 'A'))
                                     <li> <a href="/campus_applications"><i class="bx bx-right-arrow-alt"></i>Campus
                                             Application</a></li>
                                 @endif
-                                @if (has_permission($resultArray, 'Campus Screening Tracker'))
+                                @if (has_permission($resultArray, 'Campus Screening Tracker' || Auth::user()->role == 'A'))
                                     <li> <a href="/campus_screening_tracker"><i
                                                 class="bx bx-right-arrow-alt"></i>Screening
                                             Tracker</a></li>
                                 @endif
-                                @if (has_permission($resultArray, 'Campus Hiring Tracker'))
+                                @if (has_permission($resultArray, 'Campus Hiring Tracker' || Auth::user()->role == 'A'))
                                     <li> <a href="/campus_hiring_tracker"><i class="bx bx-right-arrow-alt"></i>Hiring
                                             Tracker</a></li>
                                 @endif
-                                @if (has_permission($resultArray, 'Campus Hiring Costing'))
+                                @if (has_permission($resultArray, 'Campus Hiring Costing' || Auth::user()->role == 'A'))
                                     <li> <a href="/campus_hiring_costing"><i class="bx bx-right-arrow-alt"></i>Hiring
                                             Costing</a></li>
                                 @endif
                             </ul>
                         </li>
                     @endif
-                    @if (has_permission($resultArray, 'Trainee MRF') || has_permission($resultArray, 'Trainee Application') || has_permission($resultArray, 'Trainee Tracker') || has_permission($resultArray, 'Active Trainee') || has_permission($resultArray, 'Old Trainee'))
+                    @if (has_permission($resultArray, 'Trainee MRF') || has_permission($resultArray, 'Trainee Application') || has_permission($resultArray, 'Trainee Tracker') || has_permission($resultArray, 'Active Trainee') || has_permission($resultArray, 'Old Trainee' || Auth::user()->role == 'A'))
                         <li>
                             <a href="javascript:;" class="has-arrow">
                                 <div class="parent-icon"><i class="fadeIn animated bx bx-atom  text-danger"></i>
@@ -416,26 +416,26 @@ use function App\Helpers\has_permission;
                                 <div class="menu-title">Trainee</div>
                             </a>
                             <ul>
-                                @if (has_permission($resultArray, 'Trainee MRF'))
+                                @if (has_permission($resultArray, 'Trainee MRF' || Auth::user()->role == 'A'))
                                     <li> <a href="/trainee_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Trainee
                                             MRF</a>
                                     </li>
                                 @endif
-                                @if (has_permission($resultArray, 'Trainee Application'))
+                                @if (has_permission($resultArray, 'Trainee Application' || Auth::user()->role == 'A'))
                                     <li> <a href="/trainee_applications"><i class="bx bx-right-arrow-alt"></i>Trainee
                                             Application</a></li>
                                 @endif
-                                @if (has_permission($resultArray, 'Trainee Tracker'))
+                                @if (has_permission($resultArray, 'Trainee Tracker' || Auth::user()->role == 'A'))
                                     <li> <a href="/trainee_screening_tracker"><i class="bx bx-right-arrow-alt"></i>SIP
                                             /
                                             Trainee Tracker</a></li>
                                 @endif
-                                @if (has_permission($resultArray, 'Active Trainee'))
+                                @if (has_permission($resultArray, 'Active Trainee' || Auth::user()->role == 'A'))
                                     <li> <a href="/active_trainee"><i class="bx bx-right-arrow-alt"></i>Active
                                             Trainee</a>
                                     </li>
                                 @endif
-                                @if (has_permission($resultArray, 'Old Trainee'))
+                                @if (has_permission($resultArray, 'Old Trainee' || Auth::user()->role == 'A'))
                                     <li> <a href="/old_trainee"><i class="bx bx-right-arrow-alt"></i>Old Trainee</a>
                                     </li>
                                 @endif
