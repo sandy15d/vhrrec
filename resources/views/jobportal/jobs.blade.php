@@ -70,7 +70,7 @@ $sql = DB::table('jobpost')
                                     </div>
                                     <div class="row mb-2">
                                         <div class="col-sm-12 text-center">
-                                            <button id="bntSip" class="btn btn-warning btn-lg center-block"
+                                            <button id="bntSip" class="btn btn-warning btn-lg center-block" style="margin-right: 30px;"
                                                 OnClick="btnSip_Click()">SIP/Internship</button>
                                             <button id="btnJob" class="btn btn-success btn-lg center-block"
                                                 OnClick="btnJob_Click()">Job Opportunities</button>
@@ -220,12 +220,7 @@ $sql = DB::table('jobpost')
                                             </table>
                                         </div>
 
-                                        <p style="font-size: 15px;">Thanks for checking out our job openings. if you
-                                            don't see any opportunities for SIP / Internship, please submit your resume
-                                            & we'll get back to you if there are any suitable openings available that
-                                            match your profile. <a href="javascript:void(0);"
-                                                class="text-danger"><b>Submit your
-                                                    resume</b></a></p>
+                                      
 
                                     </div>
                                     <div class="form-body d-none" id="regular_job">
