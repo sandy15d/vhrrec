@@ -11,7 +11,7 @@ use function App\Helpers\getEmpIdByEmpCode;
 
 class ImportController extends Controller
 {
-    public function Import()
+    /* public function Import()
     {
         DB::beginTransaction();
         $connection = DB::connection('mysql3');
@@ -1372,6 +1372,27 @@ class ImportController extends Controller
         } else {
             DB::rollBack();
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    } */
+
+    public function Import()
+    {
+        $connection = DB::connection('mysql3');
+        $getCandidates = $connection->table('jobcandidates')->select('*')->skip(0)->take(500)->get();
+       
+        foreach ($getCandidates as $key => $value) {
+
+
+            if (\File::exists(public_path('uploads/Resume/' . 'resume_' . $value->JCId . '.pdf'))) {
+                $resume = 'resume_' . $value->JCId . '.pdf';
+            } elseif (\File::exists(public_path('uploads/Resume/' . 'resume_' . $value->JCId . '.doc'))) {
+                $resume = 'resume_' . $value->JCId . '.doc';
+            } elseif (\File::exists(public_path('uploads/Resume/' . 'resume_' . $value->JCId . '.docx'))) {
+                $resume = 'resume_' . $value->JCId . '.docx';
+            } else {
+                $resume = null;
+            }
+            $query = DB::table('jobcandidates')->where('JCId', $value->JCId)->update(['Resume' => $resume]);
         }
     }
 }
