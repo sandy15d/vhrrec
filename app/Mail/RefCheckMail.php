@@ -28,6 +28,6 @@ class RefCheckMail extends Mailable
      */
     public function build()
     {
-        return $this->from("recruitment@vnress.in", "VNR Recruitment")->subject($this->details['subject'])->markdown('emails.RefCheckMail')->with("details", $this->details);
+        return $this->from("recruitment@vnrseeds.com", "VNR Recruitment")->subject($this->details['subject'])->markdown('emails.RefCheckMail')->with("details", $this->details);
     }
 }
