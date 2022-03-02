@@ -873,6 +873,7 @@ class ImportController extends Controller
         }
         $importCandidates = DB::table('jobcandidates')->insert($candidates_array);
 
+
         $getJobApply = $connection->table('jobapply')->leftJoin('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')->select('jobapply.*', 'jobpost.CompanyId')->get();
         $jobapply_array = array();
         foreach ($getJobApply as $key => $value) {
