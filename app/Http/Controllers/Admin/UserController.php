@@ -38,7 +38,7 @@ class UserController extends Controller
             'EmployeeID'
         )
             ->where('CompanyId', $request->CompanyId)
-            ->where('EmpStatus', 'A')
+           // ->where('EmpStatus', 'A')
             ->pluck('name', 'EmployeeID');
         return response()->json($Employee);
     }
