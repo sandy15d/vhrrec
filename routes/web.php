@@ -504,6 +504,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     //? ======================= User Master ===================== */
     Route::get('userlist', [UserController::class, 'userlist'])->name('admin.userlist');
     Route::post('addUser', [UserController::class, 'addUser'])->name('addUser');
+    Route::post('changeUserStatus', [UserController::class, 'changeUserStatus'])->name('changeUserStatus');
     Route::get('getAllUser', [UserController::class, 'getAllUser'])->name('getAllUser');
     Route::post('cngUserPwd', [UserController::class, 'cngUserPwd'])->name('cngUserPwd');
     Route::post('deleteUser', [UserController::class, 'deleteUser'])->name('deleteUser');

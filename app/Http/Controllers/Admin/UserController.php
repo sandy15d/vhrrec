@@ -38,7 +38,7 @@ class UserController extends Controller
             'EmployeeID'
         )
             ->where('CompanyId', $request->CompanyId)
-           // ->where('EmpStatus', 'A')
+            ->where('EmpStatus', 'A')
             ->pluck('name', 'EmployeeID');
         return response()->json($Employee);
     }
@@ -132,7 +132,15 @@ class UserController extends Controller
                     return 'Admin';
                 }
             })
-            ->rawColumns(['actions', 'UserType'])
+            ->addColumn('Status', function ($User) {
+
+                $x = '<select name="Status" id="Status' . $User->id . '" class="form-control form-select form-select-sm  d-inline" disabled style="width: 100px;" onchange="changeStatus(' . $User->id . ',this.value)"><option value="">Select</option>';
+                $x .= '<option value="A" ' . ($User['Status'] == 'A' ? 'selected' : '') . '>Active</option>';
+                $x .= '<option value="D" ' . ($User['Status'] == 'D' ? 'selected' : '') . '>Deactive</option>';
+                $x .= '</select> <i class="fa fa-pencil-square-o text-primary d-inline" aria-hidden="true" id="statusedit' . $User->id . '" onclick="editstatus(' . $User->id . ')" style="font-size: 16px;cursor: pointer;"></i>';
+                return $x;
+            })
+            ->rawColumns(['actions', 'UserType', 'Status'])
             ->make(true);
     }
 
@@ -201,6 +209,18 @@ class UserController extends Controller
             return response()->json(['status' => 200, 'msg' => 'Permission has been set successfully.']);
         } else {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function changeUserStatus(Request $request)
+    {
+        $id = $request->id;
+        $status = $request->status;
+        $query = master_user::where('id', $id)->update(['Status' => $status, 'updated_at' => date('Y-m-d H:i:s')]);
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'User Status has been changed successfully.']);
         }
     }
 }

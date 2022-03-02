@@ -432,7 +432,7 @@
                         $.each(res.Permission, function(key, value) {
                             let y = value.active;
 
-                             (y == 'YES') ? y = 'checked' : y = '';
+                            (y == 'YES') ? y = 'checked': y = '';
                             x +=
                                 '<div class="col-4"><div class="form-check"> <input class="form-check-input page" type="checkbox" value="' +
                                 value.PId + '" name="page" id="' + value.PId +
@@ -489,5 +489,25 @@
                 }
             });
         });
+
+        function editstatus(id) {
+            $('#Status' + id).prop("disabled", false);
+        }
+
+        function changeStatus(id) {
+            var status = $('#Status' + id).val();
+            var url = '<?= route('changeUserStatus') ?>';
+            $.post(url, {
+                id: id,
+                status: status
+            }, function(data) {
+                if (data.status == 200) {
+                    $('#UserTable').DataTable().ajax.reload(null, false);
+                    toastr.success(data.msg);
+                } else {
+                    toastr.error(data.msg);
+                }
+            }, 'json');
+        }
     </script>
 @endsection
