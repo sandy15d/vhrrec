@@ -70,7 +70,7 @@ $sql = DB::table('jobpost')
                                     </div>
                                     <div class="row mb-2">
                                         <div class="col-sm-12 text-center">
-                                            <button id="bntSip" class="btn btn-warning btn-lg center-block"
+                                            <button id="bntSip" class="btn btn-warning btn-lg center-block mb-4"
                                                 style="margin-right: 30px;"
                                                 OnClick="btnSip_Click()">SIP/Internship</button>
                                             <button id="btnJob" class="btn btn-success btn-lg center-block"

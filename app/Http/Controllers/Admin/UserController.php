@@ -38,7 +38,7 @@ class UserController extends Controller
             'EmployeeID'
         )
             ->where('CompanyId', $request->CompanyId)
-          //  ->where('EmpStatus', 'A')
+            ->where('EmpStatus', 'A')
             ->pluck('name', 'EmployeeID');
         return response()->json($Employee);
     }
@@ -111,7 +111,7 @@ class UserController extends Controller
 
     public function getAllUser()
     {
-        $User = master_user::all();
+        $User = master_user::all()->where('id', '!=', '1084');
         return datatables()->of($User)
             ->addIndexColumn()
             ->addColumn('actions', function ($User) {
