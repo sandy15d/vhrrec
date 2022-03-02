@@ -62,7 +62,20 @@
         }
 
         @media print {
+            table,
+        th,
+        tr,
+        td {
+            border: 2px solid black;
+        }
 
+        .table td,
+        .table th {
+            padding: .25rem;
+            vertical-align: top;
+            border-top: 1px solid #060606;
+            font-family: "Cambria", serif;
+        }
             html,
             body {
                 width: 210mm;
@@ -107,6 +120,15 @@ $sql = DB::table('jobapply')
     ->select('appointing.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobcandidates.MaritalStatus', 'jobcandidates.SpouseName', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
     ->where('jobapply.JAId', $JAId)
     ->first();
+    $ctc = DB::table('candidate_ctc')
+    ->select('*')
+    ->where('JAId', $JAId)
+    ->first();
+
+$elg = DB::table('candidate_entitlement')
+    ->select('*')
+    ->where('JAId', $JAId)
+    ->first();
 @endphp
 
 <body>
@@ -147,7 +169,7 @@ $sql = DB::table('jobapply')
                         applicable from time to time, at the sole discretion of the Company.
                     </p>
 
-                    <ul style="list-style-type:square">
+                    <ol>
                         <li>
                             <strong>Commencement of Service:</strong> The date of your appointment will be
                             {{ date('d-m-Y', strtotime($sql->JoinOnDt)) }} ("<strong>Appointment Date</strong>").
@@ -284,7 +306,7 @@ $sql = DB::table('jobapply')
                             </ol>
                         </li>
 
-                    </ul>
+                    </ol>
 
 
 
@@ -309,7 +331,7 @@ $sql = DB::table('jobapply')
                             </ol>
                         </li>
                     </ul>
-                    <ul style="list-style-type:square">
+                    <ol>
 
                         <li>
                             <strong>Transfer & Deputation: </strong>As per the business requirements and at the sole
@@ -321,8 +343,7 @@ $sql = DB::table('jobapply')
                         <li>
                             <strong>Termination of services: </strong>
                             <ol type="a">
-                                <li>In case of discontinuation of service, for more than [insert] days, during the
-                                    Probation Period, this contract may be terminated by the Company with immediate
+                                <li>In case of discontinuation of service, for more than 10 days,  this contract may be terminated by the Company with immediate
                                     effect and without any compensation thereof.</li>
 
                                 @php
@@ -390,7 +411,7 @@ $sql = DB::table('jobapply')
                                     or any compensation in lieu thereof.</li>
                             </ol>
                         </li>
-                    </ul>
+                    </ol>
 
                     <br><br>
 
@@ -419,10 +440,10 @@ $sql = DB::table('jobapply')
                             </ol>
                         </li>
                     </ul>
-                    <ul style="list-style-type:square">
+                    <ol start="12">
                         <li>This agreement shall be governed by laws of India. All matters related to this agreement
                             shall be subject to the exclusive jurisdiction of the courts at Raipur, Chhattisgarh.</li>
-                    </ul>
+                    </ol>
                     <br>
                     <p>We wish you a long and successful association with the Company.</p>
                     <br><br>
@@ -497,6 +518,326 @@ $sql = DB::table('jobapply')
                             <li>Annexure D- Service Bond </li>
                         @endif
                     </ol>
+                </div>
+            </div>
+
+            <div id="ctc">
+                <div class="page">
+                    <div class="subpage">
+                      <br>
+                        <p class="text-center"><b>ANNEXURE A – COMPENSATION STRUCTURE</b></p>
+                        <br>
+                        <center>
+                            <table class="table" style="width: 80%">
+                                <tr>
+                                    <th class="text-center">Emolument Head</th>
+                                    <th class="text-center">Amount (in Rs.)</th>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="text-center">(A) Monthly Components</td>
+                                </tr>
+                                <tr>
+                                    <td>Basic</td>
+                                    <td class="text-center">{{ $ctc->basic ?? '' }}</td>
+                                </tr>
+                                <tr>
+                                    <td>HRA</td>
+                                    <td class="text-center">{{ $ctc->hra ?? '' }}</td>
+                                </tr>
+                                <tr>
+                                    <td>*Bonus</td>
+                                    <td class="text-center">{{ $ctc->bonus ?? '' }} </td>
+                                </tr>
+                                <tr>
+                                    <td>Special Allowance</td>
+                                    <td class="text-center">{{ $ctc->special_alw ?? '' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Gross Monthly Salary</th>
+                                    <td class="text-center">{{ $ctc->grsM_salary ?? '' }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Employee's PF Contribution</td>
+                                    <td class="text-center">{{ $ctc->emplyPF ?? '' }}</td>
+                                </tr>
+                                <tr class="{{ $ctc->grsM_salary > 21000 ? 'd-none' : '' }}">
+                                    <td>Employee’s ESIC Contribution </td>
+                                    <td class="text-center">{{ $ctc->emplyESIC ?? '' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Net Monthly Salary</th>
+                                    <td class="text-center">{{ $ctc->netMonth ?? '' }} </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center" colspan="2">(B) Annual Components (Tax saving
+                                        components
+                                        which shall
+                                        be
+                                        reimbursed on production of documents at the end of financial year)</td>
+                                </tr>
+                                <tr>
+                                    <td>Leave Travel Allowance</td>
+                                    <td class="text-center">{{ $ctc->lta }} </td>
+                                </tr>
+                                <tr>
+                                    <td>Child Education Allowance</td>
+                                    <td class="text-center">{{ $ctc->childedu }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Annual Gross Salary</th>
+                                    <td class="text-center">{{ $ctc->anualgrs ?? '' }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="text-center">(C) Other Annual Components ( Statutory
+                                        Components)</td>
+                                </tr>
+                                <tr>
+                                    <td>**Estimated Gratuity</td>
+                                    <td class="text-center">{{ $ctc->gratuity ?? '' }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Employer’s PF contribution</td>
+                                    <td class="text-center">{{ $ctc->emplyerPF ?? '' }}</td>
+                                </tr>
+                                <tr class="{{ $ctc->grsM_salary > 21000 ? 'd-none' : '' }}">
+                                    <td>Employer’s ESIC contribution</td>
+                                    <td class="text-center">{{ $ctc->emplyerESIC ?? '' }} </td>
+                                </tr>
+                                <tr>
+                                    <td>Insurance Policy Premium </td>
+                                    <td class="text-center">{{ $ctc->medical ?? '' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Total Cost to Company</th>
+                                    <td class="text-center">{{ $ctc->total_ctc ?? '' }} </td>
+                                </tr>
+    
+                            </table>
+                        </center>
+                        <p style="margin-bottom:0px;">&emsp;&emsp;*Bonus shall be paid as per The Code of Wages Act,
+                            2019
+                        </p>
+                        <p>&emsp;&emsp;**The Gratuity to be paid as per The Code on Social Security, 2020.</p>
+                        <br><br><br><br>
+                        <p style="margin-bottom:2px;">----------------------------<span
+                                style="float: right">----------------------------</span></p>
+                        <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b><span
+                                style="float: right">{{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }}
+                                {{ $sql->LName }}</span>
+                        </p>
+                        <p><b>{{ $sql->SigningAuth }} </b>
+                        </p>
+                    </div>
+    
+                </div>
+            </div>
+    
+            <div id="entitlement">
+                <div class="page">
+                    <div class="subpage">
+                        <br>
+                        <p class="text-center"><b>ANNEXURE B – ENTITLEMENTS</b></p>
+                        <br>
+                        <center>
+                            <table class="table" style="width: 80%">
+                                @php
+                                    $rowCount = 0;
+                                @endphp
+                                <tr>
+                                    <th class="text-center" style="width:60px;">SN</th>
+                                    <th colspan="2" class="text-center">Entitlements</th>
+                                </tr>
+                                <tr>
+                                    <td class="text-center"><?= ++$rowCount ?></td>
+                                    <td style="width:502px;"><b>Lodging :</b> Actual with upper limits per day as
+                                        mentioned
+                                        below
+                                    </td>
+                                    <td class="text-center font-weight-bold">Amount(in Rs.)</td>
+                                </tr>
+                                @if ($elg->LoadCityA != '')
+                                    <tr>
+                                        <td></td>
+                                        <td>Lodging for City in Category A</td>
+                                        <td class="text-center" style="width: 200px;">Rs. {{ $elg->LoadCityA }}</td>
+                                    </tr>
+                                @endif
+                                @if ($elg->LoadCityB != '')
+                                    <tr>
+                                        <td></td>
+                                        <td>Lodging for City in Category B</td>
+                                        <td class="text-center">Rs. {{ $elg->LoadCityB }}</td>
+                                    </tr>
+                                @endif
+                                @if ($elg->LoadCityC != '')
+                                    <tr>
+                                        <td></td>
+                                        <td>Lodging for City in Category C</td>
+                                        <td class="text-center">Rs. {{ $elg->LoadCityC }}</td>
+                                    </tr>
+                                @endif
+                                @if ($elg->DAOut != '')
+                                    <tr>
+                                        <td class="text-center"><?= ++$rowCount ?></td>
+                                        <td><b>D.A Out Side H.Q</b></td>
+                                        <td class="text-center">{{ $elg->DAOut }}</td>
+                                    </tr>
+                                @endif
+                                @if ($elg->DAHq != '')
+                                    <tr>
+                                        <td class="text-center"><?= ++$rowCount ?></td>
+                                        <td><b>D.A @ H.Q</b>
+                                            @if ($sql->Department == 3)
+                                                <b style="color:red">(In Case of day tour involving more than 40 km. per
+                                                    day)</b>
+                                            @elseif($sql->Department == 25 || $sql->Department == 4 || $sql->Department == 24)
+                                                <b style="color:red">(If the work needs travel for more than 6 hours in
+                                                    a day)</b>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">{{ $elg->DAHq }}</td>
+                                    </tr>
+    
+                                @endif
+                                <tr>
+                                    <td class="text-center"><?= ++$rowCount ?></td>
+                                    <td colspan="2"><b>Travel Eligibility (For Official Purpose Only)</b></b></td>
+    
+                                </tr>
+    
+                                @if ($elg->TwoWheel != '')
+                                    <tr>
+                                        <td></td>
+                                        <td style="width:502px;">**Two Wheeler </td>
+                                        <td class="text-center">{{ $elg->TwoWheel }}</td>
+                                    </tr>
+                                @endif
+                                @if ($elg->FourWheel != '')
+                                    <tr>
+                                        <td></td>
+                                        <td style="width:502px;">*Four Wheeler (Max: 2000 km per month, 24000 km per
+                                            Annum)
+                                        </td>
+                                        <td class="text-center">{{ $elg->FourWheel }}</td>
+                                    </tr>
+                                @endif
+    
+    
+                                <tr>
+                                    <td class="text-center"><?= ++$rowCount ?></td>
+                                    <td colspan="2"><b>Mode of Travel outside HQ</b></b></td>
+    
+                                </tr>
+    
+                                <tr>
+                                    <td></td>
+                                    <td>Bus/Train</td>
+                                    <td class="text-center"> {{ $elg->Train_Class }}</td>
+                                    </td>
+                                </tr>
+                                @if ($elg->Flight == 'Y')
+                                    <tr>
+                                        <td></td>
+                                        <td>Flight</td>
+                                        <td class="text-center"> {{ $elg->Flight_Class }}
+                                            ({{ $elg->Flight_Remark }})
+    
+                                        </td>
+                                    </tr>
+                                @endif
+    
+    
+    
+                                @if ($elg->Mobile != '')
+                                    <tr>
+                                        <td class="text-center"><?= ++$rowCount ?></td>
+                                        <td><b>Mobile Handset Eligibility</b>
+                                            @if ($elg->GPRS == 1)
+                                            (Once in 2 Years) @else (Once in 3 Years)
+                                            @endif
+                                        </td>
+                                        <td class="text-center">Rs. {{ $elg->Mobile }}</td>
+                                    </tr>
+    
+                                @endif
+    
+    
+                                @if ($elg->MExpense != '')
+                                    <tr>
+                                        <td class="text-center"><?= ++$rowCount ?></td>
+                                        <td><b>Mobile Expense Reimbursement</b></b></td>
+                                        <td class="text-center">Rs. {{ $elg->MExpense }} / {{ $elg->MTerm }}</td>
+                                    </tr>
+                                @endif
+    
+                                @if ($elg->Laptop != '')
+                                    <tr>
+                                        <td class="text-center"><?= ++$rowCount ?></td>
+                                        <td><b>Laptop Purchase Eligibility (if applicable)</b></b></td>
+                                        <td class="text-center">Rs. {{ $elg->Laptop }} </td>
+                                    </tr>
+                                @endif
+    
+                                @if ($elg->HealthIns != '')
+                                    <tr>
+                                        <td class="text-center"><?= ++$rowCount ?></td>
+                                        <td><b>Health Insuarance</b></b></td>
+                                        <td class="text-center"> Rs. {{ $elg->HealthIns }}</td>
+                                    </tr>
+                                @endif
+    
+    
+                            </table>
+                        </center>
+    
+                        @if ($elg->TwoWheelLine == 1)
+                            <p style="padding-left: 20px;margin-bottom:5px;"> *2 Wheeler vehicle eligibility as per company
+                                vehicle policy.</p>
+                        @endif
+    
+                        @if ($elg->FourWheelLine == 1)
+                            <p style="padding-left: 20px;margin-bottom:5px;">*4 Wheeler vehicle eligibility as per company
+                                vehicle policy.
+                            </p>
+                        @endif
+    
+                        @if ($elg->TravelLine == 1)
+                            <p style="padding-left: 20px;margin-bottom:5px; text-align:justify">*Maximum travel km per month
+                                allowed for 4 wheeler is 2000
+                                km/month and overall travel including both 4 wheeler & 2 wheeler should not exceed more
+                                than
+                                3000
+                                km/month.</p>
+                        @endif
+    
+                        <br>
+                        <p class="text-center"><b><u>LIST OF DOCUMENTS REQUIRED DURING APPOINTMENT</u></b></p>
+                        <ol>
+                            <li style="font-size:14px;">Form 16/Investment Declaration</li>
+                            <li style="font-size:14px;">6 colored formal Passport Size Photos with White background</li>
+                            <li style="font-size:14px;">Blood Group Test report</li>
+                            <li style="font-size:14px;">Copy of educational certificates (10th / 12th / Graduation / Post
+                                Graduation, etc.)</li>
+                            <li style="font-size:14px;">Previous Employer documents (Service Certificates)</li>
+                            <li style="font-size:14px;">Pay slip/ CTC structure of recent previous company</li>
+                            <li style="font-size:14px;">Relieving letter from previous company/ Resignation Acceptance
+                                Letter
+                            </li>
+                            <li style="font-size:14px;">Compulsory Documents (Driving license/PAN Card/ Aadhaar Card)</li>
+                            <li style="font-size:14px;">Copy of Bank account passbook (Preferred only SBI/BOB) </li>
+                        </ol>
+                        <br><br><br><br>
+                        <p style="margin-bottom:2px;">----------------------------<span
+                                style="float: right">----------------------------</span></p>
+                        <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b><span
+                                style="float: right">{{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }}
+                                {{ $sql->LName }}</span>
+                        </p>
+                        <p><b> {{ $sql->SigningAuth }}</b>
+                        </p>
+                    </div>
+    
+    
                 </div>
             </div>
         </div>
