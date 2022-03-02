@@ -64,7 +64,7 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
 
-        if (auth()->attempt(array('email' => $input['email'], 'password' => $input['password'])) || auth()->attempt(array('Username' => $input['email'], 'password' => $input['password']))) {
+        if (auth()->attempt(array('email' => $input['email'], 'password' => $input['password'],'Status'=>'A')) || auth()->attempt(array('Username' => $input['email'], 'password' => $input['password'],'Status'=>'A'))) {
 
             $request->session()->put('Set_Company', $input['company']);
             $request->session()->put('Set_Country', $input['country']);
