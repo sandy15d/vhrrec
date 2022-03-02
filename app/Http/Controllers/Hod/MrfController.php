@@ -179,7 +179,7 @@ class MrfController extends Controller
                 ];
 
                 if (CheckCommControl(2) == 1) {  //if MRF created by employee communication control is on
-                    Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+                    Mail::to("parul.parmar@vnrseeds.com")->send(new MrfCreationMail($details));
                 }
 
 
@@ -290,7 +290,7 @@ class MrfController extends Controller
                     "Employee" => getFullName(Auth::user()->id),
                 ];
                 if (CheckCommControl(2) == 1) {  //if MRF created by employee communication control is on
-                    Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+                    Mail::to("parul.parmar@vnrseeds.com")->send(new MrfCreationMail($details));
                 }
              
                 return response()->json(['status' => 200, 'msg' => 'SIP/Internship MRF has been successfully created.']);
@@ -397,7 +397,7 @@ class MrfController extends Controller
             ];
 
             if (CheckCommControl(2) == 1) {  //if MRF created by employee communication control is on
-                Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+                Mail::to("parul.parmar@vnrseeds.com")->send(new MrfCreationMail($details));
             }
             return response()->json(['status' => 200, 'msg' => 'New MRF has been successfully created.']);
         }
@@ -502,7 +502,7 @@ class MrfController extends Controller
                     "Employee" => getFullName(Auth::user()->id),
                 ];
                 if (CheckCommControl(2) == 1) {  //if MRF created by employee communication control is on
-                    Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfCreationMail($details));
+                    Mail::to("parul.parmar@vnrseeds.com")->send(new MrfCreationMail($details));
                 }
                 return response()->json(['status' => 200, 'msg' => 'Campus Hiring MRF has been successfully created.']);
             }

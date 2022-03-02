@@ -453,7 +453,7 @@ class AdminController extends Controller
             if ($request->va != 'New') {
                 if (CheckCommControl(4) == 1 ||  CheckCommControl(4) == 1) {  //Action taken by admin on MRF 
                     // Mail::to(getEmailID($CreatedBy))->send(new MrfStatusChangeMail($details)); // Need to active when s/w is live
-                    Mail::to("sandeepdewangan.vspl@gmail.com")->send(new MrfStatusChangeMail($details));
+                    Mail::to("parul.parmar@vnrseeds.com")->send(new MrfStatusChangeMail($details));
                     UserNotification::notifyUser($CreatedBy, 'MRF Status Change', 'MRF (' . $type . ') - ' . $jobCode . ', Status - ' . $request->va,);
                 }
             }
