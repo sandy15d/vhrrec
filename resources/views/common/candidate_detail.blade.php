@@ -3581,15 +3581,19 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                     </button>
                 </div>
                 <div class="modal-body">
-                  {{-- //  @if ($Rec->Resume->extension() == 'pdf') --}}
+                    @php
+                        $resume = $Rec->Resume;
+                        $ext = substr($resume, strrpos($resume, '.') + 1);
+                    @endphp
+                    @if ($ext == 'pdf' || $ext == 'PDF')
                         <object width="760" height="500" data="{{ URL::to('/') }}/uploads/Resume/{{ $Rec->Resume }}"
                             id="{{ $Rec->JCId }}"></object>
-                   {{--  @else
-                        <iframe src="//{{ URL::to('/') }}/uploads/Resume/{{ $Rec->Resume }}" width="668" height="714"
-                            frameborder="0" marginwidth="0" marginheight="0" scrolling="no"
+                    @else
+                        <iframe src="//{{ URL::to('/') }}/uploads/Resume/{{ $Rec->Resume }}" width="668"
+                            height="714" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"
                             style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;"
                             allowfullscreen> </iframe>
-                    @endif --}}
+                    @endif
 
 
                 </div>
