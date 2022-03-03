@@ -31,7 +31,7 @@
         <div class="card border-top border-0 border-4 border-primary">
             <div class="card-body">
                 <div class="row mb-1">
-                   
+
 
                     <div class="col-2">
                         <select name="Fill_Company" id="Fill_Company" class="form-select form-select-sm"
@@ -51,14 +51,24 @@
                         </select>
                     </div>
                     <div class="col-2">
-                        <select name="Year" id="Year" class="form-select form-select-sm" onchange="getManuallyCreatedMRF();">
+                        <select name="Year" id="Year" class="form-select form-select-sm"
+                            onchange="getManuallyCreatedMRF();">
                             <option value="">Select Year</option>
                             @for ($i = 2021; $i <= date('Y'); $i++)
                                 <option value="{{ $i }}">{{ $i }}</option>
                             @endfor
                         </select>
                     </div>
-                   
+                    <div class="col-2">
+                        <select name="Status" id="Status" class="form-select form-select-sm"
+                            onchange="getManuallyCreatedMRF();">
+                            <option value="">Select Status</option>
+                            <option value="Approved">Active</option>
+                            <option value="New">New</option>
+                            <option value="Close">Closed</option>
+                        </select>
+                    </div>
+
                     <div class="col-1">
                         <button type="reset" class="btn btn-danger btn-sm" id="reset"><i
                                 class="bx bx-refresh"></i></button>
@@ -368,7 +378,7 @@
             }
         });
         var KPCount;
-        
+
         $('#mrfsummarytable').DataTable({
             processing: true,
             serverSide: true,
@@ -377,7 +387,7 @@
             //    dom: 'Bfrtip',
             lengthChange: false,
             ordering: false,
-          
+
             ajax: {
                 url: "{{ route('get_all_manual_mrf_created_by_me') }}",
                 headers: {
@@ -387,7 +397,7 @@
                     d.Company = $('#Fill_Company').val();
                     d.Department = $('#Fill_Department').val();
                     d.Year = $('#Year').val();
-                 
+                    d.Status = $('#Status').val();
                 },
                 type: 'POST',
                 dataType: "JSON",
@@ -442,8 +452,9 @@
 
         function getManuallyCreatedMRF() {
             $('#mrfsummarytable').DataTable().draw(true);
-          
+
         }
+
         function GetDepartment() {
             var CompanyId = $('#Fill_Company').val();
             $.ajax({

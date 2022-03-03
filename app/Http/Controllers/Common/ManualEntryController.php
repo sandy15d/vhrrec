@@ -57,25 +57,35 @@ class ManualEntryController extends Controller
         $Company = $request->Company;
         $Department = $request->Department;
         $Year = $request->Year;
+        $Status = $request->Status;
         if ($Company != '') {
             $usersQuery->where("manpowerrequisition.CompanyId", $Company);
         }
+        /* else{
+            $usersQuery->where("manpowerrequisition.CompanyId", session('Set_Company'));
+        } */
         if ($Department != '') {
             $usersQuery->where("manpowerrequisition.DepartmentId", $Department);
         }
         if ($Year != '') {
             $usersQuery->whereBetween('manpowerrequisition.CreatedTime', [$Year . '-01-01', $Year . '-12-31']);
         }
+        /* else{
+            $usersQuery->whereBetween('manpowerrequisition.CreatedTime', [date('Y') . '-01-01', date('Y') . '-12-31']);
+        } */
+
+        if ($Status != '') {
+            $usersQuery->where("manpowerrequisition.Status", $Status);
+        }
+        /* else{
+            $usersQuery->where("manpowerrequisition.Status", 'Approved');
+        } */
 
         if (Auth::user()->role == 'R') {
 
             $usersQuery->where('CreatedBy', Auth::user()->id);
-        } else {
-            $usersQuery->where('Type', 'SIP_HrManual');
-            $usersQuery->orWhere('Type', 'N_HrManual');
-            $usersQuery->orWhere('Type', 'R_HrManual');
-            $usersQuery->orWhere('Type', 'Campus_HrManual');
         }
+
         $mrf = $usersQuery->select('manpowerrequisition.MRFId', 'manpowerrequisition.Type', 'manpowerrequisition.JobCode', 'manpowerrequisition.CreatedBy', 'master_designation.DesigName', 'manpowerrequisition.Status', 'manpowerrequisition.CreatedTime')
             ->Join('master_designation', 'manpowerrequisition.DesigId', '=', 'master_designation.DesigId', 'left');
 
