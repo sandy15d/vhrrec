@@ -225,13 +225,16 @@ class ManualEntryController extends Controller
                 $KpArray = serialize($KpArray);
             }
 
-            
+
 
 
             $UniversityArray = array();
-            if ($request->University != '') {
+            if (isset($request->University)) {
                 $UniversityArray = serialize($request->University);
+            }else{
+                $UniversityArray = '';
             }
+         
             $MRF = new master_mrf;
             $MRF->Type = 'N_HrManual';
             $MRF->Reason = $request->Reason;
@@ -252,7 +255,6 @@ class ManualEntryController extends Controller
             $MRF->CreatedBy =  Auth::user()->id;
             $MRF->Status = 'New';
             $MRF->CountryId = session('Set_Country');
-
             $MRF->save();
 
             $InsertId = $MRF->MRFId;
@@ -338,8 +340,10 @@ class ManualEntryController extends Controller
 
 
             $UniversityArray = array();
-            if ($request->University != '') {
+            if (isset($request->University)) {
                 $UniversityArray = serialize($request->University);
+            }else{
+                $UniversityArray = '';
             }
             $MRF = new master_mrf;
             $MRF->Type = 'SIP_HrManual';
@@ -441,8 +445,10 @@ class ManualEntryController extends Controller
         $KpArray_str = serialize($KpArray);
 
         $UniversityArray = array();
-        if ($request->University != '') {
+        if (isset($request->University)) {
             $UniversityArray = serialize($request->University);
+        }else{
+            $UniversityArray = '';
         }
 
 
@@ -555,8 +561,10 @@ class ManualEntryController extends Controller
 
 
             $UniversityArray = array();
-            if ($request->University != '') {
+            if (isset($request->University)) {
                 $UniversityArray = serialize($request->University);
+            }else{
+                $UniversityArray = '';
             }
             $MRF = new master_mrf;
             $MRF->Type = 'Campus_HrManual';
@@ -566,7 +574,7 @@ class ManualEntryController extends Controller
             $MRF->DesigId = $request->Designation;
             $MRF->Positions = array_sum($ManPower);
             $MRF->LocationIds = $locArray_str;
-           // $MRF->MinCTC = $request->MinCTC;
+            // $MRF->MinCTC = $request->MinCTC;
             $MRF->MaxCTC = $request->MaxCTC;
             $MRF->WorkExp = $request->WorkExp;
             $MRF->Remarks = $request->Remark;
