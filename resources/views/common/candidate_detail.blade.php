@@ -3592,7 +3592,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         @php
                             $url = html_entity_decode('https://docs.google.com/viewer?embedded=true&url=');
                         @endphp
-                        <iframe src="{{$url}}{{ URL::to('/') }}/uploads/Resume/{{ $Rec->Resume }}" style="width: 100%"></iframe>
+                        <iframe src="{{$url}}{{ URL::to('/') }}/uploads/Resume/{{ $Rec->Resume }}" width="100%" height="500" style="border: none;" ></iframe>
                     @endif
 
 
