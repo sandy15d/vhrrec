@@ -3581,7 +3581,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                     </button>
                 </div>
                 <div class="modal-body">
-                    @if ($Rec->Resume->extension == 'pdf')
+                    @if ($Rec->Resume->extension() == 'pdf')
                         <object width="760" height="500" data="{{ URL::to('/') }}/uploads/Resume/{{ $Rec->Resume }}"
                             id="{{ $Rec->JCId }}"></object>
                     @else
