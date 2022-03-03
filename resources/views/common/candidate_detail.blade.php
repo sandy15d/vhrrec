@@ -3589,9 +3589,10 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         <object width="760" height="500" data="{{ URL::to('/') }}/uploads/Resume/{{ $Rec->Resume }}"
                             id="{{ $Rec->JCId }}"></object>
                     @else
-
-                    <iframe src="https://docs.google.com/viewer?embedded=true&url={{ URL::to('/') }}/uploads/Resume/{{ $Rec->Resume }}"></iframe>
-                       
+                        @php
+                            $url = html_entity_decode('https://docs.google.com/viewer?embedded=true&url=');
+                        @endphp
+                        <iframe src="{{$url}}{{ URL::to('/') }}/uploads/Resume/{{ $Rec->Resume }}"></iframe>
                     @endif
 
 
