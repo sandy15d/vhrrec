@@ -222,9 +222,10 @@ class ManualEntryController extends Controller
                     $KP = addslashes($KeyPosition[$i]);
                     array_push($KpArray, $KP);
                 }
+                $KpArray = serialize($KpArray);
             }
 
-            $KpArray_str = serialize($KpArray);
+            
 
 
             $UniversityArray = array();
@@ -246,7 +247,7 @@ class ManualEntryController extends Controller
             $MRF->Info = convertData($request->JobInfo);
             $MRF->EducationId = $EduArray_str;
             $MRF->EducationInsId = $UniversityArray;
-            $MRF->KeyPositionCriteria = $KpArray_str;
+            $MRF->KeyPositionCriteria = $KpArray;
             $MRF->OnBehalf = $request->OnBehalf;
             $MRF->CreatedBy =  Auth::user()->id;
             $MRF->Status = 'New';
