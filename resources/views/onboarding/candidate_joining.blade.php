@@ -179,7 +179,7 @@ $rejected = DB::table('offerletterbasic')
                             <option value="">Select Status</option>
                             <option value="Yes">Joined</option>
                             <option value="No">Not Joined</option>
-                         
+
                         </select>
                         @if (isset($_REQUEST['Status']) && $_REQUEST['Status'] != '')
                             <script>
@@ -218,7 +218,7 @@ $rejected = DB::table('offerletterbasic')
                         </thead>
                         <tbody>
                             @php
-                                $i = 0;
+                                $i = 1;
                             @endphp
                             @foreach ($candidate_list as $row)
                                 @php
@@ -226,28 +226,42 @@ $rejected = DB::table('offerletterbasic')
                                     
                                 @endphp
                                 <tr>
-                                    <td>{{ ++$i }}</td>
+                                    <td>
+                                        @php
+                                            if (Request::get('page') != null) {
+                                                $y = (Request::get('page') - 1) * 20 + $i;
+                                            } else {
+                                                $y = $i;
+                                            }
+                                            echo $y;
+                                            
+                                        @endphp
+                                    </td>
                                     <td>{{ $row->ReferenceNo }}</td>
                                     <td> <a class="text-underline"
                                             href="{{ route('candidate_detail') }}?jaid={{ $sendingId }}"
                                             target="_blank">{{ $row->FName }} {{ $row->MName }}
                                             {{ $row->LName }}</a> </td>
                                     <td>{{ getDepartmentCode($row->SelectedForD) }}
-                                        ({{ getCompanyCode($row->SelectedForC) }})</td>
+                                        ({{ getCompanyCode($row->SelectedForC) }})
+                                    </td>
                                     <td>
                                         {{ $row->FinalSubmit == 1 ? 'Yes' : 'No' }}
                                     </td>
                                     <td>
-                                        {{$row->Verification}}
+                                        {{ $row->Verification }}
                                     </td>
                                     <td>
-                                        {{$row->Joined}}
+                                        {{ $row->Joined }}
                                     </td>
                                     <td>
-                                        {{$row->ForwardToESS}}
+                                        {{ $row->ForwardToESS }}
                                     </td>
 
                                 </tr>
+                                @php
+                                    $i++;
+                                @endphp
                             @endforeach
                         </tbody>
                     </table>

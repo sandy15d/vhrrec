@@ -203,7 +203,7 @@ $rejected = DB::table('offerletterbasic')
                     <table class="table table-bordered text-center table-striped table-light">
                         <thead class="table-light">
                             <tr>
-                                {{-- <th scope="col">S.No</th> --}}
+                                <th scope="col">S.No</th>
                                 <th scope="col">Reference No</th>
                                 <th scope="col">Candidate</th>
                                 <th scope="col">Selected For</th>
@@ -215,9 +215,9 @@ $rejected = DB::table('offerletterbasic')
                             </tr>
                         </thead>
                         <tbody>
-                          {{--   @php
+                            @php
                                 $i = 1;
-                            @endphp --}}
+                            @endphp
 
                             @foreach ($candidate_list as $row)
                                 @php
@@ -225,7 +225,21 @@ $rejected = DB::table('offerletterbasic')
                                    
                                 @endphp
                                 <tr>
-                                   {{--  <td>{{ $i; }}</td> --}}
+                                    <td>
+                                        @php
+                                        if(Request::get('page') != null)
+                                        {
+                                            $y = (Request::get('page') - 1) * 20 + $i;
+                                        }
+                                        else
+                                        {
+                                          $y=  $i;
+                                          
+                                        }
+                                      echo $y;
+                                    
+                                    @endphp
+                                    </td>
                                     <td>{{ $row->ReferenceNo }}</td>
                                     <td> <a class="text-underline"
                                             href="{{ route('candidate_detail') }}?jaid={{ $sendingId }}"
@@ -246,9 +260,10 @@ $rejected = DB::table('offerletterbasic')
                                     <td> {{ $row->JoinOnDt != null ? date('d-m-Y', strtotime($row->JoinOnDt)) : '' }}
                                     </td>
                                 </tr>
-                               {{--  @php
-                                    $i++;
-                                @endphp --}}
+                              
+                           @php
+                               $i++;
+                           @endphp
                             @endforeach
                         </tbody>
                     </table>
