@@ -23,7 +23,7 @@
                                 </li>
                                 <li>
                                     <div class="title">Applied For<span style="float: right">:</span></div>
-                                    <div class="text text-danger">{{ $item->jobtitle }}</div>
+                                    <div class="text text-danger">{{ $item->jobtitle ?? '-' }}</div>
                                 </li>
                                 <li>
                                     <div class="title">Apply Date For<span style="float: right">:</span></div>
