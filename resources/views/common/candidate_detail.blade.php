@@ -2159,24 +2159,28 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                 id="b_date_can" onclick="window.location.reload();">Cancel</button>
                                         </div>
                                     </li>
-                                    @if ($OfBasic->Department == 2 || $OfBasic->Department == 3 || $OfBasic->Department == 4 || $OfBasic->Department == 25 || $OfBasic->Department == 27 || $OfBasic->Department == 40 || $OfBasic->Department == 44)
-                                        <li>
-                                            <div class="title">Conf. Agr. Date<span style="float: right">:</span>
-                                            </div>
-                                            <div class="text">
-                                                <input type="date"
-                                                    class="form-control frminp form-control-sm d-inline-block"
-                                                    id="conf_date" name="" readonly="" style="width: 130px;"
-                                                    value="{{ $OfBasic->ConfLtrDate ?? '' }}">
-                                                <i class="fa fa-pencil text-primary" aria-hidden="true"
-                                                    id="conf_date_enable" onclick="conf_date_enable()"
-                                                    style="font-size: 16px;cursor: pointer; display: "></i>
-                                                <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
-                                                    id="save_conf_date" onclick="save_conf_date()">Save</button>
-                                                <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
-                                                    id="conf_date_can" onclick="window.location.reload();">Cancel</button>
-                                            </div>
-                                        </li>
+                                    @if ($OfBasic != null)
+                                        @if ($OfBasic->Department == 2 || $OfBasic->Department == 3 || $OfBasic->Department == 4 || $OfBasic->Department == 25 || $OfBasic->Department == 27 || $OfBasic->Department == 40 || $OfBasic->Department == 44)
+                                            <li>
+                                                <div class="title">Conf. Agr. Date<span
+                                                        style="float: right">:</span>
+                                                </div>
+                                                <div class="text">
+                                                    <input type="date"
+                                                        class="form-control frminp form-control-sm d-inline-block"
+                                                        id="conf_date" name="" readonly="" style="width: 130px;"
+                                                        value="{{ $OfBasic->ConfLtrDate ?? '' }}">
+                                                    <i class="fa fa-pencil text-primary" aria-hidden="true"
+                                                        id="conf_date_enable" onclick="conf_date_enable()"
+                                                        style="font-size: 16px;cursor: pointer; display: "></i>
+                                                    <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
+                                                        id="save_conf_date" onclick="save_conf_date()">Save</button>
+                                                    <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
+                                                        id="conf_date_can"
+                                                        onclick="window.location.reload();">Cancel</button>
+                                                </div>
+                                            </li>
+                                        @endif
                                     @endif
 
 
