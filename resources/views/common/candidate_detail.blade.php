@@ -309,10 +309,14 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         <li class="nav-item"><a href="#job_offer" data-bs-toggle="tab" class="nav-link">Job
                                 Offer</a></li>
 
-                        <li class="nav-item">
-                            <a href="#cand_family" data-bs-toggle="tab" class="nav-link">Changes <small
-                                    class="text-danger">(Admin Only)</small></a>
-                        </li>
+                             
+                        @if (Auth::user()->role == 'A')
+                            <li class="nav-item">
+                                <a href="#cand_family" data-bs-toggle="tab" class="nav-link">Changes <small
+                                        class="text-danger">(Admin Only)</small></a>
+                            </li>
+                        @endif
+
                     </ul>
                 </div>
             </div>
@@ -3592,7 +3596,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         @php
                             $url = html_entity_decode('https://docs.google.com/viewer?embedded=true&url=');
                         @endphp
-                        <iframe src="{{$url}}{{ URL::to('/') }}/uploads/Resume/{{ $Rec->Resume }}" width="100%" height="500" style="border: none;" ></iframe>
+                        <iframe src="{{ $url }}{{ URL::to('/') }}/uploads/Resume/{{ $Rec->Resume }}"
+                            width="100%" height="500" style="border: none;"></iframe>
                     @endif
 
 

@@ -66,7 +66,7 @@ $query = DB::table('jobcandidates')
                                                                     {{ $query->MName }} {{ $query->LName }}</span></td>
                                                         </tr>
                                                         <tr>
-                                                            <td style="padding: 5px 5px;">Subject Name</td>
+                                                            <td style="padding: 5px 5px;">Reference No</td>
                                                             <td> : <span
                                                                     style="color: #f09a3e; font-weight: bold">{{ $query->ReferenceNo }}</span>
                                                             </td>

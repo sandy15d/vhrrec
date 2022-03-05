@@ -3275,8 +3275,8 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                 },
                 toolbarSettings: {
                     toolbarPosition: 'bottom', // none, top, bottom, both
-                    showNextButton: true, // show/hide a Next button
-                    showPreviousButton: true, // show/hide a Previous button  
+                    showNextButton: false, // show/hide a Next button
+                    showPreviousButton: false, // show/hide a Previous button  
                 },
                 keyboardSettings: {
                     keyNavigation: false, // Enable/Disable keyboard navigation(left and right keys are used if enabled)
