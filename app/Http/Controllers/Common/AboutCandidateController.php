@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
 use App\Mail\RefCheckMail;
+use App\Models\Appointing;
 use App\Models\jf_contact_det;
 use App\Models\jf_pf_esic;
+use App\Models\OfferLetter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -1048,5 +1050,55 @@ class AboutCandidateController extends Controller
     public function process_to_ess_form()
     {
         return view('onboarding.process_to_ess_form');
+    }
+
+    public function changeOffLtrDate(Request $request)
+    {
+        $query = OfferLetter::where('JAId', $request->JAId)->update(['LtrDate' => $request->LtrDate]);
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Offer Letter Date Changed Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function changeA_Date(Request $request)
+    {
+        $query = Appointing::where('JAId', $request->JAId)->update(['A_Date' => $request->A_Date]);
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Appointment Letter Date Changed Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function changeAgr_Date(Request $request)
+    {
+        $query = Appointing::where('JAId', $request->JAId)->update(['Agr_Date' => $request->Agr_Date]);
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Service Agreement Letter Date Changed Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function changeB_Date(Request $request)
+    {
+        $query = Appointing::where('JAId', $request->JAId)->update(['B_Date' => $request->B_Date]);
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Service Bond Date Changed Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function changeConf_Date(Request $request)
+    {
+        $query = Appointing::where('JAId', $request->JAId)->update(['ConfLtrDate' => $request->ConfLtrDate]);
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Confidentiality Agreement Letter Date Changed Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
     }
 }

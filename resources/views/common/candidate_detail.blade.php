@@ -72,7 +72,8 @@ $firobid = base64_encode($Rec->JCId);
 
 $OfBasic = DB::table('offerletterbasic')
     ->leftJoin('candjoining', 'candjoining.JAId', '=', 'offerletterbasic.JAId')
-    ->select('offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.EmpCode', 'candjoining.Verification', 'candjoining.Joined', 'candjoining.PositionCode', 'candjoining.ForwardToESS', 'candjoining.NoJoiningRemark')
+    ->leftJoin('appointing', 'appointing.JAId', '=', 'offerletterbasic.JAId')
+    ->select('offerletterbasic.*', 'candjoining.JoinOnDt', 'appointing.A_Date', 'appointing.Agr_Date', 'appointing.B_Date', 'appointing.ConfLtrDate', 'candjoining.EmpCode', 'candjoining.Verification', 'candjoining.Joined', 'candjoining.PositionCode', 'candjoining.ForwardToESS', 'candjoining.NoJoiningRemark')
     ->where('offerletterbasic.JAId', $JAId)
     ->first();
 
@@ -309,10 +310,10 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         <li class="nav-item"><a href="#job_offer" data-bs-toggle="tab" class="nav-link">Job
                                 Offer</a></li>
 
-                             
+
                         @if (Auth::user()->role == 'A')
                             <li class="nav-item">
-                                <a href="#cand_family" data-bs-toggle="tab" class="nav-link">Changes <small
+                                <a href="#admin_change" data-bs-toggle="tab" class="nav-link">Changes <small
                                         class="text-danger">(Admin Only)</small></a>
                             </li>
                         @endif
@@ -1212,7 +1213,6 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
             </div>
 
             <div class="tab-pane fade" id="cand_document">
-
                 <div class="row">
                     <div class="col-md-12 d-flex">
                         <div class="card profile-box flex-fill">
@@ -1414,8 +1414,6 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         </div>
                     </div>
                 </div>
-
-
             </div>
 
             <div class="tab-pane fade" id="cand_history">
@@ -2083,6 +2081,109 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         </div>
                     </div>
 
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="admin_change">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="card profile-box flex-fill">
+                            <div class="card-body">
+
+                                <ul class="personal-info">
+                                    <li>
+                                        <div class="title">Offer Letter Date<span style="float: right">:</span>
+                                        </div>
+                                        <div class="text">
+
+                                            <input type="date" class="form-control frminp form-control-sm d-inline-block"
+                                                id="off_date" name="" readonly="" style="width: 130px;"
+                                                value="{{ $OfBasic->LtrDate ?? '' }}">
+                                            <i class="fa fa-pencil text-primary" aria-hidden="true" id="off_date_enable"
+                                                onclick="off_date_enable()"
+                                                style="font-size: 16px;cursor: pointer; display: "></i>
+                                            <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
+                                                id="save_off_date" onclick="save_off_date()">Save</button>
+                                            <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
+                                                id="off_date_can" onclick="window.location.reload();">Cancel</button>
+
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div class="title">App. Ltr. Date<span style="float: right">:</span></div>
+                                        <div class="text">
+                                            <input type="date" class="form-control frminp form-control-sm d-inline-block"
+                                                id="a_date" name="" readonly="" style="width: 130px;"
+                                                value="{{ $OfBasic->A_Date ?? '' }}">
+                                            <i class="fa fa-pencil text-primary" aria-hidden="true" id="a_date_enable"
+                                                onclick="a_date_enable()"
+                                                style="font-size: 16px;cursor: pointer; display: "></i>
+                                            <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
+                                                id="save_a_date" onclick="save_a_date()">Save</button>
+                                            <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
+                                                id="a_date_can" onclick="window.location.reload();">Cancel</button>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div class="title">Service Agr. Date<span style="float: right">:</span>
+                                        </div>
+                                        <div class="text">
+                                            <input type="date" class="form-control frminp form-control-sm d-inline-block"
+                                                id="agr_date" name="" readonly="" style="width: 130px;"
+                                                value="{{ $OfBasic->Agr_Date ?? '' }}">
+                                            <i class="fa fa-pencil text-primary" aria-hidden="true" id="agr_date_enable"
+                                                onclick="agr_date_enable()"
+                                                style="font-size: 16px;cursor: pointer; display: "></i>
+                                            <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
+                                                id="save_agr_date" onclick="save_agr_date()">Save</button>
+                                            <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
+                                                id="agr_date_can" onclick="window.location.reload();">Cancel</button>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div class="title">Service Bond Date<span style="float: right">:</span>
+                                        </div>
+                                        <div class="text">
+                                            <input type="date" class="form-control frminp form-control-sm d-inline-block"
+                                                id="b_date" name="" readonly="" style="width: 130px;"
+                                                value="{{ $OfBasic->B_Date ?? '' }}">
+                                            <i class="fa fa-pencil text-primary" aria-hidden="true" id="b_date_enable"
+                                                onclick="b_date_enable()"
+                                                style="font-size: 16px;cursor: pointer; display: "></i>
+                                            <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
+                                                id="save_b_date" onclick="save_b_date()">Save</button>
+                                            <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
+                                                id="b_date_can" onclick="window.location.reload();">Cancel</button>
+                                        </div>
+                                    </li>
+                                    @if ($OfBasic->Department == 2 || $OfBasic->Department == 3 || $OfBasic->Department == 4 || $OfBasic->Department == 25 || $OfBasic->Department == 27 || $OfBasic->Department == 40 || $OfBasic->Department == 44)
+                                        <li>
+                                            <div class="title">Conf. Agr. Date<span style="float: right">:</span>
+                                            </div>
+                                            <div class="text">
+                                                <input type="date"
+                                                    class="form-control frminp form-control-sm d-inline-block"
+                                                    id="conf_date" name="" readonly="" style="width: 130px;"
+                                                    value="{{ $OfBasic->ConfLtrDate ?? '' }}">
+                                                <i class="fa fa-pencil text-primary" aria-hidden="true"
+                                                    id="conf_date_enable" onclick="conf_date_enable()"
+                                                    style="font-size: 16px;cursor: pointer; display: "></i>
+                                                <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
+                                                    id="save_conf_date" onclick="save_conf_date()">Save</button>
+                                                <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
+                                                    id="conf_date_can" onclick="window.location.reload();">Cancel</button>
+                                            </div>
+                                        </li>
+                                    @endif
+
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -3772,8 +3873,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                             <label class="form-check-label" for="temporary_chk">Temporary
                                                             </label>
                                                         </div>
-                                                        <div class="form-check form-check-inline d-none" id="temporary_div"
-                                                            style="margin-right:0px;">
+                                                        <div class="form-check form-check-inline d-none"
+                                                            id="temporary_div" style="margin-right:0px;">
                                                             <select name="TempState" id="TempState"
                                                                 class="form-select form-select-sm d-inline"
                                                                 style="width: 130px;">
@@ -6717,7 +6818,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
             });
         }
 
-        function joinDateEnbl(jaid, th) {
+        function joinDateEnbl() {
             $('#dateofJoin').prop('readonly', false);
             $('#joindtenable').hide(500);
             $('#JoinSave').show(500);
@@ -6763,6 +6864,146 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $('#EmpCodeSave').hide(500);
                         $('#empCancle').hide(500);
                         $('#empCode').prop('readonly', true);
+                        toastr.success(res.msg);
+                    } else {
+                        toastr.error(res.msg);
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+
+        function off_date_enable() {
+            $('#off_date').prop('readonly', false);
+            $('#off_date_enable').hide(500);
+            $('#save_off_date').show(500);
+            $('#off_date_can').show(500);
+        }
+
+        function a_date_enable() {
+            $('#a_date').prop('readonly', false);
+            $('#a_date_enable').hide(500);
+            $('#save_a_date').show(500);
+            $('#a_date_can').show(500);
+        }
+
+        function agr_date_enable() {
+            $('#agr_date').prop('readonly', false);
+            $('#agr_date_enable').hide(500);
+            $('#save_agr_date').show(500);
+            $('#agr_date_can').show(500);
+        }
+
+        function b_date_enable() {
+            $('#b_date').prop('readonly', false);
+            $('#b_date_enable').hide(500);
+            $('#save_b_date').show(500);
+            $('#b_date_can').show(500);
+        }
+
+        function conf_date_enable() {
+            $('#conf_date').prop('readonly', false);
+            $('#conf_date_enable').hide(500);
+            $('#save_conf_date').show(500);
+            $('#conf_date_can').show(500);
+        }
+
+        function save_off_date() {
+            var LtrDate = $('#off_date').val();
+            var JAId = $('#JAId').val();
+            $.ajax({
+                type: "POST",
+                url: "{{ route('changeOffLtrDate') }}?JAId=" + JAId + "&LtrDate=" + LtrDate,
+                success: function(res) {
+                    if (res.status == 200) {
+                        $('#off_date_enable').show(500);
+                        $('#save_off_date').hide(500);
+                        $('#off_date_can').hide(500);
+                        $('#off_date').prop('readonly', true);
+                        toastr.success(res.msg);
+                    } else {
+                        toastr.error(res.msg);
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+
+        function save_a_date() {
+            var A_Date = $('#a_date').val();
+            var JAId = $('#JAId').val();
+            $.ajax({
+                type: "POST",
+                url: "{{ route('changeA_Date') }}?JAId=" + JAId + "&A_Date=" + A_Date,
+                success: function(res) {
+                    if (res.status == 200) {
+                        $('#a_date_enable').show(500);
+                        $('#save_a_date').hide(500);
+                        $('#a_date_can').hide(500);
+                        $('#a_date').prop('readonly', true);
+                        toastr.success(res.msg);
+                    } else {
+                        toastr.error(res.msg);
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+
+        function save_agr_date() {
+            var Agr_Date = $('#agr_date').val();
+            var JAId = $('#JAId').val();
+            $.ajax({
+                type: "POST",
+                url: "{{ route('changeAgr_Date') }}?JAId=" + JAId + "&Agr_Date=" + Agr_Date,
+                success: function(res) {
+                    if (res.status == 200) {
+                        $('#agr_date_enable').show(500);
+                        $('#save_agr_date').hide(500);
+                        $('#agr_date_can').hide(500);
+                        $('#agr_date').prop('readonly', true);
+                        toastr.success(res.msg);
+                    } else {
+                        toastr.error(res.msg);
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+
+        function save_b_date() {
+            var B_Date = $('#b_date').val();
+            var JAId = $('#JAId').val();
+            $.ajax({
+                type: "POST",
+                url: "{{ route('changeB_Date') }}?JAId=" + JAId + "&B_Date=" + B_Date,
+                success: function(res) {
+                    if (res.status == 200) {
+                        $('#b_date_enable').show(500);
+                        $('#save_b_date').hide(500);
+                        $('#b_date_can').hide(500);
+                        $('#b_date').prop('readonly', true);
+                        toastr.success(res.msg);
+                    } else {
+                        toastr.error(res.msg);
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+
+        function save_conf_date() {
+            var ConfLtrDate = $('#conf_date').val();
+            var JAId = $('#JAId').val();
+            $.ajax({
+                type: "POST",
+                url: "{{ route('changeConf_Date') }}?JAId=" + JAId + "&ConfLtrDate=" + ConfLtrDate,
+                success: function(res) {
+                    if (res.status == 200) {
+                        $('#conf_date_enable').show(500);
+                        $('#save_conf_date').hide(500);
+                        $('#conf_date_can').hide(500);
+                        $('#conf_date').prop('readonly', true);
                         toastr.success(res.msg);
                     } else {
                         toastr.error(res.msg);

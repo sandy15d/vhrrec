@@ -191,6 +191,11 @@ Route::post('reference_chk_response', [AboutCandidateController::class, 'referen
 Route::post('VerificationSave', [AboutCandidateController::class, 'VerificationSave'])->name('VerificationSave');
 Route::post('JoinedSave', [AboutCandidateController::class, 'JoinedSave'])->name('JoinedSave');
 Route::post('AssignPositionCode', [AboutCandidateController::class, 'AssignPositionCode'])->name('AssignPositionCode');
+Route::post('changeOffLtrDate', [AboutCandidateController::class, 'changeOffLtrDate'])->name('changeOffLtrDate');
+Route::post('changeA_Date', [AboutCandidateController::class, 'changeA_Date'])->name('changeA_Date');
+Route::post('changeAgr_Date', [AboutCandidateController::class, 'changeAgr_Date'])->name('changeAgr_Date');
+Route::post('changeB_Date', [AboutCandidateController::class, 'changeB_Date'])->name('changeB_Date');
+Route::post('changeConf_Date', [AboutCandidateController::class, 'changeConf_Date'])->name('changeConf_Date');
 
 Route::get('process_to_ess_form', [AboutCandidateController::class, 'process_to_ess_form'])->name('process_to_ess_form');
 
