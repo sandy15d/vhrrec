@@ -222,23 +222,19 @@ $rejected = DB::table('offerletterbasic')
                             @foreach ($candidate_list as $row)
                                 @php
                                     $sendingId = base64_encode($row->JAId);
-                                   
+                                    
                                 @endphp
                                 <tr>
                                     <td>
                                         @php
-                                        if(Request::get('page') != null)
-                                        {
-                                            $y = (Request::get('page') - 1) * 20 + $i;
-                                        }
-                                        else
-                                        {
-                                          $y=  $i;
-                                          
-                                        }
-                                      echo $y;
-                                    
-                                    @endphp
+                                            if (Request::get('page') != null) {
+                                                $y = (Request::get('page') - 1) * 20 + $i;
+                                            } else {
+                                                $y = $i;
+                                            }
+                                            echo $y;
+                                            
+                                        @endphp
                                     </td>
                                     <td>{{ $row->ReferenceNo }}</td>
                                     <td> <a class="text-underline"
@@ -246,7 +242,8 @@ $rejected = DB::table('offerletterbasic')
                                             target="_blank">{{ $row->FName }} {{ $row->MName }}
                                             {{ $row->LName }}</a> </td>
                                     <td>{{ getDepartmentCode($row->SelectedForD) }}
-                                        ({{ getCompanyCode($row->SelectedForC) }})</td>
+                                        ({{ getCompanyCode($row->SelectedForC) }})
+                                    </td>
                                     <td>
                                         @if ($row->OfferLtrGen == 1)
                                             Yes
@@ -255,15 +252,16 @@ $rejected = DB::table('offerletterbasic')
                                         @endif
                                     </td>
                                     <td>{{ $row->OfferLetterSent ?? 'No' }}</td>
-                                    <td>{{ $row->Answer }}</td>
+                                    <td style="background-color: {{ $row->Answer == 'Rejected' ? '#F5B7B1' : '' }}">
+                                        {{ $row->Answer }}</td>
                                     <td>{{ $row->JoiningFormSent ?? 'No' }}</td>
                                     <td> {{ $row->JoinOnDt != null ? date('d-m-Y', strtotime($row->JoinOnDt)) : '' }}
                                     </td>
                                 </tr>
-                              
-                           @php
-                               $i++;
-                           @endphp
+
+                                @php
+                                    $i++;
+                                @endphp
                             @endforeach
                         </tbody>
                     </table>

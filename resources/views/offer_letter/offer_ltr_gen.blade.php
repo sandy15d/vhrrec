@@ -879,7 +879,7 @@ $elg = DB::table('candidate_entitlement')
                         $('#GPRS').val('{{ $elg->GPRS }}');
                     </script>
 
-                    <p class="text-center"><b><u>LIST OF DOCUMENTS REQUIRED DURING APPOINTMENT</u></b></p>
+                  {{--   <p class="text-center"><b><u>LIST OF DOCUMENTS REQUIRED DURING APPOINTMENT</u></b></p>
                     <ol>
                         <li style="font-size:14px;">Form 16/Investment Declaration</li>
                         <li style="font-size:14px;">6 colored formal Passport Size Photos with White background</li>
@@ -893,7 +893,7 @@ $elg = DB::table('candidate_entitlement')
                         </li>
                         <li style="font-size:14px;">Compulsory Documents (Driving license/PAN Card/ Aadhaar Card)</li>
                         <li style="font-size:14px;">Copy of Bank account passbook (Preferred only SBI/BOB) </li>
-                    </ol>
+                    </ol> --}}
                     <br><br><br><br>
                     <p style="margin-bottom:2px;">----------------------------<span
                             style="float: right">----------------------------</span></p>
