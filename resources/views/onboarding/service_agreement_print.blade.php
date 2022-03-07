@@ -139,7 +139,7 @@ $sql = DB::table('jobapply')
 
             <div class="page">
                 <div class="subpage">
-                    <div style="height:950px;"></div>
+                    <div style="height:970px;"></div>
                     <p style="font-size:16px;"><b>Ref:
                             {{ getCompanyCode($sql->Company) .'_AL-SA/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }}</b>
                         <span class="float float-right"><b>Date:
