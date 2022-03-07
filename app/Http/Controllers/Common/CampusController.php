@@ -404,7 +404,7 @@ class CampusController extends Controller
             })
             ->addColumn('StudentName', function ($data) {
                 $sendingId = base64_encode($data->JAId);
-                return "<a href='url('candidate_detail?jaid=' . $sendingId . '')'>$data->FName . ' ' . $data->MName . ' ' . $data->LName</a>";
+                return "<a href='candidate_detail?jaid='" . $sendingId . "''>$data->FName . ' ' . $data->MName . ' ' . $data->LName</a>";
             })
 
 
