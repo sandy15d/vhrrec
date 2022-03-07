@@ -138,6 +138,7 @@
                                         <option value="Selected">Selected</option>
                                         <option value="Rejected">Rejected</option>
                                         <option value="On Hold">On Hold</option>
+                                        <option value="Did not Attend">Did not Attend</option>
                                         <option value="2nd Round Interview">2nd Round Interview</option>
                                     </select>
                                 </td>
