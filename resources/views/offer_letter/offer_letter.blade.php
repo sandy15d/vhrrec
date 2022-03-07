@@ -200,7 +200,7 @@ $rejected = DB::table('offerletterbasic')
         <div class="col-12">
             <div class="card border-top border-0 border-4 border-primary mb-1">
                 <div class="card-body">
-                    <table class="table table-bordered text-center table-striped table-light">
+                    <table class="table table-bordered text-center ">
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">S.No</th>
@@ -253,7 +253,7 @@ $rejected = DB::table('offerletterbasic')
                                     </td>
                                     <td>{{ $row->OfferLetterSent ?? 'No' }}</td>
                                     <td style="background-color: {{ trim($row->Answer) == 'Rejected' ? '#F5B7B1' : '' }}">
-                                       as {{ $row->Answer }}</td>
+                                        {{ $row->Answer }}</td>
                                     <td>{{ $row->JoiningFormSent ?? 'No' }}</td>
                                     <td> {{ $row->JoinOnDt != null ? date('d-m-Y', strtotime($row->JoinOnDt)) : '' }}
                                     </td>
