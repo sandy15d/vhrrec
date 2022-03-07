@@ -531,7 +531,7 @@ class JobApplicationController extends Controller
         $SpouseName = $request->SpouseName ?? null;
         $CandidateImage = $request->old_image ?? null;
 
-        if ($request->old_image == '' || $request->old_image == null) {
+        if (isset($request->CandidateImage)) {
             $CandidateImage = $JCId . '.' . $request->CandidateImage->extension();
             $request->CandidateImage->move(public_path('uploads/Picture'), $CandidateImage);
         }
