@@ -43,6 +43,10 @@ class TrackerController extends Controller
         $Company = $request->Company;
         $Department = $request->Department;
         $JPId = $request->JPId;
+        if (Auth::user()->role == 'R') {
+
+            $usersQuery->where('jobpost.CreatedBy', Auth::user()->id);
+        }
         if ($Company != '') {
             $usersQuery->where("screening.ScrCmp", $Company);
         }
@@ -62,6 +66,7 @@ class TrackerController extends Controller
             ->where('manpowerrequisition.CountryId', session('Set_Country'))
             ->where('jobapply.FwdTechScr', 'Yes')
             ->where('jobpost.Status', 'Open')
+            ->where('jobpost.JobPostType', 'Regular')
             ->orderBy('ScId', 'DESC');
 
         return datatables()->of($data)
