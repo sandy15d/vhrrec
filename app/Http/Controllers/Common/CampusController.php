@@ -403,7 +403,8 @@ class CampusController extends Controller
                 return getCollegeCode($data->College);
             })
             ->addColumn('StudentName', function ($data) {
-                return $data->FName . ' ' . $data->MName . ' ' . $data->LName;
+                $sendingId = base64_encode($data->JAId);
+                return "<a href='url('candidate_detail?jaid=' . $sendingId . '')'>$data->FName . ' ' . $data->MName . ' ' . $data->LName</a>";
             })
 
 
@@ -426,7 +427,7 @@ class CampusController extends Controller
             })
 
 
-            ->rawColumns(['chk', 'PlacementDate'])
+            ->rawColumns(['chk', 'PlacementDate', 'StudentName'])
             ->make(true);
     }
 

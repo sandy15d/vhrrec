@@ -244,7 +244,7 @@ $rejected = DB::table('offerletterbasic')
                                     <td>{{ getDepartmentCode($row->SelectedForD) }}
                                         ({{ getCompanyCode($row->SelectedForC) }})
                                     </td>
-                                    <td>
+                                    <td style="background-color: {{ $row->OfferLtrGen == '1' ? '' : '#F5B7B1' }}">
                                         @if ($row->OfferLtrGen == 1)
                                             Yes
                                         @else
