@@ -589,7 +589,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                     <h5 class="modal-title text-white">Job Application Form (Manual Entry)</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="job_application_manual" method="POST" id="jobapplicationform">
+                <form action="{{route('job_application_manual')}}" method="POST" id="jobapplicationform">
                     @csrf
                     <div class="modal-body">
                         <div class="row">
@@ -735,7 +735,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                         <td>
                                             <input type="text" name="Aadhaar" id="Aadhaar" maxlength="12"
                                                 onkeypress="return isNumberKey(event)"
-                                                class="form-control form-control-sm reqinp">
+                                                class="form-control form-control-sm">
                                         </td>
                                     </tr>
                                     <tr>

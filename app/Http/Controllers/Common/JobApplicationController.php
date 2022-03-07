@@ -332,7 +332,7 @@ class JobApplicationController extends Controller
         $query->FatherName = $request->FatherName;
         $query->Email = $request->Email;
         $query->Phone = $request->Phone;
-        $query->Aadhaar = $request->Aadhaar;
+        $query->Aadhaar = $request->Aadhaar ?? null;
         $query->Nationality = $request->Nationality;
         $query->save();
         $JCId = $query->JCId;
