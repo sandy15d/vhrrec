@@ -399,12 +399,15 @@ class CampusController extends Controller
                 }
             })
 
+            ->editColumn('ReferenceNo',function($data){
+              return  $sendingId = base64_encode($data->JAId);
+            })
             ->addColumn('University', function ($data) {
                 return getCollegeCode($data->College);
             })
             ->addColumn('StudentName', function ($data) {
-                $sendingId = base64_encode($data->JAId);
-                return "<a href='candidate_detail?jaid='" . $sendingId . "''>$data->FName . ' ' . $data->MName . ' ' . $data->LName</a>";
+               
+                return $data->FName . ' ' . $data->MName . ' ' . $data->LName;
             })
 
 
@@ -427,7 +430,7 @@ class CampusController extends Controller
             })
 
 
-            ->rawColumns(['chk', 'PlacementDate', 'StudentName'])
+            ->rawColumns(['chk', 'PlacementDate','ReferenceNo'])
             ->make(true);
     }
 
