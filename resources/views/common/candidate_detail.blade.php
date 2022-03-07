@@ -1859,8 +1859,6 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                 </div>
                                             </li>
                                         @endif
-
-
                                         @if ($OfBasic->Department == 2 || $OfBasic->Department == 3 || $OfBasic->Department == 4 || $OfBasic->Department == 25 || $OfBasic->Department == 27 || $OfBasic->Department == 40 || $OfBasic->Department == 44)
                                             <li>
                                                 <div class="title" style="width: 150px;"> Conf. Agreement <span
