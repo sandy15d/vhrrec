@@ -1546,16 +1546,13 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Offer Letter Basic Details
-                                 @if ($OfBasic != null && ($OfBasic->Answer == '' || $OfBasic->Answer == 'Rejected'))
-                                 <a href="#" class="edit-icon" data-bs-toggle="modal"
-                                 data-bs-target="#OfferLtrModal" id="offerltredit" data-id="{{ $Rec->JAId }}">
-                                 <i class="fa fa-pencil"></i>
-                             </a>
-                                  
-                                     
-                                 @endif
-                                   
-
+                                    @if ($OfBasic != null && ($OfBasic->Answer == '' || $OfBasic->Answer == 'Rejected'))
+                                        <a href="#" class="edit-icon" data-bs-toggle="modal"
+                                            data-bs-target="#OfferLtrModal" id="offerltredit"
+                                            data-id="{{ $Rec->JAId }}">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                    @endif
                                 </h6>
                                 <ul class="personal-info">
                                     <li>
@@ -1672,10 +1669,12 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Offer Letter Generation & Review
+                                    @if ($OfBasic != null && ($OfBasic->Answer == '' || $OfBasic->Answer == 'Rejected'))
                                     <a href="javascript:void(0);" class="edit-icon" id="offerltrgen"
                                         data-id="{{ $Rec->JAId }}">
                                         <i class="fa fa-pencil"></i>
                                     </a>
+                                    @endif
                                 </h6>
 
                                 <ul class="personal-info">
