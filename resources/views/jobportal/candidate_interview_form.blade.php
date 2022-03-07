@@ -4208,9 +4208,9 @@ $institute_list = DB::table("master_institute")->join('states','states.StateId',
             var res = checkRequired();
             formData.append('JCId', $('#JCId').val());
             var old_image = $('#old_image').val();
-            if (document.getElementById("CandidateImage").files.length == 0 && old_image == '') {
+            /* if (document.getElementById("CandidateImage").files.length == 0 && old_image == '') {
                 toastr.error('Please upload your photo');
-            } else {
+            } else { */
                 if (res == 0) {
                     $.ajax({
                         url: $(form).attr('action'),
@@ -4240,7 +4240,7 @@ $institute_list = DB::table("master_institute")->join('states','states.StateId',
                 } else {
                     toastr.error('Please fill all required fields');
                 }
-            }
+           // }
         });
 
         $('#contact_form').on('submit', function(e) {
