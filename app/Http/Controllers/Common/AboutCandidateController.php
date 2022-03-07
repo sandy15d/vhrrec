@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Common;
 
+use App\Helpers\UserNotification;
 use App\Http\Controllers\Controller;
 use App\Mail\RefCheckMail;
 use App\Models\Appointing;
 use App\Models\jf_contact_det;
 use App\Models\jf_pf_esic;
+use App\Models\jobapply;
+use App\Models\jobpost;
 use App\Models\OfferLetter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -997,6 +1000,11 @@ class AboutCandidateController extends Controller
             $query = DB::table('candidate_ref')->where('JAId', $JAId)->update(['Company' => $Company, 'FromDate' => $FromDate, 'ToDate' => $ToDate, 'Designation' => $Designation, 'ReportMgr' => $ReportMgr, 'EmpType' => $EmpType, 'Agency' => $Agency, 'NetMonth' => $NetMonth, 'CTC' => $CTC, 'AbilityTeam' => $AbilityTeam, 'Loyal' => $Loyal, 'Leadership' => $Leadership, 'Relationship' => $Relationship, 'CharacterConduct' => $CharacterConduct, 'Strength' => $Strength, 'Weakness' => $Weakness, 'LeaveReason' => $LeaveReason, 'Rehire' => $Rehire, 'AnyOther' => $AnyOther, 'VerifierName' => $VerifierName, 'VDesig' => $VDesig, 'Contact' => $Contact, 'Email' => $Email, 'CreatedTime' => now()]);
         }
         if ($query) {
+            $sql = jobapply::where('JAId', $JAId)->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->select('jobapply.*', 'jobcandidates.FName', 'jobcandidates.LName')->first();
+            $JPId = $sql->JPId;
+            $sql2 = jobpost::where('JPId', $JPId)->first();
+            $Receuiter = $sql2->CreatedBy;
+            UserNotification::notifyUser($Receuiter, 'Reference Check', 'Reference Check of ' . $sql->FName . ' ' . $sql->LName . ' has been completed.');
             return response()->json(['status' => 200, 'msg' => 'Reference Check Response Submitted Successfully']);
         } else {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);

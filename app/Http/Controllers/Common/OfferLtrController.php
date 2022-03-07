@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Common;
 
 use App\Helpers\CandidateActivityLog;
+use App\Helpers\UserNotification;
 use App\Models\screening;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,8 @@ use App\Mail\ReviewMail;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Admin\master_employee;
 use App\Models\CandidateJoining;
+use App\Models\jobapply;
+use App\Models\jobpost;
 use Illuminate\Support\Facades\Mail;
 
 use function App\Helpers\getCompanyCode;
@@ -73,7 +76,7 @@ class OfferLtrController extends Controller
         if ($Name != '') {
             $usersQuery->where("jobcandidates.FName", 'like', "%$Name%");
         }
-      
+
         $candidate_list = $usersQuery->select('jobapply.JAId', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.ReferenceNo', 'jobcandidates.CandidateImage', 'screening.SelectedForC', 'screening.SelectedForD', 'offerletterbasic.OfferLetterSent', 'offerletterbasic.JoiningFormSent', 'offerletterbasic.Answer', 'offerletterbasic.OfferLtrGen', 'offerletterbasic.OfferLetter', 'candjoining.EmpCode', 'candjoining.JoinOnDt', 'offerletterbasic.SendReview', 'jobpost.JobCode')
             ->Join('jobapply', 'screening.JAId', '=', 'jobapply.JAId')
             ->Join('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
@@ -88,7 +91,7 @@ class OfferLtrController extends Controller
             ->where('screening.SelectedForD', '!=', '0')
             ->where('jobpost.Status', 'Open')
             ->orderBy('ScId', 'DESC')->paginate(20);
-        
+
         return view('offer_letter.offer_letter', compact('company_list', 'months', 'candidate_list'));
     }
 
@@ -819,6 +822,11 @@ class OfferLtrController extends Controller
             ]
         );
         if ($query) {
+            $sql = jobapply::where('JAId', $JAId)->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->select('jobapply.*', 'jobcandidates.FName', 'jobcandidates.LName')->first();
+            $JPId = $sql->JPId;
+            $sql2 = jobpost::where('JPId', $JPId)->first();
+            $Receuiter = $sql2->CreatedBy;
+            UserNotification::notifyUser($Receuiter, 'Offer Letter Reviewed', 'Offer Letter of ' . $sql->FName . ' ' . $sql->LName . ' for the post of ' . $sql2->Title . ' has been reviewed.');
             return response()->json(['status' => 200, 'msg' => 'Response Submitted Successfully']);
         } else {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
