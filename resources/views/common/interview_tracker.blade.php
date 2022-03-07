@@ -360,7 +360,7 @@
         }
 
         function GetCandidates() {
-
+            $("#candidate_table").DataTable().draw(true);
         }
 
         function GetDepartment1() { // for Interview Department Selection
