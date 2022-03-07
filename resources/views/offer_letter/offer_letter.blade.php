@@ -252,8 +252,8 @@ $rejected = DB::table('offerletterbasic')
                                         @endif
                                     </td>
                                     <td>{{ $row->OfferLetterSent ?? 'No' }}</td>
-                                    <td style="background-color: {{ $row->Answer == 'Rejected' ? '#F5B7B1' : '' }}">
-                                        {{ $row->Answer }}</td>
+                                    <td style="background-color: {{ trim($row->Answer) == 'Rejected' ? '#F5B7B1' : '' }}">
+                                       as {{ $row->Answer }}</td>
                                     <td>{{ $row->JoiningFormSent ?? 'No' }}</td>
                                     <td> {{ $row->JoinOnDt != null ? date('d-m-Y', strtotime($row->JoinOnDt)) : '' }}
                                     </td>
