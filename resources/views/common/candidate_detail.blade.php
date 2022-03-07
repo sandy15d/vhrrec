@@ -1841,22 +1841,25 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
 
                                             </div>
                                         </li>
-                                        <li>
-                                            <div class="title" style="width: 150px;"> Service Bond <span
-                                                    style="float: right">:</span> </div>
-                                            <div class="text  text-dark">
-                                                @if ($Rec->BLtrGen == 'No' || $Rec->BLtrGen == null)
-                                                    <i class="fa fa-pencil text-primary" aria-hidden="true"
-                                                        onclick="ServiceBondGen({{ $Rec->JAId }})"
-                                                        style="font-size: 16px;cursor: pointer; display: ">Generate </i>
-                                                @else
-                                                    <a href="{{ route('service_agreement') }}?jaid={{ base64_encode($JAId) }}"
-                                                        target="_blank"> View</a> | <a href="javascript:void(0);"
-                                                        onclick="PrintServiceBondLetter('{{ route('service_bond_print') }}?jaid={{ base64_encode($Rec->JAId) }}');">
-                                                        Print</a>
-                                                @endif
-                                            </div>
-                                        </li>
+                                        @if ($OfBasic != null && $OfBasic->ServiceBond == 'Yes')
+                                            <li>
+                                                <div class="title" style="width: 150px;"> Service Bond <span
+                                                        style="float: right">:</span> </div>
+                                                <div class="text  text-dark">
+                                                    @if ($Rec->BLtrGen == 'No' || $Rec->BLtrGen == null)
+                                                        <i class="fa fa-pencil text-primary" aria-hidden="true"
+                                                            onclick="ServiceBondGen({{ $Rec->JAId }})"
+                                                            style="font-size: 16px;cursor: pointer; display: ">Generate </i>
+                                                    @else
+                                                        <a href="{{ route('service_agreement') }}?jaid={{ base64_encode($JAId) }}"
+                                                            target="_blank"> View</a> | <a href="javascript:void(0);"
+                                                            onclick="PrintServiceBondLetter('{{ route('service_bond_print') }}?jaid={{ base64_encode($Rec->JAId) }}');">
+                                                            Print</a>
+                                                    @endif
+                                                </div>
+                                            </li>
+                                        @endif
+
 
                                         @if ($OfBasic->Department == 2 || $OfBasic->Department == 3 || $OfBasic->Department == 4 || $OfBasic->Department == 25 || $OfBasic->Department == 27 || $OfBasic->Department == 40 || $OfBasic->Department == 44)
                                             <li>
