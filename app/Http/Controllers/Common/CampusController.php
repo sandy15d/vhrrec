@@ -401,7 +401,7 @@ class CampusController extends Controller
 
             ->editColumn('ReferenceNo',function($data){
                 $sendingId = base64_encode($data->JAId);
-                return '<a href="'.url('/').'candidate_detail?jaid='.$sendingId.'" target="_blank">'.$data->ReferenceNo.'</a>';
+                return '<a href="candidate_detail?jaid='.$sendingId.'" target="_blank">'.$data->ReferenceNo.'</a>';
             })
             ->addColumn('University', function ($data) {
                 return getCollegeCode($data->College);
