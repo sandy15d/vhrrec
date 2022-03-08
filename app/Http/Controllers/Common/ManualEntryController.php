@@ -120,6 +120,13 @@ class ManualEntryController extends Controller
             ->addColumn('chk', function () {
                 return '<input type="checkbox" class="select_all">';
             })
+            ->editColumn('DesigName', function ($mrf) {
+                if ($mrf->Type == 'SIP' || $mrf->Type == 'SIP_HrManual') {
+                    return 'SIP/Internship';
+                } else {
+                    return $mrf->DesigName;
+                }
+            })
             ->rawColumns(['actions', 'delete', 'chk'])
             ->make(true);
     }
@@ -231,10 +238,10 @@ class ManualEntryController extends Controller
             $UniversityArray = array();
             if (isset($request->University)) {
                 $UniversityArray = serialize($request->University);
-            }else{
+            } else {
                 $UniversityArray = '';
             }
-         
+
             $MRF = new master_mrf;
             $MRF->Type = 'N_HrManual';
             $MRF->Reason = $request->Reason;
@@ -342,7 +349,7 @@ class ManualEntryController extends Controller
             $UniversityArray = array();
             if (isset($request->University)) {
                 $UniversityArray = serialize($request->University);
-            }else{
+            } else {
                 $UniversityArray = '';
             }
             $MRF = new master_mrf;
@@ -447,7 +454,7 @@ class ManualEntryController extends Controller
         $UniversityArray = array();
         if (isset($request->University)) {
             $UniversityArray = serialize($request->University);
-        }else{
+        } else {
             $UniversityArray = '';
         }
 
@@ -563,7 +570,7 @@ class ManualEntryController extends Controller
             $UniversityArray = array();
             if (isset($request->University)) {
                 $UniversityArray = serialize($request->University);
-            }else{
+            } else {
                 $UniversityArray = '';
             }
             $MRF = new master_mrf;
