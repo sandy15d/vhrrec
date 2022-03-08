@@ -2832,7 +2832,7 @@ $institute_list = DB::table("master_institute")->join('states','states.StateId',
                                             style="position: static; left: auto; width: 1017px; display: none;">
                                             <div class="row">
                                                 <h6>Provide documents of the company you previously worked for:</h6>
-                                                <p class="text-danger fw-bold">Note: Please upload pdf file only.
+                                                <p class="text-danger fw-bold">Note: Please upload pdf file only. File Size must be less then 2MB.
                                                 </p>
                                                 <div class="col-lg-9 table-responsive">
                                                     <table class="table table-bordered">
