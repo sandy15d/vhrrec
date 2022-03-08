@@ -103,8 +103,7 @@ $Year = Carbon::now()->year;
 
         .subpage {
             padding: 0.5cm;
-            height: 257mm;
-            outline: 2cm #ffffff solid;
+            height: 220mm;
         }
 
 
@@ -159,7 +158,7 @@ $Year = Carbon::now()->year;
     <div class="book">
 
         <div class="page">
-            <div class="subpage">
+            <div class="header">
                 <center>
                     <img src="https://www.vnrseeds.com/wp-content/uploads/2018/12/vnr-logo-69x90.png" width="30px">
                 </center>
@@ -169,6 +168,8 @@ $Year = Carbon::now()->year;
                     <div class="col ">&emsp;&nbsp;<b>VNR Seeds Pvt. Ltd.</b></div>
                 </div>
                 <hr style="margin-top: 0px; height:2px; color:red">
+            </div>
+            <div class="subpage">
                 <div class="row">
                     <p style="margin-bottom: 0px;">Post Applied for (किस पद के लिए आवेदन): <b>
                             {{ $Rec->JobTitle }}</b></p>
@@ -214,7 +215,6 @@ $Year = Carbon::now()->year;
                                                     Male
                                                 @elseif($Rec->Gender == 'F')
                                                     Female
-
                                                 @else
                                                     Other
                                                 @endif
@@ -289,7 +289,6 @@ $Year = Carbon::now()->year;
                                                 </b>
                                             </td>
                                         </tr>
-
                                     @endif
 
 
@@ -320,7 +319,6 @@ $Year = Carbon::now()->year;
                                     <b>
                                         {{ $Rec->Email }} @if ($Rec->Email2 != null)
                                             , {{ $Rec->Email2 }}
-
                                         @endif
                                     </b>
                                 </td>
@@ -410,6 +408,9 @@ $Year = Carbon::now()->year;
                 </div>
 
 
+
+            </div>
+            <div class="footer">
                 <div class="row">
                     <div class="col-12">
                         <hr style="margin-bottom: 2px;">
@@ -427,7 +428,7 @@ $Year = Carbon::now()->year;
         </div>
 
         <div class="page">
-            <div class="subpage">
+            <div class="header">
                 <center>
                     <img src="https://www.vnrseeds.com/wp-content/uploads/2018/12/vnr-logo-69x90.png" width="30px">
                 </center>
@@ -437,6 +438,9 @@ $Year = Carbon::now()->year;
                     <div class="col ">&emsp;&nbsp;<b>VNR Seeds Pvt. Ltd.</b></div>
                 </div>
                 <hr style="margin-top: 0px;">
+            </div>
+            <div class="subpage">
+
 
                 <div class="row">
                     <p><b>Details of Current Employment (वर्तमान नौकरी का विवरण)</b></p>
@@ -464,7 +468,6 @@ $Year = Carbon::now()->year;
                                 <td> <b>
                                         @if ($Rec->Professional == 'P')
                                             {{ date('d-m-Y', strtotime($Rec->JobStartDate)) }}
-
                                         @endif
 
                                     </b></td>
@@ -626,7 +629,10 @@ $Year = Carbon::now()->year;
                     </div>
                 </div>
 
-                <hr style="margin-bottom: 2px;">
+
+            </div>
+            <div class="footer">
+                <hr style="margin-bottom: 0px;">
                 <center>
                     <p class="row" style="margin-top: 0px;">
                         Date of Release: 09 September 2019 &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;Released by
@@ -635,11 +641,10 @@ $Year = Carbon::now()->year;
                     </p>
                 </center>
             </div>
-
         </div>
 
         <div class="page">
-            <div class="subpage">
+            <div class="header">
                 <center>
                     <img src="https://www.vnrseeds.com/wp-content/uploads/2018/12/vnr-logo-69x90.png" width="30px">
                 </center>
@@ -649,6 +654,9 @@ $Year = Carbon::now()->year;
                     <div class="col ">&emsp;&nbsp;<b>VNR Seeds Pvt. Ltd.</b></div>
                 </div>
                 <hr style="margin-top: 0px;">
+            </div>
+            <div class="subpage">
+
 
                 <div class="row">
                     <div class="col-12">
@@ -675,8 +683,8 @@ $Year = Carbon::now()->year;
                                             @if ($item->Institute != null)
                                                 {{ getCollegeById($item->Institute) }}
                                                 @if ($item->Institute == 637)
-                                                ({{ $item->OtherInstitute ?? '-' }})
-                                            @endif
+                                                    ({{ $item->OtherInstitute ?? '-' }})
+                                                @endif
                                             @else
                                                 -
                                             @endif
@@ -693,7 +701,6 @@ $Year = Carbon::now()->year;
                                                 -
                                             @else
                                                 {{ getSpecializationbyId($item->Specialization) }}
-
                                             @endif
                                         </td>
                                     </tr>
@@ -758,6 +765,9 @@ $Year = Carbon::now()->year;
 
 
 
+
+            </div>
+            <div class="footer">
                 <hr style="margin-bottom: 0px;">
                 <center>
                     <p class="row" style="margin-top: 0px;">
@@ -770,7 +780,7 @@ $Year = Carbon::now()->year;
         </div>
 
         <div class="page">
-            <div class="subpage">
+            <div class="header">
                 <center>
                     <img src="https://www.vnrseeds.com/wp-content/uploads/2018/12/vnr-logo-69x90.png" width="30px">
                 </center>
@@ -780,6 +790,9 @@ $Year = Carbon::now()->year;
                     <div class="col ">&emsp;&nbsp;<b>VNR Seeds Pvt. Ltd.</b></div>
                 </div>
                 <hr style="margin-top: 0px; ">
+            </div>
+            <div class="subpage">
+
 
                 <div class="row" style="margin-bottom:0px; marign-top:50px;">
 
@@ -819,11 +832,9 @@ $Year = Carbon::now()->year;
                                     VNR Group Companies?</b></p>
                             <p class="mb-0">क्या आपका कोई परिचित या रिश्तेदार वीएनआर ग्रुप कंपनियों के साथ
                                 काम कर रहा है? :</p>
-                            <p class="mb-0" style="margin-left: 20px;"> <input type="checkbox" @if ($Rec != null && $Rec->VNR_Acq == 'Y')
-                                checked
-                                @endif> Yes &nbsp; &nbsp;&nbsp; <input type="checkbox" @if ($Rec != null && $Rec->VNR_Acq == 'N')
-                                checked
-                                @endif> No</p>
+                            <p class="mb-0" style="margin-left: 20px;"> <input type="checkbox"
+                                    @if ($Rec != null && $Rec->VNR_Acq == 'Y') checked @endif> Yes &nbsp; &nbsp;&nbsp; <input
+                                    type="checkbox" @if ($Rec != null && $Rec->VNR_Acq == 'N') checked @endif> No</p>
                             <table class="table table-borderless {{ $Rec->VNR_Acq == 'N' ? 'd-none' : '' }}"
                                 style="width:100%">
                                 <thead>
@@ -865,11 +876,9 @@ $Year = Carbon::now()->year;
                                     etc.)?</b></p>
                             <p class="mb-0">क्या आपका कोई परिचित या रिश्तेदार VNR से व्यावसायिक सहयोगी (जैसे
                                 डीलर, वितरक, खुदरा विक्रेता, आयोजक, विक्रेता आदि) के रूप में जुड़ा है?:</p>
-                            <p class="mb-0" style="margin-left: 20px;"> <input type="checkbox" @if ($Rec != null && $Rec->VNR_Acq_Business == 'Y')
-                                checked
-                                @endif> Yes &nbsp; &nbsp;&nbsp; <input type="checkbox" @if ($Rec != null && $Rec->VNR_Acq_Business == 'N')
-                                checked
-                                @endif> No</p>
+                            <p class="mb-0" style="margin-left: 20px;"> <input type="checkbox"
+                                    @if ($Rec != null && $Rec->VNR_Acq_Business == 'Y') checked @endif> Yes &nbsp; &nbsp;&nbsp; <input
+                                    type="checkbox" @if ($Rec != null && $Rec->VNR_Acq_Business == 'N') checked @endif> No</p>
                             <table
                                 class="table table-borderless {{ $Rec->VNR_Acq_Business == 'N' ? 'd-none' : '' }}"
                                 style="width:100%">
@@ -906,11 +915,9 @@ $Year = Carbon::now()->year;
                                     or associated with any other Seed Company?</b></p>
                             <p class="mb-0">क्या आपका कोई रिश्तेदार या परिचित किसी अन्य सीड कंपनी से जुड़ा
                                 है/काम कर रहा है?</p>
-                            <p class="mb-0" style="margin-left: 20px;"> <input type="checkbox" @if ($Rec != null && $Rec->OtherSeedRelation == 'Y')
-                                checked
-                                @endif> Yes &nbsp; &nbsp;&nbsp; <input type="checkbox" @if ($Rec != null && $Rec->OtherSeedRelation == 'N')
-                                checked
-                                @endif> No</p>
+                            <p class="mb-0" style="margin-left: 20px;"> <input type="checkbox"
+                                    @if ($Rec != null && $Rec->OtherSeedRelation == 'Y') checked @endif> Yes &nbsp; &nbsp;&nbsp; <input
+                                    type="checkbox" @if ($Rec != null && $Rec->OtherSeedRelation == 'N') checked @endif> No</p>
                             <table
                                 class="table table-borderless {{ $Rec->OtherSeedRelation == 'N' ? 'd-none' : '' }}"
                                 style="width:100%">
@@ -940,18 +947,11 @@ $Year = Carbon::now()->year;
                                 </tbody>
                             </table>
                         </div>
-
                     </div>
-
-
-
-
-
                 </div>
-
-
-
-                <hr style="margin-bottom: 0px; margin-top:20px;">
+            </div>
+            <div class="footer">
+                <hr style="margin-bottom: 0px;">
                 <center>
                     <p class="row" style="margin-top: 0px;">
                         Date of Release: 09 September 2019 &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;Released by
@@ -963,7 +963,7 @@ $Year = Carbon::now()->year;
         </div>
 
         <div class="page">
-            <div class="subpage">
+            <div class="header">
                 <center>
                     <img src="https://www.vnrseeds.com/wp-content/uploads/2018/12/vnr-logo-69x90.png" width="30px">
                 </center>
@@ -973,8 +973,8 @@ $Year = Carbon::now()->year;
                     <div class="col ">&emsp;&nbsp;<b>VNR Seeds Pvt. Ltd.</b></div>
                 </div>
                 <hr style="margin-top: 0px; ">
-
-
+            </div>
+            <div class="subpage">
                 <center style="margin-top: 50px;">
                     <p style="margin-bottom:0px;"><b>DECLARATION:</b></p>
                     <p><b>घोषणा</b></p>
@@ -1013,7 +1013,10 @@ $Year = Carbon::now()->year;
                         </table>
                     </div>
                 </div>
-                <hr style="margin-bottom: 0px; margin-top:380px;">
+          
+            </div>
+            <div class="footer">
+                <hr style="margin-bottom: 0px;">
                 <center>
                     <p class="row" style="margin-top: 0px;">
                         Date of Release: 09 September 2019 &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;Released by
@@ -1025,7 +1028,7 @@ $Year = Carbon::now()->year;
         </div>
 
         <div class="page">
-            <div class="subpage">
+            <div class="header">
                 <center>
                     <img src="https://www.vnrseeds.com/wp-content/uploads/2018/12/vnr-logo-69x90.png" width="30px">
                 </center>
@@ -1035,8 +1038,8 @@ $Year = Carbon::now()->year;
                     <div class="col ">&emsp;&nbsp;<b>VNR Seeds Pvt. Ltd.</b></div>
                 </div>
                 <hr style="margin-top: 0px; ">
-
-
+            </div>
+            <div class="subpage">
                 <center style="margin-top: 50px;">
                     <p style="margin-bottom:0px;"><b>Dcoument Details:</b></p>
 
@@ -1079,16 +1082,17 @@ $Year = Carbon::now()->year;
                                 <td>Passport</td>
                                 <td>{{ $Rec->Passport ?? '' }}</td>
                             </tr>
-                           <tr>
-                               <td>8</td>
-                               <td>Driving License</td>
-                                 <td>{{ $AboutAns->DLNo ?? '' }}</td>
-                           </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>Driving License</td>
+                                <td>{{ $AboutAns->DLNo ?? '' }}</td>
+                            </tr>
                         </table>
                     </div>
                 </div>
-
-                <hr style="margin-bottom: 0px; margin-top:380px;">
+            </div>
+            <div class="footer">
+                <hr style="margin-bottom: 0px;">
                 <center>
                     <p class="row" style="margin-top: 0px;">
                         Date of Release: 09 September 2019 &emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;&emsp;&nbsp;Released by
