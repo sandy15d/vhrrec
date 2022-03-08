@@ -400,44 +400,44 @@
     </div>
 
     <div class="modal fade" id="closemrfmodal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
-    data-bs-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered modal-md">
-        <div class="modal-content">
-            <div class="modal-header bg-info bg-gradient">
-                <h5 class="modal-title text-white">Close MRF</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content">
+                <div class="modal-header bg-info bg-gradient">
+                    <h5 class="modal-title text-white">Close MRF</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('close_mrf') }}" method="POST" id="close_mrf_form">
+                    @csrf
+                    <div class="modal-body">
+                        <table class="table borderless">
+                            <tbody>
+                                <tr>
+                                    <input type="hidden" name="MrId" id="MrId">
+                                    <td>No. of Candidate Hired</td>
+                                    <td><input type="text" id="hired" name="hired" class="form-control form-control-sm">
+                                        <span class="text-danger error-text hired_error"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Reason to Close MRF</td>
+                                    <td>
+                                        <textarea name="reason" id="reason"
+                                            class="form-control form-control-sm"></textarea>
+                                        <span class="text-danger error-text reason_error"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="Close_MRF">Save changes</button>
+                    </div>
+                </form>
             </div>
-            <form action="{{ route('close_mrf') }}" method="POST" id="close_mrf_form">
-                @csrf
-                <div class="modal-body">
-                    <table class="table borderless">
-                        <tbody>
-                            <tr>
-                                <input type="hidden" name="MrId" id="MrId">
-                                <td>No. of Candidate Hired</td>
-                                <td><input type="text" id="hired" name="hired" class="form-control form-control-sm">
-                                    <span class="text-danger error-text hired_error"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Reason to Close MRF</td>
-                                <td>
-                                    <textarea name="reason" id="reason"
-                                        class="form-control form-control-sm"></textarea>
-                                    <span class="text-danger error-text reason_error"></span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="Close_MRF">Save changes</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
 @endsection
 @section('scriptsection')
     <script>
@@ -638,6 +638,7 @@
                 $('#MRFId').val(data.MRFDetails.MRFId);
                 $('#Designation').val(data.Designation);
                 $('#JobCode').val(data.MRFDetails.JobCode);
+                $('#PayPackage').val(data.MRFDetails.Stipend);
 
                 CKEDITOR.instances['JobInfo'].setData(data.MRFDetails.Info);
 
@@ -648,8 +649,9 @@
                     $('#KeyPosition' + i).val(KPValue[i - 1]);
                 }
                 LocCount = (data.LocationDetails).length;
+
                 for (j = 1; j <= LocCount; j++) {
-                    editmulLocation(j);
+                    mulLocation(j);
                     $('#State' + j).val(data.LocationDetails[j - 1].state);
                     $('#City' + j).val(data.LocationDetails[j - 1].city);
                     $('#ManPower' + j).val(data.LocationDetails[j - 1].nop);
@@ -807,7 +809,7 @@
         var EduCount = 1;
         var editEduCount = 1;
         var LocCount = 1;
-        var editLocCount = 1;
+      
 
         mulKP();
         editmulKP();
@@ -1281,7 +1283,5 @@
             $("#MrId").val(MRFId);
             $("#closemrfmodal").modal('show');
         });
-
-        
     </script>
 @endsection

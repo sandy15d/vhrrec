@@ -23,6 +23,7 @@ use function App\Helpers\getDistrictName;
 
 use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getDesignationCode;
+use function App\Helpers\getEmailID;
 
 class AdminController extends Controller
 {
@@ -141,8 +142,8 @@ class AdminController extends Controller
                 return getDepartmentCode($mrf->DepartmentId);
             })
             ->editColumn('DesigId', function ($mrf) {
-                if ($mrf->DesigId == '' or $mrf->DesigId == null) {
-                    return '';
+                if ($mrf->Type == 'SIP' || $mrf->Type == 'SIP_HrManual') {
+                    return 'SIP Trainee';
                 } else {
                     return getDesignationCode($mrf->DesigId);
                 }
@@ -452,8 +453,8 @@ class AdminController extends Controller
             ];
             if ($request->va != 'New') {
                 if (CheckCommControl(4) == 1 ||  CheckCommControl(4) == 1) {  //Action taken by admin on MRF 
-                    // Mail::to(getEmailID($CreatedBy))->send(new MrfStatusChangeMail($details)); // Need to active when s/w is live
-                    Mail::to("parul.parmar@vnrseeds.com")->send(new MrfStatusChangeMail($details));
+                    Mail::to(getEmailID($CreatedBy))->send(new MrfStatusChangeMail($details)); // Need to active when s/w is live
+                    
                     UserNotification::notifyUser($CreatedBy, 'MRF Status Change', 'MRF (' . $type . ') - ' . $jobCode . ', Status - ' . $request->va,);
                 }
             }
