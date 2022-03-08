@@ -1089,7 +1089,7 @@ class JobApplicationController extends Controller
 
     public function RelievingLtrFileUpload(Request $request)
     {
-        $request->validate(['RelievingLtr' => 'required|mimes:pdf|max:2048']);
+        $request->validate(['RelievingLtr' => 'required|mimes:pdf']);
         $JCId = $request->JCId;
         $filename = $JCId . 'Previous_Relieving_Letter_' . $JCId  . '.' . $request->RelievingLtr->extension();
         if (\File::exists(public_path('uploads/Documents/' . $filename))) {
