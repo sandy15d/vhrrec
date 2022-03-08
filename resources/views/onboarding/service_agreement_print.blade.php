@@ -1393,13 +1393,34 @@ $sql = DB::table('jobapply')
                             this Agreement by signing any one or more of such originals or counterparts. The delivery of
                             signed counterparts by electronic mail in “portable document format” (“.pdf”) shall be as
                             effective as signing and delivering the counterpart in person.</span></p>
-                            <p style="text-align: right;margin-top:900px;">Cont...</p>
+                            <p style="margin-bottom: 50px;"></p>
+                    <p><b>IN WITNESS WHEREOF,</b> the parties hereto have executed this Agreement as of the date first
+                        set forth above.</p>
+                    <br>
+                    <p>Signed for and on behalf the Company,</p>
+                    <br><br><br>
+                    <p style="margin-bottom: 0px;">-------------------------------</p>
+                    <p>{{ $sql->SigningAuth }}</p>
+
+                    <br><br>
+                    <p style="text-align: justify">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;The
+                        Executive represents that he / she has read carefully and fully understands the terms of this
+                        Agreement. Executive acknowledges that he / she is executing this Agreement voluntarily and
+                        knowingly and that he / she has not relied on any representations, promises, or agreements of
+                        any kind made to the Executive in connection with Executive’s decision to accept the terms of
+                        this Agreement, other than those set forth in this Executive Employment Agreement.</p>
+                    <br><br>
+                    <p><b>Signature of the Executive</b></p>
+                    <br><br><br>
+                    <p>---------------------------------------</p>
+                    <p>Date: ---------------------------------------</p>
+                           
                 </div>
 
                
             </div>
 
-            <div class="page">
+            <div class="page d-none">
                 <div class="subpage">
                     <p style="margin-bottom: 50px;"></p>
                     <p style="font-size:16px;"><b>Ref:
