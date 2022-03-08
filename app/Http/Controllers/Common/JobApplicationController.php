@@ -1235,12 +1235,6 @@ class JobApplicationController extends Controller
             } else {
                 return response()->json(['status' => 200, 'msg' => 'All documents uploaded successfully']);
             }
-        } else {
-            if ($chk->VaccinationCert == null) {
-                return response()->json(['status' => 400, 'msg' => 'Please upload all documents']);
-            } else {
-                return response()->json(['status' => 200, 'msg' => 'All documents uploaded successfully']);
-            }
         }
     }
 
