@@ -270,9 +270,11 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                     </div>
                                 </div>
                             </div>
-                            <div class="pro-edit"><a data-bs-target="#profile_info" data-bs-toggle="modal"
-                                    class="edit-icon" onclick="GetProfileData();" href="javascript:void(0);"><i
-                                        class="fa fa-pencil"></i></a></div>
+                            @if ($OfBasic->ForwardToESS == 'No' && $OfBasic->ForwardToESS == null)
+                                <div class="pro-edit"><a data-bs-target="#profile_info" data-bs-toggle="modal"
+                                        class="edit-icon" onclick="GetProfileData();" href="javascript:void(0);"><i
+                                            class="fa fa-pencil"></i></a></div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -1670,10 +1672,10 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             <div class="card-body">
                                 <h6 class="card-title">Offer Letter Generation & Review
                                     @if ($OfBasic != null && ($OfBasic->Answer == '' || $OfBasic->Answer == 'Rejected'))
-                                    <a href="javascript:void(0);" class="edit-icon" id="offerltrgen"
-                                        data-id="{{ $Rec->JAId }}">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
+                                        <a href="javascript:void(0);" class="edit-icon" id="offerltrgen"
+                                            data-id="{{ $Rec->JAId }}">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
                                     @endif
                                 </h6>
 
