@@ -1056,7 +1056,7 @@ class JobApplicationController extends Controller
     {
         $request->validate(['OfferLtr' => 'required|mimes:pdf|max:2048']);
         $JCId = $request->JCId;
-        $filename = $JCId . 'Previous_Offer_Letter_' . $JCId  . '.' . $request->OfferLtr->extension();
+        $filename = 'Previous_Offer_Letter_' . $JCId  . '.' . $request->OfferLtr->extension();
 
         if (\File::exists(public_path('uploads/Documents/' . $filename))) {
             \File::delete(public_path('uploads/Documents/' . $filename));
@@ -1091,7 +1091,7 @@ class JobApplicationController extends Controller
     {
         $request->validate(['RelievingLtr' => 'required|mimes:pdf']);
         $JCId = $request->JCId;
-        $filename = $JCId . 'Previous_Relieving_Letter_' . $JCId  . '.' . $request->RelievingLtr->extension();
+        $filename = 'Previous_Relieving_Letter_' . $JCId  . '.' . $request->RelievingLtr->extension();
         if (\File::exists(public_path('uploads/Documents/' . $filename))) {
             \File::delete(public_path('uploads/Documents/' . $filename));
         }
@@ -1125,7 +1125,7 @@ class JobApplicationController extends Controller
     {
         $request->validate(['SalarySlip' => 'required|mimes:pdf|max:2048']);
         $JCId = $request->JCId;
-        $filename = $JCId . 'Previous_Salaray_Slip_' . $JCId  . '.' . $request->SalarySlip->extension();
+        $filename = 'Previous_Salaray_Slip_' . $JCId  . '.' . $request->SalarySlip->extension();
         if (\File::exists(public_path('uploads/Documents/' . $filename))) {
             \File::delete(public_path('uploads/Documents/' . $filename));
         }
