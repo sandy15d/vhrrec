@@ -87,7 +87,7 @@ class ManualEntryController extends Controller
         }
 
         $mrf = $usersQuery->select('manpowerrequisition.MRFId', 'manpowerrequisition.Type', 'manpowerrequisition.JobCode', 'manpowerrequisition.CreatedBy', 'master_designation.DesigName', 'manpowerrequisition.Status', 'manpowerrequisition.CreatedTime')
-            ->Join('master_designation', 'manpowerrequisition.DesigId', '=', 'master_designation.DesigId', 'left');
+            ->Join('master_designation', 'manpowerrequisition.DesigId', '=', 'master_designation.DesigId', 'left')->orderBy('manpowerrequisition.CreatedTime', 'desc');
 
         return datatables()->of($mrf)
             ->addIndexColumn()
