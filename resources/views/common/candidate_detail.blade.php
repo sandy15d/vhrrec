@@ -270,7 +270,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                     </div>
                                 </div>
                             </div>
-                            @if ($OfBasic->ForwardToESS == 'No' && $OfBasic->ForwardToESS == null)
+                            @if ( $OfBasic != null && ($OfBasic->ForwardToESS == 'No' && $OfBasic->ForwardToESS == null))
                                 <div class="pro-edit"><a data-bs-target="#profile_info" data-bs-toggle="modal"
                                         class="edit-icon" onclick="GetProfileData();" href="javascript:void(0);"><i
                                             class="fa fa-pencil"></i></a></div>
