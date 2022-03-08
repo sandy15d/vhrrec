@@ -2846,7 +2846,7 @@ $institute_list = DB::table("master_institute")->join('states','states.StateId',
                                                             @if ($Rec->Professional == 'P')
                                                                 <tr>
                                                                     <td style="width: 25%">Offer or appointment letter
-                                                                        (previous company)</td>
+                                                                        (previous company) <font class="text-danger">*</font></td>
                                                                     <td style="width: 60%">
                                                                         <input type="file" name="OfferLtr" id="OfferLtr"
                                                                             class="form-control form-control-sm d-inline"
@@ -2884,7 +2884,7 @@ $institute_list = DB::table("master_institute")->join('states','states.StateId',
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td>Last drawn salary pay slip (previous company)
+                                                                    <td>Last drawn salary pay slip (previous company) <font class="text-danger">*</font>
                                                                     </td>
                                                                     <td>
                                                                         <input type="file" name="SalarySlip"

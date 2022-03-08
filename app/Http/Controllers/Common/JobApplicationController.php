@@ -1230,7 +1230,7 @@ class JobApplicationController extends Controller
         $query = jobcandidate::find($JCId);
         $Professional = $query->Professional;
         if ($Professional == 'P') {
-            if ($chk->OfferLtr == null || $chk->RelievingLtr == null || $chk->SalarySlip == null || $chk->AppraisalLtr == null || $chk->VaccinationCert == null) {
+            if ($chk->OfferLtr == null ||  $chk->SalarySlip == null ) {
                 return response()->json(['status' => 400, 'msg' => 'Please upload all documents']);
             } else {
                 return response()->json(['status' => 200, 'msg' => 'All documents uploaded successfully']);
