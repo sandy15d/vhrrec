@@ -39,7 +39,7 @@ class ProcessToEss extends Controller
         $address_query = DB::table('jf_contact_det')->where('JCId', $JCId)->first();
         $elg_query = DB::table('candidate_entitlement')->where('JAId', $JAId)->first();
         $pf_esic_query = DB::table('jf_pf_esic')->where('JCId', $JCId)->first();
-        $jobcandidate = DB::table('jobcandidates')->join('jobapply', 'jobapply.JCId', '=', 'jobcandidates.JCId')->join('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')->leftjoin('candjoining', 'candjoining.JAId', '=', 'jobapply.JAId')->where('jobcandidates.JCId', $JCId)->leftjoin('about_answer', 'about_answer.JCId', 'jobcandidates.JCId')->select('jobcandidates.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.PositionCode', 'candjoining.PosSeq', 'about_answer.DLNo', 'about_answer.LValidity')->first();
+        $jobcandidate = DB::table('jobcandidates')->join('jobapply', 'jobapply.JCId', '=', 'jobcandidates.JCId')->join('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')->leftjoin('candjoining', 'candjoining.JAId', '=', 'jobapply.JAId')->where('jobcandidates.JCId', $JCId)->leftjoin('about_answer', 'about_answer.JCId', 'jobcandidates.JCId')->select('jobcandidates.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.PositionCode', 'candjoining.PosSeq','candjoining.PosVR', 'about_answer.DLNo', 'about_answer.LValidity')->first();
 
         $workexp_query = DB::table('jf_work_exp')->where('JCId', $JCId)->get();
         $training_query = DB::table('jf_tranprac')->select('*')->where('JCId', $JCId)->get();
@@ -286,6 +286,7 @@ class ProcessToEss extends Controller
             'DesigId' => $jobcandidate->Designation,
             'PositionCode' => $jobcandidate->PositionCode ?? '',
             'PosSeq' => $jobcandidate->PosSeq ?? '',
+            'PosVR' => $jobcandidate->PosVR ?? '',
 
 
             'T_StateHq' => $jobcandidate->T_StateHq ?? '',
