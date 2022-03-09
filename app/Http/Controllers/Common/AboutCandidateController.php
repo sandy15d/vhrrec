@@ -1045,7 +1045,7 @@ class AboutCandidateController extends Controller
     {
         $JAId = $request->JAId;
         $PositionCode = $request->PositionCode;
-        $getSeq = DB::table(' position_codes')->where('position_code', $PositionCode)->select('sequence')->first();
+        $getSeq = DB::table('position_codes')->where('position_code', $PositionCode)->select('sequence')->first();
 
         $query = DB::table('candjoining')->where('JAId', $JAId)->update(['PositionCode' => $PositionCode, 'PosSeq' => $getSeq, 'LastUpdated' => now(), 'UpdatedBy' => Auth::user()->id]);
 
