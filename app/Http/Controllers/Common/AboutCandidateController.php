@@ -1045,7 +1045,9 @@ class AboutCandidateController extends Controller
     {
         $JAId = $request->JAId;
         $PositionCode = $request->PositionCode;
-        $query = DB::table('candjoining')->where('JAId', $JAId)->update(['PositionCode' => $PositionCode, 'LastUpdated' => now(), 'UpdatedBy' => Auth::user()->id]);
+        $getSeq = DB::table(' position_codes')->where('position_code', $PositionCode)->select('sequence')->first();
+
+        $query = DB::table('candjoining')->where('JAId', $JAId)->update(['PositionCode' => $PositionCode, 'PosSeq' => $getSeq, 'LastUpdated' => now(), 'UpdatedBy' => Auth::user()->id]);
 
         if ($query) {
             $sql = DB::table('position_codes')->where('position_code', $PositionCode)->update(['is_available' => 'No']);
