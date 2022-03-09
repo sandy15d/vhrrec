@@ -38,6 +38,7 @@ class DepartmentController extends Controller
             $temp['DepartmentId'] = $value['DepartmentId'];
             $temp['DepartmentName'] = $value['DepartmentName'];
             $temp['DepartmentCode'] = $value['DepartmentCode'];
+            $temp['ShortCode'] = $value['ShortCode'];
             $temp['CompanyId'] = $value['CompanyId'];
             $temp['DeptStatus'] = $value['DeptStatus'];
             array_push($data, $temp);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Common;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\master_company;
 use App\Models\Admin\master_designation;
+use App\Models\Admin\master_employee;
 use App\Models\PositionCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Http;
 
 use function App\Helpers\getCompanyCode;
 use function App\Helpers\getDepartmentCode;
+use function App\Helpers\getDepartmentShortCode;
 use function App\Helpers\getDesignationCode;
 use function App\Helpers\getFullName;
 use function App\Helpers\getGradeValue;
@@ -47,8 +49,44 @@ class PositionCodeController extends Controller
         }
         $query = PositionCode::insert($data);
 
+        $query1 =  master_employee::truncate();
+        $response = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails?action=Details&val=Employee')->json();
+        $data = array();
+        foreach ($response['employee_list'] as $key => $value) {
+            if ($value['DateJoining'] == '0000-00-00' or $value['DateJoining'] == '') {
+                $value['DateJoining'] = NULL;
+            }
+            if ($value['DateOfSepration'] == '0000-00-00' or $value['DateOfSepration'] == '') {
+                $value['DateOfSepration'] = NULL;
+            }
+            $temp = array();
+            $temp['EmployeeID'] = $value['EmployeeID'];
+            $temp['EmpCode'] = $value['EmpCode'];
+            $temp['EmpStatus'] = $value['EmpStatus'];
+            $temp['Fname'] = $value['Fname'];
+            $temp['Sname'] = $value['Sname'];
+            $temp['Lname'] = $value['Lname'];
+            $temp['CompanyId'] = $value['CompanyId'];
+            $temp['GradeId'] = $value['GradeId'];
+            $temp['DepartmentId'] = $value['DepartmentId'];
+            $temp['DesigId'] = $value['DesigId'];
+            $temp['RepEmployeeID'] = $value['RepEmployeeID'];
+            $temp['DOJ'] = $value['DateJoining'];
+            $temp['DateOfSepration'] = $value['DateOfSepration'];
+            $temp['Contact'] = $value['Contact'];
+            $temp['Email'] = $value['Email'];
+            $temp['Gender'] = $value['Gender'];
+            $temp['Married'] = $value['Married'];
+            $temp['DR'] = $value['DR'];
+            $temp['Location'] = $value['HqId'];
+            $temp['CTC'] = $value['Tot_CTC'];
+            $temp['Title'] = $value['Title'];
+            $temp['CountryId'] = 1;
+            array_push($data, $temp);
+        }
+        $query1 = master_employee::insert($data);
 
-        if ($query) {
+        if ($query1) {
             return response()->json(['status' => 200, 'msg' => 'Position Code data has been Synchronized.']);
         } else {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
@@ -156,7 +194,7 @@ class PositionCodeController extends Controller
                     'designation_id' => $Designation,
                     'grade_id' => $Grade,
                     'vertical' => $Vertical,
-                    'position_code' => getDepartmentCode($Department) . '_' . $Vertical . '_' . $ShortCode . '_' . $seq,
+                    'position_code' => getDepartmentShortCode($Department) . '_' . $Vertical . '_' . $ShortCode . '_' . $seq,
                     'sequence' => $seq,
                     'is_available' => 'Yes',
                     'created_at' => date('Y-m-d H:i:s'),

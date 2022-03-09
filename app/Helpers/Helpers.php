@@ -100,6 +100,20 @@ function getDepartmentCode($DeptId)
 	}
 }
 
+function getDepartmentShortCode($DeptId)
+{
+	if ($DeptId == null) {
+		return "";
+	} else {
+		$ShortCode = Db::table('master_department')->select('ShortCode')->where('DepartmentId', $DeptId)->first();
+		if (is_null($ShortCode)) {
+			return '';
+		} else {
+			return $ShortCode->ShortCode;
+		}
+	}
+}
+
 function getDepartment($DeptId)
 {
 	if ($DeptId == null) {

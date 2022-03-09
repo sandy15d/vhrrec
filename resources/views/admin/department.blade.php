@@ -14,12 +14,13 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover table-condensed" id="departmenttable" style="width: 100%">
-                        <thead class="bg-primary text-light text-center">
+                    <table class="table table-striped table-hover table-condensed text-center" id="departmenttable" style="width: 100%">
+                        <thead class="bg-primary text-light ">
                             <tr>
                                 <th class="th-sm">S.No</th>
                                 <th>Department Name</th>
                                 <th>Department Code</th>
+                                <th>ShortCode</th>
                                 <th>Company</th>
                                 <th>Status</th>
                             </tr>
@@ -50,6 +51,10 @@
                 {
                     data: 'DepartmentCode',
                     name: 'DepartmentCode'
+                },
+                {
+                    data: 'ShortCode',
+                    name: 'ShortCode'
                 },
                 {
                     data: 'CompanyCode',

@@ -7,6 +7,7 @@ use App\Models\jobapply;
 use App\Models\OfferLetter;
 use Facade\FlareClient\Http\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -24,11 +25,12 @@ class ProcessToEss extends Controller
     {
         DB::beginTransaction();
 
-
+        $connection = DB::connection('mysql2');
         $JAId = $request->JAId;
         $JCId = jobapply::where('JAId', $JAId)->first()->JCId;
         $EmpCode = CandidateJoining::where('JAId', $JAId)->value('EmpCode');
         $CompanyId = OfferLetter::where('JAId', $JAId)->value('Company');
+        /*         
         $ctc_query = DB::table('candidate_ctc')->where('JAId', $JAId)->first();
         $education_query = DB::table('candidateeducation')->where('JCId', $JCId)->get();
         $family_query = DB::table('jf_family_det')->where('JCId', $JCId)->get();
@@ -43,7 +45,7 @@ class ProcessToEss extends Controller
         $pre_ref = DB::table('jf_reference')->where('JCId', $JCId)->where('from', 'Previous Organization')->get();
         $vnr_ref = DB::table('jf_reference')->where('JCId', $JCId)->where('from', 'VNR')->get();
 
-        $connection = DB::connection('mysql2');
+       
 
 
 
@@ -306,8 +308,64 @@ class ProcessToEss extends Controller
             'YearId' => '0'
 
 
-        ]);
+        ]); */
 
+
+        $postData = array();
+
+        $employee_address = $connection->table('employee_address')->where('EmpCode', $EmpCode)->get();
+        $employee_address = json_decode(json_encode($employee_address), true);
+        $postData['employee_address'] = $employee_address;
+
+        $employee_ctc = $connection->table('employee_ctc')->where('EmpCode', $EmpCode)->get();
+        $employee_ctc = json_decode(json_encode($employee_ctc), true);
+        $postData['employee_ctc'] = $employee_ctc;
+
+        $employee_education = $connection->table('employee_education')->where('EmpCode', $EmpCode)->get();
+        $employee_education = json_decode(json_encode($employee_education), true);
+        $postData['employee_education'] = $employee_education;
+
+        $employee_elg = $connection->table('employee_elg')->where('EmpCode', $EmpCode)->get();
+        $employee_elg = json_decode(json_encode($employee_elg), true);
+        $postData['employee_elg'] = $employee_elg;
+
+        $employee_family = $connection->table('employee_family')->where('EmpCode', $EmpCode)->get();
+        $employee_family = json_decode(json_encode($employee_family), true);
+        $postData['employee_family'] = $employee_family;
+
+        $employee_general = $connection->table('employee_general')->where('EmpCode', $EmpCode)->get();
+        $employee_general = json_decode(json_encode($employee_general), true);
+        $postData['employee_general'] = $employee_general;
+
+        $employee_language = $connection->table('employee_language')->where('EmpCode', $EmpCode)->get();
+        $employee_language = json_decode(json_encode($employee_language), true);
+        $postData['employee_language'] = $employee_language;
+
+        $employee_pf = $connection->table('employee_pf')->where('EmpCode', $EmpCode)->get();
+        $employee_pf = json_decode(json_encode($employee_pf), true);
+        $postData['employee_pf'] = $employee_pf;
+
+        $employee_preref = $connection->table('employee_preref')->where('EmpCode', $EmpCode)->get();
+        $employee_preref = json_decode(json_encode($employee_preref), true);
+        $postData['employee_preref'] = $employee_preref;
+
+        $employee_training = $connection->table('employee_training')->where('EmpCode', $EmpCode)->get();
+        $employee_training = json_decode(json_encode($employee_training), true);
+        $postData['employee_training'] = $employee_training;
+
+        $employee_vnrref = $connection->table('employee_vnrref')->where('EmpCode', $EmpCode)->get();
+        $employee_vnrref = json_decode(json_encode($employee_vnrref), true);
+        $postData['employee_vnrref'] = $employee_vnrref;
+
+        $employee_workexp = $connection->table('employee_workexp')->where('EmpCode', $EmpCode)->get();
+        $employee_workexp = json_decode(json_encode($employee_workexp), true);
+        $postData['employee_workexp'] = $employee_workexp;
+
+
+        print_r($postData);die;
+
+
+/* 
         if ($SendGeneral) {
             DB::commit();
             $query = DB::table('candjoining')->where('JAId', $JAId)->update(['ForwardToESS' => '1']);
@@ -315,6 +373,6 @@ class ProcessToEss extends Controller
         } else {
             DB::rollBack();
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
-        }
+        } */
     }
 }
