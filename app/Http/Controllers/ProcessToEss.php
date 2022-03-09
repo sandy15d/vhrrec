@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 use function App\Helpers\getCollegeById;
 use function App\Helpers\getDistrictName;
@@ -30,7 +31,7 @@ class ProcessToEss extends Controller
         $JCId = jobapply::where('JAId', $JAId)->first()->JCId;
         $EmpCode = CandidateJoining::where('JAId', $JAId)->value('EmpCode');
         $CompanyId = OfferLetter::where('JAId', $JAId)->value('Company');
-        /*         
+
         $ctc_query = DB::table('candidate_ctc')->where('JAId', $JAId)->first();
         $education_query = DB::table('candidateeducation')->where('JCId', $JCId)->get();
         $family_query = DB::table('jf_family_det')->where('JCId', $JCId)->get();
@@ -38,14 +39,14 @@ class ProcessToEss extends Controller
         $address_query = DB::table('jf_contact_det')->where('JCId', $JCId)->first();
         $elg_query = DB::table('candidate_entitlement')->where('JAId', $JAId)->first();
         $pf_esic_query = DB::table('jf_pf_esic')->where('JCId', $JCId)->first();
-        $jobcandidate = DB::table('jobcandidates')->join('jobapply', 'jobapply.JCId', '=', 'jobcandidates.JCId')->join('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')->leftjoin('candjoining', 'candjoining.JAId', '=', 'jobapply.JAId')->where('jobcandidates.JCId', $JCId)->leftjoin('about_answer', 'about_answer.JCId', 'jobcandidates.JCId')->select('jobcandidates.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.PositionCode', 'about_answer.DLNo', 'about_answer.LValidity')->first();
+        $jobcandidate = DB::table('jobcandidates')->join('jobapply', 'jobapply.JCId', '=', 'jobcandidates.JCId')->join('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')->leftjoin('candjoining', 'candjoining.JAId', '=', 'jobapply.JAId')->where('jobcandidates.JCId', $JCId)->leftjoin('about_answer', 'about_answer.JCId', 'jobcandidates.JCId')->select('jobcandidates.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'candjoining.PositionCode', 'candjoining.PosSeq', 'about_answer.DLNo', 'about_answer.LValidity')->first();
 
         $workexp_query = DB::table('jf_work_exp')->where('JCId', $JCId)->get();
         $training_query = DB::table('jf_tranprac')->select('*')->where('JCId', $JCId)->get();
         $pre_ref = DB::table('jf_reference')->where('JCId', $JCId)->where('from', 'Previous Organization')->get();
         $vnr_ref = DB::table('jf_reference')->where('JCId', $JCId)->where('from', 'VNR')->get();
 
-       
+
 
 
 
@@ -284,6 +285,7 @@ class ProcessToEss extends Controller
             'DepartmentId' => $jobcandidate->Department,
             'DesigId' => $jobcandidate->Designation,
             'PositionCode' => $jobcandidate->PositionCode ?? '',
+            'PosSeq' => $jobcandidate->PosSeq ?? '',
 
 
             'T_StateHq' => $jobcandidate->T_StateHq ?? '',
@@ -308,7 +310,7 @@ class ProcessToEss extends Controller
             'YearId' => '0'
 
 
-        ]); */
+        ]);
 
 
         $postData = array();
@@ -362,17 +364,25 @@ class ProcessToEss extends Controller
         $postData['employee_workexp'] = $employee_workexp;
 
 
-        print_r($postData);die;
-
-
-/* 
-        if ($SendGeneral) {
+        $json_response = json_encode($postData);
+        $url = 'https://vnrseeds.co.in/hrims/api/recruitmentToEss/get_data_from_rec.php';
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_response);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type:application/json'
+        ));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($ch);
+        curl_close($ch);
+        $rdata = json_decode($result);
+        $Status = $rdata->Status;
+        if ($Status == 200) {
             DB::commit();
             $query = DB::table('candjoining')->where('JAId', $JAId)->update(['ForwardToESS' => '1']);
             return response()->json(['status' => 200, 'msg' => 'Data Send to ESS Successfully..!!']);
         } else {
             DB::rollBack();
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
-        } */
+        }
     }
 }
