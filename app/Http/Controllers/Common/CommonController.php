@@ -91,6 +91,7 @@ class CommonController extends Controller
     {
         $designation = DB::table("master_designation")->orderBy('DesigName', 'asc')
             ->where("DepartmentId", $request->DepartmentId)
+            ->where("DesigStatus", 'A')
             ->pluck("DesigId", "DesigName");
         return response()->json($designation);
     }
