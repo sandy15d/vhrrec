@@ -614,7 +614,7 @@ class ManualEntryController extends Controller
                 ];
                 if (CheckCommControl(3) == 1) {  //if MRF created by Recruiter  communication control is on
                     Mail::to("parul.parmar@vnrseeds.com")->send(new MrfCreationMail($details));
-                    Mail::to(getEmailID($request->OnBehalf))->send(new MrfCreationMail($details));
+                   // Mail::to(getEmailID($request->OnBehalf))->send(new MrfCreationMail($details));
                 }
                 return response()->json(['status' => 200, 'msg' => 'Manual Campus Hiring MRF has been successfully created.']);
             }

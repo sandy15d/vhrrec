@@ -252,14 +252,10 @@ class TraineeController extends Controller
     {
         $data =  DB::table('trainee_apply')
             ->Join('jobcandidates', 'trainee_apply.JCId', '=', 'jobcandidates.JCId')
-
             ->where('trainee_apply.JPId', $request->JPId);
-
         return datatables()->of($data)
             ->addIndexColumn()
             ->addColumn('chk', function ($data) {
-
-
                 if ($data->FwdTechScr == 1) {
                     return '';
                 } else {
@@ -269,7 +265,8 @@ class TraineeController extends Controller
 
 
             ->addColumn('CandidateName', function ($data) {
-                return $data->FName . ' ' . $data->MName . ' ' . $data->LName;
+                $name = $data->FName . ' ' . $data->MName . ' ' . $data->LName;
+                return '<a href="#">' . $name . '</a>';
             })
             ->addColumn('Qualification', function ($data) {
                 $x = getEducationById($data->Education);
@@ -279,7 +276,7 @@ class TraineeController extends Controller
                 return $x;
             })
 
-            ->rawColumns(['chk'])
+            ->rawColumns(['chk','CandidateName'])
             ->make(true);
     }
 
