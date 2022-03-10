@@ -298,7 +298,11 @@ function getCollegeById($id)
 		return "";
 	} else {
 		$institute = DB::table('master_institute')->select('InstituteName')->where('InstituteId', $id)->first();
+		if (is_null($institute)) {
+			return '';
+		} else {
 		return $institute->InstituteName;
+		}
 	}
 }
 
