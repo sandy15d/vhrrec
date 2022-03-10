@@ -533,7 +533,7 @@ $sql = DB::table('jobapply')
                         <p>2. EMPLOYMENT</p>
                     </b>
                     <p class="abc"><span>2.1</span> <span>The Company agrees to employ the Executive as
-                            “<b>{{ getEmployeeDesignation($sql->Designation) }}</b>" of the Company; and the
+                            “<b>{{ getDesignation($sql->Designation) }}</b>" of the Company; and the
                             Executive
                             accepts such employment and agrees to perform his / her duties for the period and upon the
                             terms and conditions set out in this Agreement.</span></p>
