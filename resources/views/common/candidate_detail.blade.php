@@ -270,7 +270,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="pro-edit"><a data-bs-target="#profile_info" data-bs-toggle="modal"
                                     class="edit-icon" onclick="GetProfileData();" href="javascript:void(0);"><i
                                         class="fa fa-pencil"></i></a></div>
@@ -1671,16 +1671,16 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             <div class="card-body">
                                 <h6 class="card-title">Offer Letter Generation & Review
                                     @if ($OfBasic != null && ($OfBasic->Answer == '' || $OfBasic->Answer == 'Rejected'))
-                                    <a href="javascript:void(0);" class="edit-icon" id="offerltrgen"
-                                        data-id="{{ $Rec->JAId }}">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
+                                        <a href="javascript:void(0);" class="edit-icon" id="offerltrgen"
+                                            data-id="{{ $Rec->JAId }}">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
                                     @endif
                                 </h6>
 
                                 <ul class="personal-info">
                                     <li>
-                                        <div class="title" style="width: 150px;">Offer Letter Generate<span
+                                        <div class="title" style="width: 300px;">Offer Letter Generated<span
                                                 style="float: right">:</span></div>
                                         <div class="text">
                                             @if ($OfBasic != null && $OfBasic->OfferLtrGen == 1)
@@ -1697,20 +1697,42 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                         </div>
                                     </li>
                                     <li>
-                                        <div class="title" style="width: 150px;">Offer Letter Send<span
+                                        <div class="title" style="width: 300px;">Send for Review<span
                                                 style="float: right">:</span></div>
                                         <div class="text">
-                                            @if ($OfBasic != null && $OfBasic->OfferLetterSent == 'Yes')
-                                                <span class="text-dark">Yes</span>
+
+                                            @if ($OfBasic != null && $OfBasic->SendReview == 1)
+                                                <span class="text-dark">Yes</span> ( <a href="javascript:void(0);"
+                                                    onclick="viewReview({{ $Rec->JAId }});" data-bs-toggle="modal"
+                                                    data-bs-target="#view_review">View</a>)
                                             @else
-                                                <span class="text-danger">No</span> ( <a href="javascript:void(0);"
-                                                    class="" onclick="sendOfferLtr({{ $Rec->JAId }});">
+                                                <span class="text-danger">No</span>
+                                            @endif
+                                            @if ($OfBasic != null && $OfBasic->OfferLtrGen == 1)
+                                                (<a href="javascript:void(0);" data-bs-toggle="modal"
+                                                    data-bs-target="#review_modal">
                                                     Send Now</a>)
                                             @endif
                                         </div>
                                     </li>
                                     <li>
-                                        <div class="title" style="width: 150px;">Acceptance Status<span
+                                        <div class="title" style="width: 300px;">Send to Candidate<span
+                                                style="float: right">:</span></div>
+                                        <div class="text">
+                                            @if ($OfBasic != null && $OfBasic->OfferLetterSent == 'Yes')
+                                                <span class="text-dark">Yes</span>
+                                            @else
+                                                <span class="text-danger">No</span>
+                                                @if ($OfBasic != null && $OfBasic->OfferLtrGen == 1)
+                                                    ( <a href="javascript:void(0);" class=""
+                                                        onclick="sendOfferLtr({{ $Rec->JAId }});">
+                                                        Send Now</a>)
+                                                @endif
+                                            @endif
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="title" style="width: 300px;">Candidate Response<span
                                                 style="float: right">:</span></div>
                                         <div class="text"> <span
                                                 class="text-danger">{{ $OfBasic->Answer ?? '-' }}</span>
@@ -1723,7 +1745,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
 
                                     @if ($OfBasic != null && $OfBasic->Answer == 'Rejected')
                                         <li>
-                                            <div class="title" style="width: 150px;">Rejection Reason<span
+                                            <div class="title" style="width: 300px;">Rejection Reason<span
                                                     style="float: right">:</span></div>
                                             <div class="text text-danger">
                                                 @if ($OfBasic != null)
@@ -1734,7 +1756,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
 
                                     @endif
                                     <li>
-                                        <div class="title" style="width: 150px;">Date of Joining<span
+                                        <div class="title" style="width: 300px;">Date of Joining<span
                                                 style="float: right">:</span></div>
                                         <div class="text">
                                             <input type="date" class="form-control frminp form-control-sm d-inline-block"
@@ -1751,35 +1773,22 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                     </li>
 
                                     <li>
-                                        <div class="title" style="width: 150px;">Joining Form Sent<span
-                                                style="float: right">:</span></div>
+                                        <div class="title" style="width: 300px;">Onboarding process (mail to
+                                            candidate)<span style="float: right">:</span></div>
                                         <div class="text">
                                             @if ($OfBasic != null && $OfBasic->JoiningFormSent == 'Yes')
                                                 <span class="text-dark">Yes</span>
                                             @else
-                                                <span class="text-danger">No</span> ( <a href="javascript:void(0);"
-                                                    class=""
-                                                    onclick="sendJoiningForm({{ $Rec->JAId }});"> Send Now</a>)
-                                            @endif
-                                    </li>
-                                    <li>
-                                        <div class="title" style="width: 150px;">Send for Review<span
-                                                style="float: right">:</span></div>
-                                        <div class="text">
-                                            @if ($OfBasic != null && $OfBasic->SendReview == 1)
-                                                <span class="text-dark">Yes</span> ( <a href="javascript:void(0);"
-                                                    onclick="viewReview({{ $Rec->JAId }});" data-bs-toggle="modal"
-                                                    data-bs-target="#view_review">View</a>)
-                                            @else
                                                 <span class="text-danger">No</span>
+                                                @if ($OfBasic != null && $OfBasic->OfferLtrGen == 1)
+                                                    ( <a href="javascript:void(0);" class=""
+                                                        onclick="sendJoiningForm({{ $Rec->JAId }});"> Send Now</a>)
+                                                @endif
                                             @endif
-                                            (<a href="javascript:void(0);" data-bs-toggle="modal"
-                                                data-bs-target="#review_modal">
-                                                Send Now</a>)
-                                        </div>
                                     </li>
+
                                     <li>
-                                        <div class="title" style="width: 150px;">Ref. Check <span
+                                        <div class="title" style="width: 300px;">Ref. Check <span
                                                 style="float: right">:</span>
                                         </div>
                                         <div class="text">
