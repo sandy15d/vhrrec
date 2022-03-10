@@ -294,8 +294,12 @@ function getSpecializationbyId($sid)
 
 function getCollegeById($id)
 {
-	$institute = DB::table('master_institute')->select('InstituteName')->where('InstituteId', $id)->first();
-	return $institute->InstituteName;
+	if ($id == null) {
+		return "";
+	} else {
+		$institute = DB::table('master_institute')->select('InstituteName')->where('InstituteId', $id)->first();
+		return $institute->InstituteName;
+	}
 }
 
 function getCollegeCode($id)
