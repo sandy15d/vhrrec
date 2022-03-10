@@ -665,6 +665,32 @@ $elg = DB::table('candidate_entitlement')
                                     <td class="text-center"> Rs. {{ $elg->HealthIns }}</td>
                                 </tr>
                             @endif
+                            <tr>
+                                <td class="text-center"><?= ++$rowCount ?></td>
+                                <td><b>Group Personal Accident Insurance</b></b></td>
+                                <td class="text-center">
+                                    @php
+                                        
+                                        if ($sql->Grade == 61 || $sql->Grade == 62) {
+                                            echo '05 Lakhs';
+                                        } elseif ($sql->Grade == 63 || $sql->Grade == 64 || $sql->Grade == 65 || $sql->Grade == 66) {
+                                            echo '10 Lakhs';
+                                        } elseif ($sql->Grade == 67 || $sql->Grade == 68 || $sql->Grade == 69 || $sql->Grade == 70 || $sql->Grade == 71) {
+                                            echo '25 Lakhs';
+                                        } elseif ($sql->Grade == 72 || $sql->Grade == 73 || $sql->Grade == 74 || $sql->Grade == 75 || $sql->Grade == 76) {
+                                            echo '50 Lakhs';
+                                        } elseif ($sql->Grade == 31) {
+                                            echo '05 Lakhs';
+                                        } elseif ($sql->Grade == 32) {
+                                            echo '10 Lakhs';
+                                        } elseif ($sql->Grade == 33 || $sql->Grade == 34) {
+                                            echo '25 Lakhs';
+                                        } elseif ($sql->Grade == 35) {
+                                            echo '50 Lakhs';
+                                        }
+                                    @endphp
+                                </td>
+                            </tr>
 
 
                         </table>

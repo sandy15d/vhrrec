@@ -210,7 +210,8 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                             </p>
                             <br>
                             <p><b>To,</b></p>
-                            <p style="margin-bottom: 0px;"><b>{{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }}</b>
+                            <p style="margin-bottom: 0px;"><b>{{ $sql->FName }} {{ $sql->MName }}
+                                    {{ $sql->LName }}</b>
                             </p>
                             <b>
                                 <p style="margin-bottom: 0px;">{{ $sql->perm_address }}</p>
@@ -221,9 +222,11 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                             </b><br />
                             <p class="text-center"><b><u>Subject: Offer for Employment</u></b></p>
                             <b>
-                                <p>Dear {{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }},</p>
+                                <p>Dear {{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }}
+                                    {{ $sql->LName }},</p>
                             </b>
-                            <p>We are pleased to offer you the position of <b>{{ getDesignation($sql->Designation) }}</b> at
+                            <p>We are pleased to offer you the position of
+                                <b>{{ getDesignation($sql->Designation) }}</b> at
                                 <b>Grade - {{ getGradeValue($sql->Grade) }}</b> in
                                 <b>{{ getDepartment($sql->Department) }}</b>
                                 Department of {{ getCompanyName($sql->Company) }} (<strong>"Company"</strong>)
@@ -234,11 +237,15 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                     <li>You shall report at
                                         <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>,
                                         for an orientation program of {{ $sql->OrientationPeriod }} months.
-                                        After completion of the orientation period, you shall be on a Training period of 12
-                                        months and during the period of training, you may be allocated various assignments at
+                                        After completion of the orientation period, you shall be on a Training period of
+                                        12
+                                        months and during the period of training, you may be allocated various
+                                        assignments at
                                         different locations.
-                                        However, you may be required to (i) relocate to other locations in India; and/or (ii)
-                                        undertake such travel in India, (iii) overseas locations, from time to time, as may be
+                                        However, you may be required to (i) relocate to other locations in India; and/or
+                                        (ii)
+                                        undertake such travel in India, (iii) overseas locations, from time to time, as
+                                        may be
                                         necessary in the interests of the Company's business.
                                     </li>
                                 @elseif($sql->TempS == 1 && $sql->FixedS == 1)
@@ -248,87 +255,107 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                         your principal place of employment shall be at
                                         <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>.
                                         However, you may be
-                                        required to (i) relocate to other locations in India; and/or (ii) undertake such travel
-                                        in India, (iii) overseas locations, from time to time, as may be necessary in the
+                                        required to (i) relocate to other locations in India; and/or (ii) undertake such
+                                        travel
+                                        in India, (iii) overseas locations, from time to time, as may be necessary in
+                                        the
                                         interests of the Company's business.
                                     </li>
                                 @else
                                     <li>Your principal place of employment shall be at
                                         <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>.
                                         However, you may be
-                                        required to (i) relocate to other locations in India; and/or (ii) undertake such travel
-                                        in India, (iii) overseas locations, from time to time, as may be necessary in the
+                                        required to (i) relocate to other locations in India; and/or (ii) undertake such
+                                        travel
+                                        in India, (iii) overseas locations, from time to time, as may be necessary in
+                                        the
                                         interests of the Company's business.
                                     </li>
                                 @endif
-        
+
                                 @if ($sql->Functional_R != 0 && $sql->Admins_R != 0)
                                     <li>For administrative purpose you shall be reporting to
                                         <strong>{{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong>
                                         and for technical purpose you shall be reporting to
                                         <strong>{{ getEmployeeDesignation($sql->F_ReportingManager) }}</strong>
-                                        and will work under the supervision of such officers as may be decided upon by the
+                                        and will work under the supervision of such officers as may be decided upon by
+                                        the
                                         Management from time to time.
                                     </li>
-        
                                 @else
                                     <li>You will report to
-                                        <strong>{{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong> and will
-                                        work under the supervision of such officers as may be decided upon by the management of
+                                        <strong>{{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong> and
+                                        will
+                                        work under the supervision of such officers as may be decided upon by the
+                                        management of
                                         the Company, from time to time.
                                     </li>
                                 @endif
-        
-        
+
+
                                 @if ($sql->ServiceCondition == 'Training' && $sql->OrientationPeriod != null && $sql->Stipend != null)
-                                    <li>After completion of the Orientation period, You shall be on training for a period of 1
-                                        year from the Appointment Date <strong>(“Training Period”)</strong> and after completion
+                                    <li>After completion of the Orientation period, You shall be on training for a
+                                        period of 1
+                                        year from the Appointment Date <strong>(“Training Period”)</strong> and after
+                                        completion
                                         of the Training
                                         Period, you will be confirmed subject to your satisfactory performance.</li>
                                 @elseif ($sql->ServiceCondition == 'Training' && $sql->AFT_Grade != 0)
                                     <li>You shall be on training for a period of 1 year from the Appointment Date
-                                        <strong>(“Training Period”)</strong> and after completion of the Training Period, you
-                                        will be confirmed on the post of <b>{{ getDesignation($sql->AFT_Designation) }}</b>
+                                        <strong>(“Training Period”)</strong> and after completion of the Training
+                                        Period, you
+                                        will be confirmed on the post of
+                                        <b>{{ getDesignation($sql->AFT_Designation) }}</b>
                                         at Grade
-                                        <b>{{ getGradeValue($sql->AFT_Grade) }}</b> subject to your satisfactory performance.
+                                        <b>{{ getGradeValue($sql->AFT_Grade) }}</b> subject to your satisfactory
+                                        performance.
                                         .
                                     </li>
                                 @elseif ($sql->ServiceCondition == 'Training')
                                     <li>You shall be on training for a period of 1 year from the Appointment Date
-                                        <strong>(“Training Period”)</strong> and after completion of the Training Period, you
+                                        <strong>(“Training Period”)</strong> and after completion of the Training
+                                        Period, you
                                         will be confirmed subject to your satisfactory performance.
                                     </li>
-        
                                 @elseif ($sql->ServiceCondition == 'Probation')
-                                    <li>You shall be on probation for a period of 6 (Six) months from the Appointment Date
-                                        <strong>(“Probation Period”)</strong> and after completion of the Probation Period, you
+                                    <li>You shall be on probation for a period of 6 (Six) months from the Appointment
+                                        Date
+                                        <strong>(“Probation Period”)</strong> and after completion of the Probation
+                                        Period, you
                                         will be confirmed
                                         subject to your satisfactory performance.
                                     </li>
                                 @endif
-        
+
                                 @if ($sql->ServiceBond == 'Yes')
-                                    <li>At the time of your appointment, you shall sign a service bond providing your consent to
-                                        serve the company for a minimum period of <b>{{ $sql->ServiceBondYears }} </b>years
-                                        from the Appointment Date. In the event of dishonor of this service bond, you shall be
-                                        liable to pay the company a sum of <b>{{ $sql->ServiceBondRefund }} %</b> of your
+                                    <li>At the time of your appointment, you shall sign a service bond providing your
+                                        consent to
+                                        serve the company for a minimum period of <b>{{ $sql->ServiceBondYears }}
+                                        </b>years
+                                        from the Appointment Date. In the event of dishonor of this service bond, you
+                                        shall be
+                                        liable to pay the company a sum of <b>{{ $sql->ServiceBondRefund }} %</b> of
+                                        your
                                         annual
                                         CTC as per the prevailing CTC rate {as on date of leaving}
                                     </li>
                                 @endif
-        
-        
+
+
                                 @if ($sql->Company == 1)
                                     {{-- VSPL --}}
                                     @if ($sql->ServiceCondition == 'nopnot')
                                         @if ($sql->Department == 6 || $sql->Department == 3)
                                             {{-- Salses && PD --}}
-                                            <li>During your employment Period, either you or the Company may terminate this
-                                                employment by giving 3 (Three) months’ notice in writing or salary in lieu
+                                            <li>During your employment Period, either you or the Company may terminate
+                                                this
+                                                employment by giving 3 (Three) months’ notice in writing or salary in
+                                                lieu
                                                 of
                                                 such notice period.</li>
                                         @else
-                                            <li>During your employment Period, either you or the Company may terminate this
+                                            <li>During your employment Period, either you or the Company may terminate
+                                                this
                                                 employment by giving 1 (One) months’ notice in writing or salary in lieu
                                                 of
                                                 such notice period.</li>
@@ -336,54 +363,72 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                     @else
                                         @if ($sql->Department == 6 || $sql->Department == 3 || $sql->Department == 2)
                                             {{-- Salses && PD  && R&D --}}
-                                            <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
+                                            <li>During the {{ $sql->ServiceCondition }} Period, either you or the
+                                                Company may
                                                 terminate this
                                                 employment by giving 1 (One) months’ notice in writing or salary in lieu
-                                                of such notice period. Pursuant to your confirmation, the aforementioned notice
-                                                period shall be of  @if ($sql->Department == 6 || $sql->Department == 3)
-                                                3 (Three) months @else 1 (One) month
+                                                of such notice period. Pursuant to your confirmation, the aforementioned
+                                                notice
+                                                period shall be of @if ($sql->Department == 6 || $sql->Department == 3)
+                                                    3 (Three) months
+                                                @else
+                                                    1 (One) month
                                                 @endif in writing or the salary in lieu thereof.
                                             </li>
                                         @else
-                                            <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
+                                            <li>During the {{ $sql->ServiceCondition }} Period, either you or the
+                                                Company may
                                                 terminate this
                                                 employment by giving 15 days’ notice in writing or salary in lieu
-                                                of such notice period. Pursuant to your confirmation, the aforementioned notice
-                                                period shall be of 1 (One) month in writing or the salary in lieu thereof.</li>
+                                                of such notice period. Pursuant to your confirmation, the aforementioned
+                                                notice
+                                                period shall be of 1 (One) month in writing or the salary in lieu
+                                                thereof.</li>
                                         @endif
                                     @endif
                                 @elseif ($sql->Company == 3)
                                     {{-- VNPL --}}
                                     <li>In case of discontinuation of service, during the period of
                                         {{ $sql->ServiceCondition }} the
-                                        notice period will be one month and after confirmation of the service the notice period
+                                        notice period will be one month and after confirmation of the service the notice
+                                        period
                                         will be of
                                         two month. </li>
                                 @endif
-        
+
                                 @if ($sql->ServiceCondition == 'Training' && $sql->OrientationPeriod != null && $sql->Stipend != null)
-                                    <li>During the period of Orientation, you shall receive a consolidated stipend of Rs.
+                                    <li>During the period of Orientation, you shall receive a consolidated stipend of
+                                        Rs.
                                         {{ $sql->Stipend }}/- per month.
-                                        After completion of your Orientation period, your annual CTC and entitlements details
+                                        After completion of your Orientation period, your annual CTC and entitlements
+                                        details
                                         shall be as mentioned in the Annexures A and B attached hereto.
                                     </li>
                                 @else
-                                    <li>Your annual CTC and entitlements details shall be as mentioned in the Annexures A and B
+                                    <li>Your annual CTC and entitlements details shall be as mentioned in the Annexures
+                                        A and B
                                         attached hereto.</li>
                                 @endif
-        
-                                <li>You shall look after all the duties & responsibilities assigned to you from time to time,
-                                    based on the business requirement. It may be subject to changes at the sole discretion of
+
+                                <li>You shall look after all the duties & responsibilities assigned to you from time to
+                                    time,
+                                    based on the business requirement. It may be subject to changes at the sole
+                                    discretion of
                                     the Company.</li>
                                 <li>Your employment with the Company will be governed by the Company’s service rules and
-                                    conditions which will be detailed in your appointment letter, issued pursuant to your
-                                    acceptance of this offer. Your employment with the Company will be bound by all policies and
-                                    procedures of the Company, as may be drafted, revised, amended and/or updated from time to
+                                    conditions which will be detailed in your appointment letter, issued pursuant to
+                                    your
+                                    acceptance of this offer. Your employment with the Company will be bound by all
+                                    policies and
+                                    procedures of the Company, as may be drafted, revised, amended and/or updated from
+                                    time to
                                     time. </li>
-                                <li>The validity of this offer letter and continuation of your service is subject to your being
-                                    found physically, mentally, and medically fit and remaining so during your service.</li>
-        
-        
+                                <li>The validity of this offer letter and continuation of your service is subject to
+                                    your being
+                                    found physically, mentally, and medically fit and remaining so during your service.
+                                </li>
+
+
                             </ol>
                             <p>We are glad that very soon you will be part of our team. We look forward to your long and
                                 meaningful
@@ -404,7 +449,8 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                 terms
                                 and
                                 conditions and
-                                I agree to abide by them. I will join on Date: ................ failing which I have no lien on
+                                I agree to abide by them. I will join on Date: ................ failing which I have no
+                                lien on
                                 this
                                 employment.
                             </p>
@@ -568,7 +614,8 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                         <tr>
                                             <td></td>
                                             <td>Lodging for City in Category A</td>
-                                            <td class="text-center" style="width: 200px;">Rs. {{ $elg->LoadCityA }}</td>
+                                            <td class="text-center" style="width: 200px;">Rs.
+                                                {{ $elg->LoadCityA }}</td>
                                         </tr>
                                     @endif
                                     @if ($elg->LoadCityB != '')
@@ -597,23 +644,25 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                             <td class="text-center"><?= ++$rowCount ?></td>
                                             <td><b>D.A @ H.Q</b>
                                                 @if ($sql->Department == 3)
-                                                    <b style="color:red">(In Case of day tour involving more than 40 km. per
+                                                    <b style="color:red">(In Case of day tour involving more than 40 km.
+                                                        per
                                                         day)</b>
                                                 @elseif($sql->Department == 25 || $sql->Department == 4 || $sql->Department == 24)
-                                                    <b style="color:red">(If the work needs travel for more than 6 hours in
+                                                    <b style="color:red">(If the work needs travel for more than 6 hours
+                                                        in
                                                         a day)</b>
                                                 @endif
                                             </td>
                                             <td class="text-center">{{ $elg->DAHq }}</td>
                                         </tr>
-        
+
                                     @endif
                                     <tr>
                                         <td class="text-center"><?= ++$rowCount ?></td>
                                         <td colspan="2"><b>Travel Eligibility (For Official Purpose Only)</b></b></td>
-        
+
                                     </tr>
-        
+
                                     @if ($elg->TwoWheel != '')
                                         <tr>
                                             <td></td>
@@ -630,14 +679,14 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                             <td class="text-center">{{ $elg->FourWheel }}</td>
                                         </tr>
                                     @endif
-        
-        
+
+
                                     <tr>
                                         <td class="text-center"><?= ++$rowCount ?></td>
                                         <td colspan="2"><b>Mode of Travel outside HQ</b></b></td>
-        
+
                                     </tr>
-        
+
                                     <tr>
                                         <td></td>
                                         <td>Bus/Train</td>
@@ -645,40 +694,43 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                         </td>
                                     </tr>
                                     @if ($elg->Flight == 'Y')
-                                    <tr>
-                                        <td></td>
-                                        <td>Flight</td>
-                                        <td class="text-center"> {{ $elg->Flight_Class }}
+                                        <tr>
+                                            <td></td>
+                                            <td>Flight</td>
+                                            <td class="text-center"> {{ $elg->Flight_Class }}
                                                 ({{ $elg->Flight_Remark }})
-                                         
-                                        </td>
-                                    </tr>
+
+                                            </td>
+                                        </tr>
                                     @endif
-        
-        
-        
+
+
+
                                     @if ($elg->Mobile != '')
                                         <tr>
                                             <td class="text-center"><?= ++$rowCount ?></td>
                                             <td><b>Mobile Handset Eligibility</b>
                                                 @if ($elg->GPRS == 1)
-                                                (Once in 2 Years) @else (Once in 3 Years) @endif
+                                                    (Once in 2 Years)
+                                                @else
+                                                    (Once in 3 Years)
+                                                @endif
                                             </td>
                                             <td class="text-center">Rs. {{ $elg->Mobile }}</td>
                                         </tr>
-        
+
                                     @endif
-        
-        
+
+
                                     @if ($elg->MExpense != '')
                                         <tr>
                                             <td class="text-center"><?= ++$rowCount ?></td>
                                             <td><b>Mobile Expense Reimbursement</b></b></td>
-                                            <td class="text-center">Rs. {{ $elg->MExpense }} / {{ $elg->MTerm }}</td>
+                                            <td class="text-center">Rs. {{ $elg->MExpense }} /
+                                                {{ $elg->MTerm }}</td>
                                         </tr>
-        
                                     @endif
-        
+
                                     @if ($elg->Laptop != '')
                                         <tr>
                                             <td class="text-center"><?= ++$rowCount ?></td>
@@ -686,7 +738,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                             <td class="text-center">Rs. {{ $elg->Laptop }} </td>
                                         </tr>
                                     @endif
-        
+
                                     @if ($elg->HealthIns != '')
                                         <tr>
                                             <td class="text-center"><?= ++$rowCount ?></td>
@@ -694,62 +746,94 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                             <td class="text-center"> Rs. {{ $elg->HealthIns }}</td>
                                         </tr>
                                     @endif
-                                    
-        
+                                    <tr>
+                                        <td class="text-center"><?= ++$rowCount ?></td>
+                                        <td><b>Group Personal Accident Insurance</b></b></td>
+                                        <td class="text-center">
+                                            @php
+                                                
+                                                if ($sql->Grade == 61 || $sql->Grade == 62) {
+                                                    echo '05 Lakhs';
+                                                } elseif ($sql->Grade == 63 || $sql->Grade == 64 || $sql->Grade == 65 || $sql->Grade == 66) {
+                                                    echo '10 Lakhs';
+                                                } elseif ($sql->Grade == 67 || $sql->Grade == 68 || $sql->Grade == 69 || $sql->Grade == 70 || $sql->Grade == 71) {
+                                                    echo '25 Lakhs';
+                                                } elseif ($sql->Grade == 72 || $sql->Grade == 73 || $sql->Grade == 74 || $sql->Grade == 75 || $sql->Grade == 76) {
+                                                    echo '50 Lakhs';
+                                                } elseif ($sql->Grade == 31) {
+                                                    echo '05 Lakhs';
+                                                } elseif ($sql->Grade == 32) {
+                                                    echo '10 Lakhs';
+                                                } elseif ($sql->Grade == 33 || $sql->Grade == 34) {
+                                                    echo '25 Lakhs';
+                                                } elseif ($sql->Grade == 35) {
+                                                    echo '50 Lakhs';
+                                                }
+                                            @endphp
+                                        </td>
+                                    </tr>
+
+
                                 </table>
                             </center>
-        
+
                             @if ($elg->TwoWheelLine == 1)
-                                <p style="padding-left: 20px;margin-bottom:5px;"> *2 Wheeler vehicle eligibility as per company
+                                <p style="padding-left: 20px;margin-bottom:5px;"> *2 Wheeler vehicle eligibility as per
+                                    company
                                     vehicle policy.</p>
-        
-        
                             @endif
-        
+
                             @if ($elg->FourWheelLine == 1)
-                                <p style="padding-left: 20px;margin-bottom:5px;">*4 Wheeler vehicle eligibility as per company
+                                <p style="padding-left: 20px;margin-bottom:5px;">*4 Wheeler vehicle eligibility as per
+                                    company
                                     vehicle policy.
                                 </p>
-        
                             @endif
-        
+
                             @if ($elg->TravelLine == 1)
-                                <p style="padding-left: 20px;margin-bottom:5px; text-align:justify">*Maximum travel km per month
+                                <p style="padding-left: 20px;margin-bottom:5px; text-align:justify">*Maximum travel km
+                                    per month
                                     allowed for 4 wheeler is 2000
-                                    km/month and overall travel including both 4 wheeler & 2 wheeler should not exceed more
+                                    km/month and overall travel including both 4 wheeler & 2 wheeler should not exceed
+                                    more
                                     than
                                     3000
                                     km/month.</p>
                             @endif
-        
+
                             <br>
                             <p class="text-center"><b><u>LIST OF DOCUMENTS REQUIRED DURING APPOINTMENT</u></b></p>
                             <ol>
                                 <li style="font-size:14px;">Form 16/Investment Declaration</li>
-                                <li style="font-size:14px;">6 colored formal Passport Size Photos with White background</li>
+                                <li style="font-size:14px;">6 colored formal Passport Size Photos with White background
+                                </li>
                                 <li style="font-size:14px;">Blood Group Test report</li>
-                                <li style="font-size:14px;">Copy of educational certificates (10th / 12th / Graduation / Post
+                                <li style="font-size:14px;">Copy of educational certificates (10th / 12th / Graduation /
+                                    Post
                                     Graduation, etc.)</li>
                                 <li style="font-size:14px;">Previous Employer documents (Service Certificates)</li>
                                 <li style="font-size:14px;">Pay slip/ CTC structure of recent previous company</li>
-                                <li style="font-size:14px;">Relieving letter from previous company/ Resignation Acceptance
+                                <li style="font-size:14px;">Relieving letter from previous company/ Resignation
+                                    Acceptance
                                     Letter
                                 </li>
-                                <li style="font-size:14px;">Compulsory Documents (Driving license/PAN Card/ Aadhaar Card)</li>
+                                <li style="font-size:14px;">Compulsory Documents (Driving license/PAN Card/ Aadhaar
+                                    Card)</li>
                                 <li style="font-size:14px;">Copy of Bank account passbook (Preferred only SBI/BOB) </li>
                             </ol>
                             <br><br><br><br>
                             <p style="margin-bottom:2px;">----------------------------<span
                                     style="float: right">----------------------------</span></p>
                             <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b><span
-                                    style="float: right">{{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }}
+                                    style="float: right">{{ $sql->Title }} {{ $sql->FName }}
+                                    {{ $sql->MName }}
                                     {{ $sql->LName }}</span>
                             </p>
                             <p><b> {{ $sql->SigningAuth }}</b>
                             </p>
                         </div>
-        
-        
+
+
                     </div>
                 </div>
 
