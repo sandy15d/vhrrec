@@ -353,7 +353,7 @@ $elg = DB::table('candidate_entitlement')
                     <p>We are glad that very soon you will be part of our team. We look forward to your long and
                         meaningful
                         association with us. </p>
-                    <p>Yours Sincerely,</p><br><br>
+                    <p>Yours Sincerely,</p>
                     <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b></p>
                     <p><b>{{ $sql->SigningAuth }} </b>
                     </p>
