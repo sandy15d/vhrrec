@@ -134,7 +134,7 @@ use function App\Helpers\getDistrictName;
 use function App\Helpers\getEmployeeDesignation;
 
 $JAId = base64_decode($_REQUEST['jaid']);
-
+DB::enableQueryLog();
 $sql = DB::table('jobapply')
     ->leftJoin('appointing', 'appointing.JAId', '=', 'jobapply.JAId')
     ->leftJoin('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
@@ -145,7 +145,8 @@ $sql = DB::table('jobapply')
     ->select('appointing.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobcandidates.Aadhaar', 'jobcandidates.Email', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
     ->where('jobapply.JAId', $JAId)
     ->first();
-
+$SQL = DB::getQueryLog();
+//dd($SQL);
 @endphp
 
 <body>
@@ -512,7 +513,7 @@ $sql = DB::table('jobapply')
                     </b>
                     <p class="abc"><span>2.1</span> <span>&nbsp;&nbsp;The Company agrees to employ the
                             Executive as
-                            “<b>{{ getEmployeeDesignation($sql->Designation) }}</b>" of the Company; and the
+                            “<b>{{ getDesignation($sql->Designation) }}</b>" of the Company; and the
                             Executive
                             accepts such employment and agrees to perform his / her duties for the period and upon the
                             terms and conditions set out in this Agreement.</span></p>
