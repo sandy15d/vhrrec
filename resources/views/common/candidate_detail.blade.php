@@ -5116,6 +5116,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
 
         function GetQualification() {
             var JCId = $('#JCId').val();
+            $('#Edu_JCId').val($('#JCId').val());
             $.ajax({
                 url: "{{ route('Candidate_Education') }}",
                 type: "POST",
@@ -5125,7 +5126,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                 dataType: "json",
                 success: function(data) {
                     if (data.status == 200) {
-                        $('#Edu_JCId').val($('#JCId').val());
+                       
                         EducationCount = data.data.length;
                         for (var i = 1; i <= EducationCount; i++) {
                             if (i >= 7) {
@@ -5146,6 +5147,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         }
                     }
                 }
+                
             });
         } //GetQualification
 
@@ -6109,7 +6111,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $(form)[0].reset();
                         $('#education_info_modal').modal('hide');
                         toastr.success(data.msg);
-                        window.location.reload();
+                      //  window.location.reload();
                     }
                 }
             });
