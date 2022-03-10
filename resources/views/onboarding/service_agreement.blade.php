@@ -162,11 +162,9 @@ $SQL = DB::getQueryLog();
                     <p style="margin-bottom: 30px;"></p>
                     <p style="font-size:16px;"><b>Ref:
                             {{ getCompanyCode($sql->Company) .'_AL-SA/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }}</b>
-                        <span style="float:right"><b>Date: @if ($sql->Agr_Date != '')
-                                    {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
-                                @else
-                                    {{ date('d-m-Y') }}
-                                @endif </span></b>
+                        <span style="float:right"><b>Date:
+                                    {{ date('d-m-Y', strtotime($sql->JoinOnDt)) }}
+                               </span></b>
                     </p><br>
                     <p class="text-center "><b>Service Agreement</b></p>
                     <p style="text-align: justify"> This service agreement ("<strong>Agreement</strong>") is made at
