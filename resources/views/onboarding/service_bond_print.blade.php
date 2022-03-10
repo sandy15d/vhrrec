@@ -143,7 +143,12 @@ $sql = DB::table('jobapply')
                     <p style="font-size:16px;"><b>Ref:
                             {{ getCompanyCode($sql->Company) .'_AL-SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }}</b>
                         <span class="float float-right"><b>Date:
-                            {{ date('d-m-Y', strtotime($sql->JoinOnDt)) }}
+                                @if ($sql->B_Date == null)
+                                    {{ date('d-M-Y') }}
+
+                                @else
+                                    {{ date('d-m-Y', strtotime($sql->B_Date)) }}
+                                @endif
                             </b>
                         </span>
                     </p>

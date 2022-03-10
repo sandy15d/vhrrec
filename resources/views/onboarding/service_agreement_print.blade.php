@@ -181,11 +181,7 @@ $sql = DB::table('jobapply')
                     <p class="text-center "><b>Service Agreement</b></p>
                     <p style="text-align: justify"> This service agreement ("<strong>Agreement</strong>") is made at
                         Raipur, Chhattisgarh on
-                        @if ($sql->Agr_Date != '')
-                            {{ date('d/m/Y', strtotime($sql->Agr_Date)) }}
-                        @else
-                            {{ date('d/m/Y') }}
-                        @endif
+                        {{ date('d/m/Y', strtotime($sql->JoinOnDt)) }}
                     </p>
                     <p><b>BY AND BETWEEN:</b></p>
                     <ol>
