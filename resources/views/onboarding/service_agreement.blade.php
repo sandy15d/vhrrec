@@ -146,7 +146,7 @@ $sql = DB::table('jobapply')
     ->where('jobapply.JAId', $JAId)
     ->first();
 $SQL = DB::getQueryLog();
-dd($SQL);
+//dd($SQL);
 @endphp
 
 <body>
