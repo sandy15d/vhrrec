@@ -399,15 +399,15 @@ class CampusController extends Controller
                 }
             })
 
-            ->editColumn('ReferenceNo',function($data){
+            ->editColumn('ReferenceNo', function ($data) {
                 $sendingId = base64_encode($data->JAId);
-                return '<a href="candidate_detail?jaid='.$sendingId.'" target="_blank">'.$data->ReferenceNo.'</a>';
+                return '<a href="candidate_detail?jaid=' . $sendingId . '" target="_blank">' . $data->ReferenceNo . '</a>';
             })
             ->addColumn('University', function ($data) {
                 return getCollegeCode($data->College);
             })
             ->addColumn('StudentName', function ($data) {
-               
+
                 return $data->FName . ' ' . $data->MName . ' ' . $data->LName;
             })
 
@@ -431,7 +431,7 @@ class CampusController extends Controller
             })
 
 
-            ->rawColumns(['chk', 'PlacementDate','ReferenceNo'])
+            ->rawColumns(['chk', 'PlacementDate', 'ReferenceNo'])
             ->make(true);
     }
 
@@ -454,7 +454,11 @@ class CampusController extends Controller
     {
         $sql = jobpost::find($request->JPId);
         if ($sql->DesigId == 0 || $sql->DesigId == null) {
-            return $sql->JobCode;
+            if ($sql->Status == 'Close') {
+                return $sql->JobCode . '<span class="text-danger"> (This Job Post is closed.)</span>';
+            } else {
+                return $sql->JobCode;
+            }
         } else {
             return (getDesignation($sql->DesigId));
         }

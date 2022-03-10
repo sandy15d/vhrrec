@@ -480,7 +480,6 @@
 
         });
 
-        
         $(document).on('change', '#TechScrCompany', function() {
                 var CompanyId = $(this).val();
                 $.ajax({

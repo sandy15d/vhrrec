@@ -252,11 +252,12 @@ class TraineeController extends Controller
     {
         $data =  DB::table('trainee_apply')
             ->Join('jobcandidates', 'trainee_apply.JCId', '=', 'jobcandidates.JCId')
+            ->Join('jobpost', 'trainee_apply.JPId', '=', 'jobpost.JPId')
             ->where('trainee_apply.JPId', $request->JPId);
         return datatables()->of($data)
             ->addIndexColumn()
             ->addColumn('chk', function ($data) {
-                if ($data->FwdTechScr == 1) {
+                if ($data->FwdTechScr == 1 || $data->Status == 'Close') {
                     return '';
                 } else {
                     return "<input type='checkbox' class='japchks' data-id='$data->TId' name='selectCand' id='selectCand' value='$data->TId'>";
@@ -341,7 +342,8 @@ class TraineeController extends Controller
         $data = $usersQuery->select('trainee_apply.*', 'jc.ReferenceNo', 'jc.FName', 'jc.MName', 'jc.LName', 'jobpost.JobCode')
             ->Join('jobcandidates as jc', 'trainee_apply.JCId', '=', 'jc.JCId')
             ->Join('jobpost', 'jobpost.JPId', '=', 'trainee_apply.JPId')
-            ->where('trainee_apply.FwdTechScr', '1');
+            ->where('trainee_apply.FwdTechScr', '1')
+            ->where('jobpost.Status', 'Open');
 
         return datatables()->of($data)
             ->addIndexColumn()

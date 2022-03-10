@@ -532,9 +532,9 @@ Route::group(['prefix' => 'recruiter', 'middleware' => ['isRecruiter', 'auth', '
     Route::post('getDetailForJobPost', [MrfAllocatedController::class, 'getDetailForJobPost'])->name('getDetailForJobPost');
     Route::post('createJobPost', [MrfAllocatedController::class, 'createJobPost'])->name('createJobPost');
     Route::post('ChngPostingView', [MrfAllocatedController::class, 'ChngPostingView'])->name('ChngPostingView');
-    Route::post('close_mrf', [MrfAllocatedController::class, 'close_mrf'])->name('close_mrf');
+    
 });
-
+Route::post('close_mrf', [MrfAllocatedController::class, 'close_mrf'])->name('close_mrf');
 Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [HodController::class, 'index'])->name('hod.dashboard');
     Route::get('mrfbyme', [HodController::class, 'mrfbyme'])->name('mrfbyme');
