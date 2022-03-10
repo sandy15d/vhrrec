@@ -356,7 +356,7 @@ Route::post('save_trainee_detail', [TraineeController::class, 'save_trainee_deta
 Route::post('get_expense_list', [TraineeController::class, 'get_expense_list'])->name('get_expense_list');
 Route::post('add_expense', [TraineeController::class, 'add_expense'])->name('add_expense');
 Route::post('map_trainee_to_job', [TraineeController::class, 'map_trainee_to_job'])->name('map_trainee_to_job');
-
+Route::get('trainee_detail', [TraineeController::class, 'trainee_detail'])->name('trainee_detail');
 
 Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
