@@ -168,7 +168,9 @@ class TrackerController extends Controller
                 "interview_venue" => $InterviewLocation,
                 "contact_person" => getFullName(Auth::user()->id),
                 'interview_form' => route("candidate-interview-form", "jaid=$sendingId"),
-                'firob' =>  route("firo_b", "jcid=$firobid")
+                'firob' =>  route("firo_b", "jcid=$firobid"),
+                'travelEligibility' => $TravelElg,
+
             ];
             Mail::to($CandidateEmail)->send(new InterviewMail($details));
         }
