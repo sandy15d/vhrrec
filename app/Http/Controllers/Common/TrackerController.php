@@ -49,6 +49,8 @@ class TrackerController extends Controller
         }
         if ($Company != '') {
             $usersQuery->where("screening.ScrCmp", $Company);
+        }else{
+            $usersQuery->where('manpowerrequisition.CompanyId', session('Set_Company'));
         }
         if ($Department != '') {
             $usersQuery->where("screening.ScrDpt", $Department);
@@ -64,7 +66,7 @@ class TrackerController extends Controller
             ->join('manpowerrequisition', 'manpowerrequisition.MRFId', '=', 'jobpost.MRFId')
             ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
             ->where('manpowerrequisition.CountryId', session('Set_Country'))
-            ->where('manpowerrequisition.CompanyId', session('Set_Company'))
+           
             ->where('jobapply.FwdTechScr', 'Yes')
             ->where('jobpost.Status', 'Open')
             ->where('jobpost.JobPostType', 'Regular')
@@ -209,6 +211,8 @@ class TrackerController extends Controller
         }
         if ($Company != '') {
             $usersQuery->where("screening.ScrCmp", $Company);
+        }else{
+            $usersQuery->where('mp.CompanyId', session('Set_Company'));
         }
         if ($Department != '') {
             $usersQuery->where("screening.ScrDpt", $Department);
@@ -225,7 +229,7 @@ class TrackerController extends Controller
             ->join('screen2ndround as sc', 'screening.ScId', '=', 'sc.ScId', 'left')
             ->leftjoin('intervcost', 'intervcost.JAId', '=', 'ja.JAId')
             ->where('mp.CountryId', session('Set_Country'))
-            ->where('mp.CompanyId', session('Set_Company'))
+          
             ->where('jp.JobPostType', 'Regular')
             ->where('jp.Status', 'Open')
             ->where('screening.ScreenStatus', 'Shortlist')
