@@ -60,7 +60,6 @@
                     id="CampusApplication" style="width: 100%">
                     <thead class="text-center bg-primary text-light">
                         <tr class="text-center">
-
                             <td class="th-sm">S.No</td>
                             <td>College</td>
                             <td>JobCode</td>
