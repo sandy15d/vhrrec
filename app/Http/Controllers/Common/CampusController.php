@@ -930,7 +930,7 @@ class CampusController extends Controller
         $data = $usersQuery->select('jobpost.JPId', 'jobpost.JobCode', 'manpowerrequisition.EducationInsId', 'campus_costing.total', 'jobpost.DepartmentId', 'jobpost.DesigId')
             ->Join('manpowerrequisition', 'manpowerrequisition.MRFId', '=', 'jobpost.MRFId')
             ->leftJoin('campus_costing', 'campus_costing.JPId', '=', 'jobpost.JPId')
-            ->where('JobPostType', 'Campus')
+           
             ->groupBy('jobpost.JPId');
 
 
