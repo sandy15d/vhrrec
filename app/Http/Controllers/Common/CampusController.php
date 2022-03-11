@@ -915,17 +915,18 @@ class CampusController extends Controller
         $Department = $request->Department;
 
 
-       /*  if (Auth::user()->role == 'R') {
-
+        if (Auth::user()->role == 'R') {
             $usersQuery->where('jobpost.CreatedBy', Auth::user()->id);
-        } */
-
+        }
         if ($Company != '') {
             $usersQuery->where("jobpost.CompanyId", $Company);
         }
         if ($Department != '') {
             $usersQuery->where("jobpost.DepartmentId", $Department);
         }
+
+
+
 
         $data = $usersQuery->select('jobpost.JPId', 'jobpost.JobCode', 'manpowerrequisition.EducationInsId', 'campus_costing.total', 'jobpost.DepartmentId', 'jobpost.DesigId')
             ->Join('manpowerrequisition', 'manpowerrequisition.MRFId', '=', 'jobpost.MRFId')
@@ -938,6 +939,7 @@ class CampusController extends Controller
             ->addIndexColumn()
 
             ->editColumn('College', function ($data) {
+
                 $College = unserialize($data->EducationInsId);
                 return getCollegeById($College[0]);
             })
@@ -953,7 +955,7 @@ class CampusController extends Controller
                 }
             })
             ->addColumn('Action', function ($data) {
-
+                //data-bs-toggle="modal" data-bs-target="#expense_modal"
                 return '<a href="javascript:void(0);" class="btn btn-xs btn-warning" onclick="getCosting(' . $data->JPId . ')"  >Edit/View</a>';
             })
 
