@@ -941,7 +941,7 @@ class CampusController extends Controller
             ->editColumn('College', function ($data) {
 
                 $College = unserialize($data->EducationInsId);
-                return getCollegeById($College[0]);
+                return getCollegeById($College);
             })
 
             ->editColumn('Department', function ($data) {
