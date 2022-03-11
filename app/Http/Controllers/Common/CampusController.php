@@ -915,10 +915,10 @@ class CampusController extends Controller
         $Department = $request->Department;
 
 
-        if (Auth::user()->role == 'R') {
+       /*  if (Auth::user()->role == 'R') {
 
             $usersQuery->where('jobpost.CreatedBy', Auth::user()->id);
-        }
+        } */
 
         if ($Company != '') {
             $usersQuery->where("jobpost.CompanyId", $Company);
@@ -930,7 +930,7 @@ class CampusController extends Controller
         $data = $usersQuery->select('jobpost.JPId', 'jobpost.JobCode', 'manpowerrequisition.EducationInsId', 'campus_costing.total', 'jobpost.DepartmentId', 'jobpost.DesigId')
             ->Join('manpowerrequisition', 'manpowerrequisition.MRFId', '=', 'jobpost.MRFId')
             ->leftJoin('campus_costing', 'campus_costing.JPId', '=', 'jobpost.JPId')
-           
+            ->where('JobPostType', 'Campus')
             ->groupBy('jobpost.JPId');
 
 
