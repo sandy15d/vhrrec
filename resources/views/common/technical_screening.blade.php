@@ -122,7 +122,7 @@
                                 <tr>
                                     <th style="width: 50%">Resume Sent For Tech.Screening</th>
                                     <td style="width: 50%"><input type="date" name="ReSentForScreen" id="ReSentForScreen"
-                                            class="form-control form-control-sm"></td>
+                                            class="form-control form-control-sm" disabled></td>
                                 </tr>
                                 <tr>
                                     <th>Resume Screened By</th>
@@ -133,7 +133,7 @@
                                     <th>Date Resume Screened</th>
                                
                                     <td><input type="date" name="TechScreeningDate" id="TechScreeningDate"
-                                            class="form-control form-control-sm" disabled   >
+                                            class="form-control form-control-sm">
                                     </td>
                                 </tr>
                                 <tr>

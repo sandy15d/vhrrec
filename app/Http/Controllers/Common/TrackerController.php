@@ -129,11 +129,11 @@ class TrackerController extends Controller
         $InterviewMail = $request->InterviewMail;
         $BlackList = $request->BlackList;
         $BlackListRemark = $request->BlackListRemark;
-        $ReSentForScreen = $request->ReSentForScreen;
+        $TechScreeningDate = $request->TechScreeningDate;
         //  $curDate = date('Y-m-d');
         $sql = DB::table('screening')
             ->where('JAId', $JAId)
-            ->update(['ResScreened' => $ReSentForScreen, 'ScreenStatus' => $TechScreenStatus, 'InterviewMode' => $InterviewSchedule, 'RejectionRem' => $RejectRemark, 'IntervDt' => $InterviewDate, 'IntervTime' => $InterviewTime, 'IntervLoc' => $InterviewLocation, 'IntervPanel' => $InterviewPannel, 'travelEligibility' => $TravelElg, 'SendInterMail' => $InterviewMail, 'UpdatedBy' => Auth::user()->id, 'LastUpdated' => now()]);
+            ->update(['ResScreened' => $TechScreeningDate, 'ScreenStatus' => $TechScreenStatus, 'InterviewMode' => $InterviewSchedule, 'RejectionRem' => $RejectRemark, 'IntervDt' => $InterviewDate, 'IntervTime' => $InterviewTime, 'IntervLoc' => $InterviewLocation, 'IntervPanel' => $InterviewPannel, 'travelEligibility' => $TravelElg, 'SendInterMail' => $InterviewMail, 'UpdatedBy' => Auth::user()->id, 'LastUpdated' => now()]);
 
         $jobapply = jobapply::find($JAId);
         $JCId = $jobapply->JCId;
