@@ -1235,6 +1235,8 @@ class JobApplicationController extends Controller
             } else {
                 return response()->json(['status' => 200, 'msg' => 'All documents uploaded successfully']);
             }
+        }else{
+            return response()->json(['status' => 200, 'msg' => 'All documents uploaded successfully']);
         }
     }
 
