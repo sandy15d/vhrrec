@@ -27,7 +27,11 @@
 @endcomponent
 <p>Kindly reach the interview venue 30 min. before the scheduled time.</p>
 @if ($details['travelEligibility'] != 'N;')
-<p><i>#Please note that traveling allowances, to & fro, railway fare or bus fare, is payable for this purpose on submission of actual bills only.</i></p>  
+@php
+$travelEligibility = unserialize($details['travelEligibility']);
+$travelElg = $travelEligibility[0];
+@endphp
+<p><i>#Please note that traveling allowances, to & fro, {{$travelElg}} class railway fare or bus fare, is payable for this purpose on submission of actual bills only.</i></p>  
 @endif
 
 <small>*Please do not reply to this email- This is an automated message and responses cannot be received by our system.</small>
