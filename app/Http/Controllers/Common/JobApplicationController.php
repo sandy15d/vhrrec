@@ -158,7 +158,7 @@ class JobApplicationController extends Controller
             $usersQuery->where("jobcandidates.FName", 'like', "%$Name%");
         }
 
-        $candidate_list = $usersQuery->select('jobapply.JAId', 'jobapply.ResumeSource', 'jobapply.Type', 'jobapply.ApplyDate', 'jobapply.Status', 'jobapply.FwdTechScr', 'jobcandidates.JCId', 'jobcandidates.ReferenceNo', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherName', 'jobcandidates.Email', 'jobcandidates.DOB', 'jobcandidates.Phone', 'jobcandidates.Email', 'jobcandidates.City', 'jobcandidates.Education', 'jobcandidates.Specialization', 'jobcandidates.Professional', 'jobcandidates.JobStartDate', 'jobcandidates.JobEndDate', 'jobcandidates.PresentCompany', 'jobcandidates.Designation', 'jobcandidates.Verified', 'jobcandidates.CandidateImage', 'jobcandidates.BlackList', 'jobcandidates.BlackListRemark', 'jobcandidates.UnBlockRemark', 'jobapply.JPId', 'jobpost.DesigId')
+        $candidate_list = $usersQuery->select('jobapply.JAId', 'jobapply.ResumeSource', 'jobapply.Type', 'jobapply.ApplyDate', 'jobapply.Status','jobapply.RejectRemark', 'jobapply.FwdTechScr', 'jobcandidates.JCId', 'jobcandidates.ReferenceNo', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherName', 'jobcandidates.Email', 'jobcandidates.DOB', 'jobcandidates.Phone', 'jobcandidates.Email', 'jobcandidates.City', 'jobcandidates.Education', 'jobcandidates.Specialization', 'jobcandidates.Professional', 'jobcandidates.JobStartDate', 'jobcandidates.JobEndDate', 'jobcandidates.PresentCompany', 'jobcandidates.Designation', 'jobcandidates.Verified', 'jobcandidates.CandidateImage', 'jobcandidates.BlackList', 'jobcandidates.BlackListRemark', 'jobcandidates.UnBlockRemark', 'jobapply.JPId', 'jobpost.DesigId')
             ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
             ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
             ->leftJoin('screening', 'jobapply.JAId', '=', 'screening.JAId')
@@ -204,12 +204,15 @@ class JobApplicationController extends Controller
 
     public function update_hrscreening(Request $request)
     {
+       
         $JAId = $request->JAId;
         $Status = $request->Status;
 
         $query = jobapply::find($JAId);
         $query->Status = $Status;
+        $query->RejectRemark = $request->RejectRemark ?? '';
         $query->SelectedBy = Auth::user()->id;
+
         $query->save();
 
         $JCId = $query->JCId;
@@ -1231,12 +1234,12 @@ class JobApplicationController extends Controller
         $query = jobcandidate::find($JCId);
         $Professional = $query->Professional;
         if ($Professional == 'P') {
-            if ($chk->OfferLtr == null ||  $chk->SalarySlip == null ) {
+            if ($chk->OfferLtr == null ||  $chk->SalarySlip == null) {
                 return response()->json(['status' => 400, 'msg' => 'Please upload all documents']);
             } else {
                 return response()->json(['status' => 200, 'msg' => 'All documents uploaded successfully']);
             }
-        }else{
+        } else {
             return response()->json(['status' => 200, 'msg' => 'All documents uploaded successfully']);
         }
     }

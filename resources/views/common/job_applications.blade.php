@@ -295,7 +295,12 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                         </td>
                                                     </tr>
                                                 @endif
-
+                                                @if ($row->Status == 'Rejected')
+                                                    <tr>
+                                                        <td>Rejected Reason:</td>
+                                                        <td class="fw-bold">{{$row->RejectRemark}}</td>
+                                                    </tr>
+                                                @endif
                                             </tbody>
                                         </table>
                                     </div>
@@ -473,8 +478,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                             <option value="Irrelevant">Irrelevant</option>
                         </select>
 
-                        <textarea name="RejectRemark" id="RejectRemark" cols="30" rows="3"
-                            class="form-control form-control-sm mt-2 d-none"
+                        <textarea name="RejectRemark" id="RejectRemark" cols="30" rows="3" class="form-control form-control-sm mt-2 d-none"
                             placeholder="Please Enter Rejection Remark"></textarea>
                     </div>
                     <div class="modal-footer">
@@ -589,7 +593,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                     <h5 class="modal-title text-white">Job Application Form (Manual Entry)</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{route('job_application_manual')}}" method="POST" id="jobapplicationform">
+                <form action="{{ route('job_application_manual') }}" method="POST" id="jobapplicationform">
                     @csrf
                     <div class="modal-body">
                         <div class="row">
@@ -613,8 +617,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                     <tr id="othersource_tr" class="d-none">
                                         <td></td>
                                         <td>
-                                            <textarea name="OtherResumeSource" id="OtherResumeSource" cols="30" rows="3"
-                                                class="form-control form-control-sm"
+                                            <textarea name="OtherResumeSource" id="OtherResumeSource" cols="30" rows="3" class="form-control form-control-sm"
                                                 placeholder="Please provide Name & Contact nos. of Person, if came through any referral or Consultancy"></textarea>
                                         </td>
                                     </tr>
