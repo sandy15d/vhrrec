@@ -38,10 +38,10 @@ class MrfAllocatedController extends Controller
         $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
 
         $CloseActive = DB::table('manpowerrequisition')
-            ->where('Type', '!=', 'Campus')
+           /*  ->where('Type', '!=', 'Campus')
             ->where('Type', '!=', 'Campus_HrManual')
             ->where('Type', '!=', 'SIP')
-            ->where('Type', '!=', 'SIP_HrManual')
+            ->where('Type', '!=', 'SIP_HrManual') */
             ->where('CountryId', session('Set_Country'))
             ->where('Allocated', Auth::user()->id)
             ->where('Status', 'Close')
@@ -49,10 +49,10 @@ class MrfAllocatedController extends Controller
         $CloseMRF = $CloseActive->count();
 
         $OpenMRFSQL = DB::table('manpowerrequisition')
-            ->where('Type', '!=', 'Campus')
+         /*    ->where('Type', '!=', 'Campus')
             ->where('Type', '!=', 'Campus_HrManual')
             ->where('Type', '!=', 'SIP')
-            ->where('Type', '!=', 'SIP_HrManual')
+            ->where('Type', '!=', 'SIP_HrManual') */
             ->where('CountryId', session('Set_Country'))
             ->where('Allocated', Auth::user()->id)
             ->where('Status', '!=', 'Close')
@@ -99,10 +99,10 @@ class MrfAllocatedController extends Controller
         $mrf = $usersQuery->select('*')->Join('master_designation', 'manpowerrequisition.DesigId', '=', 'master_designation.DesigId', 'left')
             ->Join('master_department', 'manpowerrequisition.DepartmentId', '=', 'master_department.DepartmentId')
             ->where('Allocated', Auth::user()->id)
-            ->where('Type', '!=', 'Campus')
-            ->where('Type', '!=', 'Campus_HrManual')
-            ->where('Type', '!=', 'SIP')
-            ->where('Type', '!=', 'SIP_HrManual')
+            /*   ->where('Type', '!=', 'Campus')
+            ->where('Type', '!=', 'Campus_HrManual') */
+            /*  ->where('Type', '!=', 'SIP')
+            ->where('Type', '!=', 'SIP_HrManual') */
             ->where('CountryId', session('Set_Country'));
 
         return datatables()->of($mrf)
@@ -144,12 +144,16 @@ class MrfAllocatedController extends Controller
             })
 
             ->addColumn('JobPost', function ($mrf) {
-                $check = CheckJobPostCreated($mrf->MRFId);
-                if ($check == 1) {
-                    return 'Created';
+                if ($mrf->Type == 'Campus' || $mrf->Type == 'Campus_HrManual' || $mrf->Type == 'SIP' || $mrf->Type == 'SIP_HrManual') {
+                    return '-';
                 } else {
-                    return '<a  href="javascript:void(0);" data-bs-toggle="modal"
+                    $check = CheckJobPostCreated($mrf->MRFId);
+                    if ($check == 1) {
+                        return 'Created';
+                    } else {
+                        return '<a  href="javascript:void(0);" data-bs-toggle="modal"
                     data-bs-target="#createpostmodal" onclick="getDetailForJobPost(' . $mrf->MRFId . ')"><i class="fa fa-plus-square-o"></i>Create</a>';
+                    }
                 }
             })
             ->addColumn('JobShow', function ($mrf) {
@@ -293,9 +297,6 @@ class MrfAllocatedController extends Controller
 
             $mrf = master_mrf::find($MRFId);
             $JobCode = $mrf->JobCode;
-
-
-
             $mrf->Status = 'Close';
             $mrf->CloseDt = now();
             $mrf->CloseReason = $request->reason;
@@ -303,15 +304,12 @@ class MrfAllocatedController extends Controller
             $mrf->UpdatedBy = Auth::user()->id;
             $mrf->LastUpdated = now();
             $mrf->save();
-
             $jobpost = master_post::where('MRFId', $MRFId)->first();
             $jobpost->Status = 'Close';
             $jobpost->PostingView = 'Hidden';
             $jobpost->UpdatedBy = Auth::user()->id;
             $jobpost->LastUpdated = now();
             $jobpost->save();
-
-
             if (!$mrf) {
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
