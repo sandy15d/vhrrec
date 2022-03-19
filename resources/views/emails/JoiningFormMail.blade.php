@@ -15,7 +15,16 @@
     ]
 ])
 @endcomponent
-
+<p>Download the following documents.</p>
+<ol>
+<li><a href='https://hrrec.vnress.in/assets/documents/pf_form2.pdf' target='_blank'>PF_Nomination Form 2</a></li>
+<li><a href='https://hrrec.vnress.in/assets/documents/pf_form11.pdf' target='_blank'>PF_Declaration Form 11</a></li>
+<li><a href='https://hrrec.vnress.in/assets/documents/gratutity.pdf' target='_blank'>Gratuity_Nomination Form</a></li>
+<li><a href='https://hrrec.vnress.in/assets/documents/esic_declaration.pdf' target='_blank'>ESIC_Declaration Form 1</a></li>
+<li><a href='https://hrrec.vnress.in/assets/documents/esic_family.pdf' target='_blank'>Family Declaration Form 1(A)</a></li>
+<li><a href='https://hrrec.vnress.in/assets/documents/health_declaration.pdf' target='_blank'>Health Declaration Form</a></li>
+<li><a href='https://hrrec.vnress.in/assets/documents/ethical_compliance.pdf' target='_blank'>Declaration for Compliance to Ethical Financial Dealings</a></li>
+</ol><br/><br/>
 <p style="margin-bottom: 2px;">In case of any further query kindly contact,</p>
 <p style="margin-bottom: 2px;">HR-Recruitment Team,</p>
 <p>Contact No: 0771-435005</p>
