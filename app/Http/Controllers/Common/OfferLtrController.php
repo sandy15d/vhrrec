@@ -924,4 +924,26 @@ class OfferLtrController extends Controller
             ->paginate(20);
         return view('onboarding.candidate_joining', compact('company_list', 'months', 'candidate_list'));
     }
+
+    public function SendJoiningForm(Request $request)
+    {
+        $JAId = $request->JAId;
+        $sendId = base64_encode($JAId);
+        $query = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->join('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')->join('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')->select('jobcandidates.ReferenceNo', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.Email', 'jobpost.Title', 'offerletterbasic.Company', 'offerletterbasic.Grade')->where('jobapply.JAId', $JAId)->first();
+        $update = DB::table('offerletterbasic')->where('JAId', $JAId)->update(
+            [
+                'JoiningFormSent' => 'Yes',
+                'LastUpdated' => now()
+            ]
+        );
+
+        $details = [
+            "candidate_name" => $query->FName . ' ' . $query->MName . ' ' . $query->LName,
+            "reference_no" => $query->ReferenceNo,
+            "subject" => "Complete your Onboarding Process",
+            "link" => route('candidate-joining-form') . '?jaid=' . $sendId
+        ];
+        Mail::to($query->Email)->send(new JoiningFormMail($details));
+        return response()->json(['status' => 200, 'msg' => 'Joining Form Sent Successfully']);
+    }
 }

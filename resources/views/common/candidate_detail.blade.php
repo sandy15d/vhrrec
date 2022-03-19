@@ -7088,6 +7088,29 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
             });
         }
 
+        function sendJoiningForm(JAId) {
+            var JAId = JAId;
+            $.ajax({
+                url: "{{ route('SendJoiningForm') }}",
+                type: "POST",
+                data: {
+                    "JAId": JAId
+                },
+                beforeSend: function() {
+                    $('#loader').modal('show');
+                },
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+                    } else {
+                        $('#loader').modal('hide');
+                        toastr.success(data.msg);
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+
         function offerReopen(JAId) {
             var JAId = JAId;
             var url = '<?= route('offerReopen') ?>';

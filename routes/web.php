@@ -285,6 +285,7 @@ Route::get('offer_ltr_history', [OfferLtrController::class, 'offer_ltr_history']
 Route::get('getDetailForReview', [OfferLtrController::class, 'getDetailForReview'])->name('getDetailForReview');
 Route::post('saveJoinDate', [OfferLtrController::class, 'saveJoinDate'])->name('saveJoinDate');
 Route::post('SendOfferLtr', [OfferLtrController::class, 'SendOfferLtr'])->name('SendOfferLtr');
+Route::post('SendJoiningForm', [OfferLtrController::class, 'SendJoiningForm'])->name('SendJoiningForm');
 Route::post('OfferResponse', [OfferLtrController::class, 'OfferResponse'])->name('OfferResponse');
 Route::get('offer-letter-response', [OfferLtrController::class, 'OfferLetterResponse'])->name('offer-letter-response');
 Route::post('offerReopen', [OfferLtrController::class, 'offerReopen'])->name('offerReopen');
