@@ -69,6 +69,7 @@ class JobApplicationController extends Controller
             ->join('manpowerrequisition', 'manpowerrequisition.MRFId', '=', 'jobpost.MRFId')
             ->where('manpowerrequisition.CountryId', session('Set_Country'))
             ->where('jobapply.Type', '!=', 'Campus')
+            ->where('jobpost.Status', '=', 'Open')
             ->groupBy('jobpost.JPId');
 
 
