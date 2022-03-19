@@ -1376,7 +1376,7 @@ class ImportController extends Controller
         }
     } */
 
-    public function Import()
+  /*   public function Import()
     {
         $connection = DB::connection('mysql3');
 
@@ -1491,5 +1491,5 @@ class ImportController extends Controller
             }
             $query = DB::table('jobcandidates')->where('JCId', $value->JCId)->update(['Resume' => $resume]);
         }
-    }
+    } */
 }
