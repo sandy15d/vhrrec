@@ -58,7 +58,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="row mb-1">
-                    <div class="col-3">
+                    <div class="col-6">
                         <button type="button" class="btn btn-primary btn-sm" id="openMrf" data-status='Open'>Open MRF <span
                                 class="badge bg-warning text-dark" style="font-size: 10px;">{{ $OpenMRF }}</span>
                         </button>
