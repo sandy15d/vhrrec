@@ -10,7 +10,7 @@ class Reports extends Controller
 {
     public function Firob_Reports()
     {
-        $report_list = DB::table('jobcandidates')->join('firob_user','firob_user.userid','=','jobcandidates.JCId')->where('FIROB_Test', 1)->orderBy('SubDate','asc')->groupBy('userid')->get();
+        $report_list = DB::table('jobcandidates')->join('firob_user', 'firob_user.userid', '=', 'jobcandidates.JCId')->where('FIROB_Test', 1)->orderBy('SubDate', 'asc')->groupBy('userid')->peginate(10);
         return view('reports.firob_reports', compact(['report_list']));
     }
 }
