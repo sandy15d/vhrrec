@@ -45,8 +45,8 @@
         <!--breadcrumb-->
         <div class="page-breadcrumb  align-items-center mb-3">
             <div class="row mb-1">
-                <div class="col-3 breadcrumb-title ">
-                    Screening Tracker
+                <div class="col-2">
+                    <h6> Screening Tracker</h6>
                 </div>
                 <div class="col-2">
                     <select name="Fill_Company" id="Fill_Company" class="form-select form-select-sm"
@@ -65,14 +65,17 @@
 
                     </select>
                 </div>
-                <div class="col-4">
-
+                <div class="col-3">
                     <select name="Fill_JobCode" id="Fill_JobCode" class="form-select form-select-sm"
                         onchange="GetCandidates();">
                         <option value="">Select MRF</option>
-
                     </select>
                 </div>
+                <div class="col-2">
+                    <input type="text" name="Fill_Name" id="Fill_Name" class="form-control form-control-sm"
+                        placeholder="Search by Name" onkeyup="GetCandidates();">
+                </div>
+
                 <div class="col-1">
                     <button type="reset" class="btn btn-danger btn-sm" id="reset"><i class="bx bx-refresh"></i></button>
                 </div>
@@ -547,11 +550,13 @@
             searching: false,
             ordering: false,
             lengthChange: true,
-            lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
             destroy: true,
-            dom: 'Blfrtip' ,
-            buttons: [
-                {
+            dom: 'Blfrtip',
+            buttons: [{
                     extend: 'excelHtml5',
                     text: '<i class="fa fa-file-excel-o"></i>',
                     titleAttr: 'Excel',
@@ -561,9 +566,6 @@
 
                     }
                 },
-
-
-
                 {
                     extend: 'pdfHtml5',
                     text: '<i class="fa fa-file-pdf-o"></i>',
@@ -574,7 +576,6 @@
 
                     }
                 },
-
                 {
                     extend: 'print',
                     text: '<i class="fa fa-print"></i>',
@@ -592,8 +593,6 @@
                         columns: ':visible'
                     }
                 },
-
-
             ],
             ajax: {
                 url: "{{ route('getTechnicalSceeningCandidate') }}",
@@ -604,6 +603,7 @@
                     d.Company = $('#Fill_Company').val();
                     d.Department = $('#Fill_Department').val();
                     d.JPId = $('#Fill_JobCode').val();
+                    d.Name = $('#Fill_Name').val();
                 },
                 type: 'POST',
                 dataType: "JSON",

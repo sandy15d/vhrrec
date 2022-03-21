@@ -66,13 +66,17 @@
 
                     </select>
                 </div>
-                <div class="col-4">
+                <div class="col-2">
 
                     <select name="Fill_JobCode" id="Fill_JobCode" class="form-select form-select-sm"
                         onchange="GetCandidates();">
                         <option value="">Select MRF</option>
 
                     </select>
+                </div>
+                <div class="col-2">
+                    <input type="text" name="Fill_Name" id="Fill_Name" class="form-control form-control-sm"
+                        placeholder="Search by Name" onkeyup="GetCandidates();">
                 </div>
                 <div class="col-1">
                     <button type="reset" class="btn btn-danger btn-sm" id="reset"><i class="bx bx-refresh"></i></button>
@@ -528,7 +532,8 @@
                     data: function(d) {
                         d.Company = $('#Fill_Company').val();
                         d.Department = $('#Fill_Department').val();
-
+                        d.JPId = $('#Fill_JobCode').val();
+                        d.Name = $('#Fill_Name').val();
                     },
                     type: 'POST',
                     dataType: "JSON",

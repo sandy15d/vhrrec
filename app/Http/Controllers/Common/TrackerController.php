@@ -42,6 +42,7 @@ class TrackerController extends Controller
         $usersQuery = screening::query();
         $Company = $request->Company;
         $Department = $request->Department;
+        $Name = $request->Name;
         $JPId = $request->JPId;
         if (Auth::user()->role == 'R') {
 
@@ -52,6 +53,10 @@ class TrackerController extends Controller
         }
         if ($Department != '') {
             $usersQuery->where("screening.ScrDpt", $Department);
+        }
+
+        if ($Name != '') {
+            $usersQuery->where("jobcandidates.FName", 'like', "%$Name%");
         }
         if ($JPId != '') {
             $usersQuery->where("jobpost.JPId", $JPId);
@@ -201,7 +206,8 @@ class TrackerController extends Controller
         $usersQuery = screening::query();
         $Company = $request->Company;
         $Department = $request->Department;
-        $Mrf = $request->Mrf;
+        $Name = $request->Name;
+        $JPId = $request->JPId;
 
 
         if (Auth::user()->role == 'R') {
@@ -213,8 +219,11 @@ class TrackerController extends Controller
         if ($Department != '') {
             $usersQuery->where("screening.ScrDpt", $Department);
         }
-        if ($Mrf != '') {
-            $usersQuery->where("jp.JPId", $Mrf);
+        if ($Name != '') {
+            $usersQuery->where("jc.FName", 'like', "%$Name%");
+        }
+        if ($JPId != '') {
+            $usersQuery->where("jp.JPId", $JPId);
         }
 
         $data = $usersQuery->select('screening.*', 'jc.ReferenceNo', 'jc.FName', 'jc.MName', 'jc.LName', 'jp.JobCode', 'sc.IntervDt2', 'sc.IntervLoc2', 'sc.IntervPanel2', 'sc.IntervStatus2', 'intervcost.Travel', 'intervcost.Lodging', 'intervcost.Relocation', 'intervcost.Other')
