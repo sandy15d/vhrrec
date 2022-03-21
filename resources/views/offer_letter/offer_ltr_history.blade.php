@@ -146,11 +146,11 @@ $sql = DB::table('offerletterbasic_history')
     ->where('offerletterbasic_history.LtrId', $LtrId)
     ->first();
 
-
 @endphp
 
 <body>
     <div class="container">
+
         <div id="offer_letter">
             <div class="page">
                 <div class="subpage">
@@ -225,7 +225,6 @@ $sql = DB::table('offerletterbasic_history')
                                 and will work under the supervision of such officers as may be decided upon by the
                                 Management from time to time.
                             </li>
-
                         @else
                             <li>You will report to
                                 <strong>{{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong> and will
@@ -253,7 +252,6 @@ $sql = DB::table('offerletterbasic_history')
                                 <strong>(“Training Period”)</strong> and after completion of the Training Period, you
                                 will be confirmed subject to your satisfactory performance.
                             </li>
-
                         @elseif ($sql->ServiceCondition == 'Probation')
                             <li>You shall be on probation for a period of 6 (Six) months from the Appointment Date
                                 <strong>(“Probation Period”)</strong> and after completion of the Probation Period, you
@@ -289,15 +287,26 @@ $sql = DB::table('offerletterbasic_history')
                                         such notice period.</li>
                                 @endif
                             @else
-                                @if ($sql->Department == 6 || $sql->Department == 3 || $sql->Department == 2)
-                                    {{-- Salses && PD  && R&D --}}
+                                @if ($sql->Department == 6 || $sql->Department == 3)
+                                    {{-- Salses && PD --}}
                                     <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
                                         terminate this
                                         employment by giving 1 (One) months’ notice in writing or salary in lieu
                                         of such notice period. Pursuant to your confirmation, the aforementioned notice
-                                        period shall be of  @if ($sql->Department == 6 || $sql->Department == 3)
-                                        3 (Three) months @else 1 (One) month
+                                        period shall be of @if ($sql->Department == 6 || $sql->Department == 3)
+                                            3 (Three) months
+                                        @else
+                                            1 (One) month
                                         @endif in writing or the salary in lieu thereof.
+                                    </li>
+                                @elseif($sql->Department == 2)
+                                    {{-- R&D --}}
+                                    <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
+                                        terminate this
+                                        employment by giving 3 (Three) months’ notice in writing or salary in lieu
+                                        of such notice period. Pursuant to your confirmation, the aforementioned notice
+                                        period shall be of 3 (Three) month
+                                        in writing or the salary in lieu thereof.
                                     </li>
                                 @else
                                     <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
@@ -421,7 +430,7 @@ $sql = DB::table('offerletterbasic_history')
                                 <td>Employee's PF Contribution</td>
                                 <td class="text-center">{{ $sql->emplyPF ?? '' }}</td>
                             </tr>
-                            <tr  class="{{ $sql->grsM_salary > 21000 ? 'd-none' : '' }}">
+                            <tr class="{{ $sql->grsM_salary > 21000 ? 'd-none' : '' }}">
                                 <td>Employee’s ESIC Contribution </td>
                                 <td class="text-center">{{ $sql->emplyESIC ?? '' }}</td>
                             </tr>
@@ -459,7 +468,7 @@ $sql = DB::table('offerletterbasic_history')
                                 <td>Employer’s PF contribution</td>
                                 <td class="text-center">{{ $sql->emplyerPF ?? '' }}</td>
                             </tr>
-                            <tr  class="{{ $sql->grsM_salary > 21000 ? 'd-none' : '' }}">
+                            <tr class="{{ $sql->grsM_salary > 21000 ? 'd-none' : '' }}">
                                 <td>Employer’s ESIC contribution</td>
                                 <td class="text-center">{{ $sql->emplyerESIC ?? '' }} </td>
                             </tr>
@@ -598,14 +607,14 @@ $sql = DB::table('offerletterbasic_history')
                                 </td>
                             </tr>
                             @if ($sql->Flight == 'Y')
-                            <tr>
-                                <td></td>
-                                <td>Flight</td>
-                                <td class="text-center"> {{ $sql->Flight_Class }}
+                                <tr>
+                                    <td></td>
+                                    <td>Flight</td>
+                                    <td class="text-center"> {{ $sql->Flight_Class }}
                                         ({{ $sql->Flight_Remark }})
-                                 
-                                </td>
-                            </tr>
+
+                                    </td>
+                                </tr>
                             @endif
 
 
@@ -615,7 +624,10 @@ $sql = DB::table('offerletterbasic_history')
                                     <td class="text-center"><?= ++$rowCount ?></td>
                                     <td><b>Mobile Handset Eligibility</b>
                                         @if ($sql->GPRS == 1)
-                                        (Once in 2 Years) @else (Once in 3 Years) @endif
+                                            (Once in 2 Years)
+                                        @else
+                                            (Once in 3 Years)
+                                        @endif
                                     </td>
                                     <td class="text-center">Rs. {{ $sql->Mobile }}</td>
                                 </tr>
@@ -629,7 +641,6 @@ $sql = DB::table('offerletterbasic_history')
                                     <td><b>Mobile Expense Reimbursement</b></b></td>
                                     <td class="text-center">Rs. {{ $sql->MExpense }} / {{ $sql->MTerm }}</td>
                                 </tr>
-
                             @endif
 
                             @if ($sql->Laptop != '')
@@ -680,15 +691,12 @@ $sql = DB::table('offerletterbasic_history')
                     @if ($sql->TwoWheelLine == 1)
                         <p style="padding-left: 20px;margin-bottom:5px;"> *2 Wheeler vehicle eligibility as per company
                             vehicle policy.</p>
-
-
                     @endif
 
                     @if ($sql->FourWheelLine == 1)
                         <p style="padding-left: 20px;margin-bottom:5px;">*4 Wheeler vehicle eligibility as per company
                             vehicle policy.
                         </p>
-
                     @endif
 
                     @if ($sql->TravelLine == 1)

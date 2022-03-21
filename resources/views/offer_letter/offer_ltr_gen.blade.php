@@ -233,7 +233,6 @@ $elg = DB::table('candidate_entitlement')
                                 and will work under the supervision of such officers as may be decided upon by the
                                 Management from time to time.
                             </li>
-
                         @else
                             <li>You will report to
                                 <strong>{{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong> and will
@@ -261,7 +260,6 @@ $elg = DB::table('candidate_entitlement')
                                 <strong>(“Training Period”)</strong> and after completion of the Training Period, you
                                 will be confirmed subject to your satisfactory performance.
                             </li>
-
                         @elseif ($sql->ServiceCondition == 'Probation')
                             <li>You shall be on probation for a period of 6 (Six) months from the Appointment Date
                                 <strong>(“Probation Period”)</strong> and after completion of the Probation Period, you
@@ -297,15 +295,26 @@ $elg = DB::table('candidate_entitlement')
                                         such notice period.</li>
                                 @endif
                             @else
-                                @if ($sql->Department == 6 || $sql->Department == 3 || $sql->Department == 2)
-                                    {{-- Salses && PD  && R&D --}}
+                                @if ($sql->Department == 6 || $sql->Department == 3)
+                                    {{-- Salses && PD --}}
                                     <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
                                         terminate this
                                         employment by giving 1 (One) months’ notice in writing or salary in lieu
                                         of such notice period. Pursuant to your confirmation, the aforementioned notice
                                         period shall be of @if ($sql->Department == 6 || $sql->Department == 3)
-                                        3 (Three) months @else 1 (One) month
+                                            3 (Three) months
+                                        @else
+                                            1 (One) month
                                         @endif in writing or the salary in lieu thereof.
+                                    </li>
+                                @elseif($sql->Department == 2)
+                                    {{-- R&D --}}
+                                    <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
+                                        terminate this
+                                        employment by giving 3 (Three) months’ notice in writing or salary in lieu
+                                        of such notice period. Pursuant to your confirmation, the aforementioned notice
+                                        period shall be of 3 (Three) month
+                                        in writing or the salary in lieu thereof.
                                     </li>
                                 @else
                                     <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
@@ -879,7 +888,7 @@ $elg = DB::table('candidate_entitlement')
                         $('#GPRS').val('{{ $elg->GPRS }}');
                     </script>
 
-                  {{--   <p class="text-center"><b><u>LIST OF DOCUMENTS REQUIRED DURING APPOINTMENT</u></b></p>
+                    {{-- <p class="text-center"><b><u>LIST OF DOCUMENTS REQUIRED DURING APPOINTMENT</u></b></p>
                     <ol>
                         <li style="font-size:14px;">Form 16/Investment Declaration</li>
                         <li style="font-size:14px;">6 colored formal Passport Size Photos with White background</li>
