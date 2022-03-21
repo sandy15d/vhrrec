@@ -380,12 +380,12 @@
                         $("#TechScreeningDate").attr('min', res.CandidateDetail.IntervDt);  
                         if (res.CandidateDetail.ResScreened != null) {
                             $("#TechScreeningDate").val(res.CandidateDetail.ResScreened);
-                        } else {
+                        } /* else {
                             var now = new Date();
                             var today = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate();
                           
                             $("#TechScreeningDate").val(today);
-                        }
+                        } */
                         $("#InterviewTime").val(res.CandidateDetail.IntervTime);
                         $("#InterviewLocation").val(res.CandidateDetail.IntervLoc);
                         $("#InterviewPannel").val(res.CandidateDetail.IntervPanel);
