@@ -586,8 +586,7 @@ $sql = DB::table('offerletterbasic_history')
                             @if ($sql->FourWheel != '')
                                 <tr>
                                     <td></td>
-                                    <td style="width:502px;">*Four Wheeler (Max: 2000 km per month, 24000 km per
-                                        Annum)
+                                    <td style="width:502px;">*Four Wheeler 
                                     </td>
                                     <td class="text-center">{{ $sql->FourWheel }}</td>
                                 </tr>

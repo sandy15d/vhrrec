@@ -604,8 +604,7 @@ $elg = DB::table('candidate_entitlement')
                             @if ($elg->FourWheel != '')
                                 <tr>
                                     <td></td>
-                                    <td style="width:502px;">*Four Wheeler (Max: 2000 km per month, 24000 km per
-                                        Annum)
+                                    <td style="width:502px;">*Four Wheeler 
                                     </td>
                                     <td class="text-center">{{ $elg->FourWheel }}</td>
                                 </tr>

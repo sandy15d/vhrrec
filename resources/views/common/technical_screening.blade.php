@@ -80,7 +80,7 @@
 
         </div>
         <!--end breadcrumb-->
-      
+
 
         <div class="card border-top border-0 border-4 border-primary">
             <div class="card-body table-responsive">
@@ -131,7 +131,7 @@
                                 </tr>
                                 <tr>
                                     <th>Date Resume Screened</th>
-                               
+
                                     <td><input type="date" name="TechScreeningDate" id="TechScreeningDate"
                                             class="form-control form-control-sm">
                                     </td>
@@ -151,8 +151,7 @@
                                 <tr id="rejct_tr" class="d-none">
                                     <th>Reject Remark</th>
                                     <td>
-                                        <textarea name="RejectRemark" id="RejectRemark" rows="2"
-                                            class="form-control form-control-sm"></textarea>
+                                        <textarea name="RejectRemark" id="RejectRemark" rows="2" class="form-control form-control-sm"></textarea>
                                         <input type="checkbox" name="RegretMail" id="RegretMail" value="Yes"> Send Regret
                                         mail to Candidate
                                     </td>
@@ -198,8 +197,7 @@
                                 <tr id="intervpannel_tr" class="d-none">
                                     <th>Interview Pannel Members</th>
                                     <td>
-                                        <textarea name="InterviewPannel" id="InterviewPannel"
-                                            class="form-control form-control-sm"></textarea>
+                                        <textarea name="InterviewPannel" id="InterviewPannel" class="form-control form-control-sm"></textarea>
                                     </td>
                                 </tr>
                                 <tr id="intervelg_tr" class="d-none">
@@ -235,8 +233,7 @@
                                 <tr id="blacklistremark_tr" class="d-none">
                                     <th>Remark for Blacklisting:</th>
                                     <td>
-                                        <textarea name="BlackListRemark" id="BlackListRemark" rows="2"
-                                            class="form-control form-control-sm"></textarea>
+                                        <textarea name="BlackListRemark" id="BlackListRemark" rows="2" class="form-control form-control-sm"></textarea>
                                     </td>
                                 </tr>
                             </table>
@@ -377,15 +374,16 @@
                             .attr('checked',
                                 'checked');
                         $("#InterviewDate").val(res.CandidateDetail.IntervDt);
-                       // $("#TechScreeningDate").attr('min', res.CandidateDetail.IntervDt);  
+                        // $("#TechScreeningDate").attr('min', res.CandidateDetail.IntervDt);  
                         if (res.CandidateDetail.ResScreened != null) {
                             $("#TechScreeningDate").val(res.CandidateDetail.ResScreened);
-                        } /* else {
-                            var now = new Date();
-                            var today = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate();
-                          
-                            $("#TechScreeningDate").val(today);
-                        } */
+                        }
+                        /* else {
+                                                   var now = new Date();
+                                                   var today = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate();
+                                                 
+                                                   $("#TechScreeningDate").val(today);
+                                               } */
                         $("#InterviewTime").val(res.CandidateDetail.IntervTime);
                         $("#InterviewLocation").val(res.CandidateDetail.IntervLoc);
                         $("#InterviewPannel").val(res.CandidateDetail.IntervPanel);
@@ -545,11 +543,61 @@
         table = $('#candidate_table').DataTable({
             processing: true,
             serverSide: true,
-            ordering: false,
-            searching: false,
-            lengthChange: false,
             info: true,
+            searching: false,
+            ordering: false,
+            lengthChange: true,
+            lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
             destroy: true,
+            dom: 'Blfrtip' ,
+            buttons: [
+
+
+
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i>',
+                    titleAttr: 'Excel',
+                    title: $('.download_label').html(),
+                    exportOptions: {
+                        columns: ':visible'
+
+                    }
+                },
+
+
+
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="fa fa-file-pdf-o"></i>',
+                    titleAttr: 'PDF',
+                    title: $('.download_label').html(),
+                    exportOptions: {
+                        columns: ':visible'
+
+                    }
+                },
+
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i>',
+                    titleAttr: 'Print',
+                    title: $('.download_label').html(),
+                    customize: function(win) {
+                        $(win.document.body)
+                            .css('font-size', '10pt');
+
+                        $(win.document.body).find('table')
+                            .addClass('compact')
+                            .css('font-size', 'inherit');
+                    },
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+
+
+            ],
             ajax: {
                 url: "{{ route('getTechnicalSceeningCandidate') }}",
                 headers: {
@@ -569,10 +617,10 @@
                     "data": null,
                     "defaultContent": ''
                 },
-               /*  {
-                    data: 'chk',
-                    name: 'chk'
-                }, */
+                /*  {
+                     data: 'chk',
+                     name: 'chk'
+                 }, */
                 {
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex'

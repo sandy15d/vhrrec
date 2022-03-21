@@ -131,8 +131,7 @@
                             <tr>
                                 <td>Other Benefit</td>
                                 <td>
-                                    <textarea name="OtherBenefit" id="OtherBenefit" cols="10" rows="3"
-                                        class="form-control form-control-sm"></textarea>
+                                    <textarea name="OtherBenefit" id="OtherBenefit" cols="10" rows="3" class="form-control form-control-sm"></textarea>
                                 </td>
                             </tr>
                             <tr>
@@ -285,14 +284,15 @@
                 lengthChange: false,
                 info: true,
                 dom: 'Bfrtip',
-                buttons: [
-                    {
+                buttons: [{
                         extend: 'excelHtml5',
                         text: '<i class="fa fa-file-excel-o"></i>',
                         titleAttr: 'Excel',
                         title: $('.download_label').html(),
                         exportOptions: {
-                            columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                            modifier: {
+                                page: 'all'
+                            }
 
                         }
                     },
@@ -304,7 +304,9 @@
                         titleAttr: 'PDF',
                         title: $('.download_label').html(),
                         exportOptions: {
-                            columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                            modifier: {
+                                page: 'all'
+                            }
 
                         }
                     },
@@ -323,11 +325,13 @@
                                 .css('font-size', 'inherit');
                         },
                         exportOptions: {
-                            columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                            modifier: {
+                                page: 'all'
+                            }
                         }
                     },
 
-                  
+
                 ],
                 ajax: {
                     url: "{{ route('get_active_trainee') }}",
@@ -366,7 +370,7 @@
                         name: 'Department'
                     },
 
-                   
+
                     {
                         data: 'Doj',
                         name: 'Doj'
