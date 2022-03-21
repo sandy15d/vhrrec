@@ -34,7 +34,7 @@
                                             <td>{{$value->ReferenceNo}}</td>
                                             <td>{{$value->FName}} {{$value->LName}}</td>
                                             <td>{{date('d-m-Y',strtotime($value->SubDate))}}</td>
-                                            <td>  <span style="margin-left: 20px;"><a href="javascript:void(0);"
+                                            <td>  <span style="margin-left: 20px; margin-right:10px;"><a href="javascript:void(0);"
                                                 onclick='window.open("{{ route('firob_result') }}?jcid={{ $value->JCId }}", "", "width=750,height=900");'>Result
                                                 1</a> </span> | <span style="margin-left: 20px;"><a
                                                 href="javascript:void(0);"
@@ -44,6 +44,8 @@
                                     @endforeach
                                 </tbody>
                             </table>
+
+                            {{ $report_list->appends([])->links('vendor.pagination.custom') }}
                         </div>
                     </div>
                 </div>
