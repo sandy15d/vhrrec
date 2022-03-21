@@ -184,8 +184,7 @@
                             <tr>
                                 <td>Interview Panel Members</td>
                                 <td>
-                                    <textarea name="IntervPanel2" id="IntervPanel2" cols="10" rows="3"
-                                        class="form-control form-control-sm"></textarea>
+                                    <textarea name="IntervPanel2" id="IntervPanel2" cols="10" rows="3" class="form-control form-control-sm"></textarea>
                                 </td>
                             </tr>
                             <tr>
@@ -469,8 +468,58 @@
                 serverSide: true,
                 ordering: false,
                 searching: false,
-                lengthChange: false,
+                lengthChange: true,
                 info: true,
+                lengthMenu: [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
+                destroy: true,
+                dom: 'Blfrtip',
+                buttons: [{
+                        extend: 'excelHtml5',
+                        text: '<i class="fa fa-file-excel-o"></i>',
+                        titleAttr: 'Excel',
+                        title: $('.download_label').html(),
+                        exportOptions: {
+                            columns: ':visible'
+
+                        }
+                    },
+
+
+
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fa fa-file-pdf-o"></i>',
+                        titleAttr: 'PDF',
+                        title: $('.download_label').html(),
+                        exportOptions: {
+                            columns: ':visible'
+
+                        }
+                    },
+
+                    {
+                        extend: 'print',
+                        text: '<i class="fa fa-print"></i>',
+                        titleAttr: 'Print',
+                        title: $('.download_label').html(),
+                        customize: function(win) {
+                            $(win.document.body)
+                                .css('font-size', '10pt');
+
+                            $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                        },
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+
+
+                ],
                 ajax: {
                     url: "{{ route('getInterviewTrackerCandidate') }}",
                     headers: {

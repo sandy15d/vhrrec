@@ -551,9 +551,6 @@
             destroy: true,
             dom: 'Blfrtip' ,
             buttons: [
-
-
-
                 {
                     extend: 'excelHtml5',
                     text: '<i class="fa fa-file-excel-o"></i>',
