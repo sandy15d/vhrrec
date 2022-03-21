@@ -1423,10 +1423,10 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Job Application History </h6>
-                                <div class="table-responsive">
+                               
                                     <table class="table table-bordered text-center">
                                         <thead>
-                                            <th>Action</th>
+                                            <th style="width: 50%">Action</th>
                                             <th>Date</th>
                                         </thead>
                                         <tbody>
@@ -1507,7 +1507,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                             @endif
                                         </tbody>
                                     </table>
-                                </div>
+                              
                             </div>
                         </div>
                     </div>
