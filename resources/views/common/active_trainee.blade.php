@@ -281,9 +281,10 @@
                 serverSide: true,
                 ordering: false,
                 searching: false,
-                lengthChange: false,
+                lengthChange: true,
+                lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
                 info: true,
-                dom: 'Bfrtip',
+                dom: 'Blfrtip' ,
                 buttons: [{
                         extend: 'excelHtml5',
                         text: '<i class="fa fa-file-excel-o"></i>',

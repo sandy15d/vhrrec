@@ -252,20 +252,11 @@
                 info: true,
                 searching: false,
                 ordering: false,
-                //  dom: 'Bfrtip', //enable 
-                lengthChange: false,
+                dom: 'Blfrtip' ,
+                lengthChange: true,
+                lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
                 destroy: true,
                 buttons: [
-
-                    {
-                        extend: 'copyHtml5',
-                        text: '<i class="fa fa-files-o"></i>',
-                        titleAttr: 'Copy',
-                        title: $('.download_label').html(),
-                        exportOptions: {
-                            columns: ':visible'
-                        }
-                    },
 
                     {
                         extend: 'excelHtml5',
@@ -278,15 +269,7 @@
                         }
                     },
 
-                    {
-                        extend: 'csvHtml5',
-                        text: '<i class="fa fa-file-text-o"></i>',
-                        titleAttr: 'CSV',
-                        title: $('.download_label').html(),
-                        exportOptions: {
-                            columns: ':visible'
-                        }
-                    },
+                   
 
                     {
                         extend: 'pdfHtml5',
@@ -319,13 +302,7 @@
                         }
                     },
 
-                    {
-                        extend: 'colvis',
-                        text: '<i class="fa fa-columns"></i>',
-                        titleAttr: 'Columns',
-                        title: $('.download_label').html(),
-                        postfixButtons: ['colvisRestore']
-                    },
+                   
                 ],
 
                 ajax: {
