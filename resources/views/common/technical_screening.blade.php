@@ -377,7 +377,7 @@
                             .attr('checked',
                                 'checked');
                         $("#InterviewDate").val(res.CandidateDetail.IntervDt);
-                        $("#TechScreeningDate").attr('min', res.CandidateDetail.IntervDt);  
+                       // $("#TechScreeningDate").attr('min', res.CandidateDetail.IntervDt);  
                         if (res.CandidateDetail.ResScreened != null) {
                             $("#TechScreeningDate").val(res.CandidateDetail.ResScreened);
                         } /* else {
