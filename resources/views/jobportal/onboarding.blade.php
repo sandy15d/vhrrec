@@ -2879,14 +2879,15 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
 
                                                 </div>
                                             </form>
-                                        </div>
+                                        </div>  
 
                                         <div id="document" class="tab-pane" role="tabpanel"
                                             aria-labelledby="step-2"
                                             style="position: static; left: auto; width: 1017px; display: none;">
                                             <div class="row">
                                                 <h6>Provide documents :</h6>
-                                                <p class="text-danger fw-bold">Note: Please upload pdf file only.
+                                                <p class="text-danger fw-bold">Note: Please upload pdf file only. <br>
+                                                    Click on Download to download file. <br>Fill the form and upload the file.
                                                 </p>
                                                 <div class="row">
                                                     <div class="col-lg-10">
@@ -3040,7 +3041,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                 </tr>
                                                                 <tr>
 
-                                                                    <td>PF Nomination Form 2
+                                                                    <td>PF Nomination Form 2 (<a href='https://hrrec.vnress.in/assets/documents/pf_form2.pdf' target='_blank'>Download</a>)
                                                                     </td>
                                                                     <td>
                                                                         <input type="file" name="PFForm2" id="PFForm2"
@@ -3059,7 +3060,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                 </tr>
                                                                 <tr>
 
-                                                                    <td>PF Declaration Form 11
+                                                                    <td>PF Declaration Form 11 (<a href='https://hrrec.vnress.in/assets/documents/pf_form11.pdf' target='_blank'>Download</a>)
                                                                     </td>
                                                                     <td>
                                                                         <input type="file" name="PF_Form11"
@@ -3079,7 +3080,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                 </tr>
                                                                 <tr>
 
-                                                                    <td>Gratuity Nomination Form
+                                                                    <td>Gratuity Nomination Form (<a href='https://hrrec.vnress.in/assets/documents/gratutity.pdf' target='_blank'>Download</a>)
                                                                     </td>
                                                                     <td>
                                                                         <input type="file" name="GratuityForm"
@@ -3099,7 +3100,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                 </tr>
                                                                 <tr>
 
-                                                                    <td>ESIC Declaration Form 1
+                                                                    <td>ESIC Declaration Form 1 (<a href='https://hrrec.vnress.in/assets/documents/esic_declaration.pdf' target='_blank'>Download</a>)
                                                                     </td>
                                                                     <td>
                                                                         <input type="file" name="ESICForm" id="ESICForm"
@@ -3118,7 +3119,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                 </tr>
                                                                 <tr>
 
-                                                                    <td>Family Declaration Form 1(A)
+                                                                    <td>Family Declaration Form 1(A) (<a href='https://hrrec.vnress.in/assets/documents/esic_family.pdf' target='_blank'>Download</a>)
                                                                     </td>
                                                                     <td>
                                                                         <input type="file" name="ESIC_Family"
@@ -3139,7 +3140,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
 
                                                                 <tr>
 
-                                                                    <td>Health Declaration Form
+                                                                    <td>Health Declaration Form (<a href='https://hrrec.vnress.in/assets/documents/health_declaration.pdf' target='_blank'>Download</a>)
                                                                     </td>
                                                                     <td>
                                                                         <input type="file" name="Health" id="Health"
@@ -3159,7 +3160,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                 <tr>
 
                                                                     <td>Declaration for Compliance to Ethical Financial
-                                                                        Dealings
+                                                                        Dealings (<a href='https://hrrec.vnress.in/assets/documents/ethical_compliance.pdf' target='_blank'>Download</a>)
                                                                     </td>
                                                                     <td>
                                                                         <input type="file" name="Ethical" id="Ethical"
