@@ -9,8 +9,49 @@
     </style>
     <div class="page-content">
         <!--breadcrumb-->
-        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3 download_label">Allocated MRF Details</div>
+        <div class="page-breadcrumb align-items-center mb-3">
+           
+
+            <div class="row">
+                <div class="breadcrumb-title pe-3 download_label col-3">Allocated MRF Details</div>
+                <div class="col-2">
+                    <select name="Fill_Company" id="Fill_Company" class="form-select form-select-sm"
+                        onchange="GetAllocatedMrf(); GetDepartment();">
+                        <option value="">Select Company</option>
+                        @foreach ($company_list as $key => $value)
+                            <option value="{{ $key }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-2">
+
+                    <select name="Fill_Department" id="Fill_Department" class="form-select form-select-sm"
+                        onchange="GetAllocatedMrf();">
+                        <option value="">Select Department</option>
+
+                    </select>
+                </div>
+                <div class="col-2">
+                    <select name="Year" id="Year" class="form-select form-select-sm" onchange="GetAllocatedMrf();">
+                        <option value="">Select Year</option>
+                        @for ($i = 2021; $i <= date('Y'); $i++)
+                            <option value="{{ $i }}">{{ $i }}</option>
+                        @endfor
+                    </select>
+                </div>
+                <div class="col-2">
+                    <select name="Month" id="Month" class="form-select form-select-sm" onchange="GetAllocatedMrf();">
+                        <option value="">Select Month</option>
+                        @foreach ($months as $key => $value)
+                            <option value="{{ $key }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col">
+                    <button type="reset" class="btn btn-danger btn-sm" id="reset"><i class="bx bx-refresh"></i></button>
+                </div>
+            </div>
+
         </div>
         <!--end breadcrumb-->
         <hr />
@@ -26,43 +67,7 @@
                                 style="font-size: 10px;">{{ $CloseMRF }}</span></button>
                     </div>
 
-                    <div class="col-2">
-                        <select name="Fill_Company" id="Fill_Company" class="form-select form-select-sm"
-                            onchange="GetAllocatedMrf(); GetDepartment();">
-                            <option value="">Select Company</option>
-                            @foreach ($company_list as $key => $value)
-                                <option value="{{ $key }}">{{ $value }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-2">
 
-                        <select name="Fill_Department" id="Fill_Department" class="form-select form-select-sm"
-                            onchange="GetAllocatedMrf();">
-                            <option value="">Select Department</option>
-
-                        </select>
-                    </div>
-                    <div class="col-2">
-                        <select name="Year" id="Year" class="form-select form-select-sm" onchange="GetAllocatedMrf();">
-                            <option value="">Select Year</option>
-                            @for ($i = 2021; $i <= date('Y'); $i++)
-                                <option value="{{ $i }}">{{ $i }}</option>
-                            @endfor
-                        </select>
-                    </div>
-                    <div class="col-2">
-                        <select name="Month" id="Month" class="form-select form-select-sm" onchange="GetAllocatedMrf();">
-                            <option value="">Select Month</option>
-                            @foreach ($months as $key => $value)
-                                <option value="{{ $key }}">{{ $value }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-1">
-                        <button type="reset" class="btn btn-danger btn-sm" id="reset"><i
-                                class="bx bx-refresh"></i></button>
-                    </div>
                 </div>
                 <hr />
                 <div>
@@ -173,8 +178,7 @@
                                         </font>
                                     </th>
                                     <td>
-                                        <textarea class="form-control" rows="1" name="Reason" id="Reason" tabindex="1"
-                                            autofocus></textarea>
+                                        <textarea class="form-control" rows="1" name="Reason" id="Reason" tabindex="1" autofocus></textarea>
                                         <span class="text-danger error-text Reason_error"></span>
 
                                     </td>
@@ -417,8 +421,7 @@
                                 <tr>
                                     <td>Reason to Close MRF</td>
                                     <td>
-                                        <textarea name="reason" id="reason"
-                                            class="form-control form-control-sm"></textarea>
+                                        <textarea name="reason" id="reason" class="form-control form-control-sm"></textarea>
                                         <span class="text-danger error-text reason_error"></span>
                                     </td>
                                 </tr>
@@ -440,7 +443,7 @@
         CKEDITOR.replace('editJobInfo');
 
         var MrfStatus = 'Open';
-        
+
         $('#MRFTable').DataTable({
             processing: true,
             serverSide: true,
@@ -588,7 +591,7 @@
 
         function GetAllocatedMrf() {
             $('#MRFTable').DataTable().draw(true);
-          
+
         }
 
 
