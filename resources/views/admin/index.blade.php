@@ -140,7 +140,7 @@ $upcommingJoining = DB::table('candjoining')
                         <div class="card-body">
                             <div class="d-flex align-items-center">
                                 <div>
-                                    <p class="mb-0 text-primary">Resume Pending for Tech. Screening</p>
+                                    <p class="mb-0 text-primary">Resume Pending for Screening</p>
                                 </div>
                                 <div class="ms-auto">
                                     <h4 class="my-1 text-danger">{{ $total_available }}</h4>
