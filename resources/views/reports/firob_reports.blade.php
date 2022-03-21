@@ -26,21 +26,33 @@
                                 </thead>
                                 <tbody>
                                     @php
-                                        $i=0;
+                                        $i = 1;
                                     @endphp
-                                    @foreach ($report_list as $item=>$value)
+                                    @foreach ($report_list as $item => $value)
                                         <tr>
-                                            <td>{{++$i}}</td>
-                                            <td>{{$value->ReferenceNo}}</td>
-                                            <td>{{$value->FName}} {{$value->LName}}</td>
-                                            <td>{{date('d-m-Y',strtotime($value->SubDate))}}</td>
-                                            <td>  <span style="margin-left: 20px; margin-right:10px;"><a href="javascript:void(0);"
-                                                onclick='window.open("{{ route('firob_result') }}?jcid={{ $value->JCId }}", "", "width=750,height=900");'>Result
-                                                1</a> </span> | <span style="margin-left: 20px;"><a
-                                                href="javascript:void(0);"
-                                                onclick='window.open("{{ route('firob_result_summery') }}?jcid={{ $value->JCId }}", "", "width=750,height=900");'>Result
-                                                2</a> </span></td>
+                                            <td> @php
+                                                if (Request::get('page') != null) {
+                                                    $y = (Request::get('page') - 1) * 10 + $i;
+                                                } else {
+                                                    $y = $i;
+                                                }
+                                                echo $y;
+                                                
+                                            @endphp</td>
+                                            <td>{{ $value->ReferenceNo }}</td>
+                                            <td>{{ $value->FName }} {{ $value->LName }}</td>
+                                            <td>{{ date('d-m-Y', strtotime($value->SubDate)) }}</td>
+                                            <td> <span style="margin-left: 20px; margin-right:10px;"><a
+                                                        href="javascript:void(0);"
+                                                        onclick='window.open("{{ route('firob_result') }}?jcid={{ $value->JCId }}", "", "width=750,height=900");'>Result
+                                                        1</a> </span> | <span style="margin-left: 20px;"><a
+                                                        href="javascript:void(0);"
+                                                        onclick='window.open("{{ route('firob_result_summery') }}?jcid={{ $value->JCId }}", "", "width=750,height=900");'>Result
+                                                        2</a> </span></td>
                                         </tr>
+                                        @php
+                                            $i++;
+                                        @endphp
                                     @endforeach
                                 </tbody>
                             </table>
