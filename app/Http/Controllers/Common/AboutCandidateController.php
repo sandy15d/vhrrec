@@ -91,6 +91,8 @@ class AboutCandidateController extends Controller
                     'SpouseName' => $SpouseName,
                     'Caste' => $Category,
                     'OtherCaste' => $OtherCategory ?? null,
+                    'FatherTitle' => $request->FatherTitle,
+                    'FatherName' => $request->FatherName,
                     'LastUpdated' => now()
 
                 ]

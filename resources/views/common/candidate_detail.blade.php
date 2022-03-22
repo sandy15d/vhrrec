@@ -1423,91 +1423,91 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Job Application History </h6>
-                               
-                                    <table class="table table-bordered text-center">
-                                        <thead>
-                                            <th style="width: 50%">Action</th>
-                                            <th>Date</th>
-                                        </thead>
-                                        <tbody>
+
+                                <table class="table table-bordered text-center">
+                                    <thead>
+                                        <th style="width: 50%">Action</th>
+                                        <th>Date</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Job Applied</td>
+                                            <td> {{ date('d-M-Y', strtotime($Rec->ApplyDate)) }}</td>
+                                        </tr>
+                                        @if ($Rec->Status != null)
                                             <tr>
-                                                <td>Job Applied</td>
-                                                <td> {{ date('d-M-Y', strtotime($Rec->ApplyDate)) }}</td>
+                                                <td>HR Screening Status</td>
+                                                <td>{{ $Rec->Status }}</td>
                                             </tr>
-                                            @if ($Rec->Status != null)
+                                        @endif
+                                        @if ($Rec->Status == 'Selected')
+                                            <tr>
+                                                <td>Forwarded for Technical Screening</td>
+                                                <td>{{ $Rec->FwdTechScr }}</td>
+                                            </tr>
+                                            @if ($Rec->FwdTechScr == 'Yes')
                                                 <tr>
-                                                    <td>HR Screening Status</td>
-                                                    <td>{{ $Rec->Status }}</td>
+                                                    <td>Technical Screening Sent Date</td>
+                                                    <td> {{ date('d-M-Y', strtotime($Rec->ReSentForScreen)) }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Technical Screening Status</td>
+                                                    <td>{{ $Rec->ScreenStatus }}</td>
                                                 </tr>
                                             @endif
-                                            @if ($Rec->Status == 'Selected')
-                                                <tr>
-                                                    <td>Forwarded for Technical Screening</td>
-                                                    <td>{{ $Rec->FwdTechScr }}</td>
-                                                </tr>
-                                                @if ($Rec->FwdTechScr == 'Yes')
-                                                    <tr>
-                                                        <td>Technical Screening Sent Date</td>
-                                                        <td> {{ date('d-M-Y', strtotime($Rec->ReSentForScreen)) }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Technical Screening Status</td>
-                                                        <td>{{ $Rec->ScreenStatus }}</td>
-                                                    </tr>
-                                                @endif
-                                            @endif
+                                        @endif
 
-                                            @if ($Rec->ScreenStatus == 'Shortlist')
-                                                <tr>
-                                                    <td>Inderview Date</td>
-                                                    <td>{{ date('d-M-Y', strtotime($Rec->IntervDt)) }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Interview Status</td>
-                                                    <td>{{ $Rec->IntervStatus }}</td>
-                                                </tr>
-                                            @endif
-                                            @if ($Rec->IntervStatus == '2nd Round Interview')
-                                                <tr>
-                                                    <td>2nd Round Interview Date</td>
-                                                    <td>{{ date('d-M-Y', strtotime($Rec->IntervDt2)) }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2nd Round Interview Status</td>
-                                                    <td>{{ $Rec->IntervStatus2 }}</td>
-                                                </tr>
-                                            @endif
-                                            @if ($Rec->SelectedForD != null)
-                                                <tr>
-                                                    <td>Offer Letter Sent</td>
-                                                    <td>{{ $OfBasic->OfferLetterSent ?? '' }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Offer Letter Status</td>
-                                                    <td>{{ $OfBasic->Answer ?? '' }}</td>
-                                                </tr>
-                                            @endif
+                                        @if ($Rec->ScreenStatus == 'Shortlist')
+                                            <tr>
+                                                <td>Inderview Date</td>
+                                                <td>{{ date('d-M-Y', strtotime($Rec->IntervDt)) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Interview Status</td>
+                                                <td>{{ $Rec->IntervStatus }}</td>
+                                            </tr>
+                                        @endif
+                                        @if ($Rec->IntervStatus == '2nd Round Interview')
+                                            <tr>
+                                                <td>2nd Round Interview Date</td>
+                                                <td>{{ date('d-M-Y', strtotime($Rec->IntervDt2)) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>2nd Round Interview Status</td>
+                                                <td>{{ $Rec->IntervStatus2 }}</td>
+                                            </tr>
+                                        @endif
+                                        @if ($Rec->SelectedForD != null)
+                                            <tr>
+                                                <td>Offer Letter Sent</td>
+                                                <td>{{ $OfBasic->OfferLetterSent ?? '' }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Offer Letter Status</td>
+                                                <td>{{ $OfBasic->Answer ?? '' }}</td>
+                                            </tr>
+                                        @endif
 
-                                            @if ($OfBasic != null && $OfBasic->Answer == 'Rejected')
-                                                <tr>
-                                                    <td>Offer Letter Rejected Reason</td>
-                                                    <td>{{ $OfBasic->RejReason }}</td>
-                                                </tr>
-                                            @endif
-                                            @if ($OfBasic != null && $OfBasic->Answer == 'Accepted')
-                                                <tr>
-                                                    <td>Joining Form Sent</td>
-                                                    <td>{{ $OfBasic->JoiningFormSent }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Joining Form Status</td>
-                                                    <td>{{ $Rec->FinalSubmit == 1 ? 'Submitted' : 'Not Submitted' }}
-                                                    </td>
-                                                </tr>
-                                            @endif
-                                        </tbody>
-                                    </table>
-                              
+                                        @if ($OfBasic != null && $OfBasic->Answer == 'Rejected')
+                                            <tr>
+                                                <td>Offer Letter Rejected Reason</td>
+                                                <td>{{ $OfBasic->RejReason }}</td>
+                                            </tr>
+                                        @endif
+                                        @if ($OfBasic != null && $OfBasic->Answer == 'Accepted')
+                                            <tr>
+                                                <td>Joining Form Sent</td>
+                                                <td>{{ $OfBasic->JoiningFormSent }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Joining Form Status</td>
+                                                <td>{{ $Rec->FinalSubmit == 1 ? 'Submitted' : 'Not Submitted' }}
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    </tbody>
+                                </table>
+
                             </div>
                         </div>
                     </div>
@@ -2228,8 +2228,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             <input type="text" class="form-control" placeholder="Subject" name="Subject" id="Subject">
                         </div>
                         <div class="mb-3">
-                            <textarea class="form-control" placeholder="Message" rows="10" cols="10" name="eMailMsg"
-                                id="eMailMsg"></textarea>
+                            <textarea class="form-control" placeholder="Message" rows="10" cols="10" name="eMailMsg" id="eMailMsg"></textarea>
                         </div>
                         <div class="mb-0">
                             <div style="float: right">
@@ -2316,6 +2315,16 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                     <form id="CandidatePersonalForm" action="{{ route('Candidate_PersonalData_Save') }}" method="POST">
 
                         <input type="hidden" name="P_JCId" id="P_JCId">
+
+                        <div class="form-group">
+                            <label for="FatherName">Father Name</label><br>
+                            <select name="FatherTitle" id="FatherTitle" class="form-select form-select-sm"
+                                style="width: 100px; display:initial">
+                                <option value="Mr.">Mr.</option>
+                                <option value="Late">Late</option>
+                            </select>
+                            <input type="text" name="FatherName" id="FatherName" class="form-control form-control-sm d-inline" style="width: 333px;">
+                        </div>
                         <div class="form-group">
                             <label>Gender</label>
                             <select name="Gender" id="Gender" class="form-select form-select-sm">
@@ -3244,8 +3253,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         </div>
                         <div class="form-group">
                             <label for="">Job Responsibility</label>
-                            <textarea name="CurrJobResponsibility" id="CurrJobResponsibility"
-                                class="form-control form-control-sm"></textarea>
+                            <textarea name="CurrJobResponsibility" id="CurrJobResponsibility" class="form-control form-control-sm"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="">Job Change Reason</label>
@@ -4873,6 +4881,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                 success: function(data) {
                     if (data.status == 200) {
                         $('#P_JCId').val(data.data.JCId);
+                        $("#FatherTitle").val(data.data.FatherTitle);
+                        $("#FatherName").val(data.data.FatherName);
                         $('#Gender').val(data.data.Gender);
                         $('#Aadhaar').val(data.data.Aadhaar);
                         $('#Nationality').val(data.data.Nationality);
@@ -5126,7 +5136,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                 dataType: "json",
                 success: function(data) {
                     if (data.status == 200) {
-                       
+
                         EducationCount = data.data.length;
                         for (var i = 1; i <= EducationCount; i++) {
                             if (i >= 7) {
@@ -5147,7 +5157,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         }
                     }
                 }
-                
+
             });
         } //GetQualification
 
@@ -6111,7 +6121,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $(form)[0].reset();
                         $('#education_info_modal').modal('hide');
                         toastr.success(data.msg);
-                      //  window.location.reload();
+                        //  window.location.reload();
                     }
                 }
             });
