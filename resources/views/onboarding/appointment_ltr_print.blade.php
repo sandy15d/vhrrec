@@ -331,7 +331,7 @@ $elg = DB::table('candidate_entitlement')
                             </ol>
                         </li>
                     </ul>
-                    <ol start="7">
+                    <ol start="8">
 
                         <li>
                             <strong>Transfer & Deputation: </strong>As per the business requirements and at the sole
