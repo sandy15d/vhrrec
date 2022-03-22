@@ -703,6 +703,9 @@ class OfferLtrController extends Controller
         if ($query && $query1) {
             $sql = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->select('jobapply.JCId', 'Aadhaar')->where('JAId', $JAId)->first();
             CandidateActivityLog::addToCandLog($sql->JCId, $sql->Aadhaar, 'Candidate Response to Offer Letter-' . $Answer);
+            if($Answer =='Rejected'){
+                CandidateActivityLog::addToCandLog($sql->JCId, $sql->Aadhaar, 'Candidate Offer Letter Rejection Reason -' . $RejReason); 
+            }
             return response()->json(['status' => 200, 'msg' => 'Response Submitted Successfully']);
         } else {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
