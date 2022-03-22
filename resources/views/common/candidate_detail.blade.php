@@ -2040,7 +2040,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                 Link</button>
                                         </div>
                                     </li>
-                                    @if ($Rec->InterviewSubmit == 1 || $OfBasic->JoiningFormSent == 'Yes')
+                                    @if ($Rec->InterviewSubmit == 1 || ($OfBasic != null && $OfBasic->JoiningFormSent == 'Yes'))
                                         <li>
                                             <div class="title" style="width: 150px;">Joining Form<span
                                                     style="float: right">:</span></div>
