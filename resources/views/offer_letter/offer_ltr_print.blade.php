@@ -57,7 +57,7 @@
             text-align: justify;
             font-family: "Cambria", serif;
             font-size: 17px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         @page {
