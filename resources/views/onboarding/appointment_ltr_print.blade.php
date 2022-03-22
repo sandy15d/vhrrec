@@ -446,7 +446,7 @@ $elg = DB::table('candidate_entitlement')
                             </ol>
                         </li>
                     </ul>
-                    <ol start="12">
+                    <ol start="13">
                         <li>This agreement shall be governed by laws of India. All matters related to this agreement
                             shall be subject to the exclusive jurisdiction of the courts at Raipur, Chhattisgarh.</li>
                     </ol>
