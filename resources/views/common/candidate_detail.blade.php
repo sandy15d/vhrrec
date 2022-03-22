@@ -1864,7 +1864,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                             onclick="ServiceBondGen({{ $Rec->JAId }})"
                                                             style="font-size: 16px;cursor: pointer; display: ">Generate </i>
                                                     @else
-                                                        <a href="{{ route('service_agreement') }}?jaid={{ base64_encode($JAId) }}"
+                                                        <a href="{{ route('service_bond') }}?jaid={{ base64_encode($JAId) }}"
                                                             target="_blank"> View</a> | <a href="javascript:void(0);"
                                                             onclick="PrintServiceBondLetter('{{ route('service_bond_print') }}?jaid={{ base64_encode($Rec->JAId) }}');">
                                                             Print</a>
