@@ -163,7 +163,7 @@ $elg = DB::table('candidate_entitlement')
         <div id="offer_letter">
             <div class="page">
                 <div class="subpage">
-                    <p style="margin-bottom:70px;"></p>
+                    <p style="margin-bottom:65px;"></p>
                     <p style="font-size: 16px;"><b>Ref:</b> {{ $sql->LtrNo }}
                         <span style="float:right"><b>Date:</b>
                             @if ($sql->LtrDate == null)
