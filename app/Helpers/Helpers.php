@@ -160,7 +160,7 @@ function getGradeValue($GradeId)
 
 function getHQ($HqId)
 {
-	if ($HqId == null) {
+	if ($HqId == null || $HqId == 0) {
 		return "";
 	} else {
 		$HqName = Db::table('master_headquater')->select('HqName')->where('HqId', $HqId)->first();
@@ -170,11 +170,17 @@ function getHQ($HqId)
 
 function getStateCode($StateId)
 {
-	if ($StateId == null) {
+	if ($StateId == null || $StateId == 0) {
 		return "";
 	} else {
 		$StateCode = Db::table('states')->select('StateCode')->where('StateId', $StateId)->first();
-		return $StateCode->StateCode;
+
+
+		if (is_null($StateCode)) {
+			return '';
+		} else {
+			return $StateCode->StateCode;
+		}
 	}
 }
 
@@ -301,7 +307,7 @@ function getCollegeById($id)
 		if (is_null($institute)) {
 			return '';
 		} else {
-		return $institute->InstituteName;
+			return $institute->InstituteName;
 		}
 	}
 }
@@ -370,8 +376,12 @@ function getResumeSourceById($id)
 
 function getHqStateCode($StateId)
 {
-	$StateCode = Db::table('master_state')->select('StateCode')->where('StateId', $StateId)->first();
-	return $StateCode->StateCode;
+	if ($StateId == null || $StateId == 0) {
+		return "";
+	} else {
+		$StateCode = Db::table('master_state')->select('StateCode')->where('StateId', $StateId)->first();
+		return $StateCode->StateCode;
+	}
 }
 
 function CheckCommControl($Id)

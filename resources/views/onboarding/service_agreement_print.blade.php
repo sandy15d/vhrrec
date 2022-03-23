@@ -126,7 +126,7 @@ $sql = DB::table('jobapply')
     ->select('appointing.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobcandidates.Aadhaar', 'jobcandidates.Email', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
     ->where('jobapply.JAId', $JAId)
     ->first();
-
+$months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 'Four' => '4 (Four)', 'Five' => '5 (Five)', 'Six' => '6 (Six)', 'Seven' => '7 (Seven)', 'Eight' => '8 (Eight)', 'Nine' => '9 (Nine)', 'Ten' => '10 (Ten)', 'Eleven' => '11 (Eleven)', 'Twelve' => '12 (Twelve)'];
 @endphp
 
 <body>
@@ -145,7 +145,6 @@ $sql = DB::table('jobapply')
                         <span class="float float-right"><b>Date:
                                 @if ($sql->Agr_Date == null)
                                     {{ date('d-M-Y') }}
-
                                 @else
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @endif
@@ -540,12 +539,28 @@ $sql = DB::table('jobapply')
                             all times keep the Manager promptly and fully informed (in writing if so requested) of his /
                             her conduct of the business or affairs of the Company and also provide such further
                             information, written records and/or explanation as the Manager may require.</span></p>
-                    <p class="abc"><span>2.3</span> <span>The Executive’s principal place of employment shall
-                            be at
-                            <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>,
-                            India. The Executive may be required to (i) relocate to other locations in India (ii)
-                            undertake such travel in India; and/or, (iii) undertake travel overseas, from time to time,
-                            as may be necessary in the interests of the Company's business.</span></p>
+                    <p class="abc"><span>2.3</span> <span>
+
+
+                            @if($sql->TempS == 1 && $sql->FixedS == 0)
+                                For initial {{ $months_word[$sql->TempM] }} months, The Executive’s place of
+                                employment shall
+                                be at
+                                <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
+                                India. The Executive may be required to (i) relocate to other locations in India (ii)
+                                undertake such travel in India; and/or, (iii) undertake travel overseas, from time to
+                                time,
+                                as may be necessary in the interests of the Company's business.
+                            @else
+                                The Executive’s principal place of employment shall
+                                be at
+                                <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>,
+                                India. The Executive may be required to (i) relocate to other locations in India (ii)
+                                undertake such travel in India; and/or, (iii) undertake travel overseas, from time to
+                                time,
+                                as may be necessary in the interests of the Company's business.
+                            @endif
+                        </span></p>
                     <p class="abc"><span>2.4</span> <span>The Executive shall work during the regular
                             business hours of the Company as per its policy in effect from time to time. Notwithstanding
                             the foregoing, the Executive shall work such additional hours as may be necessary for the
@@ -1389,7 +1404,7 @@ $sql = DB::table('jobapply')
                             this Agreement by signing any one or more of such originals or counterparts. The delivery of
                             signed counterparts by electronic mail in “portable document format” (“.pdf”) shall be as
                             effective as signing and delivering the counterpart in person.</span></p>
-                            <p style="margin-bottom: 50px;"></p>
+                    <p style="margin-bottom: 50px;"></p>
                     <p><b>IN WITNESS WHEREOF,</b> the parties hereto have executed this Agreement as of the date first
                         set forth above.</p>
                     <br>
@@ -1410,10 +1425,10 @@ $sql = DB::table('jobapply')
                     <br><br><br>
                     <p>---------------------------------------</p>
                     <p>Date: ---------------------------------------</p>
-                           
+
                 </div>
 
-               
+
             </div>
 
             <div class="page d-none">

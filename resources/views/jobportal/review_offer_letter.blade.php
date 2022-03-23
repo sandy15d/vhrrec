@@ -170,6 +170,7 @@ $candJoin = DB::table('candjoining')
     ->where('JAId', $JAId)
     ->first();
 $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
+$months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 'Four' => '4 (Four)', 'Five' => '5 (Five)', 'Six' => '6 (Six)', 'Seven' => '7 (Seven)', 'Eight' => '8 (Eight)', 'Nine' => '9 (Nine)', 'Ten' => '10 (Ten)', 'Eleven' => '11 (Eleven)', 'Twelve' => '12 (Twelve)'];
 @endphp
 
 <body>
@@ -222,7 +223,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                 necessary in the interests of the Company's business.
                             </li>
                         @elseif($sql->TempS == 1 && $sql->FixedS == 1)
-                            <li>For initial {{ $sql->TempM }} months, your temporary headquarter will be
+                            <li>For initial {{ $months_word[$sql->TempM] }} months, your temporary headquarter will be
                                 <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
                                 and then
                                 your principal place of employment shall be at
@@ -231,6 +232,11 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                 required to (i) relocate to other locations in India; and/or (ii) undertake such travel
                                 in India, (iii) overseas locations, from time to time, as may be necessary in the
                                 interests of the Company's business.
+                            </li>
+                        @elseif($sql->TempS == 1 && $sql->FixedS == 0)
+                            <li>For initial {{ $months_word[$sql->TempM] }} months, your temporary headquarter will be
+                                <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
+                                However, you may be required to (i) relocate to other locations in India; and/or (ii) undertake such travel in India, iii) overseas locations, from time to time, as may be necessary in the interests of the Company's business.
                             </li>
                         @else
                             <li>Your principal place of employment shall be at
@@ -273,7 +279,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
                                 .
                             </li>
                         @elseif ($sql->ServiceCondition == 'Training')
-                            <li>You shall be on training for a period of 1 year from the Appointment Date
+                            <li>You shall be on training for a period of 1 (One) year from the Appointment Date
                                 <strong>(“Training Period”)</strong> and after completion of the Training Period, you
                                 will be confirmed subject to your satisfactory performance.
                             </li>
@@ -287,7 +293,7 @@ $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
 
                         @if ($sql->ServiceBond == 'Yes')
                             <li>At the time of your appointment, you shall sign a service bond providing your consent to
-                                serve the company for a minimum period of <b>{{ $sql->ServiceBondYears }} </b>years
+                                serve the company for a minimum period of <b>{{ $months_word[$sql->ServiceBondYears] }} </b>years
                                 from the Appointment Date. In the event of dishonor of this service bond, you shall be
                                 liable to pay the company a sum of <b>{{ $sql->ServiceBondRefund }} %</b> of your
                                 annual

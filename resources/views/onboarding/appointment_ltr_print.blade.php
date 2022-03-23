@@ -129,6 +129,7 @@ $elg = DB::table('candidate_entitlement')
     ->select('*')
     ->where('JAId', $JAId)
     ->first();
+    $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 'Four' => '4 (Four)', 'Five' => '5 (Five)', 'Six' => '6 (Six)', 'Seven' => '7 (Seven)', 'Eight' => '8 (Eight)', 'Nine' => '9 (Nine)', 'Ten' => '10 (Ten)', 'Eleven' => '11 (Eleven)', 'Twelve' => '12 (Twelve)'];
 @endphp
 
 <body>
@@ -189,7 +190,7 @@ $elg = DB::table('candidate_entitlement')
                                     undertake such travel in India, (iii) overseas locations, from time to time, as may
                                     be necessary in the interests of the Company's business.</p>
                             @elseif($sql->TempS == 1 && $sql->FixedS == 1)
-                                <p><strong>Place of Posting:</strong> For initial {{ $sql->TempM }} months, your
+                            <p style="margin-bottom: 0px;"><strong>Place of Posting:</strong> For initial {{ $sql->TempM }} months, your
                                     temporary headquarter will be
                                     <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
                                     and then
@@ -200,8 +201,16 @@ $elg = DB::table('candidate_entitlement')
                                     travel in India, (iii) overseas locations, from time to time, as may be necessary in
                                     the interests of the Company's business.
                                 </p>
+                                @elseif($sql->TempS == 1 && $sql->FixedS == 0)
+                                <p style="margin-bottom: 0px;">For initial {{ $months_word[$sql->TempM] }} months, your temporary headquarter
+                                    will be
+                                    <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
+                                    However, you may be required to (i) relocate to other locations in India; and/or
+                                    (ii) undertake such travel in India, iii) overseas locations, from time to time, as
+                                    may be necessary in the interests of the Company's business.
+                                </p>
                             @else
-                                <p><strong>Place of Posting:</strong> Your principal place of employment shall be at
+                            <p style="margin-bottom: 0px;"><strong>Place of Posting:</strong> Your principal place of employment shall be at
                                     <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>.
                                     However, you may be required
                                     to (i) relocate to other locations in India; and/or (ii) undertake such travel in

@@ -143,7 +143,7 @@ $sql = DB::table('jobapply')
     ->select('appointing.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobcandidates.MaritalStatus', 'jobcandidates.SpouseName', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
     ->where('jobapply.JAId', $JAId)
     ->first();
-    $ctc = DB::table('candidate_ctc')
+$ctc = DB::table('candidate_ctc')
     ->select('*')
     ->where('JAId', $JAId)
     ->first();
@@ -152,6 +152,7 @@ $elg = DB::table('candidate_entitlement')
     ->select('*')
     ->where('JAId', $JAId)
     ->first();
+$months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 'Four' => '4 (Four)', 'Five' => '5 (Five)', 'Six' => '6 (Six)', 'Seven' => '7 (Seven)', 'Eight' => '8 (Eight)', 'Nine' => '9 (Nine)', 'Ten' => '10 (Ten)', 'Eleven' => '11 (Eleven)', 'Twelve' => '12 (Twelve)'];
 @endphp
 
 <body>
@@ -200,7 +201,7 @@ $elg = DB::table('candidate_entitlement')
                         applicable from time to time, at the sole discretion of the Company.
                     </p>
 
-                    <ol >
+                    <ol>
                         <li>
                             <strong>Commencement of Service:</strong> The date of your appointment will be
                             {{ date('d-m-Y', strtotime($sql->JoinOnDt)) }} ("<strong>Appointment Date</strong>").
@@ -220,7 +221,7 @@ $elg = DB::table('candidate_entitlement')
                                     undertake such travel in India, (iii) overseas locations, from time to time, as may
                                     be necessary in the interests of the Company's business.</p>
                             @elseif($sql->TempS == 1 && $sql->FixedS == 1)
-                                <p><strong>Place of Posting:</strong> For initial {{ $sql->TempM }} months, your
+                            <p style="margin-bottom: 0px;"><strong>Place of Posting:</strong> For initial {{ $sql->TempM }} months, your
                                     temporary headquarter will be
                                     <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
                                     and then
@@ -231,8 +232,16 @@ $elg = DB::table('candidate_entitlement')
                                     travel in India, (iii) overseas locations, from time to time, as may be necessary in
                                     the interests of the Company's business.
                                 </p>
+                            @elseif($sql->TempS == 1 && $sql->FixedS == 0)
+                                <p style="margin-bottom: 0px;">For initial {{ $months_word[$sql->TempM] }} months, your temporary headquarter
+                                    will be
+                                    <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
+                                    However, you may be required to (i) relocate to other locations in India; and/or
+                                    (ii) undertake such travel in India, iii) overseas locations, from time to time, as
+                                    may be necessary in the interests of the Company's business.
+                                </p>
                             @else
-                                <p><strong>Place of Posting:</strong> Your principal place of employment shall be at
+                            <p style="margin-bottom: 0px;"><strong>Place of Posting:</strong> Your principal place of employment shall be at
                                     <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>.
                                     However, you may be required
                                     to (i) relocate to other locations in India; and/or (ii) undertake such travel in
@@ -373,7 +382,8 @@ $elg = DB::table('candidate_entitlement')
                         <li>
                             <strong>Termination of services: </strong>
                             <ol type="a">
-                                <li>In case of discontinuation of service, for more than 10 days, this contract may be terminated by the Company with immediate
+                                <li>In case of discontinuation of service, for more than 10 days, this contract may be
+                                    terminated by the Company with immediate
                                     effect and without any compensation thereof.</li>
 
                                 @php
@@ -459,13 +469,13 @@ $elg = DB::table('candidate_entitlement')
                                     period of employment.</li>
                                 <li>Your appointment is valid subject to your acceptance of the terms and conditions of
                                     this letter of appointment and submission of signed duplicate copy of this letter
-                                    and Service Agreement 
+                                    and Service Agreement
                                     @if ($sql->ServiceBond == 'Yes')
-                                    ,Service Bond 
+                                        ,Service Bond
                                     @endif
-                                    attached as Annexure C 
+                                    attached as Annexure C
                                     @if ($sql->ServiceBond == 'Yes')
-                                    and Annexure D  respectively
+                                        and Annexure D respectively
                                     @endif
                                     by you to the Company within same day from the date of issue of this
                                     letter.<br>
@@ -561,7 +571,7 @@ $elg = DB::table('candidate_entitlement')
             <div id="ctc">
                 <div class="page">
                     <div class="subpage">
-                      <br>
+                        <br>
                         <p class="text-center"><b>ANNEXURE A – COMPENSATION STRUCTURE</b></p>
                         <br>
                         <center>
@@ -648,7 +658,7 @@ $elg = DB::table('candidate_entitlement')
                                     <th>Total Cost to Company</th>
                                     <td class="text-center">{{ $ctc->total_ctc ?? '' }} </td>
                                 </tr>
-    
+
                             </table>
                         </center>
                         <p style="margin-bottom:0px;">&emsp;&emsp;*Bonus shall be paid as per The Code of Wages Act,
@@ -665,10 +675,10 @@ $elg = DB::table('candidate_entitlement')
                         <p><b>{{ $sql->SigningAuth }} </b>
                         </p>
                     </div>
-    
+
                 </div>
             </div>
-    
+
             <div id="entitlement">
                 <div class="page">
                     <div class="subpage">
@@ -696,7 +706,8 @@ $elg = DB::table('candidate_entitlement')
                                     <tr>
                                         <td></td>
                                         <td>Lodging for City in Category A</td>
-                                        <td class="text-center" style="width: 200px;">Rs. {{ $elg->LoadCityA }}</td>
+                                        <td class="text-center" style="width: 200px;">Rs. {{ $elg->LoadCityA }}
+                                        </td>
                                     </tr>
                                 @endif
                                 @if ($elg->LoadCityB != '')
@@ -734,14 +745,14 @@ $elg = DB::table('candidate_entitlement')
                                         </td>
                                         <td class="text-center">{{ $elg->DAHq }}</td>
                                     </tr>
-    
+
                                 @endif
                                 <tr>
                                     <td class="text-center"><?= ++$rowCount ?></td>
                                     <td colspan="2"><b>Travel Eligibility (For Official Purpose Only)</b></b></td>
-    
+
                                 </tr>
-    
+
                                 @if ($elg->TwoWheel != '')
                                     <tr>
                                         <td></td>
@@ -752,19 +763,19 @@ $elg = DB::table('candidate_entitlement')
                                 @if ($elg->FourWheel != '')
                                     <tr>
                                         <td></td>
-                                        <td style="width:502px;">*Four Wheeler 
+                                        <td style="width:502px;">*Four Wheeler
                                         </td>
                                         <td class="text-center">{{ $elg->FourWheel }}</td>
                                     </tr>
                                 @endif
-    
-    
+
+
                                 <tr>
                                     <td class="text-center"><?= ++$rowCount ?></td>
                                     <td colspan="2"><b>Mode of Travel outside HQ</b></b></td>
-    
+
                                 </tr>
-    
+
                                 <tr>
                                     <td></td>
                                     <td>Bus/Train</td>
@@ -777,35 +788,38 @@ $elg = DB::table('candidate_entitlement')
                                         <td>Flight</td>
                                         <td class="text-center"> {{ $elg->Flight_Class }}
                                             ({{ $elg->Flight_Remark }})
-    
+
                                         </td>
                                     </tr>
                                 @endif
-    
-    
-    
+
+
+
                                 @if ($elg->Mobile != '')
                                     <tr>
                                         <td class="text-center"><?= ++$rowCount ?></td>
                                         <td><b>Mobile Handset Eligibility</b>
                                             @if ($elg->GPRS == 1)
-                                            (Once in 2 Years) @else (Once in 3 Years)
+                                                (Once in 2 Years)
+                                            @else
+                                                (Once in 3 Years)
                                             @endif
                                         </td>
                                         <td class="text-center">Rs. {{ $elg->Mobile }}</td>
                                     </tr>
-    
+
                                 @endif
-    
-    
+
+
                                 @if ($elg->MExpense != '')
                                     <tr>
                                         <td class="text-center"><?= ++$rowCount ?></td>
                                         <td><b>Mobile Expense Reimbursement</b></b></td>
-                                        <td class="text-center">Rs. {{ $elg->MExpense }} / {{ $elg->MTerm }}</td>
+                                        <td class="text-center">Rs. {{ $elg->MExpense }} / {{ $elg->MTerm }}
+                                        </td>
                                     </tr>
                                 @endif
-    
+
                                 @if ($elg->Laptop != '')
                                     <tr>
                                         <td class="text-center"><?= ++$rowCount ?></td>
@@ -813,7 +827,7 @@ $elg = DB::table('candidate_entitlement')
                                         <td class="text-center">Rs. {{ $elg->Laptop }} </td>
                                     </tr>
                                 @endif
-    
+
                                 @if ($elg->HealthIns != '')
                                     <tr>
                                         <td class="text-center"><?= ++$rowCount ?></td>
@@ -821,31 +835,34 @@ $elg = DB::table('candidate_entitlement')
                                         <td class="text-center"> Rs. {{ $elg->HealthIns }}</td>
                                     </tr>
                                 @endif
-    
-    
+
+
                             </table>
                         </center>
-    
+
                         @if ($elg->TwoWheelLine == 1)
-                            <p style="padding-left: 20px;margin-bottom:5px;"> *2 Wheeler vehicle eligibility as per company
+                            <p style="padding-left: 20px;margin-bottom:5px;"> *2 Wheeler vehicle eligibility as per
+                                company
                                 vehicle policy.</p>
                         @endif
-    
+
                         @if ($elg->FourWheelLine == 1)
-                            <p style="padding-left: 20px;margin-bottom:5px;">*4 Wheeler vehicle eligibility as per company
+                            <p style="padding-left: 20px;margin-bottom:5px;">*4 Wheeler vehicle eligibility as per
+                                company
                                 vehicle policy.
                             </p>
                         @endif
-    
+
                         @if ($elg->TravelLine == 1)
-                            <p style="padding-left: 20px;margin-bottom:5px; text-align:justify">*Maximum travel km per month
+                            <p style="padding-left: 20px;margin-bottom:5px; text-align:justify">*Maximum travel km per
+                                month
                                 allowed for 4 wheeler is 2000
                                 km/month and overall travel including both 4 wheeler & 2 wheeler should not exceed more
                                 than
                                 3000
                                 km/month.</p>
                         @endif
-    
+
                         <br>
                         {{-- <p class="text-center"><b><u>LIST OF DOCUMENTS REQUIRED DURING APPOINTMENT</u></b></p>
                         <ol>
@@ -872,8 +889,8 @@ $elg = DB::table('candidate_entitlement')
                         <p><b> {{ $sql->SigningAuth }}</b>
                         </p>
                     </div>
-    
-    
+
+
                 </div>
             </div>
         </div>
