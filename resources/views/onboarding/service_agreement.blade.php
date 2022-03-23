@@ -523,7 +523,7 @@ $SQL = DB::getQueryLog();
                             all times keep the Manager promptly and fully informed (in writing if so requested) of his /
                             her conduct of the business or affairs of the Company and also provide such further
                             information, written records and/or explanation as the Manager may require.</span></p>
-                    <p class="abc"><span>2.3</span> <span>&nbsp;&nbsp;
+                    <p class="abc"><span>2.3</span> <span>
                         @if($sql->TempS == 1 && $sql->FixedS == 0)
                             For initial {{ $months_word[$sql->TempM] }} months, The Executive’s place of
                             employment shall
