@@ -145,6 +145,7 @@ $sql = DB::table('jobapply')
     ->select('appointing.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobcandidates.Aadhaar', 'jobcandidates.Email', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
     ->where('jobapply.JAId', $JAId)
     ->first();
+    $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 'Four' => '4 (Four)', 'Five' => '5 (Five)', 'Six' => '6 (Six)', 'Seven' => '7 (Seven)', 'Eight' => '8 (Eight)', 'Nine' => '9 (Nine)', 'Ten' => '10 (Ten)', 'Eleven' => '11 (Eleven)', 'Twelve' => '12 (Twelve)'];
 $SQL = DB::getQueryLog();
 //dd($SQL);
 @endphp
@@ -522,13 +523,25 @@ $SQL = DB::getQueryLog();
                             all times keep the Manager promptly and fully informed (in writing if so requested) of his /
                             her conduct of the business or affairs of the Company and also provide such further
                             information, written records and/or explanation as the Manager may require.</span></p>
-                    <p class="abc"><span>2.3</span> <span>&nbsp;&nbsp;The Executive’s principal place of
+                    <p class="abc"><span>2.3</span> <span>&nbsp;&nbsp;
+                        @if($sql->TempS == 1 && $sql->FixedS == 0)
+                            For initial {{ $months_word[$sql->TempM] }} months, The Executive’s place of
                             employment shall
+                            be at
+                            <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
+                            India. The Executive may be required to (i) relocate to other locations in India (ii)
+                            undertake such travel in India; and/or, (iii) undertake travel overseas, from time to
+                            time,
+                            as may be necessary in the interests of the Company's business.
+                        @else
+                            The Executive’s principal place of employment shall
                             be at
                             <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>,
                             India. The Executive may be required to (i) relocate to other locations in India (ii)
-                            undertake such travel in India; and/or, (iii) undertake travel overseas, from time to time,
-                            as may be necessary in the interests of the Company's business.</span></p>
+                            undertake such travel in India; and/or, (iii) undertake travel overseas, from time to
+                            time,
+                            as may be necessary in the interests of the Company's business.
+                        @endif</span></p>
                     <p class="abc"><span>2.4</span> <span>&nbsp;&nbsp;The Executive shall work during the
                             regular
                             business hours of the Company as per its policy in effect from time to time. Notwithstanding
