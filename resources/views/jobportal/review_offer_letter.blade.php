@@ -223,7 +223,8 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                 necessary in the interests of the Company's business.
                             </li>
                         @elseif($sql->TempS == 1 && $sql->FixedS == 1)
-                            <li>For initial {{ $months_word[$sql->TempM] }} months, your temporary headquarter will be
+                            <li>For initial {{ $months_word[$sql->TempM] }} months, your temporary headquarter will
+                                be
                                 <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
                                 and then
                                 your principal place of employment shall be at
@@ -234,9 +235,12 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                 interests of the Company's business.
                             </li>
                         @elseif($sql->TempS == 1 && $sql->FixedS == 0)
-                            <li>For initial {{ $months_word[$sql->TempM] }} months, your temporary headquarter will be
+                            <li>For initial {{ $months_word[$sql->TempM] }} months, your temporary headquarter will
+                                be
                                 <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
-                                However, you may be required to (i) relocate to other locations in India; and/or (ii) undertake such travel in India, iii) overseas locations, from time to time, as may be necessary in the interests of the Company's business.
+                                However, you may be required to (i) relocate to other locations in India; and/or (ii)
+                                undertake such travel in India, iii) overseas locations, from time to time, as may be
+                                necessary in the interests of the Company's business.
                             </li>
                         @else
                             <li>Your principal place of employment shall be at
@@ -250,15 +254,18 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
 
                         @if ($sql->Functional_R != 0 && $sql->Admins_R != 0)
                             <li>For administrative purpose you shall be reporting to
-                                <strong>{{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong>
+                                <strong>{{ getFullName($sql->A_ReportingManager) }},
+                                    {{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong>
                                 and for technical purpose you shall be reporting to
-                                <strong>{{ getEmployeeDesignation($sql->F_ReportingManager) }}</strong>
+                                <strong>{{ getFullName($sql->F_ReportingManager) }},
+                                    {{ getEmployeeDesignation($sql->F_ReportingManager) }}</strong>
                                 and will work under the supervision of such officers as may be decided upon by the
                                 Management from time to time.
                             </li>
                         @else
                             <li>You will report to
-                                <strong>{{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong> and will
+                                <strong>{{ getFullName($sql->A_ReportingManager) }},
+                                    {{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong> and will
                                 work under the supervision of such officers as may be decided upon by the management of
                                 the Company, from time to time.
                             </li>
@@ -293,7 +300,8 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
 
                         @if ($sql->ServiceBond == 'Yes')
                             <li>At the time of your appointment, you shall sign a service bond providing your consent to
-                                serve the company for a minimum period of <b>{{ $months_word[$sql->ServiceBondYears] }} </b>years
+                                serve the company for a minimum period of
+                                <b>{{ $months_word[$sql->ServiceBondYears] }} </b>years
                                 from the Appointment Date. In the event of dishonor of this service bond, you shall be
                                 liable to pay the company a sum of <b>{{ $sql->ServiceBondRefund }} %</b> of your
                                 annual
@@ -619,7 +627,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             @if ($elg->FourWheel != '')
                                 <tr>
                                     <td></td>
-                                    <td style="width:502px;">*Four Wheeler 
+                                    <td style="width:502px;">*Four Wheeler
                                     </td>
                                     <td class="text-center">{{ $elg->FourWheel }}</td>
                                 </tr>

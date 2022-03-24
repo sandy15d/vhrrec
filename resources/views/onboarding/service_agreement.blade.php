@@ -517,7 +517,7 @@ $SQL = DB::getQueryLog();
                             accepts such employment and agrees to perform his / her duties for the period and upon the
                             terms and conditions set out in this Agreement.</span></p>
                     <p class="abc"><span>2.2</span> <span>&nbsp;&nbsp;The Executive shall report to
-                            <b>{{ getEmployeeDesignation($sql->A_ReportingManager) }}</b> (“Manager”), the person in
+                            <b>{{ getFullName($sql->A_ReportingManager) }},{{ getEmployeeDesignation($sql->A_ReportingManager) }}</b> (“Manager”), the person in
                             being may change from time to time and shall perform his / her duties under its supervision
                             and direction, on the terms and conditions set out in this Agreement. The Employee shall at
                             all times keep the Manager promptly and fully informed (in writing if so requested) of his /

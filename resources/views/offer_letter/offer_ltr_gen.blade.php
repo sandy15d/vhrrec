@@ -233,15 +233,15 @@ $elg = DB::table('candidate_entitlement')
 
                         @if ($sql->Functional_R != 0 && $sql->Admins_R != 0)
                             <li>For administrative purpose you shall be reporting to
-                                <strong>{{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong>
+                                <strong>{{ getFullName($sql->A_ReportingManager) }}, {{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong>
                                 and for technical purpose you shall be reporting to
-                                <strong>{{ getEmployeeDesignation($sql->F_ReportingManager) }}</strong>
+                                <strong>{{ getFullName($sql->F_ReportingManager) }}, {{ getEmployeeDesignation($sql->F_ReportingManager) }}</strong>
                                 and will work under the supervision of such officers as may be decided upon by the
                                 Management from time to time.
                             </li>
                         @else
                             <li>You will report to
-                                <strong>{{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong> and will
+                                <strong>{{ getFullName($sql->A_ReportingManager) }}, {{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong> and will
                                 work under the supervision of such officers as may be decided upon by the management of
                                 the Company, from time to time.
                             </li>

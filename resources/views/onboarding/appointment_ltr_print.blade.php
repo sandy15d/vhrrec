@@ -229,7 +229,7 @@ $elg = DB::table('candidate_entitlement')
                             <strong>Reporting / Duties and responsibilities:</strong>
                             <ol type="a">
                                 <li>Currently, you will report to
-                                    <strong>{{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong>
+                                    <strong>{{ getFullName($sql->A_ReportingManager) }},{{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong>
                                     (<strong>“Manager”</strong>) or such
                                     other person as may be suggested by the Company, from time to time.
                                 </li>
