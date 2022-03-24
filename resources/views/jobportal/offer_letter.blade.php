@@ -144,7 +144,7 @@ use function App\Helpers\getFullName;
 use function App\Helpers\getGradeValue;
 use function App\Helpers\getStateName;
 use function App\Helpers\getDistrictName;
-use function App\Helpers\getFullName;
+use function App\Helpers\getEmployeeDesignation;
 $JAId = base64_decode($_REQUEST['jaid']);
 $sql = DB::table('offerletterbasic')
     ->leftJoin('jobapply', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
@@ -270,15 +270,15 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
         
                                 @if ($sql->Functional_R != 0 && $sql->Admins_R != 0)
                                     <li>For administrative purpose you shall be reporting to
-                                        <strong>{{ getFullName($sql->A_ReportingManager) }}</strong>
+                                        <strong>{{ getFullName($sql->A_ReportingManager) }},{{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong>
                                         and for technical purpose you shall be reporting to
-                                        <strong>{{ getFullName($sql->F_ReportingManager) }}</strong>
+                                        <strong>{{ getFullName($sql->F_ReportingManager) }},{{ getEmployeeDesignation($sql->F_ReportingManager) }}</strong>
                                         and will work under the supervision of such officers as may be decided upon by the
                                         Management from time to time.
                                     </li>
                                 @else
                                     <li>You will report to
-                                        <strong>{{ getFullName($sql->A_ReportingManager) }}</strong> and will
+                                        <strong>{{ getFullName($sql->A_ReportingManager) }},{{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong> and will
                                         work under the supervision of such officers as may be decided upon by the management of
                                         the Company, from time to time.
                                     </li>
