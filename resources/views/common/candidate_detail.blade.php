@@ -3927,6 +3927,12 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                                 <option value="Four">4</option>
                                                                 <option value="Five">5</option>
                                                                 <option value="Six">6</option>
+                                                                <option value="Seven">7</option>
+                                                                <option value="Eight">8</option>
+                                                                <option value="Nine">9</option>
+                                                                <option value="Ten">10</option>
+                                                                <option value="Eleven">11</option>
+                                                                <option value="Twelve">12</option>
                                                             </select>
                                                         </div>
                                                     </td>
