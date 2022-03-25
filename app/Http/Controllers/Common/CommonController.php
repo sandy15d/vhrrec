@@ -195,8 +195,11 @@ class CommonController extends Controller
     {
         $employee = DB::table('master_employee')->orderBy('FullName', 'ASC')
             ->where('DepartmentId', $request->DepartmentId)
-           /*  ->where('EmpStatus', 'D')
-            ->where('DateOfSepration', '>=', '2021-01-01') */
+            ->where('EmpStatus', 'A')
+            ->orWhere(function ($query) {
+                $query->where('EmpStatus', 'D')
+                    ->where('DateOfSepration', '>=', '2021-01-01');
+            })
             ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
             ->pluck("EmployeeID", "FullName");
         return response()->json($employee);
@@ -225,7 +228,7 @@ class CommonController extends Controller
     {
 
         $Sp = DB::table("master_specialization")->orderBy('Specialization', 'asc')->pluck("Specialization", "SpId");
-     
+
 
         return response()->json($Sp);
     }
