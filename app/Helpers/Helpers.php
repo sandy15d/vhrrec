@@ -17,7 +17,7 @@ if (!function_exists('getFullName')) {
 				return "Admin";
 			} else {
 				//	$Name = DB::table('master_employee')->select(DB::raw("CONCAT(master_employee.Fname,' ',master_employee.Lname) AS full_name"))->where('EmployeeID', $empid)->first();
-				$Name = DB::table('master_employee')->select('Fname', 'SName', 'Lname')->where('EmployeeID', $empid)->first();
+				$Name = DB::table('master_employee')->select('Fname', 'Sname', 'Lname')->where('EmployeeID', $empid)->first();
 				$fullname = $Name->Fname;
 				if ($Name->SName != null) {
 					$fullname = $fullname . " " . $Name->Sname;
