@@ -19,7 +19,7 @@ if (!function_exists('getFullName')) {
 				//	$Name = DB::table('master_employee')->select(DB::raw("CONCAT(master_employee.Fname,' ',master_employee.Lname) AS full_name"))->where('EmployeeID', $empid)->first();
 				$Name = DB::table('master_employee')->select('Fname', 'Sname', 'Lname')->where('EmployeeID', $empid)->first();
 				$fullname = $Name->Fname;
-				if ($Name->SName != null) {
+				if ($Name->Sname != null) {
 					$fullname = $fullname . " " . $Name->Sname;
 				}
 				if ($Name->Lname != null) {
