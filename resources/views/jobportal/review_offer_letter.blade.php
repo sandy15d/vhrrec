@@ -591,7 +591,13 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             @if ($elg->DAOut != '')
                                 <tr>
                                     <td class="text-center"><?= ++$rowCount ?></td>
-                                    <td><b>D.A Out Side H.Q</b></td>
+                                    <td><b>
+                                            @if ($sql->Department == 2)
+                                                Fooding Expense (For outside HQ travel with night halt)
+                                            @else
+                                                D.A Out Side H.Q
+                                            @endif
+                                        </b></td>
                                     <td class="text-center">{{ $elg->DAOut }}</td>
                                 </tr>
                             @endif

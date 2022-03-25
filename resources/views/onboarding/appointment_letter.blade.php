@@ -221,7 +221,8 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                     undertake such travel in India, (iii) overseas locations, from time to time, as may
                                     be necessary in the interests of the Company's business.</p>
                             @elseif($sql->TempS == 1 && $sql->FixedS == 1)
-                            <p style="margin-bottom: 0px;"><strong>Place of Posting:</strong> For initial {{ $sql->TempM }} months, your
+                                <p style="margin-bottom: 0px;"><strong>Place of Posting:</strong> For initial
+                                    {{ $sql->TempM }} months, your
                                     temporary headquarter will be
                                     <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
                                     and then
@@ -233,7 +234,8 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                     the interests of the Company's business.
                                 </p>
                             @elseif($sql->TempS == 1 && $sql->FixedS == 0)
-                                <p style="margin-bottom: 0px;">For initial {{ $months_word[$sql->TempM] }} months, your temporary headquarter
+                                <p style="margin-bottom: 0px;">For initial {{ $months_word[$sql->TempM] }} months,
+                                    your temporary headquarter
                                     will be
                                     <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
                                     However, you may be required to (i) relocate to other locations in India; and/or
@@ -241,7 +243,8 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                     may be necessary in the interests of the Company's business.
                                 </p>
                             @else
-                            <p style="margin-bottom: 0px;"><strong>Place of Posting:</strong> Your principal place of employment shall be at
+                                <p style="margin-bottom: 0px;"><strong>Place of Posting:</strong> Your principal place
+                                    of employment shall be at
                                     <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>.
                                     However, you may be required
                                     to (i) relocate to other locations in India; and/or (ii) undertake such travel in
@@ -727,7 +730,13 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                 @if ($elg->DAOut != '')
                                     <tr>
                                         <td class="text-center"><?= ++$rowCount ?></td>
-                                        <td><b>D.A Out Side H.Q</b></td>
+                                        <td><b>
+                                                @if ($sql->Department == 2)
+                                                    Fooding Expense (For outside HQ travel with night halt)
+                                                @else
+                                                    D.A Out Side H.Q
+                                                @endif
+                                            </b></td>
                                         <td class="text-center">{{ $elg->DAOut }}</td>
                                     </tr>
                                 @endif
