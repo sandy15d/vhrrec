@@ -17,13 +17,13 @@ if (!function_exists('getFullName')) {
 				return "Admin";
 			} else {
 				//	$Name = DB::table('master_employee')->select(DB::raw("CONCAT(master_employee.Fname,' ',master_employee.Lname) AS full_name"))->where('EmployeeID', $empid)->first();
-				$Name = DB::table('master_employee')->select('FName', 'MName', 'LName')->where('EmployeeID', $empid)->first();
-				$fullname = $Name->FName;
-				if ($Name->MName != null) {
-					$fullname = $fullname . " " . $Name->MName;
+				$Name = DB::table('master_employee')->select('Fname', 'SName', 'Lname')->where('EmployeeID', $empid)->first();
+				$fullname = $Name->Fname;
+				if ($Name->SName != null) {
+					$fullname = $fullname . " " . $Name->Sname;
 				}
-				if ($Name->LName != null) {
-					$fullname = $fullname . " " . $Name->LName;
+				if ($Name->Lname != null) {
+					$fullname = $fullname . " " . $Name->Lname;
 				}
 				return $fullname;
 				//return $Name->full_name;
