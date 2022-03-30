@@ -153,22 +153,22 @@ $sql = DB::table('jobapply')
                     <p style="margin-bottom:50px;"></p>
                     <p class="text-center "><b> Service Bond (Annexure)</b></p>
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) .'_AL-SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }}</b>
-                        <span style="float:right"><b>Date:@if ($sql->B_Date != '')
+                            {{-- {{ getCompanyCode($sql->Company) .'_AL-SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }} --}}</b>
+                        <span style="float:right"><b>Date:{{-- @if ($sql->B_Date != '')
                                     {{ date('d/m/Y', strtotime($sql->B_Date)) }}
                                 @else
                                     {{ date('d/m/Y') }}
-                                @endif </span></b>
+                                @endif --}}&emsp;&emsp;&emsp; </span></b>
                     </p>
 
 
 
                     <p style="text-align: justify">This agreement is executed at RAIPUR, CHHATTISGARH, on this
-                        @if ($sql->B_Date != '')
+                       {{--  @if ($sql->B_Date != '')
                             {{ date('d/m/Y', strtotime($sql->B_Date)) }}
                         @else
                             {{ date('d/m/Y') }}
-                        @endif
+                        @endif --}} &emsp;&emsp;&emsp;
                         (and effective from date {{ date('d/m/Y', strtotime($sql->JoinOnDt)) }})
                     </p>
 
@@ -238,12 +238,12 @@ $sql = DB::table('jobapply')
                 <div class="subpage ml-3">
 
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) .'_AL-SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }}</b>
-                        <span style="float:right"><b>Date:@if ($sql->B_Date != '')
+                            {{-- {{ getCompanyCode($sql->Company) .'_AL-SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }} --}}</b>
+                        <span style="float:right"><b>Date:{{-- @if ($sql->B_Date != '')
                                     {{ date('d/m/Y', strtotime($sql->B_Date)) }}
                                 @else
                                     {{ date('d/m/Y') }}
-                                @endif </span></b>
+                                @endif --}} &emsp;&emsp;&emsp;</span></b>
                     </p>
 
                     <br>
@@ -301,12 +301,12 @@ $sql = DB::table('jobapply')
                 <div class="subpage ml-3">
 
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) .'_AL-SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }}</b>
-                        <span style="float:right"><b>Date:@if ($sql->B_Date != '')
+                            {{-- {{ getCompanyCode($sql->Company) .'_AL-SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }} --}}</b>
+                        <span style="float:right"><b>Date:{{-- @if ($sql->B_Date != '')
                                     {{ date('d/m/Y', strtotime($sql->B_Date)) }}
                                 @else
                                     {{ date('d/m/Y') }}
-                                @endif </span></b>
+                                @endif --}} &emsp;&emsp;&emsp;</span></b>
                     </p>
 
                     <br>

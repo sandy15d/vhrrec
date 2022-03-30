@@ -141,7 +141,9 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                 <div class="subpage">
                     <div style="height:970px;"></div>
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) .'_AL-SA/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }}</b>
+                           {{--  {{ getCompanyCode($sql->Company) .'_AL-SA/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }} --}}
+                           {{$sql->AppLetterNo}}
+                        </b>
                         <span class="float float-right"><b>Date:
                                 @if ($sql->Agr_Date == null)
                                     {{ date('d-M-Y') }}
@@ -1293,7 +1295,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
 
                     <p class="bde"><span><b>Notices to the Company</b></span></p>
                     @php
-                        if ($sql->Company == '1') {
+                        if ($sql->Company == '11') {
                             $address = 'VNR Seeds Pvt Ltd, Corporate Center, Canal Road Crossing, Ring Road.1, Raipur,CG 492001';
                             $email = 'info@vnrseeds.com';
                         } elseif ($sql->Company == '3') {

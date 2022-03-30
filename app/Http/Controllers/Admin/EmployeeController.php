@@ -46,7 +46,7 @@ class EmployeeController extends Controller
     {
 
         $query =  master_employee::truncate();
-        $response = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails?action=Details&val=Employee')->json();
+        $response = Http::get('https://www.vnress.in/RcdDetails.php?action=Details&val=Employee')->json();
         $data = array();
         foreach ($response['employee_list'] as $key => $value) {
             if ($value['DateJoining'] == '0000-00-00' or $value['DateJoining'] == '') {
@@ -77,7 +77,7 @@ class EmployeeController extends Controller
             $temp['Location'] = $value['HqId'];
             $temp['CTC'] = $value['Tot_CTC'];
             $temp['Title'] = $value['Title'];
-            $temp['CountryId'] = 1;
+            $temp['CountryId'] = 11;
             array_push($data, $temp);
         }
         $query = master_employee::insert($data);

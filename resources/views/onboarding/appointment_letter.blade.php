@@ -168,7 +168,9 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                     <p style="margin-bottom:100px;"></p>
                     <p class="text-center "><b><u> APPOINTMENT LETTER</u></b></p>
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) .'_AL/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }}</b>
+                            {{-- {{ getCompanyCode($sql->Company) .'_AL/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }} --}}
+                            {{$sql->AppLetterNo}}
+                        </b>
                         <span style="float:right"><b>Date:{{ date('d-m-Y', strtotime($sql->A_Date)) }}</span></b>
                     </p>
 

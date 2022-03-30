@@ -1854,7 +1854,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
 
                                             </div>
                                         </li>
-                                        @if ($OfBasic != null && $OfBasic->ServiceBond == 'Yes')
+                                        @if ($OfBasic != null && ($OfBasic->Department == '1003' || $OfBasic->Department == '1006'))
                                             <li>
                                                 <div class="title" style="width: 150px;"> Service Bond <span
                                                         style="float: right">:</span> </div>

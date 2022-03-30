@@ -30,7 +30,7 @@ class GradeController extends Controller
     {
 
         $query =  master_grade::truncate();
-        $response = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails?action=Details&val=Grade')->json();
+        $response = Http::get('https://www.vnress.in/RcdDetails.php?action=Details&val=Grade')->json();
         $data = array();
         foreach ($response['grade_list'] as $key => $value) {
 

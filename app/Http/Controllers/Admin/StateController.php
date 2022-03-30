@@ -128,10 +128,11 @@ class StateController extends Controller
     {
 
         $query =  master_state::truncate();
-        $response = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails?action=Details&val=State')->json();
+        $response = Http::get('https://www.vnress.in/RcdDetails.php?action=Details&val=State')->json();
         $data = array();
         foreach ($response['State_list'] as $key => $value) {
             $temp = array();
+            $temp['StateId'] = $value['StateId'];
             $temp['StateName'] = $value['State'];
             $temp['StateCode'] = $value['StateCode'];
             $temp['Country'] = $value['CountryId'];
@@ -139,6 +140,7 @@ class StateController extends Controller
             $temp['CreatedBy'] = Auth::user()->id;
             array_push($data, $temp);
         }
+      
         $query = master_state::insert($data);
 
 

@@ -145,7 +145,7 @@ $sql = DB::table('jobapply')
     ->select('appointing.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobcandidates.Aadhaar', 'jobcandidates.Email', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
     ->where('jobapply.JAId', $JAId)
     ->first();
-    $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 'Four' => '4 (Four)', 'Five' => '5 (Five)', 'Six' => '6 (Six)', 'Seven' => '7 (Seven)', 'Eight' => '8 (Eight)', 'Nine' => '9 (Nine)', 'Ten' => '10 (Ten)', 'Eleven' => '11 (Eleven)', 'Twelve' => '12 (Twelve)'];
+$months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 'Four' => '4 (Four)', 'Five' => '5 (Five)', 'Six' => '6 (Six)', 'Seven' => '7 (Seven)', 'Eight' => '8 (Eight)', 'Nine' => '9 (Nine)', 'Ten' => '10 (Ten)', 'Eleven' => '11 (Eleven)', 'Twelve' => '12 (Twelve)'];
 $SQL = DB::getQueryLog();
 //dd($SQL);
 @endphp
@@ -162,7 +162,9 @@ $SQL = DB::getQueryLog();
                 <div class="subpage">
                     <p style="margin-bottom: 30px;"></p>
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) .'_AL-SA/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }}</b>
+                            {{-- {{ getCompanyCode($sql->Company) .'_AL-SA/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }} --}}
+                            {{ $sql->AppLetterNo }}
+                        </b>
                         <span style="float:right"><b>Date: @if ($sql->Agr_Date != '')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @else
@@ -172,9 +174,9 @@ $SQL = DB::getQueryLog();
                     <p class="text-center "><b>Service Agreement</b></p>
                     <p style="text-align: justify"> This service agreement ("<strong>Agreement</strong>") is made at
                         Raipur, Chhattisgarh on
-                      
-                            {{ date('d/m/Y', strtotime($sql->JoinOnDt)) }}
-                      
+
+                        {{ date('d/m/Y', strtotime($sql->JoinOnDt)) }}
+
                     </p>
                     <p><b>BY AND BETWEEN:</b></p>
                     <ol>
@@ -517,31 +519,33 @@ $SQL = DB::getQueryLog();
                             accepts such employment and agrees to perform his / her duties for the period and upon the
                             terms and conditions set out in this Agreement.</span></p>
                     <p class="abc"><span>2.2</span> <span>&nbsp;&nbsp;The Executive shall report to
-                            <b>{{ getFullName($sql->A_ReportingManager) }},{{ getEmployeeDesignation($sql->A_ReportingManager) }}</b> (“Manager”), the person in
+                            <b>{{ getFullName($sql->A_ReportingManager) }},{{ getEmployeeDesignation($sql->A_ReportingManager) }}</b>
+                            (“Manager”), the person in
                             being may change from time to time and shall perform his / her duties under its supervision
                             and direction, on the terms and conditions set out in this Agreement. The Employee shall at
                             all times keep the Manager promptly and fully informed (in writing if so requested) of his /
                             her conduct of the business or affairs of the Company and also provide such further
                             information, written records and/or explanation as the Manager may require.</span></p>
                     <p class="abc"><span>2.3</span> <span>
-                        @if($sql->TempS == 1 && $sql->FixedS == 0)
-                            For initial {{ $months_word[$sql->TempM] }} months, The Executive’s place of
-                            employment shall
-                            be at
-                            <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
-                            India. The Executive may be required to (i) relocate to other locations in India (ii)
-                            undertake such travel in India; and/or, (iii) undertake travel overseas, from time to
-                            time,
-                            as may be necessary in the interests of the Company's business.
-                        @else
-                            The Executive’s principal place of employment shall
-                            be at
-                            <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>,
-                            India. The Executive may be required to (i) relocate to other locations in India (ii)
-                            undertake such travel in India; and/or, (iii) undertake travel overseas, from time to
-                            time,
-                            as may be necessary in the interests of the Company's business.
-                        @endif</span></p>
+                            @if ($sql->TempS == 1 && $sql->FixedS == 0)
+                                For initial {{ $months_word[$sql->TempM] }} months, The Executive’s place of
+                                employment shall
+                                be at
+                                <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
+                                India. The Executive may be required to (i) relocate to other locations in India (ii)
+                                undertake such travel in India; and/or, (iii) undertake travel overseas, from time to
+                                time,
+                                as may be necessary in the interests of the Company's business.
+                            @else
+                                The Executive’s principal place of employment shall
+                                be at
+                                <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>,
+                                India. The Executive may be required to (i) relocate to other locations in India (ii)
+                                undertake such travel in India; and/or, (iii) undertake travel overseas, from time to
+                                time,
+                                as may be necessary in the interests of the Company's business.
+                            @endif
+                        </span></p>
                     <p class="abc"><span>2.4</span> <span>&nbsp;&nbsp;The Executive shall work during the
                             regular
                             business hours of the Company as per its policy in effect from time to time. Notwithstanding
@@ -1258,7 +1262,7 @@ $SQL = DB::getQueryLog();
 
                     <p class="bde"><span><b>Notices to the Company</b></span></p>
                     @php
-                        if ($sql->Company == '1') {
+                        if ($sql->Company == '11') {
                             $address = 'VNR Seeds Pvt Ltd, Corporate Center, Canal Road Crossing, Ring Road.1, Raipur,CG 492001';
                             $email = 'info@vnrseeds.com';
                         } elseif ($sql->Company == '3') {

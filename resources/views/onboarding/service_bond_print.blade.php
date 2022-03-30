@@ -141,14 +141,14 @@ $sql = DB::table('jobapply')
                 <div class="subpage">
                     <div style="height:950px;"></div>
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) .'_AL-SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }}</b>
+                            {{-- {{ getCompanyCode($sql->Company) .'_AL-SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }} --}}</b>
                         <span class="float float-right"><b>Date:
-                                @if ($sql->B_Date == null)
+                               {{--  @if ($sql->B_Date == null)
                                     {{ date('d-M-Y') }}
 
                                 @else
                                     {{ date('d-m-Y', strtotime($sql->B_Date)) }}
-                                @endif
+                                @endif --}} &emsp;&emsp;&emsp;
                             </b>
                         </span>
                     </p>
@@ -174,13 +174,17 @@ $sql = DB::table('jobapply')
                     <p style="margin-bottom:50px;"></p>
 
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) .'_AL-SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }}</b>
-                        <span style="float:right"><b>Date:@if ($sql->B_Date != '')
-                                    {{ date('d/m/Y', strtotime($sql->B_Date)) }}
-                                @else
-                                    {{ date('d/m/Y') }}
-                                @endif </span></b>
-                    </p>
+                        {{-- {{ getCompanyCode($sql->Company) .'_AL-SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }} --}}</b>
+                    <span class="float float-right"><b>Date:
+                           {{--  @if ($sql->B_Date == null)
+                                {{ date('d-M-Y') }}
+
+                            @else
+                                {{ date('d-m-Y', strtotime($sql->B_Date)) }}
+                            @endif --}} &emsp;&emsp;&emsp;
+                        </b>
+                    </span>
+                </p>
 
 
 
@@ -259,13 +263,17 @@ $sql = DB::table('jobapply')
                 <div class="subpage ml-3">
                     <p style="margin-bottom: 50px;"></p>
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) .'_AL-SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }}</b>
-                        <span style="float:right"><b>Date:@if ($sql->B_Date != '')
-                                    {{ date('d/m/Y', strtotime($sql->B_Date)) }}
-                                @else
-                                    {{ date('d/m/Y') }}
-                                @endif </span></b>
-                    </p>
+                        {{-- {{ getCompanyCode($sql->Company) .'_AL-SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }} --}}</b>
+                    <span class="float float-right"><b>Date:
+                           {{--  @if ($sql->B_Date == null)
+                                {{ date('d-M-Y') }}
+
+                            @else
+                                {{ date('d-m-Y', strtotime($sql->B_Date)) }}
+                            @endif --}} &emsp;&emsp;&emsp;
+                        </b>
+                    </span>
+                </p>
 
                     <br>
                     <p style="text-align: justify">NOW, THEREFORE, THIS AGREEMENT WITNESSETH AND THE PARTIES HERETO
@@ -322,13 +330,17 @@ $sql = DB::table('jobapply')
                 <div class="subpage ml-3">
                     <p style="margin-bottom: 50px;"></p>
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) .'_AL-SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }}</b>
-                        <span style="float:right"><b>Date:@if ($sql->B_Date != '')
-                                    {{ date('d/m/Y', strtotime($sql->B_Date)) }}
-                                @else
-                                    {{ date('d/m/Y') }}
-                                @endif </span></b>
-                    </p>
+                        {{-- {{ getCompanyCode($sql->Company) .'_AL-SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$JAId }} --}}</b>
+                    <span class="float float-right"><b>Date:
+                           {{--  @if ($sql->B_Date == null)
+                                {{ date('d-M-Y') }}
+
+                            @else
+                                {{ date('d-m-Y', strtotime($sql->B_Date)) }}
+                            @endif --}} &emsp;&emsp;&emsp;
+                        </b>
+                    </span>
+                </p>
 
                     <br>
                     <ol type="1" start="7">

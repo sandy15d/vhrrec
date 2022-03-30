@@ -123,7 +123,7 @@ class CountryController extends Controller
     {
 
         $query =  master_country::truncate();
-        $response = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails?action=Details&val=Country')->json();
+        $response = Http::get('https://www.vnress.in/RcdDetails.php?action=Details&val=Country')->json();
         $data = array();
         foreach ($response['Country_list'] as $key => $value) {
             $temp = array();

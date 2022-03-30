@@ -167,6 +167,7 @@ class CommonController extends Controller
     {
         $Department = DB::table("master_department")->orderBy('DepartmentName', 'asc')
             ->where("CompanyId", $request->CompanyId)
+            ->where('DepartmentId','>', '1000')
             ->pluck("DepartmentId", "DepartmentName");
         return response()->json($Department);
     }

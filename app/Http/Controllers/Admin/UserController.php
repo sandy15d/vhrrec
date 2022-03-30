@@ -101,7 +101,7 @@ class UserController extends Controller
                     "Username" => $request->Username,
                     "Password" => $request->Password
                 ];
-                Mail::to("parul.parmar@vnrseeds.com")->send(new NewUserMail($details));
+            
                 return response()->json(['status' => 200, 'msg' => 'New User has been successfully created.']);
             }
         }

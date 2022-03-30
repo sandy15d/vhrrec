@@ -127,7 +127,7 @@ class CompanyController extends Controller
     {
 
         $query =  master_company::truncate();
-        $response = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails?action=Details&val=Company')->json();
+        $response = Http::get('https://www.vnress.in/RcdDetails.php?action=Details&val=Company')->json();
         $data = array();
         foreach ($response['company_list'] as $key => $value) {
             $temp = array();

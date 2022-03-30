@@ -422,7 +422,14 @@ function CheckDuplicate($Fname, $Phone, $Email, $Dob, $FatherName)
 	return $count;
 }
 
-function getJobTitle()
+function getStateIdByName($StateName)
 {
-	# code...
+	$state = strtoupper($StateName);
+	$StateId = DB::table('states')->select('StateId')->where('StateName', $state)->first();
+	if(is_null($StateId)){
+		return 0;
+	}else{
+		return $StateId->StateId;
+	}
+	
 }

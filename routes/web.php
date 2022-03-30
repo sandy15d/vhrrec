@@ -533,7 +533,6 @@ Route::group(['prefix' => 'recruiter', 'middleware' => ['isRecruiter', 'auth', '
     Route::post('getDetailForJobPost', [MrfAllocatedController::class, 'getDetailForJobPost'])->name('getDetailForJobPost');
     Route::post('createJobPost', [MrfAllocatedController::class, 'createJobPost'])->name('createJobPost');
     Route::post('ChngPostingView', [MrfAllocatedController::class, 'ChngPostingView'])->name('ChngPostingView');
-    
 });
 Route::post('close_mrf', [MrfAllocatedController::class, 'close_mrf'])->name('close_mrf');
 Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackHistory']], function () {
@@ -566,7 +565,9 @@ Route::get('candidate_vs_job', [CandidateVsJobController::class, 'index'])->name
 
 //==========================================================================================
 
-Route::get('Import', [ImportController::class, 'Import'])->name('Import');
+Route::get('importview', [ImportController::class, 'importview'])->name('importview');
+Route::post('import', [ImportController::class, 'import'])->name('import');
+Route::get('createmrf', [importController::class, 'createmrf'])->name('createmrf');
 
 Route::get('position_code', [PositionCodeController::class, 'show_position_code'])->name('position_code');
 Route::post('show_all_position_code', [PositionCodeController::class, 'show_all_position_code'])->name('show_all_position_code');
