@@ -167,17 +167,23 @@ class CommonController extends Controller
     {
         $Department = DB::table("master_department")->orderBy('DepartmentName', 'asc')
             ->where("CompanyId", $request->CompanyId)
-            ->where('DepartmentId','>', '1000')
+            ->where('DepartmentId', '>', '1000')
             ->pluck("DepartmentId", "DepartmentName");
         return response()->json($Department);
     }
 
     public function getReportingManager(Request $request)
     {
-        $employee = DB::table('master_employee')->orderBy('FullName', 'ASC')
-            ->where('DepartmentId', $request->DepartmentId)
+        $Department = $request->DepartmentId;
+        $Department1 = $Department - 1000;
+        $employee = DB::table('master_employee')
+            ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname," - ",VCode,EmpCode) AS FullName'))
             ->where('EmpStatus', 'A')
-            ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
+            ->where(function ($query) use ($Department, $Department1) {
+                $query->where('DepartmentId', $Department)
+                    ->orWhere('DepartmentId', $Department1);
+            })
+            ->orderBy('FullName', 'ASC')
             ->pluck("EmployeeID", "FullName");
         return response()->json($employee);
     }

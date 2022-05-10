@@ -216,7 +216,7 @@ use function App\Helpers\has_permission;
                             <li> <a href="/admin/resumesource"><i class="bx bx-right-arrow-alt"></i>Resume Source</a>
                             </li>
                             <li> <a href="/admin/employee"><i class="bx bx-right-arrow-alt"></i>Employee</a></li>
-                            <li> <a href="/position_code"><i class="bx bx-right-arrow-alt"></i>Position Code</a></li>
+                         {{--    <li> <a href="/position_code"><i class="bx bx-right-arrow-alt"></i>Position Code</a></li> --}}
                             <li> <a href="/admin/department_vertical"><i class="bx bx-right-arrow-alt"></i>Department
                                     Vertical</a></li>
                             <li>
@@ -294,7 +294,7 @@ use function App\Helpers\has_permission;
                         </a>
                     </li>
                     @if (has_permission($resultArray, 'MRF Allocated') || has_permission($resultArray, 'MRF Manual Entry'))
-                        <li <li>
+                        <li>
                             <a href="javascript:;" class="has-arrow">
                                 <div class="parent-icon"><i class="bx bx-category" style="color: #198754"></i>
                                 </div>
@@ -408,7 +408,7 @@ use function App\Helpers\has_permission;
                             </ul>
                         </li>
                     @endif
-                    @if (has_permission($resultArray, 'Trainee MRF') || has_permission($resultArray, 'Trainee Application') || has_permission($resultArray, 'Trainee Tracker') || has_permission($resultArray, 'Active Trainee') || has_permission($resultArray, 'Old Trainee' || Auth::user()->role == 'A'))
+                  {{--   @if (has_permission($resultArray, 'Trainee MRF') || has_permission($resultArray, 'Trainee Application') || has_permission($resultArray, 'Trainee Tracker') || has_permission($resultArray, 'Active Trainee') || has_permission($resultArray, 'Old Trainee' || Auth::user()->role == 'A'))
                         <li>
                             <a href="javascript:;" class="has-arrow">
                                 <div class="parent-icon"><i class="fadeIn animated bx bx-atom  text-danger"></i>
@@ -441,14 +441,15 @@ use function App\Helpers\has_permission;
                                 @endif
                             </ul>
                         </li>
-                        <li>
-                            <a href="/admin/sentemails" target="_blank">
-                                <div class="parent-icon"><i class='fadeIn animated bx bx-mail-send text-primary'></i>
-                                </div>
-                                <div class="menu-title">Sent Mails</div>
-                            </a>
-                        </li>
-                    @endif
+                       
+                    @endif --}}
+                    <li>
+                        <a href="/admin/sentemails" target="_blank">
+                            <div class="parent-icon"><i class='fadeIn animated bx bx-mail-send text-primary'></i>
+                            </div>
+                            <div class="menu-title">Sent Mails</div>
+                        </a>
+                    </li>
                     {{-- <li>
                         <a href="/">
                             <div class="parent-icon"><i class="lni lni-target-customer" style="color: #6610f2"></i>

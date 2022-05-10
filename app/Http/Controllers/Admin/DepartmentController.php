@@ -30,25 +30,6 @@ class DepartmentController extends Controller
     {
 
         $query =  master_department::truncate();
-        
-        $response1 = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails.php?action=Details&val=Department')->json();
-        $data1 = array();
-        foreach ($response1['department_list'] as $key => $value) {
-
-            $temp = array();
-            $temp['DepartmentId'] = $value['DepartmentId'];
-            $temp['DepartmentName'] = $value['DepartmentName'];
-            $temp['DepartmentCode'] = $value['DepartmentCode'];
-            
-            $temp['CompanyId'] = 11;
-            $temp['DeptStatus'] = $value['DeptStatus'];
-            array_push($data1, $temp);
-        }
-       
-        $query1 = master_department::insert($data1);
-        
-        
-        
         $response = Http::get('https://www.vnress.in/RcdDetails.php?action=Details&val=Department')->json();
         $data = array();
         foreach ($response['department_list'] as $key => $value) {

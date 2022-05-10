@@ -57,6 +57,7 @@ class EmployeeController extends Controller
             }
             $temp = array();
             $temp['EmployeeID'] = $value['EmployeeID'];
+            $temp['VCode'] = $value['VCode'];
             $temp['EmpCode'] = $value['EmpCode'];
             $temp['EmpStatus'] = $value['EmpStatus'];
             $temp['Fname'] = $value['Fname'];

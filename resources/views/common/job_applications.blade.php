@@ -703,7 +703,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                             </font>
                                         </td>
                                         <td>
-                                            <input type="text" class="form-control form-control-sm reqinp" name="Email"
+                                            <input type="text" class="form-control form-control-sm " name="Email"
                                                 id="Email">
                                         </td>
                                     </tr>
@@ -744,7 +744,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                     <tr>
                                         <td>Upload Resume</td>
                                         <td><input type="file" name="Resume" id="Resume"
-                                                class="form-control form-control-sm reqinp" accept=".pdf,.docx">
+                                                class="form-control form-control-sm " accept=".pdf,.docx">
                                             <p class="text-primary">Plese upload PDF/Word Document
                                                 Only.</p>
                                         </td>

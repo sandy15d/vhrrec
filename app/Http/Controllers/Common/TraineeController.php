@@ -175,7 +175,7 @@ class TraineeController extends Controller
             ->addColumn('details', function ($mrf) {
                 $x = '';
                 $x .= '<i  class="fadeIn animated lni lni-eye  text-primary view" aria-hidden="true" data-id="' . $mrf->MRFId . '" id="viewMRF" title="View MRF" style="font-size: 18px;cursor: pointer;"></i> ';
-               /*  if ($mrf->Status == 'Approved') {
+                /*  if ($mrf->Status == 'Approved') {
                     $x .= '   <i  class="fadeIn animated bx bx-window-close  text-danger closemrf" aria-hidden="true" data-id="' . $mrf->MRFId . '" id="closemrf"  style="font-size: 18px;cursor: pointer;" title="Close MRF"></i>';
                 } */
                 return $x;
@@ -267,8 +267,7 @@ class TraineeController extends Controller
 
             ->addColumn('CandidateName', function ($data) {
                 $name = $data->FName . ' ' . $data->MName . ' ' . $data->LName;
-                return "<a href='".route('trainee_detail') . '?jcid=' . base64_encode($data->JCId)."' target='_blank'>" . $name . "</a>";
-               
+                return "<a href='" . route('trainee_detail') . '?jcid=' . base64_encode($data->JCId) . "' target='_blank'>" . $name . "</a>";
             })
             ->addColumn('Qualification', function ($data) {
                 $x = getEducationById($data->Education);
@@ -278,7 +277,7 @@ class TraineeController extends Controller
                 return $x;
             })
 
-            ->rawColumns(['chk','CandidateName'])
+            ->rawColumns(['chk', 'CandidateName'])
             ->make(true);
     }
 
@@ -356,9 +355,9 @@ class TraineeController extends Controller
             })
 
             ->addColumn('CandidateName', function ($data) {
-               
+
                 $name = $data->FName . ' ' . $data->MName . ' ' . $data->LName;
-                return "<a href='".route('trainee_detail') . '?jcid=' . base64_encode($data->JCId)."' target='_blank'>" . $name . "</a>";
+                return "<a href='" . route('trainee_detail') . '?jcid=' . base64_encode($data->JCId) . "' target='_blank'>" . $name . "</a>";
             })
 
             ->editColumn('ScreenStatus', function ($data) {
@@ -387,7 +386,7 @@ class TraineeController extends Controller
                 }
             })
 
-            ->rawColumns(['chk', 'ScreenStatus', 'ScreenBy', 'IntervEdit','CandidateName'])
+            ->rawColumns(['chk', 'ScreenStatus', 'ScreenBy', 'IntervEdit', 'CandidateName'])
             ->make(true);
     }
 
@@ -482,7 +481,7 @@ class TraineeController extends Controller
 
             ->addColumn('CandidateName', function ($data) {
                 $name = $data->FName . ' ' . $data->MName . ' ' . $data->LName;
-                return "<a href='".route('trainee_detail') . '?jcid=' . base64_encode($data->JCId)."' target='_blank'>" . $name . "</a>";
+                return "<a href='" . route('trainee_detail') . '?jcid=' . base64_encode($data->JCId) . "' target='_blank'>" . $name . "</a>";
             })
 
             ->addColumn('Action', function ($data) {
@@ -498,7 +497,7 @@ class TraineeController extends Controller
             })
 
 
-            ->rawColumns(['chk', 'Action', 'OtherBenefit','CandidateName'])
+            ->rawColumns(['chk', 'Action', 'OtherBenefit', 'CandidateName'])
             ->make(true);
     }
 
@@ -589,7 +588,7 @@ class TraineeController extends Controller
 
             ->addColumn('CandidateName', function ($data) {
                 $name = $data->FName . ' ' . $data->MName . ' ' . $data->LName;
-                return "<a href='".route('trainee_detail') . '?jcid=' . base64_encode($data->JCId)."' target='_blank'>" . $name . "</a>";
+                return "<a href='" . route('trainee_detail') . '?jcid=' . base64_encode($data->JCId) . "' target='_blank'>" . $name . "</a>";
             })
 
             ->addColumn('Action', function ($data) {
@@ -605,7 +604,7 @@ class TraineeController extends Controller
             })
 
 
-            ->rawColumns(['chk', 'Action', 'OtherBenefit','CandidateName'])
+            ->rawColumns(['chk', 'Action', 'OtherBenefit', 'CandidateName'])
             ->make(true);
     }
 
@@ -677,6 +676,6 @@ class TraineeController extends Controller
 
     public function trainee_detail()
     {
-       return view('common.trainee_detail');
+        return view('common.trainee_detail');
     }
 }

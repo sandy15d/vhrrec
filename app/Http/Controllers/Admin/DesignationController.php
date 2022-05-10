@@ -31,7 +31,7 @@ class DesignationController extends Controller
     public function syncDesignation()
     {
 
-        /*         $query =  master_designation::truncate();
+        $query =  master_designation::truncate();
 
         $response1 = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails.php?action=Details&val=Designation')->json();
         $data1 = array();
@@ -42,19 +42,19 @@ class DesignationController extends Controller
             $temp['DesigName'] = $value['DesigName'];
             $temp['DesigCode'] = $value['DesigCode'];
             $temp['Desig_ShortCode'] = $value['Desig_ShortCode'];
-            $temp['CompanyId'] = 11;
+            $temp['CompanyId'] = $value['CompanyId'];
             $temp['DesigStatus'] = $value['DesigStatus'];
             array_push($data1, $temp);
         }
-        $query1 = master_designation::insert($data1);
+        $query = master_designation::insert($data1);
         $response2 = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails.php?action=Details&val=DeptDesig')->json();
 
         foreach ($response2['Department_Designation_list'] as $key => $value) {
             $data2 = DB::table('master_designation')
                 ->where('DesigId', $value['DesigId'])
                 ->update(['DepartmentId' => $value['DepartmentId']]);
-        } */
-        //-----------------------
+        }
+
 
 
         $response = Http::get('https://www.vnress.in/RcdDetails.php?action=Details&val=Designation')->json();

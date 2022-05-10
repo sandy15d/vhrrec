@@ -1969,15 +1969,11 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                         id="empCancle" onclick="window.location.reload();">Cancel</button>
                                                 </div>
                                             </li>
-                                            <li>
+                                            {{-- <li>
                                                 <div class="title" style="width: 150px;">Position Code<span
                                                         style="float: right">:</span></div>
                                                 <div class="text">
-                                                    {{-- <input type="text"
-                                                        class="form-control frminp form-control-sm d-inline-block"
-                                                        id="PositionCode" name="PositionCode" readonly=""
-                                                        style="width: 100px;"
-                                                        value="{{ $OfBasic->PositionCode ?? '' }}"> --}}
+                                                   
 
                                                     <select name="PositionCode" id="PositionCode"
                                                         class="form-select form-select-sm d-inline-block"
@@ -2001,7 +1997,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                     <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
                                                         id="posCancle" onclick="window.location.reload();">Cancel</button>
                                                 </div>
-                                            </li>
+                                            </li> --}}
                                         @endif
                                     </ul>
                                 </div>
@@ -8129,6 +8125,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
         });
 
         $(document).on('click', '#ProcessToEss', function() {
+            return false;
             var JAId = $('#JAId').val();
             $.ajax({
                 url: '<?= route('processDataToEss') ?>',

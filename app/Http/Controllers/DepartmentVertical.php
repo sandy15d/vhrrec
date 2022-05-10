@@ -30,7 +30,7 @@ class DepartmentVertical extends Controller
     {
 
         $query =  master_vertical::truncate();
-        $response = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails?action=Details&val=Vertical')->json();
+        $response = Http::get('https://www.vnress.in/RcdDetails.php?action=Details&val=Vertical')->json();
         $data = array();
         foreach ($response['vertical_list'] as $key => $value) {
 

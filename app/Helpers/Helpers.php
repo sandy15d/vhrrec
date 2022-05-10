@@ -18,14 +18,19 @@ if (!function_exists('getFullName')) {
 			} else {
 				//	$Name = DB::table('master_employee')->select(DB::raw("CONCAT(master_employee.Fname,' ',master_employee.Lname) AS full_name"))->where('EmployeeID', $empid)->first();
 				$Name = DB::table('master_employee')->select('Fname', 'Sname', 'Lname')->where('EmployeeID', $empid)->first();
-				$fullname = $Name->Fname;
-				if ($Name->Sname != null) {
-					$fullname = $fullname . " " . $Name->Sname;
+				if ($Name == null) {
+					return "";
+				} else {
+
+					$fullname = $Name->Fname;
+					if ($Name->Sname != null) {
+						$fullname = $fullname . " " . $Name->Sname;
+					}
+					if ($Name->Lname != null) {
+						$fullname = $fullname . " " . $Name->Lname;
+					}
+					return $fullname;
 				}
-				if ($Name->Lname != null) {
-					$fullname = $fullname . " " . $Name->Lname;
-				}
-				return $fullname;
 				//return $Name->full_name;
 			}
 		}
@@ -426,10 +431,9 @@ function getStateIdByName($StateName)
 {
 	$state = strtoupper($StateName);
 	$StateId = DB::table('states')->select('StateId')->where('StateName', $state)->first();
-	if(is_null($StateId)){
+	if (is_null($StateId)) {
 		return 0;
-	}else{
+	} else {
 		return $StateId->StateId;
 	}
-	
 }

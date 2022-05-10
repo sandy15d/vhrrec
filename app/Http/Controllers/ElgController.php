@@ -67,7 +67,7 @@ class ElgController extends Controller
     {
 
         $query =  master_elg::truncate();
-        $response = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails?action=Details&val=elg')->json();
+        $response = Http::get('https://www.vnress.in/RcdDetails.php?action=Details&val=elg')->json();
         $data = array();
 
         $query = master_elg::insert($response['eligibility_list']);

@@ -34,7 +34,7 @@ class UserController extends Controller
 
 
         $Employee = master_employee::select(
-            DB::raw("CONCAT(Fname,' ',Lname) AS name"),
+            DB::raw("CONCAT(Fname,' ',Lname,' - ',VCode,EmpCode) AS name"),
             'EmployeeID'
         )
             ->where('CompanyId', $request->CompanyId)
@@ -101,7 +101,7 @@ class UserController extends Controller
                     "Username" => $request->Username,
                     "Password" => $request->Password
                 ];
-            
+
                 return response()->json(['status' => 200, 'msg' => 'New User has been successfully created.']);
             }
         }
