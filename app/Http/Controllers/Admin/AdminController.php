@@ -109,7 +109,6 @@ class AdminController extends Controller
                 $usersQuery->whereBetween('manpowerrequisition.CreatedTime', [date('Y') . '-' . $Month . '-01', date('Y') . '-' . $Month . '-31']);
             }
         }
-
         $mrf = $usersQuery->select('*')
             ->where('manpowerrequisition.CountryId', session('Set_Country'))
             ->where('manpowerrequisition.Status', 'New')
