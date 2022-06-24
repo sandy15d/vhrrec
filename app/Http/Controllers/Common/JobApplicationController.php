@@ -341,8 +341,8 @@ class JobApplicationController extends Controller
         $query->save();
         $JCId = $query->JCId;
 
-        $Resume = 'resume_' . $JCId . '.' . $request->Resume->extension();
-        $request->Resume->move(public_path('uploads/Resume'), $Resume);
+       // $Resume = 'resume_' . $JCId . '.' . $request->Resume->extension();
+      //  $request->Resume->move(public_path('uploads/Resume'), $Resume);
         $CandidateImage = '';
         if ($request->CandidateImage != '' || $request->CandidateImage != null) {
             $CandidateImage = $JCId . '.' . $request->CandidateImage->extension();
@@ -353,7 +353,7 @@ class JobApplicationController extends Controller
 
         $query1 = jobcandidate::find($JCId);
         $query1->ReferenceNo = $ReferenceNo;
-        $query1->Resume = $Resume;
+     //   $query1->Resume = $Resume;
         $query1->CandidateImage = $CandidateImage;
         $query1->save();
 

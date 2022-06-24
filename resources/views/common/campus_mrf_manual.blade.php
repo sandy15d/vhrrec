@@ -5,8 +5,6 @@
         .table>:not(caption)>*>* {
             padding: 2px 1px;
         }
-
-
     </style>
     <div class="page-content">
 
@@ -53,13 +51,11 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th style="width:250px;">Reason for Creating New Position<font
-                                                class="text-danger">*
+                                        <th style="width:250px;">Reason for Creating New Position<font class="text-danger">*
                                             </font>
                                         </th>
                                         <td>
-                                            <textarea class="form-control" rows="1" name="Reason" tabindex="1"
-                                                autofocus></textarea>
+                                            <textarea class="form-control" rows="1" name="Reason" tabindex="1" autofocus></textarea>
                                             <span class="text-danger error-text Reason_error"></span>
 
                                         </td>
@@ -71,9 +67,9 @@
                                                 class="form-control form-select form-select-sm" disabled>
                                                 <option value="" selected disabled>Select Company</option>
                                                 @foreach ($company_list as $key => $value)
-                                                    <option value="{{ $key }}" @if ($key == session('Set_Company'))
-                                                        {{ 'selected' }}
-                                                @endif>{{ $value }}</option>
+                                                    <option value="{{ $key }}"
+                                                        @if ($key == session('Set_Company')) {{ 'selected' }} @endif>
+                                                        {{ $value }}</option>
                                                 @endforeach
                                             </select>
 
@@ -131,10 +127,10 @@
                                         <td>
                                             <table class="table borderless" style="margin-bottom: 0px;">
                                                 <tr>
-                                                   
+
                                                     <td><input type="text" name="MaxCTC" id="MaxCTC"
                                                             class="form-control form-control-sm" placeholder="Max"> </td>
-                                                            <td> CTC per annum</td>
+                                                    <td> CTC per annum</td>
                                                 </tr>
                                             </table>
                                         </td>
@@ -177,7 +173,8 @@
                                                 <input class="form-check-input" type="checkbox" id="KpChk">
                                                 <label class="form-check-label" for="KpChk">Yes</label>
                                             </div>
-                                            <table class="table borderless d-none" style="margin-bottom: 0px;" id="tblkp">
+                                            <table class="table borderless d-none" style="margin-bottom: 0px;"
+                                                id="tblkp">
                                                 <tbody id="MulKP">
                                                 </tbody>
 
