@@ -643,7 +643,7 @@ class OfferLtrController extends Controller
                 "offer_link" => route('candidate-offer-letter') . '?jaid=' . $sendId
             ];
 
-            Mail::to($query->Email)->send(new OfferLetterMail($details));
+            //Mail::to($query->Email)->send(new OfferLetterMail($details));
             $sql = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->select('jobapply.JCId', 'Aadhaar')->where('JAId', $JAId)->first();
             CandidateActivityLog::addToCandLog($sql->JCId, $sql->Aadhaar, 'Offer Letter Send to Candidate');
             return response()->json(['status' => 200, 'msg' => 'Offer Letter Sent Successfully']);

@@ -123,13 +123,11 @@
             background: white;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
-
     </style>
     <style type="text/css" media="print">
         * {
             display: none;
         }
-
     </style>
 </head>
 @php
@@ -251,7 +249,8 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                     </li>
                                 @elseif($sql->TempS == 1 && $sql->FixedS == 1)
                                     <li>For initial {{ $months_word[$sql->TempM] }} months, your temporary
-                                        headquarter will be
+                                        headquarter will
+                                        be
                                         <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
                                         and then
                                         your principal place of employment shall be at
@@ -265,11 +264,14 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                     </li>
                                 @elseif($sql->TempS == 1 && $sql->FixedS == 0)
                                     <li>For initial {{ $months_word[$sql->TempM] }} months, your temporary
-                                        headquarter will be
+                                        headquarter will
+                                        be
                                         <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
                                         However, you may be required to (i) relocate to other locations in India; and/or
-                                        (ii) undertake such travel in India, iii) overseas locations, from time to time,
-                                        as may be necessary in the interests of the Company's business.
+                                        (ii)
+                                        undertake such travel in India, iii) overseas locations, from time to time, as
+                                        may be
+                                        necessary in the interests of the Company's business.
                                     </li>
                                 @else
                                     <li>Your principal place of employment shall be at
@@ -285,17 +287,19 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
 
                                 @if ($sql->Functional_R != 0 && $sql->Admins_R != 0)
                                     <li>For administrative purpose you shall be reporting to
-                                        <strong>{{ getFullName($sql->A_ReportingManager) }},{{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong>
+                                        <strong>{{ getFullName($sql->A_ReportingManager) }},
+                                            {{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong>
                                         and for technical purpose you shall be reporting to
-                                        <strong>{{ getFullName($sql->F_ReportingManager) }},{{ getEmployeeDesignation($sql->F_ReportingManager) }}</strong>
+                                        <strong>{{ getFullName($sql->F_ReportingManager) }},
+                                            {{ getEmployeeDesignation($sql->F_ReportingManager) }}</strong>
                                         and will work under the supervision of such officers as may be decided upon by
                                         the
                                         Management from time to time.
                                     </li>
                                 @else
                                     <li>You will report to
-                                        <strong>{{ getFullName($sql->A_ReportingManager) }},{{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong>
-                                        and will
+                                        <strong>{{ getFullName($sql->A_ReportingManager) }},
+                                            {{ getEmployeeDesignation($sql->A_ReportingManager) }}</strong> and will
                                         work under the supervision of such officers as may be decided upon by the
                                         management of
                                         the Company, from time to time.
@@ -352,71 +356,28 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                 @endif
 
 
-                                @if ($sql->Company == 1)
-                                    {{-- VSPL --}}
-                                    @if ($sql->ServiceCondition == 'nopnot')
-                                        @if ($sql->Department == 6 || $sql->Department == 3)
-                                            {{-- Salses && PD --}}
-                                            <li>During your employment Period, either you or the Company may terminate
-                                                this
-                                                employment by giving 3 (Three) months’ notice in writing or salary in
-                                                lieu
-                                                of
-                                                such notice period.</li>
-                                        @else
-                                            <li>During your employment Period, either you or the Company may terminate
-                                                this
-                                                employment by giving 1 (One) months’ notice in writing or salary in lieu
-                                                of
-                                                such notice period.</li>
-                                        @endif
-                                    @else
-                                        @if ($sql->Department == 6 || $sql->Department == 3)
-                                            {{-- Salses && PD --}}
-                                            <li>During the {{ $sql->ServiceCondition }} Period, either you or the
-                                                Company may
-                                                terminate this
-                                                employment by giving 1 (One) months’ notice in writing or salary in lieu
-                                                of such notice period. Pursuant to your confirmation, the aforementioned
-                                                notice
-                                                period shall be of @if ($sql->Department == 6 || $sql->Department == 3)
-                                                    3 (Three) months
-                                                @else
-                                                    1 (One) month
-                                                @endif in writing or the salary in lieu thereof.
-                                            </li>
-                                        @elseif($sql->Department == 2)
-                                            {{-- R&D --}}
-                                            <li>During the {{ $sql->ServiceCondition }} Period, either you or the
-                                                Company may
-                                                terminate this
-                                                employment by giving 3 (Three) months’ notice in writing or salary in
-                                                lieu
-                                                of such notice period. Pursuant to your confirmation, the aforementioned
-                                                notice
-                                                period shall be of 3 (Three) month
-                                                in writing or the salary in lieu thereof.
-                                            </li>
-                                        @else
-                                            <li>During the {{ $sql->ServiceCondition }} Period, either you or the
-                                                Company may
-                                                terminate this
-                                                employment by giving 15 days’ notice in writing or salary in lieu
-                                                of such notice period. Pursuant to your confirmation, the aforementioned
-                                                notice
-                                                period shall be of 1 (One) month in writing or the salary in lieu
-                                                thereof.</li>
-                                        @endif
-                                    @endif
-                                @elseif ($sql->Company == 3)
-                                    {{-- VNPL --}}
-                                    <li>In case of discontinuation of service, during the period of
-                                        {{ $sql->ServiceCondition }} the
-                                        notice period will be one month and after confirmation of the service the notice
-                                        period
-                                        will be of
-                                        two month. </li>
+
+
+                                @if ($sql->Department == 1002 || $sql->Department == 1040)
+                                    <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
+                                        terminate
+                                        this
+                                        employment by giving 3 (Three) Months’ notice in writing or salary in lieu of
+                                        such
+                                        notice period. Pursuant to your confirmation, the aforementioned notice period
+                                        shall be
+                                        of 3 (Three) Months in writing or the salary in lieu thereof. </li>
+                                @else
+                                    <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
+                                        terminate this
+                                        employment by giving 15 days’ notice in writing or salary in lieu of such notice
+                                        period.
+                                        Pursuant to your confirmation, the aforementioned notice period shall be of 30
+                                        days in
+                                        writing or the salary in lieu thereof. </li>
                                 @endif
+
+
 
                                 @if ($sql->ServiceCondition == 'Training' && $sql->OrientationPeriod != null && $sql->Stipend != null)
                                     <li>During the period of Orientation, you shall receive a consolidated stipend of
@@ -502,7 +463,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             <p class="text-center"><b>ANNEXURE A – COMPENSATION STRUCTURE</b></p>
                             <br>
                             <center>
-                                <table class="table">
+                                <table class="table" style="width: 90%">
                                     <tr>
                                         <th class="text-center">Emolument Head</th>
                                         <th class="text-center">Amount (in Rs.)</th>
@@ -522,10 +483,12 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                         <td>*Bonus</td>
                                         <td class="text-center">{{ $ctc->bonus ?? '' }} </td>
                                     </tr>
-                                    <tr>
-                                        <td>Special Allowance</td>
-                                        <td class="text-center">{{ $ctc->special_alw ?? '' }}</td>
-                                    </tr>
+                                    @if ($ctc->special_alw != null || $ctc->special_alw != '')
+                                        <tr>
+                                            <td>Special Allowance</td>
+                                            <td class="text-center">{{ $ctc->special_alw ?? '' }}</td>
+                                        </tr>
+                                    @endif
                                     <tr>
                                         <th>Gross Monthly Salary</th>
                                         <td class="text-center">{{ $ctc->grsM_salary ?? '' }}</td>
@@ -549,11 +512,11 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                             be
                                             reimbursed on production of documents at the end of financial year)</td>
                                     </tr>
-                                    <tr>
+                                    <tr class="d-none">
                                         <td>Leave Travel Allowance</td>
                                         <td class="text-center">{{ $ctc->lta }} </td>
                                     </tr>
-                                    <tr>
+                                    <tr class="d-none">
                                         <td>Child Education Allowance</td>
                                         <td class="text-center">{{ $ctc->childedu }}</td>
                                     </tr>
@@ -577,7 +540,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                         <td>Employer’s ESIC contribution</td>
                                         <td class="text-center">{{ $ctc->emplyerESIC ?? '' }} </td>
                                     </tr>
-                                    <tr>
+                                    <tr class="d-none">
                                         <td>Insurance Policy Premium </td>
                                         <td class="text-center">{{ $ctc->medical ?? '' }}</td>
                                     </tr>
@@ -585,7 +548,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                         <th>Total Cost to Company</th>
                                         <td class="text-center">{{ $ctc->total_ctc ?? '' }} </td>
                                     </tr>
-
+        
                                 </table>
                             </center>
                             <p style="margin-bottom:0px;">&emsp;&emsp;*Bonus shall be paid as per The Code of Wages Act,
@@ -616,7 +579,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             <p class="text-center"><b>ANNEXURE B – ENTITLEMENTS</b></p>
                             <br>
                             <center>
-                                <table class="table">
+                                <table class="table" style="width: 90%">
                                     @php
                                         $rowCount = 0;
                                     @endphp
@@ -626,71 +589,39 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                     </tr>
                                     <tr>
                                         <td class="text-center"><?= ++$rowCount ?></td>
-                                        <td style="width:502px;"><b>Lodging :</b> Actual with upper limits per day as
-                                            mentioned
-                                            below
+                                        <td style="width:502px;"><b>Lodging </b> (Actual with upper limits per day)
                                         </td>
-                                        <td class="text-center font-weight-bold">Amount(in Rs.)</td>
+                                        <td class="text-center" style="width: 200px;">Rs. {{ $elg->LoadCityA }}</td>
                                     </tr>
-                                    @if ($elg->LoadCityA != '')
-                                        <tr>
-                                            <td></td>
-                                            <td>Lodging for City in Category A</td>
-                                            <td class="text-center" style="width: 200px;">Rs.
-                                                {{ $elg->LoadCityA }}</td>
-                                        </tr>
-                                    @endif
-                                    @if ($elg->LoadCityB != '')
-                                        <tr>
-                                            <td></td>
-                                            <td>Lodging for City in Category B</td>
-                                            <td class="text-center">Rs. {{ $elg->LoadCityB }}</td>
-                                        </tr>
-                                    @endif
-                                    @if ($elg->LoadCityC != '')
-                                        <tr>
-                                            <td></td>
-                                            <td>Lodging for City in Category C</td>
-                                            <td class="text-center">Rs. {{ $elg->LoadCityC }}</td>
-                                        </tr>
-                                    @endif
+        
                                     @if ($elg->DAOut != '')
                                         <tr>
                                             <td class="text-center"><?= ++$rowCount ?></td>
-                                            <td><b>
-                                                    @if ($sql->Department == 2)
-                                                        Fooding Expense (For outside HQ travel with night halt)
-                                                    @else
-                                                        D.A Out Side H.Q
-                                                    @endif
-                                                </b></td>
+                                            <td><b>D.A Outside H.Q</b> (To be claimed only on night halt)</td>
                                             <td class="text-center">{{ $elg->DAOut }}</td>
                                         </tr>
                                     @endif
-                                    @if ($elg->DAHq != '')
+        
+                                    @if ($sql->Department == 1004 || $sql->Department == 1025)
                                         <tr>
                                             <td class="text-center"><?= ++$rowCount ?></td>
-                                            <td><b>D.A @ H.Q</b>
-                                                @if ($sql->Department == 3)
-                                                    <b style="color:red">(In Case of day tour involving more than 40 km.
-                                                        per
-                                                        day)</b>
-                                                @elseif($sql->Department == 25 || $sql->Department == 4 || $sql->Department == 24)
-                                                    <b style="color:red">(If the work needs travel for more than 6 hours
-                                                        in
-                                                        a day)</b>
+                                            <td>
+                                                @if ($sql->Department == 1004)
+                                                    <b>D.A @ H.Q</b>(Applicable only during *season)
+                                                @else
+                                                    <b>D.A @ H.Q</b>(In case of touring more than 6 hours travel per day )
                                                 @endif
                                             </td>
                                             <td class="text-center">{{ $elg->DAHq }}</td>
                                         </tr>
-
                                     @endif
+        
                                     <tr>
                                         <td class="text-center"><?= ++$rowCount ?></td>
                                         <td colspan="2"><b>Travel Eligibility (For Official Purpose Only)</b></b></td>
-
+        
                                     </tr>
-
+        
                                     @if ($elg->TwoWheel != '')
                                         <tr>
                                             <td></td>
@@ -706,14 +637,14 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                             <td class="text-center">{{ $elg->FourWheel }}</td>
                                         </tr>
                                     @endif
-
-
+        
+        
                                     <tr>
                                         <td class="text-center"><?= ++$rowCount ?></td>
                                         <td colspan="2"><b>Mode of Travel outside HQ</b></b></td>
-
+        
                                     </tr>
-
+        
                                     <tr>
                                         <td></td>
                                         <td>Bus/Train</td>
@@ -726,13 +657,13 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                             <td>Flight</td>
                                             <td class="text-center"> {{ $elg->Flight_Class }}
                                                 ({{ $elg->Flight_Remark }})
-
+        
                                             </td>
                                         </tr>
                                     @endif
-
-
-
+        
+        
+        
                                     @if ($elg->Mobile != '')
                                         <tr>
                                             <td class="text-center"><?= ++$rowCount ?></td>
@@ -745,19 +676,18 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                             </td>
                                             <td class="text-center">Rs. {{ $elg->Mobile }}</td>
                                         </tr>
-
+        
                                     @endif
-
-
+        
+        
                                     @if ($elg->MExpense != '')
                                         <tr>
                                             <td class="text-center"><?= ++$rowCount ?></td>
                                             <td><b>Mobile Expense Reimbursement</b></b></td>
-                                            <td class="text-center">Rs. {{ $elg->MExpense }} /
-                                                {{ $elg->MTerm }}</td>
+                                            <td class="text-center">Rs. {{ $elg->MExpense }} / {{ $elg->MTerm }}</td>
                                         </tr>
                                     @endif
-
+        
                                     @if ($elg->Laptop != '')
                                         <tr>
                                             <td class="text-center"><?= ++$rowCount ?></td>
@@ -765,7 +695,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                             <td class="text-center">Rs. {{ $elg->Laptop }} </td>
                                         </tr>
                                     @endif
-
+        
                                     @if ($elg->HealthIns != '')
                                         <tr>
                                             <td class="text-center"><?= ++$rowCount ?></td>
@@ -777,30 +707,11 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                         <td class="text-center"><?= ++$rowCount ?></td>
                                         <td><b>Group Personal Accident Insurance</b></b></td>
                                         <td class="text-center">
-                                            @php
-                                                
-                                                if ($sql->Grade == 61 || $sql->Grade == 62) {
-                                                    echo '05 Lakhs';
-                                                } elseif ($sql->Grade == 63 || $sql->Grade == 64 || $sql->Grade == 65 || $sql->Grade == 66) {
-                                                    echo '10 Lakhs';
-                                                } elseif ($sql->Grade == 67 || $sql->Grade == 68 || $sql->Grade == 69 || $sql->Grade == 70 || $sql->Grade == 71) {
-                                                    echo '25 Lakhs';
-                                                } elseif ($sql->Grade == 72 || $sql->Grade == 73 || $sql->Grade == 74 || $sql->Grade == 75 || $sql->Grade == 76) {
-                                                    echo '50 Lakhs';
-                                                } elseif ($sql->Grade == 31) {
-                                                    echo '05 Lakhs';
-                                                } elseif ($sql->Grade == 32) {
-                                                    echo '10 Lakhs';
-                                                } elseif ($sql->Grade == 33 || $sql->Grade == 34) {
-                                                    echo '25 Lakhs';
-                                                } elseif ($sql->Grade == 35) {
-                                                    echo '50 Lakhs';
-                                                }
-                                            @endphp
+                                            5 Lakh
                                         </td>
                                     </tr>
-
-
+        
+        
                                 </table>
                             </center>
 
@@ -828,26 +739,29 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                     km/month.</p>
                             @endif
 
-                            <br>
-                            <p class="text-center"><b><u>LIST OF DOCUMENTS REQUIRED DURING APPOINTMENT</u></b></p>
-                            <ol>
-                                <li style="font-size:14px;">Form 16/Investment Declaration</li>
-                                <li style="font-size:14px;">6 colored formal Passport Size Photos with White background
-                                </li>
-                                <li style="font-size:14px;">Blood Group Test report</li>
-                                <li style="font-size:14px;">Copy of educational certificates (10th / 12th / Graduation /
-                                    Post
-                                    Graduation, etc.)</li>
-                                <li style="font-size:14px;">Previous Employer documents (Service Certificates)</li>
-                                <li style="font-size:14px;">Pay slip/ CTC structure of recent previous company</li>
-                                <li style="font-size:14px;">Relieving letter from previous company/ Resignation
-                                    Acceptance
-                                    Letter
-                                </li>
-                                <li style="font-size:14px;">Compulsory Documents (Driving license/PAN Card/ Aadhaar
-                                    Card)</li>
-                                <li style="font-size:14px;">Copy of Bank account passbook (Preferred only SBI/BOB) </li>
-                            </ol>
+                            @if ($sql->Department == 1004)
+                        <p>*season- a) Rabi (Oct to Jun), b) Kharif (Jul- Sep) (Applicable only for production)</p>
+                    @endif
+                    <br>
+                    <p class="text-center"><b><u>LIST OF DOCUMENTS REQUIRED DURING APPOINTMENT</u></b></p>
+                    <ol>
+                        <li style="font-size:14px;">Mandatory Documents <b>(E-Aadhaar Card /Driving license/PAN
+                                Card)</b></li>
+                        <li style="font-size:14px;">Copy of Bank account passbook (Preferred only Bank of Baroda) </li>
+                        <li style="font-size:14px;">Copy of educational certificates (10th / 12th / Graduation / Post
+                            Graduation, etc.)</li>
+                        <li style="font-size:14px;">6 colored formal Passport Size Photos with White background</li>
+                        <li style="font-size:14px;">Blood Group Test report</li>
+
+                        <li style="font-size:14px;">Previous Employer documents (Service Certificates)</li>
+                        <li style="font-size:14px;">Blood Group Test report</li>
+                        <li style="font-size:14px;">COVID-19 Vaccination Certificate</li>
+                        <li style="font-size:14px;">Certificate of Pradhan Mantri Jeevan Jyoti Bima Yojna (PMJJBY) &
+                            Pradhan Mantri Suraksha Bima Yojna (PMSBY)</li>
+                        <li style="font-size:14px;">Aadhaar Card of each Family Members
+                        </li>
+                        <li style="font-size:14px;">Group Family Photograph (Postal Card Size-2). </li>
+                    </ol>
                             <br><br><br><br>
                             <p style="margin-bottom:2px;">----------------------------<span
                                     style="float: right">----------------------------</span></p>
@@ -899,7 +813,8 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                         <br>
                                         <span>
 
-                                            Place: <input type="" class="form-control d-inline-block  form-control-sm"
+                                            Place: <input type=""
+                                                class="form-control d-inline-block  form-control-sm"
                                                 style="width:175px;" name="Place">
                                         </span>
 
@@ -916,8 +831,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                     <br>
                                     Please Mention Reason for Rejection:
                                     <br>
-                                    <textarea class="form-control d-inline-block frminp reqinp" name="RejReason" id="RejReason"
-                                        style="width: 400px;"></textarea>
+                                    <textarea class="form-control d-inline-block frminp reqinp" name="RejReason" id="RejReason" style="width: 400px;"></textarea>
                                     <br>
                                 </span>
                                 <button class="btn btn-sm btn-primary px-5" type="submit">

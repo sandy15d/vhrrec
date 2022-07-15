@@ -118,7 +118,6 @@
             background: white;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
-
     </style>
 </head>
 @php
@@ -293,59 +292,24 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                         @endif
 
 
-                        @if ($sql->Company == 1)
-                            {{-- VSPL --}}
-                            @if ($sql->ServiceCondition == 'nopnot')
-                                @if ($sql->Department == 6 || $sql->Department == 3)
-                                    {{-- Salses && PD --}}
-                                    <li>During your employment Period, either you or the Company may terminate this
-                                        employment by giving 3 (Three) months’ notice in writing or salary in lieu
-                                        of
-                                        such notice period.</li>
-                                @else
-                                    <li>During your employment Period, either you or the Company may terminate this
-                                        employment by giving 1 (One) months’ notice in writing or salary in lieu
-                                        of
-                                        such notice period.</li>
-                                @endif
-                            @else
-                                @if ($sql->Department == 6 || $sql->Department == 3)
-                                    {{-- Salses && PD --}}
-                                    <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
-                                        terminate this
-                                        employment by giving 1 (One) months’ notice in writing or salary in lieu
-                                        of such notice period. Pursuant to your confirmation, the aforementioned notice
-                                        period shall be of @if ($sql->Department == 6 || $sql->Department == 3)
-                                            3 (Three) months
-                                        @else
-                                            1 (One) month
-                                        @endif in writing or the salary in lieu thereof.
-                                    </li>
-                                @elseif($sql->Department == 2)
-                                    {{-- R&D --}}
-                                    <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
-                                        terminate this
-                                        employment by giving 3 (Three) months’ notice in writing or salary in lieu
-                                        of such notice period. Pursuant to your confirmation, the aforementioned notice
-                                        period shall be of 3 (Three) month
-                                        in writing or the salary in lieu thereof.
-                                    </li>
-                                @else
-                                    <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
-                                        terminate this
-                                        employment by giving 15 days’ notice in writing or salary in lieu
-                                        of such notice period. Pursuant to your confirmation, the aforementioned notice
-                                        period shall be of 1 (One) month in writing or the salary in lieu thereof.</li>
-                                @endif
-                            @endif
-                        @elseif ($sql->Company == 3)
-                            {{-- VNPL --}}
-                            <li>In case of discontinuation of service, during the period of
-                                {{ $sql->ServiceCondition }} the
-                                notice period will be one month and after confirmation of the service the notice period
-                                will be of
-                                two month. </li>
+
+
+                        @if ($sql->Department == 1002 || $sql->Department == 1040)
+                            <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
+                                terminate
+                                this
+                                employment by giving 3 (Three) Months’ notice in writing or salary in lieu of such
+                                notice period. Pursuant to your confirmation, the aforementioned notice period shall be
+                                of 3 (Three) Months in writing or the salary in lieu thereof. </li>
+                        @else
+                            <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
+                                terminate this
+                                employment by giving 15 days’ notice in writing or salary in lieu of such notice period.
+                                Pursuant to your confirmation, the aforementioned notice period shall be of 30 days in
+                                writing or the salary in lieu thereof. </li>
                         @endif
+
+
 
                         @if ($sql->ServiceCondition == 'Training' && $sql->OrientationPeriod != null && $sql->Stipend != null)
                             <li>During the period of Orientation, you shall receive a consolidated stipend of Rs.
@@ -482,9 +446,9 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             </tr>
                             <tr>
                                 <th>Net Monthly Salary</th>
-                                <td><input type="text" class="form-control text-center font-weight-bold" id="netMonth"
-                                        style="height: 21px;border: 0px none;" value="{{ $ctc->netMonth ?? '' }}"
-                                        readonly>
+                                <td><input type="text" class="form-control text-center font-weight-bold"
+                                        id="netMonth" style="height: 21px;border: 0px none;"
+                                        value="{{ $ctc->netMonth ?? '' }}" readonly>
                                 </td>
                             </tr>
                             <tr>
@@ -493,33 +457,37 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                     be
                                     reimbursed on production of documents at the end of financial year)</td>
                             </tr>
-                            <tr>
+                            <tr class="d-none">
                                 <td>Leave Travel Allowance</td>
                                 <td><input type="text" class="form-control text-center" id="lta"
-                                        style="height: 21px;border: 0px none;" value="
+                                        style="height: 21px;border: 0px none;"
+                                        value="
                                         <?php if ($ctc->lta == null || $ctc->lta == '') {
                                             echo '0';
                                         } else {
                                             echo $ctc->lta;
-                                        } ?>" onchange="calculate()">
+                                        } ?>"
+                                        onchange="calculate()">
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="d-none">
                                 <td>Child Education Allowance</td>
                                 <td><input type="text" class="form-control text-center" id="childedu"
-                                        style="height: 21px;border: 0px none;" value="
+                                        style="height: 21px;border: 0px none;"
+                                        value="
                                         <?php if ($ctc->childedu == null || $ctc->childedu == '') {
                                             echo '0';
                                         } else {
                                             echo $ctc->childedu;
-                                        } ?>" onchange="calculate()">
+                                        } ?>"
+                                        onchange="calculate()">
                                 </td>
                             </tr>
                             <tr>
                                 <th>Annual Gross Salary</th>
-                                <td><input type="text" class="form-control text-center font-weight-bold" id="anualgrs"
-                                        style="height: 21px;border: 0px none;" value="{{ $ctc->anualgrs ?? '' }}"
-                                        readonly>
+                                <td><input type="text" class="form-control text-center font-weight-bold"
+                                        id="anualgrs" style="height: 21px;border: 0px none;"
+                                        value="{{ $ctc->anualgrs ?? '' }}" readonly>
                                 </td>
                             </tr>
                             <tr>
@@ -543,8 +511,8 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             <tr id="empesic_tr" class="{{ $ctc->grsM_salary > 21000 ? 'd-none' : '' }}">
                                 <td>Employer’s ESIC contribution</td>
                                 <td><input type="text" class="form-control text-center" id="emplyerESIC"
-                                        style="height: 21px;border: 0px none;" value="{{ $ctc->emplyerESIC ?? '' }}"
-                                        readonly>
+                                        style="height: 21px;border: 0px none;"
+                                        value="{{ $ctc->emplyerESIC ?? '' }}" readonly>
                                 </td>
                             </tr>
                             <tr>
@@ -556,9 +524,9 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             </tr>
                             <tr>
                                 <th>Total Cost to Company</th>
-                                <td><input type="text" class="form-control text-center font-weight-bold" id="total_ctc"
-                                        style="height: 21px;border: 0px none;" value="{{ $ctc->total_ctc ?? '' }}"
-                                        readonly>
+                                <td><input type="text" class="form-control text-center font-weight-bold"
+                                        id="total_ctc" style="height: 21px;border: 0px none;"
+                                        value="{{ $ctc->total_ctc ?? '' }}" readonly>
                                 </td>
                             </tr>
                         </form>
@@ -608,54 +576,37 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             </tr>
                             <tr>
                                 <td class="text-center">1</td>
-                                <td style="width:402px;"><b>Lodging :</b> Actual with upper limits per day as mentioned
-                                    below
+                                <td style="width:402px;"><b>Lodging </b> (Actual with upper limits per day)
                                 </td>
-                                <td>Amount(in Rs.)</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>Lodging for City in Category A</td>
                                 <td><input type="text" class="form-control text-center" id="LoadCityA"
                                         style="height:20px;border: 0px none;" value="{{ $elg->LoadCityA ?? '' }}">
                                 </td>
                             </tr>
-                            <tr>
-                                <td></td>
-                                <td>Lodging for City in Category B</td>
-                                <td><input type="text" class="form-control text-center" id="LoadCityB"
-                                        style=" height:20px;border: 0px none;" value="{{ $elg->LoadCityB ?? '' }}">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>Lodging for City in Category C</td>
-                                <td><input type="text" class="form-control text-center" id="LoadCityC"
-                                        style=" height:20px;border: 0px none;" value="{{ $elg->LoadCityC ?? '' }}">
-                                </td>
-                            </tr>
+
+
                             <tr>
                                 <td class="text-center">2</td>
-                                <td><b>
-                                        @if ($sql->Department == 2)
-                                            Fooding Expense (For outside HQ travel with night halt)
-                                        @else
-                                            D.A Out Side H.Q
-                                        @endif
-                                    </b></td>
+                                <td><b>D.A Outside H.Q</b> (To be claimed only on night halt)</td>
                                 <td><input type="text" class="form-control text-center" id="DAOut"
                                         style=" height:20px;border: 0px none;" value="{{ $elg->DAOut ?? '' }}">
                                 </td>
                             </tr>
-                            <tr>
-                                <td class="text-center">3</td>
-                                <td><b>D.A @ H.Q</b>
+                            @if ($sql->Department == 1004 || $sql->Department == 1025)
+                                <tr>
+                                    <td class="text-center">3</td>
+                                    <td>
+                                        @if ($sql->Department == 1004)
+                                            <b>D.A @ H.Q</b>(Applicable only during *season)
+                                        @else
+                                            <b>D.A @ H.Q</b>(In case of touring more than 6 hours travel per day )
+                                        @endif
+                                    </td>
+                                    <td><input type="text" class="form-control text-center" id="DAHq"
+                                            style=" height:20px;border: 0px none;" value="{{ $elg->DAHq ?? '' }}">
+                                    </td>
+                                </tr>
+                            @endif
 
-                                </td>
-                                <td><input type="text" class="form-control text-center" id="DAHq"
-                                        style=" height:20px;border: 0px none;" value="{{ $elg->DAHq ?? '' }}">
-                                </td>
-                            </tr>
                             <tr>
                                 <td class="text-center">4</td>
                                 <td colspan="2"><b>Travel Eligibility (For Official Purpose Only)</b></b></td>
@@ -663,12 +614,12 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             </tr>
                             <tr>
                                 <td></td>
-                                <td style="width:400px;">Two Wheeler </td>
+                                <td style="width:400px;">Two Wheeler ( Max 75Kms/day and 1800km/month) </td>
                                 <td><input type="text" class="form-control text-center" id="TwoWheel"
                                         style=" height:20px;border: 0px none;" value="{{ $elg->TwoWheel ?? '' }}">
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="d-none">
                                 <td></td>
                                 <td style="width:400px;">Four Wheeler </td>
                                 <td><input type="text" class="form-control text-center" id="FourWheel"
@@ -696,7 +647,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                     </script>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="d-none">
                                 <td></td>
                                 <td>Flight</td>
                                 <td>
@@ -754,7 +705,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             </tr>
 
 
-                            <tr>
+                            <tr class="d-none">
                                 <td class="text-center">7</td>
                                 <td><b>Mobile Handset Eligibility</b></b></td>
                                 <td><input type="text" class="form-control text-center d-inline" id="Mobile"
@@ -779,14 +730,14 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                     </span>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="d-none">
                                 <td class="text-center">9</td>
                                 <td><b>Laptop Purchase Eligibility (if applicable)</b></b></td>
                                 <td><input type="text" class="form-control text-center" id="Laptop"
                                         style=" height:20px;border: 0px none;" value="{{ $elg->Laptop ?? '' }}">
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="d-none">
                                 <td class="text-center">10</td>
                                 <td><b>Health Insurance</b></b></td>
                                 <td>
@@ -814,28 +765,23 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             <tr>
                                 <td class="text-center">11</td>
                                 <td><b>Group Personal Accident Insurance</b></b></td>
-                                <td>
-                                    <?php
-                                    if ($sql->Grade == 61 || $sql->Grade == 62) {
-                                        echo '05 Lakhs';
-                                    } elseif ($sql->Grade == 63 || $sql->Grade == 64 || $sql->Grade == 65 || $sql->Grade == 66) {
-                                        echo '10 Lakhs';
-                                    } elseif ($sql->Grade == 67 || $sql->Grade == 68 || $sql->Grade == 69 || $sql->Grade == 70 || $sql->Grade == 71) {
-                                        echo '25 Lakhs';
-                                    } elseif ($sql->Grade == 72 || $sql->Grade == 73 || $sql->Grade == 74 || $sql->Grade == 75 || $sql->Grade == 76) {
-                                        echo '50 Lakhs';
-                                    }
-                                    ?>
+                                <td class="text-center">
+                                    5 Lakh
                                 </td>
                             </tr>
 
 
                         </table>
-                        <p style="margin-bottom:0px;"><input type="checkbox" id="two_wheel_line" name="two_wheel_line"
-                                @if ($elg->TwoWheelLine == '1') checked @endif>
+                        @if ($sql->Department == 1004)
+                            <p>*season- a) Rabi (Oct to Jun), b) Kharif (Jul- Sep) (Applicable only for production)</p>
+                        @endif
+
+                        {{-- <p style="margin-bottom:0px;"><input type="checkbox" id="two_wheel_line"
+                                name="two_wheel_line" @if ($elg->TwoWheelLine == '1') checked @endif>
                             * 2 Wheeler vehicle eligibility.</p>
-                        <p style="margin-bottom:0px;"><input type="checkbox" id="four_wheel_line" name="four_wheel_line"
-                                @if ($elg->FourWheelLine == '1') checked @endif> * 4 Wheeler vehicle eligibility.</p>
+                        <p style="margin-bottom:0px;"><input type="checkbox" id="four_wheel_line"
+                                name="four_wheel_line" @if ($elg->FourWheelLine == '1') checked @endif> * 4 Wheeler
+                            vehicle eligibility.</p>
 
                         <p style="margin-bottom:0px;"><input type="checkbox" id="tline" name="tline"
                                 @if ($elg->TravelLine == '1') checked @endif> * Maximum travel
@@ -843,7 +789,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             allowed for 4 wheeler is 2000
                             km/month and overall travel including both 4 wheeler & 2 wheeler should not exceed more than
                             3000
-                            km/month.</p><br><br>
+                            km/month.</p><br><br> --}}
                     </form>
                     <script>
                         $(document).on('change', '#Flight', function() {

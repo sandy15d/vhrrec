@@ -713,7 +713,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                         </td>
                                         <td>
                                             <input type="text" class="form-control form-control-sm reqinp" name="Phone"
-                                                id="Phone" onkeypress="return isNumberKey(event)" maxlength="10">
+                                                id="Phone"  maxlength="10">
                                         </td>
                                     </tr>
                                     <tr>

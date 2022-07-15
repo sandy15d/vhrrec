@@ -2074,7 +2074,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                 </ul>
                                 <br>
                                 <br>
-                                @if ($OfBasic != null)
+                              {{--   @if ($OfBasic != null)
                                     @if ($OfBasic->ForwardToESS == 'No' && $OfBasic->Joined == 'Yes' && $OfBasic->EmpCode != '')
                                         <center><button class="btn btn-sm btn-primary" id="ProcessToEss">Process Data to
                                                 Ess
@@ -2086,7 +2086,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                     <center>
                                         <h3 class="text-success">Data Forwarded to ESS</h3>
                                     </center>
-                                @endif
+                                @endif --}}
                             </div>
                         </div>
                     </div>
@@ -4206,10 +4206,12 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                     <td>
                                         <select name="SignAuth" id="SignAuth" class="form-select form-select-sm"
                                             style="width: 170px">
+                                            <option value=""></option>
                                             <option value="General Manager HR">General Manager HR</option>
                                             <option value="Managing Director">Managing Director</option>
                                             <option value="Director">Director</option>
                                             <option value="Business Head">Business Head</option>
+                                          
                                         </select>
                                     </td>
                                 </tr>
@@ -6409,7 +6411,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
             }
         });
 
-        $(document).on('change', '#Grade', function() {
+        /* $(document).on('change', '#Grade', function() {
             var Grade = $(this).val();
             var value = 'nopnot';
             if (Grade >= 70) {
@@ -6419,7 +6421,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                 $('.scon').css('display', 'inline-block');
                 $("input[name=ServiceCond][value=" + value + "]").prop('checked', false);
             }
-        });
+        }); */
 
         $(document).on('click', '#offerltredit', function() {
             var JAId = $(this).data('id');

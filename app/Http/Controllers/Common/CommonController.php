@@ -210,7 +210,7 @@ class CommonController extends Controller
                             ->where('DateOfSepration', '>=', '2021-01-01');
                     });
             })
-            ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
+            ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname," - ",VCode,EmpCode) AS FullName'))
             ->pluck("EmployeeID", "FullName");
 
         return response()->json($employee);
