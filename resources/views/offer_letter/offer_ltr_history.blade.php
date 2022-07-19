@@ -579,7 +579,11 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             @if ($sql->TwoWheel != '')
                                 <tr>
                                     <td></td>
-                                    <td style="width:502px;">**Two Wheeler </td>
+                                    <td style="width:502px;">**Two Wheeler   @if ($sql->Department == 1003)
+                                        ( Max 1500km/month)
+                                        @else
+                                        ( Max 75Kms/day and 1800km/month)
+                                        @endif</td>
                                     <td class="text-center">{{ $sql->TwoWheel }}</td>
                                 </tr>
                             @endif

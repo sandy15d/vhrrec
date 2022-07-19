@@ -614,7 +614,14 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             </tr>
                             <tr>
                                 <td></td>
-                                <td style="width:400px;">Two Wheeler ( Max 75Kms/day and 1800km/month) </td>
+                                <td style="width:400px;">Two Wheeler 
+                                    @if ($sql->Department == 1003)
+                                    ( Max 1500km/month)
+                                    @else
+                                    ( Max 75Kms/day and 1800km/month)
+                                    @endif
+                                    
+                                 </td>
                                 <td><input type="text" class="form-control text-center" id="TwoWheel"
                                         style=" height:20px;border: 0px none;" value="{{ $elg->TwoWheel ?? '' }}">
                                 </td>
