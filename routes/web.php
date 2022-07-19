@@ -174,10 +174,12 @@ Route::post('appointment_letter_generate', [AboutCandidateController::class, 'ap
 
 Route::get('service_agreement', [AboutCandidateController::class, 'service_agreement'])->name('service_agreement');
 Route::get('service_agreement_print', [AboutCandidateController::class, 'service_agreement_print'])->name('service_agreement_print');
+Route::get('service_agreement_print_old_stamp', [AboutCandidateController::class, 'service_agreement_print_old_stamp'])->name('service_agreement_print_old_stamp');
 Route::post('service_agreement_generate', [AboutCandidateController::class, 'service_agreement_generate'])->name('service_agreement_generate');
 
 Route::get('service_bond', [AboutCandidateController::class, 'service_bond'])->name('service_bond');
 Route::get('service_bond_print', [AboutCandidateController::class, 'service_bond_print'])->name('service_bond_print');
+Route::get('service_bond_print_old_stamp', [AboutCandidateController::class, 'service_bond_print_old_stamp'])->name('service_bond_print_old_stamp');
 Route::post('service_bond_generate', [AboutCandidateController::class, 'service_bond_generate'])->name('service_bond_generate');
 
 Route::get('conf_agreement', [AboutCandidateController::class, 'conf_agreement'])->name('conf_agreement');

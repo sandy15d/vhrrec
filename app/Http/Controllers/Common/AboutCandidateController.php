@@ -894,6 +894,11 @@ class AboutCandidateController extends Controller
         return view('onboarding.service_agreement_print');
     }
 
+    public function service_agreement_print_old_stamp()
+    {
+        return view('onboarding.service_agreement_print_old_stamp');
+    }
+
     public function service_bond_generate(Request $request)
     {
         $JAId = $request->JAId;
@@ -916,6 +921,10 @@ class AboutCandidateController extends Controller
         return view('onboarding.service_bond_print');
     }
 
+    public function service_bond_print_old_stamp()
+    {
+        return view('onboarding.service_bond_print_old_stamp');
+    }
 
     public function conf_agreement_generate(Request $request)
     {

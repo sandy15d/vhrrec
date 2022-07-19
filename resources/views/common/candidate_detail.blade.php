@@ -1547,13 +1547,13 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Offer Letter Basic Details
-                                    @if ($OfBasic != null && ($OfBasic->Answer == '' || $OfBasic->Answer == 'Rejected'))
+                                    {{-- @if ($OfBasic != null && ($OfBasic->Answer == '' || $OfBasic->Answer == 'Rejected')) --}}
                                         <a href="#" class="edit-icon" data-bs-toggle="modal"
                                             data-bs-target="#OfferLtrModal" id="offerltredit"
                                             data-id="{{ $Rec->JAId }}">
                                             <i class="fa fa-pencil"></i>
                                         </a>
-                                    @endif
+                                    {{-- @endif --}}
                                 </h6>
                                 <ul class="personal-info">
                                     <li>
@@ -1670,12 +1670,12 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Offer Letter Generation & Review
-                                    @if ($OfBasic != null && ($OfBasic->Answer == '' || $OfBasic->Answer == 'Rejected'))
+                                    {{-- @if ($OfBasic != null && ($OfBasic->Answer == '' || $OfBasic->Answer == 'Rejected')) --}}
                                         <a href="javascript:void(0);" class="edit-icon" id="offerltrgen"
                                             data-id="{{ $Rec->JAId }}">
                                             <i class="fa fa-pencil"></i>
                                         </a>
-                                    @endif
+                                    {{-- @endif --}}
                                 </h6>
 
                                 <ul class="personal-info">
@@ -1849,7 +1849,9 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                     <a href="{{ route('service_agreement') }}?jaid={{ base64_encode($JAId) }}"
                                                         target="_blank"> View</a> | <a href="javascript:void(0);"
                                                         onclick="PrintServiceAgreementLetter('{{ route('service_agreement_print') }}?jaid={{ base64_encode($Rec->JAId) }}');">
-                                                        Print</a>
+                                                        Print</a> | <a href="javascript:void(0);"
+                                                        onclick="PrintServiceAgreementLetter_OldStamp('{{ route('service_agreement_print_old_stamp') }}?jaid={{ base64_encode($Rec->JAId) }}');">
+                                                        Old Stamp</a>
                                                 @endif
 
                                             </div>
@@ -1867,7 +1869,9 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                         <a href="{{ route('service_bond') }}?jaid={{ base64_encode($JAId) }}"
                                                             target="_blank"> View</a> | <a href="javascript:void(0);"
                                                             onclick="PrintServiceBondLetter('{{ route('service_bond_print') }}?jaid={{ base64_encode($Rec->JAId) }}');">
-                                                            Print</a>
+                                                            Print</a> | <a href="javascript:void(0);"
+                                                            onclick="PrintServiceBondLetter_OldStamp('{{ route('service_bond_print_old_stamp') }}?jaid={{ base64_encode($Rec->JAId) }}');">
+                                                            Old Stamp</a>
                                                     @endif
                                                 </div>
                                             </li>
@@ -6816,6 +6820,12 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                 .attr("src", url) // point the iframe to the page you want to print
                 .appendTo("body");
         }
+        function PrintServiceAgreementLetter_OldStamp(url) {
+            $("<iframe>") // create a new iframe element
+                .hide() // make it invisible
+                .attr("src", url) // point the iframe to the page you want to print
+                .appendTo("body");
+        }
 
         function PrintServiceBondLetter(url) {
             $("<iframe>") // create a new iframe element
@@ -6823,7 +6833,13 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                 .attr("src", url) // point the iframe to the page you want to print
                 .appendTo("body");
         }
-
+        
+        function PrintServiceBondLetter_OldStamp(url) {
+            $("<iframe>") // create a new iframe element
+                .hide() // make it invisible
+                .attr("src", url) // point the iframe to the page you want to print
+                .appendTo("body");
+        }
         function PrintConfidentialityAgreementLetter(url) {
             $("<iframe>") // create a new iframe element
                 .hide() // make it invisible
