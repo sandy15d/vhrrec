@@ -168,8 +168,8 @@ $sql = DB::table('jobapply')
                             {{ date('d/m/Y', strtotime($sql->B_Date)) }}
                         @else
                             {{ date('d/m/Y') }}
-                        @endif --}} &emsp;&emsp;&emsp;
-                        (and effective from date {{-- date('d/m/Y', strtotime($sql->JoinOnDt)) --}})
+                        @endif --}} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                        (and effective from date {{-- date('d/m/Y', strtotime($sql->JoinOnDt)) --}}&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;)
                     </p>
 
                     <p><b>BETWEEN</b></p>
