@@ -126,7 +126,7 @@ $sql = DB::table('jobapply')
     ->select('appointing.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobcandidates.MaritalStatus', 'jobcandidates.SpouseName', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
     ->where('jobapply.JAId', $JAId)
     ->first();
-
+    $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 'Four' => '4 (Four)', 'Five' => '5 (Five)', 'Six' => '6 (Six)', 'Seven' => '7 (Seven)', 'Eight' => '8 (Eight)', 'Nine' => '9 (Nine)', 'Ten' => '10 (Ten)', 'Eleven' => '11 (Eleven)', 'Twelve' => '12 (Twelve)'];
 @endphp
 
 <body>
@@ -253,7 +253,7 @@ $sql = DB::table('jobapply')
                             be beneficial for the Employee and the Company either immediately or on future date as per
                             the job requirements.</li>
                         <li>The Employee by his/her own free will, discretion and judgement, agrees and undertakes to
-                            serve the Company continuously for a minimum period of [insert years, nos. (in words)] from
+                            serve the Company continuously for a minimum period of <b>{{ $months_word[$sql->ServiceBondYears] }} years </b> from
                             the date of his/her appointment with the Company (“Service Period”) and shall not leave the
                             services of the Company before completion of the Service Period. During the said Service
                             Period, the Employee shall not seek employment, or enter employment of any other employer or
