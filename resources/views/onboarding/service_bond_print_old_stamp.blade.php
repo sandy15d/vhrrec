@@ -209,7 +209,7 @@ $sql = DB::table('jobapply')
 
                     <p style="text-align: justify"><b>WHEREAS</b> the Company has offered and the Employee has accepted
                         the employment of the Company on the terms and conditions mentioned under the appointment letter
-                        dated {{ date('d-m-Y', strtotime($sql->A_Date)) }} and the Employee has agreed to abide with
+                        dated {{-- date('d-m-Y', strtotime($sql->A_Date)) --}} &emsp;&emsp;&emsp;&emsp; and the Employee has agreed to abide with
                         the
                         terms and conditions of his/her employment.</p>
                     <p style="text-align: justify"><b>AND WHEREAS</b>, in terms of the said letter of appointment, the
