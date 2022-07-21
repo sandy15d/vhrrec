@@ -156,13 +156,14 @@ $sql = DB::table('jobapply')
                         <p class="text-center">Service Bond (Annexure)</p>
                     </b>
                     <p style="text-align: justify">This agreement is executed at RAIPUR, CHHATTISGARH, on this
-                        @if ($sql->B_Date != '')
-                            {{ date('d/m/Y', strtotime($sql->B_Date)) }}
-                        @else
-                            {{ date('d/m/Y') }}
-                        @endif
-                        (and effective from date {{ date('d/m/Y', strtotime($sql->JoinOnDt)) }})
-                    </p>
+                        {{--  @if ($sql->B_Date != '')
+                             {{ date('d/m/Y', strtotime($sql->B_Date)) }}
+                         @else
+                             {{ date('d/m/Y') }}
+                         @endif --}} &emsp;&emsp;&emsp;
+                         (and effective from date {{-- date('d/m/Y', strtotime($sql->JoinOnDt)) --}})
+                     </p>
+ 
 
                     <p><b>BETWEEN</b></p>
 
