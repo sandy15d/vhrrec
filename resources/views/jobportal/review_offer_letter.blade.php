@@ -123,13 +123,11 @@
             background: white;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
-
     </style>
     <style type="text/css" media="print">
         * {
             display: none;
         }
-
     </style>
 </head>
 @php
@@ -597,33 +595,34 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                     <td class="text-center">{{ $elg->DAHq }}</td>
                                 </tr>
                             @endif
-
-                            <tr>
-                                <td class="text-center"><?= ++$rowCount ?></td>
-                                <td colspan="2"><b>Travel Eligibility (For Official Purpose Only)</b></b></td>
-
-                            </tr>
-
-                            @if ($elg->TwoWheel != '')
+                            @if ($elg->TwoWheel != '' || $elg->FourWheel != '' || $elg - TwoWheel != 0 || $elg->FourWheel != 0)
                                 <tr>
-                                    <td></td>
-                                    <td style="width:502px;">**Two Wheeler   @if ($sql->Department == 1003)
-                                        ( Max 1500km/month)
-                                        @else
-                                        ( Max 75Kms/day and 1800km/month)
-                                        @endif </td>
-                                    <td class="text-center">{{ $elg->TwoWheel }}</td>
-                                </tr>
-                            @endif
-                            @if ($elg->FourWheel != '')
-                                <tr>
-                                    <td></td>
-                                    <td style="width:502px;">*Four Wheeler
-                                    </td>
-                                    <td class="text-center">{{ $elg->FourWheel }}</td>
-                                </tr>
-                            @endif
+                                    <td class="text-center"><?= ++$rowCount ?></td>
+                                    <td colspan="2"><b>Travel Eligibility (For Official Purpose Only)</b></b></td>
 
+                                </tr>
+
+                                @if ($elg->TwoWheel != '')
+                                    <tr>
+                                        <td></td>
+                                        <td style="width:502px;">**Two Wheeler @if ($sql->Department == 1003)
+                                                ( Max 1500km/month)
+                                            @else
+                                                ( Max 75Kms/day and 1800km/month)
+                                            @endif
+                                        </td>
+                                        <td class="text-center">{{ $elg->TwoWheel }}</td>
+                                    </tr>
+                                @endif
+                                @if ($elg->FourWheel != '')
+                                    <tr>
+                                        <td></td>
+                                        <td style="width:502px;">*Four Wheeler
+                                        </td>
+                                        <td class="text-center">{{ $elg->FourWheel }}</td>
+                                    </tr>
+                                @endif
+                            @endif
 
                             <tr>
                                 <td class="text-center"><?= ++$rowCount ?></td>
@@ -726,28 +725,26 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                     @endif
 
                     @if ($sql->Department == 1004)
-                <p>*season- a) Rabi (Oct to Jun), b) Kharif (Jul- Sep) (Applicable only for production)</p>
-            @endif
-            <br>
-            <p class="text-center"><b><u>LIST OF DOCUMENTS REQUIRED DURING APPOINTMENT</u></b></p>
-            <ol>
-                <li style="font-size:14px;">Mandatory Documents <b>(E-Aadhaar Card /Driving license/PAN
-                        Card)</b></li>
-                <li style="font-size:14px;">Copy of Bank account passbook (Preferred only Bank of Baroda) </li>
-                <li style="font-size:14px;">Copy of educational certificates (10th / 12th / Graduation / Post
-                    Graduation, etc.)</li>
-                <li style="font-size:14px;">6 colored formal Passport Size Photos with White background</li>
-                <li style="font-size:14px;">Blood Group Test report</li>
-
-                <li style="font-size:14px;">Previous Employer documents (Service Certificates)</li>
-                <li style="font-size:14px;">Blood Group Test report</li>
-                <li style="font-size:14px;">COVID-19 Vaccination Certificate</li>
-                <li style="font-size:14px;">Certificate of Pradhan Mantri Jeevan Jyoti Bima Yojna (PMJJBY) &
-                    Pradhan Mantri Suraksha Bima Yojna (PMSBY)</li>
-                <li style="font-size:14px;">Aadhaar Card of each Family Members
-                </li>
-                <li style="font-size:14px;">Group Family Photograph (Postal Card Size-2). </li>
-            </ol>
+                        <p>*season- a) Rabi (Oct to Jun), b) Kharif (Jul- Sep) (Applicable only for production)</p>
+                    @endif
+                    <br>
+                    <p class="text-center"><b><u>LIST OF DOCUMENTS REQUIRED DURING APPOINTMENT</u></b></p>
+                    <ol>
+                        <li style="font-size:14px;">Mandatory Documents <b>(E-Aadhaar Card /Driving license/PAN
+                                Card)</b></li>
+                        <li style="font-size:14px;">Copy of Bank account passbook (Preferred only Bank of Baroda) </li>
+                        <li style="font-size:14px;">Copy of educational certificates (10th / 12th / Graduation / Post
+                            Graduation, etc.)</li>
+                        <li style="font-size:14px;">6 colored formal Passport Size Photos with White background</li>
+                        <li style="font-size:14px;">Previous Employer documents (Service Certificates)</li>
+                        <li style="font-size:14px;">Blood Group Test report</li>
+                        <li style="font-size:14px;">COVID-19 Vaccination Certificate</li>
+                        <li style="font-size:14px;">Certificate of Pradhan Mantri Jeevan Jyoti Bima Yojna (PMJJBY) &
+                            Pradhan Mantri Suraksha Bima Yojna (PMSBY)</li>
+                        <li style="font-size:14px;">Aadhaar Card of each Family Members
+                        </li>
+                        <li style="font-size:14px;">Group Family Photograph (Postal Card Size-2). </li>
+                    </ol>
                     <br><br><br><br>
                     <p style="margin-bottom:2px;">----------------------------<span
                             style="float: right">----------------------------</span></p>
@@ -788,8 +785,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             <br>
                             Please Mention Reason for Rejection:
                             <br>
-                            <textarea class="form-control d-inline-block frminp reqinp" name="RejReason" id="RejReason"
-                                style="width: 400px;"></textarea>
+                            <textarea class="form-control d-inline-block frminp reqinp" name="RejReason" id="RejReason" style="width: 400px;"></textarea>
                             <br>
                         </span>
                         <button class="btn btn-sm btn-primary px-5" type="submit">

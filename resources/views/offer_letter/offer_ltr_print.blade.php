@@ -544,34 +544,35 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                     <td class="text-center">{{ $elg->DAHq }}</td>
                                 </tr>
                             @endif
-
-                            <tr>
-                                <td class="text-center"><?= ++$rowCount ?></td>
-                                <td colspan="2"><b>Travel Eligibility (For Official Purpose Only)</b></b></td>
-
-                            </tr>
-
-                            @if ($elg->TwoWheel != '')
+                            @if ($elg->TwoWheel != '' || $elg->FourWheel != '' || $elg - TwoWheel != 0 || $elg->FourWheel != 0)
                                 <tr>
-                                    <td></td>
-                                    <td style="width:502px;">**Two Wheeler   @if ($sql->Department == 1003)
-                                        ( Max 1500km/month)
-                                        @else
-                                        ( Max 75Kms/day and 1800km/month)
-                                        @endif </td>
-                                    <td class="text-center">{{ $elg->TwoWheel }}</td>
-                                </tr>
-                            @endif
-                            @if ($elg->FourWheel != '')
-                                <tr>
-                                    <td></td>
-                                    <td style="width:502px;">*Four Wheeler
-                                    </td>
-                                    <td class="text-center">{{ $elg->FourWheel }}</td>
-                                </tr>
-                            @endif
+                                    <td class="text-center"><?= ++$rowCount ?></td>
+                                    <td colspan="2"><b>Travel Eligibility (For Official Purpose Only)</b></b></td>
 
+                                </tr>
 
+                                @if ($elg->TwoWheel != '')
+                                    <tr>
+                                        <td></td>
+                                        <td style="width:502px;">**Two Wheeler @if ($sql->Department == 1003)
+                                                ( Max 1500km/month)
+                                            @else
+                                                ( Max 75Kms/day and 1800km/month)
+                                            @endif
+                                        </td>
+                                        <td class="text-center">{{ $elg->TwoWheel }}</td>
+                                    </tr>
+                                @endif
+                                @if ($elg->FourWheel != '')
+                                    <tr>
+                                        <td></td>
+                                        <td style="width:502px;">*Four Wheeler
+                                        </td>
+                                        <td class="text-center">{{ $elg->FourWheel }}</td>
+                                    </tr>
+                                @endif
+
+                            @endif
                             <tr>
                                 <td class="text-center"><?= ++$rowCount ?></td>
                                 <td colspan="2"><b>Mode of Travel outside HQ</b></b></td>
