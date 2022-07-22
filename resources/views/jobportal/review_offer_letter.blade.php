@@ -595,7 +595,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                     <td class="text-center">{{ $elg->DAHq }}</td>
                                 </tr>
                             @endif
-                            @if ($elg->TwoWheel != '' || $elg->FourWheel != '' || $elg - TwoWheel != 0 || $elg->FourWheel != 0)
+                            @if ($elg->TwoWheel != '' || $elg->TwoWheel != null)
                                 <tr>
                                     <td class="text-center"><?= ++$rowCount ?></td>
                                     <td colspan="2"><b>Travel Eligibility (For Official Purpose Only)</b></b></td>
