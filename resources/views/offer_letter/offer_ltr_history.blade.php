@@ -427,7 +427,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                 <td colspan="2" class="text-center">(A) Monthly Components</td>
                             </tr>
                             <tr>
-                                <td>Basic</td>
+                                <td>Basic + D.A.</td>
                                 <td class="text-center">{{ $sql->basic ?? '' }}</td>
                             </tr>
                             <tr>

@@ -395,7 +395,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                 <td colspan="2" class="text-center">(A) Monthly Components</td>
                             </tr>
                             <tr>
-                                <td>Basic</td>
+                                <td>Basic + D.A. </td>
                                 <td><input type="text" class="form-control text-center" id="basic"
                                         style="height: 21px;border: 0px none;" value="{{ $ctc->basic ?? '' }}"
                                         onchange="calculate()">
