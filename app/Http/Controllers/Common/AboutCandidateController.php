@@ -415,7 +415,7 @@ class AboutCandidateController extends Controller
 
     public function Candidate_Education_Save(Request $request)
     {
-        dd($request->all());
+        
         $JCId = $request->Edu_JCId;
         $Qualification = $request->Qualification;
         $Course = $request->Course;

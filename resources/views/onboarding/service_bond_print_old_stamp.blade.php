@@ -133,7 +133,7 @@ $sql = DB::table('jobapply')
     <div class="container">
         <input type="hidden" name="jaid" id="jaid" value="{{ $JAId }}">
         <input type="hidden" name="ltrno" id="ltrno"
-            value="{{ getCompanyCode($sql->Company) . '_SB/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $sql->JCId }}">
+            value="{{ getCompanyCode($sql->Company) . '_SB/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $sql->JAId }}">
 
         <div id="ServiceBond_ltr">
 
@@ -144,7 +144,7 @@ $sql = DB::table('jobapply')
                     <div style="height:550px;"></div>
 
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_SB/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $sql->JCId }}</b>
+                            {{ getCompanyCode($sql->Company) . '_SB/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $sql->JAId }}</b>
                         <span style="float:right"><b>Date:&emsp;&emsp;&emsp;&emsp;
                         <!--@if ($sql->B_Date != '')-->
                         <!--            {{ date('d/m/Y', strtotime($sql->B_Date)) }}-->
@@ -231,7 +231,7 @@ $sql = DB::table('jobapply')
                 <div class="subpage ml-3">
                     <p style="margin-bottom: 50px;"></p>
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_SB/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $sql->JCId }}</b>
+                            {{ getCompanyCode($sql->Company) . '_SB/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $sql->JAId }}</b>
                         <span style="float:right"><b>Date:&emsp;&emsp;&emsp;&emsp;
                         <!--@if ($sql->B_Date != '')-->
                         <!--            {{ date('d/m/Y', strtotime($sql->B_Date)) }}-->
@@ -306,7 +306,7 @@ $sql = DB::table('jobapply')
                 <div class="subpage ml-3">
                     <p style="margin-bottom: 50px;"></p>
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_SB/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $sql->JCId }}</b>
+                            {{ getCompanyCode($sql->Company) . '_SB/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $sql->JAId }}</b>
                         <span style="float:right"><b>Date:&emsp;&emsp;&emsp;&emsp;
                         
                         <!--@if ($sql->B_Date != '')-->

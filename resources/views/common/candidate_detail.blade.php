@@ -1962,7 +1962,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                 <div class="title" style="width: 150px;">Emp Code<span
                                                         style="float: right">:</span></div>
                                                 <div class="text">
-                                                    <input type="text"
+                                                    <input type="number"
                                                         class="form-control frminp form-control-sm d-inline-block"
                                                         id="empCode" name="" readonly="" style="width: 100px;"
                                                         value="{{ $OfBasic->EmpCode ?? '' }}">
