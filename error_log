@@ -4,3 +4,4 @@
 [27-Oct-2021 14:32:33 Asia/Calcutta] PHP Fatal error:  Exception thrown without a stack frame in Unknown on line 0
 [27-Oct-2021 14:32:33 Asia/Calcutta] PHP Parse error:  syntax error, unexpected '|', expecting variable (T_VARIABLE) in /home/vnressuser/public_html/hrrec/vendor/psr/log/src/LoggerInterface.php on line 30
 [27-Oct-2021 14:32:33 Asia/Calcutta] PHP Fatal error:  Exception thrown without a stack frame in Unknown on line 0
+[17-Dec-2023 09:31:46 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.2.0". You are running 8.0.30. in /home/vnressuser/public_html/vhrrec/vendor/composer/platform_check.php on line 28
