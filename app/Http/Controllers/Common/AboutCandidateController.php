@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use App\Models\jobcandidate;
 
 class AboutCandidateController extends Controller
 {
@@ -1135,6 +1136,16 @@ class AboutCandidateController extends Controller
         $query = Appointing::where('JAId', $request->JAId)->update(['ConfLtrDate' => $request->ConfLtrDate]);
         if ($query) {
             return response()->json(['status' => 200, 'msg' => 'Confidentiality Agreement Letter Date Changed Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+    
+    public function open_joining_form(Request $request)
+    {
+        $query = jobcandidate::where('JCId', $request->JCId)->update(['FinalSubmit' => '0']);
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Joining Form Opened Successfully']);
         } else {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         }

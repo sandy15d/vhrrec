@@ -201,7 +201,7 @@ Route::post('changeB_Date', [AboutCandidateController::class, 'changeB_Date'])->
 Route::post('changeConf_Date', [AboutCandidateController::class, 'changeConf_Date'])->name('changeConf_Date');
 
 Route::get('process_to_ess_form', [AboutCandidateController::class, 'process_to_ess_form'])->name('process_to_ess_form');
-
+Route::post('open_joining_form', [AboutCandidateController::class, 'open_joining_form'])->name('open_joining_form');
 Route::post('processDataToEss', [ProcessToEss::class, 'processDataToEss'])->name('processDataToEss');
 Route::get('ImportFromOld', [ProcessToEss::class, 'ImportFromOld'])->name('ImportFromOld');
 

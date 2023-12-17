@@ -6,7 +6,7 @@
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
             <div class="breadcrumb-title pe-3">Designation Master</div>
             <div class="ms-auto">
-                <button class="btn btn-sm btn--red d-none" id="syncDesignation">Sync</button>
+                <button class="btn btn-sm btn--red " id="syncDesignation">Sync</button>
             </div>
         </div>
         <!--end breadcrumb-->

@@ -173,7 +173,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                     </p>
                     <br>
                     <p><b>To,</b></p>
-                    <p style="margin-bottom: 0px;"><b>{{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }}</b>
+                    <p style="margin-bottom: 0px;"><b>{{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }}</b>
                     </p>
                     <b>
                         <p style="margin-bottom: 0px;">{{ $sql->perm_address }}</p>
@@ -343,7 +343,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                     <p><b>{{ $sql->SigningAuth }} </b>
                     </p>
                     <hr style="height:1px;border-width:0;color:black;background-color:black;">
-                    <p>I, {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }},
+                    <p>I, {{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }},
                         @if ($sql->Gender == 'M')
                             S/o.
                         @else
@@ -362,8 +362,8 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                         &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;---------------------&emsp;&emsp;&emsp;&emsp;&emsp;-------------------------
                     </p>
                     <p>Place
-                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Date&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                        {{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }}
+                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Date&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                                 {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }}
                     </p>
                 </div>
             </div>
@@ -519,7 +519,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                 <td>Insurance Policy Premium </td>
                                 <td><input type="text" class="form-control text-center" id="medical"
                                         style="height: 21px;border: 0px none;" value="{{ $ctc->medical ?? '' }}"
-                                        readonly>
+                                        >
                                 </td>
                             </tr>
                             <tr>
@@ -539,7 +539,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                     <p style="margin-bottom:2px;">----------------------------<span
                             style="float: right">----------------------------</span></p>
                     <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b><span
-                            style="float: right">{{ $sql->FName }} {{ $sql->MName }}
+                            style="float: right"> {{ $sql->FName }} {{ $sql->MName }}
                             {{ $sql->LName }}</span>
                     </p>
                     <p><b>{{ $sql->SigningAuth }} </b>
@@ -969,11 +969,11 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
             $('#emplyerPF').val(emplyerPF);
 
             if (grsM_salary > 21000) {
-                $('#medical').val(10000).attr('disabled', true);
+                $('#medical').val(15000).attr('disabled', true);
                 $('#emplyerESIC').val(0).attr('disabled', true);
             } else {
 
-                $('#medical').val(0).attr('disabled', false);
+                $('#medical').val(3000).attr('disabled', false);
                 $('#emplyerESIC').val(Math.round(parseFloat(anualgrs * 3.25 / 100))).attr('disabled', true);
             }
 

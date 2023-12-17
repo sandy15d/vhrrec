@@ -2052,6 +2052,11 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                 <button class="frmbtn btn btn-sm btn-secondary"
                                                     onclick="copyJFrmLink();">Copy
                                                     Link</button>
+                                                      @if($Rec->FinalSubmit == 1)
+                                                    <button class="frmbtn btn btn-primary btn-sm"
+                                                            id="open_joining_form">Open Joining Form
+                                                    </button>
+                                                @endif
                                             </div>
                                         </li>
                                     @endif
@@ -8179,5 +8184,31 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                 .attr("src", url) // point the iframe to the page you want to print
                 .appendTo("body");
         }
+        
+        $(document).on("click","#open_joining_form",function(){
+            var JCId = $('#JCId').val();
+
+            if(confirm("Are you sure you want to open joining form?")){
+                $.ajax({
+                    url: '<?= route('open_joining_form') ?>',
+                    method: 'POST',
+                    data: {
+                        JCId: JCId,
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.status == 400) {
+                            toastr.error(data.msg);
+                        } else {
+                            toastr.success(data.msg);
+                            window.location.reload();
+                        }
+                    },
+
+                });
+            }
+
+
+        });
     </script>
 @endsection

@@ -189,7 +189,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                     </p>
                     <br>
                     <p><b>To,</b></p>
-                    <p style="margin-bottom: 0px;"><b>{{ $sql->FName }} {{ $sql->MName }}
+                    <p style="margin-bottom: 0px;"><b>{{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }}
                             {{ $sql->LName }}</b>
                     </p>
                     <b>
@@ -417,13 +417,18 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                         this
                         employment.
                     </p>
-                    <p style="margin-bottom: 0px;">----------------------
-                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;---------------------&emsp;&emsp;&emsp;&emsp;&emsp;-------------------------
-                    </p>
-                    <p>Place
-                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Date&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                        {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }}
-                    </p>
+                   <br><br><br>
+                    <div style="margin-bottom:5px; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif">
+                        <div style="float: left; width: 33%; text-align: left;">_______________</div>
+                        <div style="float: left; width: 33%; text-align: center;">_______________</div>
+                        <div style="float: left; width: 33%; text-align: right;">________________</div>
+                    </div>
+                    <div style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif">
+                        <div style="float: left; width: 33%; text-align: left;">Place</div>
+                        <div style="float: left; width: 33%; text-align: center;">Date</div>
+                        <div style="float: left; width: 33%; text-align: right;">{{ $sql->FName }}
+                            {{ $sql->MName }} {{ $sql->LName }}</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -522,7 +527,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                 <td>Employer’s ESIC contribution</td>
                                 <td class="text-center">{{ $ctc->emplyerESIC ?? '' }} </td>
                             </tr>
-                            <tr class="d-none">
+                           <tr class="{{ $ctc->medical <= 0 ? 'd-none' : '' }}">
                                 <td>Insurance Policy Premium </td>
                                 <td class="text-center">{{ $ctc->medical ?? '' }}</td>
                             </tr>
@@ -541,7 +546,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                     <p style="margin-bottom:2px;">----------------------------<span
                             style="float: right">----------------------------</span></p>
                     <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b><span
-                            style="float: right">{{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }}
+                            style="float: right">{{ $sql->FName }} {{ $sql->MName }}
                             {{ $sql->LName }}</span>
                     </p>
                     <p><b>{{ $sql->SigningAuth }} </b>
@@ -747,7 +752,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                     <p style="margin-bottom:2px;">----------------------------<span
                             style="float: right">----------------------------</span></p>
                     <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b><span
-                            style="float: right">{{ $sql->Title }} {{ $sql->FName }}
+                            style="float: right">{{ $sql->FName }}
                             {{ $sql->MName }}
                             {{ $sql->LName }}</span>
                     </p>

@@ -450,6 +450,21 @@ use function App\Helpers\has_permission;
                             <div class="menu-title">Sent Mails</div>
                         </a>
                     </li>
+                     <li>
+                        <a title="Reports" href="javascript:;" class="has-arrow">
+                            <div class="parent-icon"><i class='lni lni-slack' style="color: crimson"></i>
+                            </div>
+                            <div class="menu-title">Reports</div>
+                        </a>
+                        <ul>
+                            <li> <a title="FIRO B Test" href="/Firob_Reports"><i
+                                        class="bx bx-right-arrow-alt"></i>FIRO
+                                    B Test</a></li>
+                            <li> <a href="/reports_download"><i class="bx bx-right-arrow-alt"></i>Report's in
+                                    Excel</a>
+                            </li>
+                        </ul>
+                    </li>
                     {{-- <li>
                         <a href="/">
                             <div class="parent-icon"><i class="lni lni-target-customer" style="color: #6610f2"></i>
@@ -470,21 +485,7 @@ use function App\Helpers\has_permission;
                     
 
 
-                   <li>
-                        <a title="Reports" href="javascript:;" class="has-arrow">
-                            <div class="parent-icon"><i class='lni lni-slack' style="color: crimson"></i>
-                            </div>
-                            <div class="menu-title">Reports</div>
-                        </a>
-                        <ul>
-                            <li> <a title="FIRO B Test" href="/Firob_Reports"><i
-                                        class="bx bx-right-arrow-alt"></i>FIRO
-                                    B Test</a></li>
-                            <li> <a href="/reports_download"><i class="bx bx-right-arrow-alt"></i>Report's in
-                                    Excel</a>
-                            </li>
-                        </ul>
-                    </li>
+                  
 
                     <li>
                         <a href="/admin/userlogs">

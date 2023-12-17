@@ -203,14 +203,14 @@ class CommonController extends Controller
 
         $employee = DB::table('master_employee')->orderBy('FullName', 'ASC')
             ->where('DepartmentId', $request->DepartmentId)
-            ->where(function ($query) {
-                $query->where('EmpStatus', '=', 'A')
-                    ->orWhere(function ($query) {
-                        $query->where('EmpStatus', '=', 'D')
-                            ->where('DateOfSepration', '>=', '2021-01-01');
-                    });
-            })
-            ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname) AS FullName'))
+            // ->where(function ($query) {
+            //     $query->where('EmpStatus', '=', 'A')
+            //         ->orWhere(function ($query) {
+            //             $query->where('EmpStatus', '=', 'D')
+            //                 ->where('DateOfSepration', '>=', '2021-01-01');
+            //         });
+            // })
+            ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname," - ",VCode,EmpCode) AS FullName'))
             ->pluck("EmployeeID", "FullName");
 
         return response()->json($employee);

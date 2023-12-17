@@ -81,7 +81,7 @@ class EmployeeController extends Controller
             $temp['CountryId'] = 11;
             array_push($data, $temp);
         }
-        $query = master_employee::insert($data);
+       $query = master_employee::insert($data);
 
 
         if ($query) {

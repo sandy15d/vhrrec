@@ -7,33 +7,39 @@ use Illuminate\Support\Facades\DB;
 
 if (!function_exists('getFullName')) {
 
-	function getFullName($empid)
+	/**
+	 * Get full name by retrieving employee details
+	 *
+	 * @param integer|null $employeeId The ID of the employee. Null values return empty strings.
+	 * @return string The full name of the employee or empty string if no match was found.
+	 */
+	function getFullName($employeeId): string
 	{
-
-		if ($empid == null) {
-			return "";
-		} else {
-			if ($empid == 1) {
-				return "Admin";
-			} else {
-				//	$Name = DB::table('master_employee')->select(DB::raw("CONCAT(master_employee.Fname,' ',master_employee.Lname) AS full_name"))->where('EmployeeID', $empid)->first();
-				$Name = DB::table('master_employee')->select('Fname', 'Sname', 'Lname')->where('EmployeeID', $empid)->first();
-				if ($Name == null) {
-					return "";
-				} else {
-
-					$fullname = $Name->Fname;
-					if ($Name->Sname != null) {
-						$fullname = $fullname . " " . $Name->Sname;
-					}
-					if ($Name->Lname != null) {
-						$fullname = $fullname . " " . $Name->Lname;
-					}
-					return $fullname;
-				}
-				//return $Name->full_name;
-			}
+		// if null, return empty string to avoid unnecessary database query
+		if ($employeeId === null) {
+			return '';
 		}
+
+		// if 1, return "Admin" to avoid database query altogether
+		if ($employeeId === 1) {
+			return 'Admin';
+		}
+
+		// use Laravel's Query Builder to retrieve employee data more efficiently
+		$employee = DB::table('master_employee')->select('Title', 'Fname', 'Sname', 'Lname')->where('EmployeeID', $employeeId)->first();
+
+		// if employee data not found, return empty string
+		if ($employee === null) {
+			return '';
+		}
+
+		// combine employee name fields into full name and return properly formatted
+		$fullNameParts = array_filter([$employee->Title, $employee->Fname, $employee->Sname, $employee->Lname], function ($part) {
+			return $part !== null && trim($part) !== "";
+		});
+		$fullName = ucwords(strtolower(implode(" ", $fullNameParts)));
+
+		return $fullName;
 	}
 }
 
@@ -70,12 +76,17 @@ function getEmpIdByEmpCode($empCode)
 
 function getEmployeeDesignation($empid)
 {
-	if ($empid == null) {
-		return "";
-	} else {
-		$query = DB::table('master_employee')->join('master_designation', 'master_designation.DesigId', '=', 'master_employee.DesigId')->select("DesigName")->where('EmployeeID', $empid)->first();
-		return $query->DesigName;
+	if (!$empid) {
+		return '';
 	}
+
+	$query = DB::table('master_employee')
+		->join('master_designation', 'master_designation.DesigId', '=', 'master_employee.DesigId')
+		->select('DesigName')
+		->where('EmployeeID', $empid)
+		->first();
+
+	return $query ? $query->DesigName : '';
 }
 
 

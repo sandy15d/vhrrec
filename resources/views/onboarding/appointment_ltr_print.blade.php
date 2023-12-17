@@ -719,7 +719,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                     <td>Employer’s ESIC contribution</td>
                                     <td class="text-center">{{ $ctc->emplyerESIC ?? '' }} </td>
                                 </tr>
-                                <tr class="d-none">
+                               <tr class="{{ $ctc->medical <= 0 ? 'd-none' : '' }}">
                                     <td>Insurance Policy Premium </td>
                                     <td class="text-center">{{ $ctc->medical ?? '' }}</td>
                                 </tr>
