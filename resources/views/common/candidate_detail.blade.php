@@ -1829,10 +1829,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                         onclick="appointmentGen({{ $Rec->JAId }})"
                                                         style="font-size: 16px;cursor: pointer; display: ">Generate </i>
                                                 @else
-                                                    <a href="{{ route('appointment_letter') }}?jaid={{ base64_encode($JAId) }}"
-                                                        target="_blank"> View</a> | <a href="javascript:void(0);"
-                                                        onclick="PrintAppointmentLetter('{{ route('appointment_ltr_print') }}?jaid={{ $Rec->JAId }}');">
-                                                        Print</a>
+                                                <a href="{{ route('appointment_ltr_print') }}?jaid={{ $Rec->JAId }}"
+                                                    target="_blank">View</a>
                                                 @endif
 
                                             </div>
@@ -1847,11 +1845,12 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                         style="font-size: 16px;cursor: pointer; display: ">Generate </i>
                                                 @else
                                                     <a href="{{ route('service_agreement') }}?jaid={{ base64_encode($JAId) }}"
-                                                        target="_blank"> View</a> | <a href="javascript:void(0);"
-                                                        onclick="PrintServiceAgreementLetter('{{ route('service_agreement_print') }}?jaid={{ base64_encode($Rec->JAId) }}');">
-                                                        Print</a> | <a href="javascript:void(0);"
-                                                        onclick="PrintServiceAgreementLetter_OldStamp('{{ route('service_agreement_print_old_stamp') }}?jaid={{ base64_encode($Rec->JAId) }}');">
-                                                        Old Stamp</a>
+                                                        target="_blank"> View</a> | ( <a href="{{ route('service_agreement_print_e_first') }}?jaid={{ base64_encode($Rec->JAId) }}"
+                                                            target="_blank">First Page</a> |
+                                                         <a href="{{ route('service_agreement_print') }}?jaid={{ base64_encode($Rec->JAId) }}"
+                                                            target="_blank">Rest All</a> ) | <a href="{{ route('service_agreement_print_old_stamp') }}?jaid={{ base64_encode($Rec->JAId) }}"
+                                                            target="_blank">
+                                                             Old Stamp</a>
                                                 @endif
 
                                             </div>
@@ -1867,11 +1866,12 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                             style="font-size: 16px;cursor: pointer; display: ">Generate </i>
                                                     @else
                                                         <a href="{{ route('service_bond') }}?jaid={{ base64_encode($JAId) }}"
-                                                            target="_blank"> View</a> | <a href="javascript:void(0);"
-                                                            onclick="PrintServiceBondLetter('{{ route('service_bond_print') }}?jaid={{ base64_encode($Rec->JAId) }}');">
-                                                            Print</a> | <a href="javascript:void(0);"
-                                                            onclick="PrintServiceBondLetter_OldStamp('{{ route('service_bond_print_old_stamp') }}?jaid={{ base64_encode($Rec->JAId) }}');">
-                                                            Old Stamp</a>
+                                                            target="_blank"> View</a> | (<a href="{{ route('service_bond_print_e_first') }}?jaid={{ base64_encode($Rec->JAId) }}"
+                                                                target="_blank">First Page</a> |
+                                                             <a href="{{ route('service_bond_print') }}?jaid={{ base64_encode($Rec->JAId) }}"
+                                                                target="_blank">Rest All</a>) | <a href="{{ route('service_bond_print_old_stamp') }}?jaid={{ base64_encode($Rec->JAId) }}"
+                                                                target="_blank">
+                                                                 Old Stamp</a>
                                                     @endif
                                                 </div>
                                             </li>
@@ -1887,11 +1887,14 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                             style="font-size: 16px;cursor: pointer; display: ">Generate </i>
                                                     @else
                                                         <a href="{{ route('conf_agreement') }}?jaid={{ base64_encode($JAId) }}"
-                                                            target="_blank"> View</a> | <a href="javascript:void(0);"
-                                                            onclick="PrintConfidentialityAgreementLetter('{{ route('conf_agreement_print') }}?jaid={{ base64_encode($Rec->JAId) }}');">
-                                                            Print</a> | <a href="javascript:void(0);"
-                                                            onclick="PrintConfidentialityAgreementLetter_OldStamp('{{ route('conf_agreement_print_old_stamp') }}?jaid={{ base64_encode($Rec->JAId) }}');">
-                                                            Old Stamp</a>
+                                                            target="_blank"> View</a> | ( <a href="{{ route('conf_agreement_print_e_first') }}?jaid={{ base64_encode($Rec->JAId) }}"
+                                                                target="_blank">
+                                                                 First Page</a> |
+                                                             <a href="{{ route('conf_agreement_print') }}?jaid={{ base64_encode($Rec->JAId) }}"
+                                                                target="_blank">
+                                                                 Rest All</a> ) | <a href="{{ route('conf_agreement_print_old_stamp') }}?jaid={{ base64_encode($Rec->JAId) }}"
+                                                                    target="_blank">
+                                                                     Old Stamp</a>
                                                     @endif
 
                                                 </div>
@@ -1979,7 +1982,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                 <div class="title" style="width: 150px;">Position Code<span
                                                         style="float: right">:</span></div>
                                                 <div class="text">
-                                                   
+
 
                                                     <select name="PositionCode" id="PositionCode"
                                                         class="form-select form-select-sm d-inline-block"
@@ -2097,7 +2100,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                     <center>
                                         <h3 class="text-success">Data Forwarded to ESS</h3>
                                     </center>
-                                @endif 
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -4222,7 +4225,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                             <option value="Managing Director">Managing Director</option>
                                             <option value="Director">Director</option>
                                             <option value="Business Head">Business Head</option>
-                                          
+
                                         </select>
                                     </td>
                                 </tr>
@@ -4450,8 +4453,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                         No</label>
                                 </div>
                             </div>
-                            <div class="form-group row mb-2 
-                                 
+                            <div class="form-group row mb-2
+
                                     @php
                                         if($AboutAns != null){
                                             if($AboutAns->CriminalChk == 'Y'){
@@ -4496,8 +4499,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                 </div>
                             </div>
                             <div class="form-group row mb-2">
-                                <div class="form-group row 
-                                     
+                                <div class="form-group row
+
                                     @php
                                         if($AboutAns != null){
                                             if($AboutAns->LicenseChk == 'Y'){
@@ -5630,7 +5633,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                     }
                 }
             });
-        } //getSpecialization   
+        } //getSpecialization
 
         function getLocation(StateId) {
             var StateId = StateId;
@@ -6840,7 +6843,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                 .attr("src", url) // point the iframe to the page you want to print
                 .appendTo("body");
         }
-        
+
         function PrintServiceBondLetter_OldStamp(url) {
             $("<iframe>") // create a new iframe element
                 .hide() // make it invisible
@@ -8150,7 +8153,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
         });
 
         $(document).on('click', '#ProcessToEss', function() {
-         
+
             var JAId = $('#JAId').val();
             $.ajax({
                 url: '<?= route('processDataToEss') ?>',
@@ -8177,14 +8180,14 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
 
             });
         });
-        
+
          function PrintConfidentialityAgreementLetter_OldStamp(url) {
             $("<iframe>") // create a new iframe element
                 .hide() // make it invisible
                 .attr("src", url) // point the iframe to the page you want to print
                 .appendTo("body");
         }
-        
+
         $(document).on("click","#open_joining_form",function(){
             var JCId = $('#JCId').val();
 

@@ -777,13 +777,13 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                 @if ($elg->TwoWheel != '' || $sql->Department != 1002 || $sql->Department != 1040 )
                                             <tr>
                                                 <td></td>
-                                                <td style="width:502px;">**Two Wheeler 
+                                                <td style="width:502px;">**Two Wheeler
                                                    @if ($sql->Department == 1003)
                                                          ( Max 1500km/month)
                                                  @elseif($sql->Department == 1006)
-                                                         
+
                                                          ( Max 75Kms/day and 1800km/month)
-                                                 @endif 
+                                                 @endif
                                                 </td>
                                                   <td class="text-center">Rs. {{ $elg->TwoWheel }} /KM</td>
                                             </tr>
@@ -944,9 +944,8 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             class="fa fa-file"></i> Generate Letter</button>
                 @endif
 
-                <button id="print" class="btn btn-info btn-md text-center text-light"
-                    onclick="printLtr('{{ route('appointment_ltr_print') }}?jaid={{ $JAId }}');"> <i
-                        class="fa fa-print"></i> Print</button>
+                <a href="{{ route('appointment_ltr_print') }}?jaid={{ $JAId }}"
+                    target="_blank">Print</a>
             </center>
         </div>
     </div>

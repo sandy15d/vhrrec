@@ -121,39 +121,39 @@
     </style>
 </head>
 @php
-use function App\Helpers\getDesignation;
-use function App\Helpers\getHqStateCode;
-use function App\Helpers\getHq;
-use function App\Helpers\getDepartmentCode;
-use function App\Helpers\getDepartment;
-use function App\Helpers\getCompanyCode;
-use function App\Helpers\getCompanyName;
-use function App\Helpers\getFullName;
-use function App\Helpers\getGradeValue;
-use function App\Helpers\getStateName;
-use function App\Helpers\getDistrictName;
-use function App\Helpers\getEmployeeDesignation;
-$JAId = base64_decode($_REQUEST['jaid']);
+    use function App\Helpers\getDesignation;
+    use function App\Helpers\getHqStateCode;
+    use function App\Helpers\getHq;
+    use function App\Helpers\getDepartmentCode;
+    use function App\Helpers\getDepartment;
+    use function App\Helpers\getCompanyCode;
+    use function App\Helpers\getCompanyName;
+    use function App\Helpers\getFullName;
+    use function App\Helpers\getGradeValue;
+    use function App\Helpers\getStateName;
+    use function App\Helpers\getDistrictName;
+    use function App\Helpers\getEmployeeDesignation;
+    $JAId = base64_decode($_REQUEST['jaid']);
 
-$sql = DB::table('offerletterbasic')
-    ->leftJoin('jobapply', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
-    ->leftJoin('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
-    ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
-    ->leftJoin('jf_family_det', 'jobcandidates.JCId', '=', 'jf_family_det.JCId')
-    ->select('offerletterbasic.*', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobapply.ApplyDate', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
-    ->where('jobapply.JAId', $JAId)
-    ->first();
+    $sql = DB::table('offerletterbasic')
+        ->leftJoin('jobapply', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
+        ->leftJoin('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+        ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
+        ->leftJoin('jf_family_det', 'jobcandidates.JCId', '=', 'jf_family_det.JCId')
+        ->select('offerletterbasic.*', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobapply.ApplyDate', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
+        ->where('jobapply.JAId', $JAId)
+        ->first();
 
-$ctc = DB::table('candidate_ctc')
-    ->select('*')
-    ->where('JAId', $JAId)
-    ->first();
+    $ctc = DB::table('candidate_ctc')
+        ->select('*')
+        ->where('JAId', $JAId)
+        ->first();
 
-$elg = DB::table('candidate_entitlement')
-    ->select('*')
-    ->where('JAId', $JAId)
-    ->first();
-$months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 'Four' => '4 (Four)', 'Five' => '5 (Five)', 'Six' => '6 (Six)', 'Seven' => '7 (Seven)', 'Eight' => '8 (Eight)', 'Nine' => '9 (Nine)', 'Ten' => '10 (Ten)', 'Eleven' => '11 (Eleven)', 'Twelve' => '12 (Twelve)'];
+    $elg = DB::table('candidate_entitlement')
+        ->select('*')
+        ->where('JAId', $JAId)
+        ->first();
+    $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 'Four' => '4 (Four)', 'Five' => '5 (Five)', 'Six' => '6 (Six)', 'Seven' => '7 (Seven)', 'Eight' => '8 (Eight)', 'Nine' => '9 (Nine)', 'Ten' => '10 (Ten)', 'Eleven' => '11 (Eleven)', 'Twelve' => '12 (Twelve)'];
 @endphp
 
 <body>
@@ -173,7 +173,8 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                     </p>
                     <br>
                     <p><b>To,</b></p>
-                    <p style="margin-bottom: 0px;"><b>{{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }}</b>
+                    <p style="margin-bottom: 0px;"><b>{{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }}
+                            {{ $sql->LName }}</b>
                     </p>
                     <b>
                         <p style="margin-bottom: 0px;">{{ $sql->perm_address }}</p>
@@ -363,7 +364,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                     </p>
                     <p>Place
                         &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Date&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                                 {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }}
+                        {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }}
                     </p>
                 </div>
             </div>
@@ -511,15 +512,14 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             <tr id="empesic_tr" class="{{ $ctc->grsM_salary > 21000 ? 'd-none' : '' }}">
                                 <td>Employer’s ESIC contribution</td>
                                 <td><input type="text" class="form-control text-center" id="emplyerESIC"
-                                        style="height: 21px;border: 0px none;"
-                                        value="{{ $ctc->emplyerESIC ?? '' }}" readonly>
+                                        style="height: 21px;border: 0px none;" value="{{ $ctc->emplyerESIC ?? '' }}"
+                                        readonly>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Insurance Policy Premium </td>
                                 <td><input type="text" class="form-control text-center" id="medical"
-                                        style="height: 21px;border: 0px none;" value="{{ $ctc->medical ?? '' }}"
-                                        >
+                                        style="height: 21px;border: 0px none;" value="{{ $ctc->medical ?? '' }}">
                                 </td>
                             </tr>
                             <tr>
@@ -538,8 +538,8 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                     <br><br><br><br>
                     <p style="margin-bottom:2px;">----------------------------<span
                             style="float: right">----------------------------</span></p>
-                    <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b><span
-                            style="float: right"> {{ $sql->FName }} {{ $sql->MName }}
+                    <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b><span style="float: right">
+                            {{ $sql->FName }} {{ $sql->MName }}
                             {{ $sql->LName }}</span>
                     </p>
                     <p><b>{{ $sql->SigningAuth }} </b>
@@ -574,9 +574,9 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                 <th class="text-center" style="width:60px;">SN</th>
                                 <th colspan="2" class="text-center">Entitlements</th>
                             </tr>
-                                @php
-                                    $rowCount = 0;
-                                @endphp
+                            @php
+                                $rowCount = 0;
+                            @endphp
                             <tr>
                                 <td class="text-center"><?= ++$rowCount ?></td>
                                 <td style="width:402px;"><b>Lodging </b> (Actual with upper limits per day)
@@ -596,7 +596,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             </tr>
                             @if ($sql->Department == 1004 || $sql->Department == 1025 || $sql->Department == 1024)
                                 <tr>
-                                   <td class="text-center"><?= ++$rowCount ?></td>
+                                    <td class="text-center"><?= ++$rowCount ?></td>
                                     <td>
                                         @if ($sql->Department == 1004)
                                             <b>D.A @ H.Q</b>(Applicable only during *season)
@@ -611,20 +611,19 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             @endif
 
                             <tr>
-                               <td class="text-center"><?= ++$rowCount ?></td>
+                                <td class="text-center"><?= ++$rowCount ?></td>
                                 <td colspan="2"><b>Travel Eligibility (For Official Purpose Only)</b></b></td>
 
                             </tr>
                             <tr>
                                 <td></td>
-                                <td style="width:400px;">Two Wheeler   
-                                  @if ($sql->Department == 1003)
-                                                         ( Max 1500km/month)
-                                                 @elseif($sql->Department == 1006)
-                                                         
-                                                         ( Max 75Kms/day and 1800km/month)
-                                                 @endif 
-                                    </td>
+                                <td style="width:400px;">Two Wheeler
+                                    @if ($sql->Department == 1003)
+                                        ( Max 1500km/month)
+                                    @elseif($sql->Department == 1006)
+                                        ( Max 75Kms/day and 1800km/month)
+                                    @endif
+                                </td>
                                 <td><input type="number" class="form-control text-center" id="TwoWheel"
                                         style=" height:20px;border: 0px none;" value="{{ $elg->TwoWheel ?? '' }}">
                                 </td>
@@ -637,7 +636,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                 </td>
                             </tr>
                             <tr>
-                               <td class="text-center"><?= ++$rowCount ?></td>
+                                <td class="text-center"><?= ++$rowCount ?></td>
                                 <td colspan="2"><b>Mode of Travel outside HQ</b></b></td>
 
                             </tr>
@@ -667,13 +666,18 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             <!--            <option value="Y">Yes</option>-->
                             <!--            <option value="N">No</option>-->
                             <!--        </select>-->
-                            <!--        <script>-->
-                            <!--            $('#Flight').val('{{ $elg->Flight ?? '' }}');-->
-                            <!--        </script>-->
+                            <!--        <script>
+                                -- >
+                                <
+                                !--$('#Flight').val('{{ $elg->Flight ?? '' }}');
+                                -- >
+                                <
+                                !--
+                            </script>-->
                             <!--    </td>-->
                             <!--</tr>-->
                             <tr>
-                               <td class="text-center"><?= ++$rowCount ?></td>
+                                <td class="text-center"><?= ++$rowCount ?></td>
                                 <td colspan="2"><b>Travel Class</b></b></td>
                             </tr>
                             <tr>
@@ -721,11 +725,13 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             <!--    <td><input type="text" class="form-control text-center d-inline" id="Mobile"-->
                             <!--            style=" height:20px;border: 0px none; width:90px;"-->
                             <!--            value="{{ $elg->Mobile ?? '' }}"> <input type="checkbox" id="GPRS"-->
-                            <!--            name="GPRS" @if ($elg->GPRS == '1') checked @endif>GPRS-->
+                            <!--            name="GPRS" @if ($elg->GPRS == '1')
+checked
+@endif>GPRS-->
                             <!--    </td>-->
                             <!--</tr>-->
                             <tr>
-                             <td class="text-center"><?= ++$rowCount ?></td>
+                                <td class="text-center"><?= ++$rowCount ?></td>
                                 <td><b>Mobile Expense Reimbursement</b></b></td>
                                 <td><input type="text" class="form-control text-center d-inline" id="MExpense"
                                         style="height: 20px;border: 0px none;background-color: white;width: 80px;"
@@ -766,14 +772,19 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             <!--            <option value="900000">9</option>-->
                             <!--            <option value="1000000">10</option>-->
                             <!--        </select> Lakh-->
-                            <!--        <script>-->
-                            <!--            $('#HealthIns').val('{{ $elg->HealthIns ?? '' }}');-->
-                            <!--        </script>-->
+                            <!--        <script>
+                                -- >
+                                <
+                                !--$('#HealthIns').val('{{ $elg->HealthIns ?? '' }}');
+                                -- >
+                                <
+                                !--
+                            </script>-->
                             <!--    </td>-->
                             <!--</tr>-->
                             <!--</tr>-->
                             <tr>
-                               <td class="text-center"><?= ++$rowCount ?></td>
+                                <td class="text-center"><?= ++$rowCount ?></td>
                                 <td><b>Group Term Insurance</b></b></td>
                                 <td class="text-center">
                                     5 Lakh
@@ -908,9 +919,10 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                     <button type="button" class="btn  btn-md text-center btn-danger" id="regenltr"><i
                             class="fa fa-file"></i> Re-Generate Letter</button>
                 @endif
-                <button id="print" class="btn btn-info btn-md text-center text-light"
-                    onclick="printLtr('{{ route('offer_ltr_print') }}?jaid={{ $JAId }}');"> <i
-                        class="fa fa-print"></i> Print</button>
+                <a id="print" class="btn btn-info btn-md text-center text-light"
+                    href="{{ route('offer_ltr_print') }}?jaid={{ $JAId }}"><i class="fa fa-print"></i>
+                    Print
+                </a>
             </center>
         </div>
     </div>
@@ -1212,13 +1224,6 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                 });
             });
         });
-
-        function printLtr(url) {
-            $("<iframe>") // create a new iframe element
-                .hide() // make it invisible
-                .attr("src", url) // point the iframe to the page you want to print
-                .appendTo("body");
-        }
     </script>
 </body>
 

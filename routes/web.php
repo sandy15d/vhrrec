@@ -172,18 +172,23 @@ Route::get('appointment_ltr_print', [AboutCandidateController::class, 'appointme
 Route::post('appointmentGen', [AboutCandidateController::class, 'appointmentGen'])->name('appointmentGen');
 Route::post('appointment_letter_generate', [AboutCandidateController::class, 'appointment_letter_generate'])->name('appointment_letter_generate');
 
+
 Route::get('service_agreement', [AboutCandidateController::class, 'service_agreement'])->name('service_agreement');
 Route::get('service_agreement_print', [AboutCandidateController::class, 'service_agreement_print'])->name('service_agreement_print');
+Route::get('service_agreement_print_e_first', [AboutCandidateController::class, 'service_agreement_print_e_first'])->name('service_agreement_print_e_first');
 Route::get('service_agreement_print_old_stamp', [AboutCandidateController::class, 'service_agreement_print_old_stamp'])->name('service_agreement_print_old_stamp');
+Route::get('service_agreement_print_old_stamp_first', [AboutCandidateController::class, 'service_agreement_print_old_stamp_first'])->name('service_agreement_print_old_stamp_first');
 Route::post('service_agreement_generate', [AboutCandidateController::class, 'service_agreement_generate'])->name('service_agreement_generate');
 
 Route::get('service_bond', [AboutCandidateController::class, 'service_bond'])->name('service_bond');
 Route::get('service_bond_print', [AboutCandidateController::class, 'service_bond_print'])->name('service_bond_print');
+Route::get('service_bond_print_e_first', [AboutCandidateController::class, 'service_bond_print_e_first'])->name('service_bond_print_e_first');
 Route::get('service_bond_print_old_stamp', [AboutCandidateController::class, 'service_bond_print_old_stamp'])->name('service_bond_print_old_stamp');
 Route::post('service_bond_generate', [AboutCandidateController::class, 'service_bond_generate'])->name('service_bond_generate');
 
 Route::get('conf_agreement', [AboutCandidateController::class, 'conf_agreement'])->name('conf_agreement');
 Route::get('conf_agreement_print', [AboutCandidateController::class, 'conf_agreement_print'])->name('conf_agreement_print');
+Route::get('conf_agreement_print_e_first', [AboutCandidateController::class, 'conf_agreement_print_e_first'])->name('conf_agreement_print_e_first');
 Route::get('conf_agreement_print_old_stamp', [AboutCandidateController::class, 'conf_agreement_print_old_stamp'])->name('conf_agreement_print_old_stamp');
 Route::post('conf_agreement_generate', [AboutCandidateController::class, 'conf_agreement_generate'])->name('conf_agreement_generate');
 
@@ -389,7 +394,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('syncCompany', [CompanyController::class, 'syncCompany'])->name('syncCompany');
     // ! =====================================================================//
 
-    // ?==========================Master Country ==============================// 
+    // ?==========================Master Country ==============================//
     Route::get('country', [CountryController::class, 'country'])->name('admin.country');
     Route::post('addCountry', [CountryController::class, 'addCountry'])->name('addCountry');
     Route::get('getAllCountryData', [CountryController::class, 'getAllCountryData'])->name('getAllCountryData');
@@ -399,7 +404,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('syncCountry', [CountryController::class, 'syncCountry'])->name('syncCountry');
     // ?=========================================================================================//
 
-    // ?==========================Master State ==============================// 
+    // ?==========================Master State ==============================//
     Route::get('state', [StateController::class, 'state'])->name('admin.state');
     Route::post('addState', [StateController::class, 'addState'])->name('addState');
     Route::get('getAllStateData', [StateController::class, 'getAllStateData'])->name('getAllStateData');
@@ -409,7 +414,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('syncState', [StateController::class, 'syncState'])->name('syncState');
     // ?=========================================================================================//
 
-    // ?==========================Master State (General Purpose)==============================// 
+    // ?==========================Master State (General Purpose)==============================//
     Route::get('gen_states', [StateController::class, 'gen_states'])->name('admin.gen_states');
     Route::get('getAllStateData_General', [StateController::class, 'getAllStateData_General'])->name('getAllStateData_General');
     Route::post('addState_general', [StateController::class, 'addState_general'])->name('addState_general');
@@ -449,7 +454,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('syncGrade', [GradeController::class, 'syncGrade'])->name('syncGrade');
     //*=================================================================================================//
 
-    // ?==========================Master District ==============================// 
+    // ?==========================Master District ==============================//
     Route::get('district', [DistrictController::class, 'district'])->name('admin.district');
     Route::post('addDistrict', [DistrictController::class, 'addDistrict'])->name('addDistrict');
     Route::get('getDistrictList', [DistrictController::class, 'getDistrictList'])->name('getDistrictList');
@@ -458,7 +463,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('deleteDistrict', [DistrictController::class, 'deleteDistrict'])->name('deleteDistrict');
     // ?=========================================================================================//
 
-    // ?==========================Master Education ==============================// 
+    // ?==========================Master Education ==============================//
     Route::get('education', [EducationController::class, 'education'])->name('admin.education');
     Route::post('addEducation', [EducationController::class, 'addEducation'])->name('addEducation');
     Route::get('getAllEducation', [EducationController::class, 'getAllEducation'])->name('getAllEducation');

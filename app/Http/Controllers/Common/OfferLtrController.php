@@ -23,6 +23,8 @@ use function App\Helpers\getCompanyName;
 use function App\Helpers\getDepartmentCode;
 use function App\Helpers\getEmployeeEmailId;
 use function App\Helpers\getGradeValue;
+use Illuminate\Support\Facades\View;
+use Mpdf\Mpdf;
 
 class OfferLtrController extends Controller
 {
@@ -538,7 +540,37 @@ class OfferLtrController extends Controller
 
     public function offer_ltr_print(Request $request)
     {
-        return view('offer_letter.offer_ltr_print');
+               //return view('offer_letter.offer_ltr_print');
+               $jaid = $_GET['jaid'];
+               $sql = DB::table('jobapply')->select(
+                   'jobcandidates.Title',
+                   'jobcandidates.FName',
+                   'jobcandidates.MName',
+                   'jobcandidates.LName',
+                   'offerletterbasic.SigningAuth',
+               )->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->leftJoin('offerletterbasic','jobapply.JAId','offerletterbasic.JAId')->where('jobapply.JAId', $jaid)->first();
+               $candidate_name = $sql->Title.' '.$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
+               $signing_auth = $sql->SigningAuth;
+               ini_set('memory_limit', -1);
+
+               $pdf = new mPDF(['utf-8', 'A4-C']);
+
+               $pdf->SetDefaultBodyCSS('font-family', 'freeserif');
+               $pdf->setAutoBottomMargin = 'stretch';
+               $pdf->WriteHTML('<div style="margin-bottom:40px;">&nbsp;</div>');
+
+               $pdf->SetHTMLFooter('
+                       <div style="text-align: center; font-weight:bold; margin-top:10px; height:90px;">
+                       <div style="float: left; width: 33%; text-align: center;">___________________<br>Authorized Signatory<br>'.$signing_auth.'</div>
+                       <div style="float: left; width: 33%; text-align: center;"><br><br>Page {PAGENO} of {nbpg}</div>
+                       <div style="float: right; width: 33%; text-align: right;">_________________<br>' . $candidate_name . '</div>
+                       </div>
+               ');
+
+               $html = View::make('offer_letter.offer_ltr_print')->render();
+               $pdf->SetTitle('Offer Letter');
+               $pdf->WriteHTML($html,);
+               $pdf->Output('Offer Letter.pdf', 'I');
     }
 
     function offerLtrHistory(Request $request)
@@ -706,7 +738,7 @@ class OfferLtrController extends Controller
             $sql = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->select('jobapply.JCId', 'Aadhaar')->where('JAId', $JAId)->first();
             CandidateActivityLog::addToCandLog($sql->JCId, $sql->Aadhaar, 'Candidate Response to Offer Letter-' . $Answer);
             if($Answer =='Rejected'){
-                CandidateActivityLog::addToCandLog($sql->JCId, $sql->Aadhaar, 'Candidate Offer Letter Rejection Reason -' . $RejReason); 
+                CandidateActivityLog::addToCandLog($sql->JCId, $sql->Aadhaar, 'Candidate Offer Letter Rejection Reason -' . $RejReason);
             }
             return response()->json(['status' => 200, 'msg' => 'Response Submitted Successfully']);
         } else {

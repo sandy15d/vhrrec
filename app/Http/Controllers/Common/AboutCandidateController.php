@@ -16,6 +16,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Models\jobcandidate;
+use Illuminate\Support\Facades\View;
+use Mpdf\Mpdf;
+
+use function App\Helpers\getCompanyName;
 
 class AboutCandidateController extends Controller
 {
@@ -416,7 +420,7 @@ class AboutCandidateController extends Controller
 
     public function Candidate_Education_Save(Request $request)
     {
-        
+
         $JCId = $request->Edu_JCId;
         $Qualification = $request->Qualification;
         $Course = $request->Course;
@@ -847,9 +851,37 @@ class AboutCandidateController extends Controller
 
     public function appointment_ltr_print()
     {
-        return view('onboarding.appointment_ltr_print');
-    }
+        $jaid = $_GET['jaid'];
+        $sql = DB::table('jobapply')->select(
+            'jobcandidates.Title',
+            'jobcandidates.FName',
+            'jobcandidates.MName',
+            'jobcandidates.LName',
+        )
+            ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
+        $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
+        ini_set('memory_limit', -1);
 
+        $pdf = new mPDF(['utf-8', 'A4-C']);
+
+        $pdf->SetDefaultBodyCSS('font-family', 'freeserif');
+        $pdf->setAutoBottomMargin = 'stretch';
+        $pdf->WriteHTML('<div style="margin-bottom:80px;">&nbsp;</div>');
+
+
+        $pdf->SetHTMLFooter('
+                <div style="text-align: center; font-weight:bold; margin-top:10px; height:90px;">
+                <div style="float: left; width: 33%; text-align: left;">___________________<br>Authorized Signatory</div>
+                <div style="float: left; width: 33%; text-align: center;"><br><br>Page {PAGENO} of {nbpg}</div>
+                <div style="float: right; width: 33%; text-align: right;">_________________<br>' . $candidate_name . '</div>
+                </div>
+        ');
+
+        $html = View::make('onboarding.appointment_ltr_print')->render();
+        $pdf->SetTitle('Appointment Letter');
+        $pdf->WriteHTML($html,);
+        $pdf->Output('Appointment Letter.pdf', 'I');
+    }
     public function appointmentGen(Request $request)
     {
         $JAId = base64_decode($request->JAId);
@@ -859,8 +891,8 @@ class AboutCandidateController extends Controller
         }else{
              $query = DB::table('appointing')->where('JAId', $JAId)->update(['A_Date' =>  date('Y-m-d'),  'LastUpdated' => date('Y-m-d H:i:s'), 'UpdatedBy' => Auth::user()->id]);
         }
-        
-       
+
+
         if ($query) {
             return response()->json(['status' => 200, 'msg' => 'Appointment Letter Generated Successfully']);
         } else {
@@ -897,14 +929,173 @@ class AboutCandidateController extends Controller
         return view('onboarding.service_agreement');
     }
 
+    public function service_agreement_print_e_first()
+    {
+        $jaid = base64_decode($_GET['jaid']);
+        $sql = DB::table('jobapply')->select(
+            'jobcandidates.Title',
+            'jobcandidates.FName',
+            'jobcandidates.MName',
+            'jobcandidates.LName',
+        )
+            ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
+        $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
+        $sql = DB::table('jobapply')
+            ->leftJoin('appointing', 'appointing.JAId', '=', 'jobapply.JAId')
+            ->leftJoin('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
+            ->leftJoin('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+            ->leftJoin('candjoining', 'jobapply.JAId', '=', 'candjoining.JAId')
+            ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
+            ->leftJoin('jf_family_det', 'jobcandidates.JCId', '=', 'jf_family_det.JCId')
+            ->select('appointing.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobcandidates.Aadhaar', 'jobcandidates.Email', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
+            ->where('jobapply.JAId', $jaid)
+            ->first();
+
+        ini_set('memory_limit', -1);
+        $mpdfConfig = array(
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'margin_header' => 10,     // 30mm not pixel
+            'margin_footer' => 10,     // 10mm
+            'orientation' => 'P'
+        );
+        $pdf = new mPDF($mpdfConfig);
+
+        $pdf->SetDefaultBodyCSS('font-family', 'freeserif');
+
+
+        $pdf->WriteHTML('<div style="margin-bottom:8px;">&nbsp;</div>');
+        $html = '<div style="height:700px;"></div>
+                 <div style="text-align: center; font-weight:bold; margin-top:10px; ">
+                 <div style="float: left; width: 50%; text-align: left;">Ref:' . $sql->AgrLtrNo . '</div>
+                 <div style="float: right; width: 50%; text-align: right;">Date: ' . date('d-m-Y', strtotime($sql->Agr_Date)) . '</div>
+        </div>
+        <b>
+            <p style="text-align: center;font-weight:bold;">Service Agreement</p>
+        </b>
+
+        <p>For, ' . getCompanyName($sql->Company) . ',</p>
+        <div style="text-align: center; font-weight:bold; margin-top:50px; height:70px;">
+        <div style="float: left; width: 50%; text-align: left;">___________________<br>Authorized Signatory</div>
+
+        <div style="float: right; width: 50%; text-align: right;">_________________<br>' . $candidate_name . '</div>
+        </div>
+
+        ';
+
+        $pdf->WriteHTML($html);
+        $pdf->Output('Service Agreement.pdf', 'I');
+    }
+
     public function service_agreement_print()
     {
-        return view('onboarding.service_agreement_print');
+        $jaid = base64_decode($_GET['jaid']);
+        $sql = DB::table('jobapply')->select(
+            'jobcandidates.Title',
+            'jobcandidates.FName',
+            'jobcandidates.MName',
+            'jobcandidates.LName',
+        )
+            ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
+        $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
+        $sql = DB::table('jobapply')
+            ->leftJoin('appointing', 'appointing.JAId', '=', 'jobapply.JAId')
+            ->leftJoin('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
+            ->leftJoin('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+            ->leftJoin('candjoining', 'jobapply.JAId', '=', 'candjoining.JAId')
+            ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
+            ->leftJoin('jf_family_det', 'jobcandidates.JCId', '=', 'jf_family_det.JCId')
+            ->select('appointing.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobcandidates.Aadhaar', 'jobcandidates.Email', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
+            ->where('jobapply.JAId', $jaid)
+            ->first();
+
+        ini_set('memory_limit', -1);
+        $mpdfConfig = array(
+            'mode' => 'utf-8',
+            'format' => 'Legal',
+            'margin_header' => 10,     // 30mm not pixel
+            'margin_footer' => 10,     // 10mm
+            'orientation' => 'P'
+        );
+        $pdf = new mPDF($mpdfConfig);
+
+        $pdf->SetDefaultBodyCSS('font-family', 'freeserif');
+        $pdf->setAutoBottomMargin = 'stretch';
+        $pdf->setAutoTopMargin = 'stretch';
+        $pdf->SetHTMLFooter('
+            <div style="text-align: center; font-weight:bold; margin-top:10px; height:90px;">
+            <div style="float: left; width: 33%; text-align: left;">___________________<br>Authorized Signatory</div>
+            <div style="float: left; width: 33%; text-align: center;"><br><br>Page {PAGENO} of {nbpg}</div>
+            <div style="float: right; width: 33%; text-align: right;">_________________<br>' . $candidate_name . '</div>
+            </div>
+
+         ');
+
+
+        $pdf->SetHTMLHeader('<div style="text-align: center; font-weight:bold;height:40px;">
+        <div style="float: left; width: 50%; text-align: left;">Ref:' . $sql->AgrLtrNo . '</div>
+        <div style="float: right; width: 50%; text-align: right;">Date: ' . date('d-m-Y', strtotime($sql->Agr_Date)) . '</div>
+        </div>');
+
+        $html = View::make('onboarding.service_agreement_print')->render();
+
+        $pdf->WriteHTML($html);
+        $pdf->Output('Service Agreement.pdf', 'I');
     }
 
     public function service_agreement_print_old_stamp()
     {
-        return view('onboarding.service_agreement_print_old_stamp');
+        $jaid = base64_decode($_GET['jaid']);
+        $sql = DB::table('jobapply')->select(
+            'jobcandidates.Title',
+            'jobcandidates.FName',
+            'jobcandidates.MName',
+            'jobcandidates.LName',
+        )
+            ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
+        $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
+        $sql = DB::table('jobapply')
+            ->leftJoin('appointing', 'appointing.JAId', '=', 'jobapply.JAId')
+            ->leftJoin('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
+            ->leftJoin('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+            ->leftJoin('candjoining', 'jobapply.JAId', '=', 'candjoining.JAId')
+            ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
+            ->leftJoin('jf_family_det', 'jobcandidates.JCId', '=', 'jf_family_det.JCId')
+            ->select('appointing.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobcandidates.Aadhaar', 'jobcandidates.Email', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
+            ->where('jobapply.JAId', $jaid)
+            ->first();
+
+        ini_set('memory_limit', -1);
+        $mpdfConfig = array(
+            'mode' => 'utf-8',
+            'margin_header' => 10,     // 30mm not pixel
+            'margin_footer' => 12,     // 10mm
+            'orientation' => 'P'
+        );
+        $pdf = new mPDF($mpdfConfig);
+
+        $pdf->SetDefaultBodyCSS('font-family', 'freeserif');
+        $pdf->setAutoBottomMargin = 'stretch';
+        $pdf->setAutoTopMargin = 'stretch';
+        $pdf->SetHTMLFooter('
+            <div style="text-align: center; font-weight:bold; ">
+            <div style="float: left; width: 33%; text-align: left;">___________________<br>Authorized Signatory</div>
+            <div style="float: left; width: 33%; text-align: center;"><br><br>Page {PAGENO} of {nbpg}</div>
+            <div style="float: right; width: 33%; text-align: right;">_________________<br>' . $candidate_name . '</div>
+            </div>
+
+        ');
+        $pdf->WriteHTML('<div style="margin-bottom:8px;">&nbsp;</div>');
+
+        $pdf->SetHTMLHeader('<div style="text-align: center; font-weight:bold;height:40px;">
+        <div style="float: left; width: 50%; text-align: left;">Ref:' . $sql->AgrLtrNo . '</div>
+        <div style="float: right; width: 50%; text-align: right;">Date: ' . date('d-m-Y', strtotime($sql->Agr_Date)) . '</div>
+        </div>');
+
+        $html = View::make('onboarding.service_agreement_print_old_stamp')->render();
+
+        $pdf->WriteHTML($html);
+        $pdf->Output('Service Agreement.pdf', 'I');
     }
 
     public function service_bond_generate(Request $request)
@@ -917,7 +1108,7 @@ class AboutCandidateController extends Controller
         }else{
              $query = DB::table('appointing')->where('JAId', $JAId)->update(['BLtrNo' => $ltrno, 'B_Date' => date('Y-m-d'), 'BLtrGen' => 'Yes', 'LastUpdated' => date('Y-m-d H:i:s'), 'UpdatedBy' => Auth::user()->id]);
         }
-       
+
         if ($query) {
             return response()->json(['status' => 200, 'msg' => 'Service Bond Generated Successfully']);
         } else {
@@ -930,14 +1121,177 @@ class AboutCandidateController extends Controller
         return view('onboarding.service_bond');
     }
 
+    public function service_bond_print_e_first()
+    {
+        $jaid = base64_decode($_GET['jaid']);
+        $sql = DB::table('jobapply')->select(
+            'jobcandidates.Title',
+            'jobcandidates.FName',
+            'jobcandidates.MName',
+            'jobcandidates.LName',
+        )
+            ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
+        $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
+        $sql = DB::table('jobapply')
+            ->leftJoin('appointing', 'appointing.JAId', '=', 'jobapply.JAId')
+            ->leftJoin('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
+            ->leftJoin('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+            ->leftJoin('candjoining', 'jobapply.JAId', '=', 'candjoining.JAId')
+            ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
+            ->leftJoin('jf_family_det', 'jobcandidates.JCId', '=', 'jf_family_det.JCId')
+            ->select('appointing.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobcandidates.Aadhaar', 'jobcandidates.Email', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
+            ->where('jobapply.JAId', $jaid)
+            ->first();
+
+        ini_set('memory_limit', -1);
+        $mpdfConfig = array(
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'margin_header' => 10,     // 30mm not pixel
+            'margin_footer' => 10,     // 10mm
+            'orientation' => 'P'
+        );
+        $pdf = new mPDF($mpdfConfig);
+
+        $pdf->SetDefaultBodyCSS('font-family', 'freeserif');
+
+
+        $pdf->WriteHTML('<div style="margin-bottom:8px;">&nbsp;</div>');
+        $html = '<div style="height:700px;"></div>
+                 <div style="text-align: center; font-weight:bold; margin-top:10px; ">
+                 <div style="float: left; width: 50%; text-align: left;">Ref:' . $sql->BLtrNo . '</div>
+                 <div style="float: right; width: 50%; text-align: right;">Date: ' . date('d-m-Y', strtotime($sql->B_Date)) . '</div>
+        </div>
+        <b>
+            <p style="text-align: center;font-weight:bold;">Service Bond (Annexure)</p>
+        </b>
+
+        <p>For, ' . getCompanyName($sql->Company) . ',</p>
+        <div style="text-align: center; font-weight:bold; margin-top:50px; height:70px;">
+        <div style="float: left; width: 50%; text-align: left;">___________________<br>Authorized Signatory</div>
+
+        <div style="float: right; width: 50%; text-align: right;">_________________<br>' . $candidate_name . '</div>
+        </div>
+
+        ';
+
+        $pdf->WriteHTML($html);
+        $pdf->Output('Service Bond.pdf', 'I');
+    }
+
     public function service_bond_print()
     {
-        return view('onboarding.service_bond_print');
+        $jaid = base64_decode($_GET['jaid']);
+        $sql = DB::table('jobapply')->select(
+            'jobcandidates.Title',
+            'jobcandidates.FName',
+            'jobcandidates.MName',
+            'jobcandidates.LName',
+        )
+            ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
+        $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
+        $sql = DB::table('jobapply')
+            ->leftJoin('appointing', 'appointing.JAId', '=', 'jobapply.JAId')
+            ->leftJoin('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
+            ->leftJoin('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+            ->leftJoin('candjoining', 'jobapply.JAId', '=', 'candjoining.JAId')
+            ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
+            ->leftJoin('jf_family_det', 'jobcandidates.JCId', '=', 'jf_family_det.JCId')
+            ->select('appointing.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobcandidates.Aadhaar', 'jobcandidates.Email', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
+            ->where('jobapply.JAId', $jaid)
+            ->first();
+
+        ini_set('memory_limit', -1);
+        $mpdfConfig = array(
+            'mode' => 'utf-8',
+            'format' => 'Legal',
+            'margin_header' => 10,     // 30mm not pixel
+            'margin_footer' => 10,     // 10mm
+            'orientation' => 'P'
+        );
+        $pdf = new mPDF($mpdfConfig);
+
+        $pdf->SetDefaultBodyCSS('font-family', 'freeserif');
+        $pdf->setAutoBottomMargin = 'stretch';
+        $pdf->setAutoTopMargin = 'stretch';
+
+        $pdf->SetHTMLFooter('
+        <div style="text-align: center; font-weight:bold; ">
+        <div style="float: left; width: 33%; text-align: left;">___________________<br>Authorized Signatory</div>
+        <div style="float: left; width: 33%; text-align: center;"><br><br>Page {PAGENO} of {nbpg}</div>
+        <div style="float: right; width: 33%; text-align: right;">_________________<br>' . $candidate_name . '</div>
+        </div>');
+
+
+        $pdf->SetHTMLHeader('<div style="text-align: center; font-weight:bold;height:40px;">
+             <div style="float: left; width: 50%; text-align: left;">Ref:' . $sql->BLtrNo . '</div>
+             <div style="float: right; width: 50%; text-align: right;">Date: ' . date('d-m-Y', strtotime($sql->B_Date)) . '</div>
+            </div>');
+        $pdf->SetHTMLHeader('<div style="text-align: center; font-weight:bold;height:40px;">
+        <div style="float: left; width: 50%; text-align: left;">Ref:' . $sql->BLtrNo . '</div>
+        <div style="float: right; width: 50%; text-align: right;">Date: ' . date('d-m-Y', strtotime($sql->B_Date)) . '</div>
+        </div>');
+
+        $html = View::make('onboarding.service_bond_print')->render();
+
+        $pdf->WriteHTML($html);
+        $pdf->Output('Service Bond.pdf', 'I');
     }
 
     public function service_bond_print_old_stamp()
     {
-        return view('onboarding.service_bond_print_old_stamp');
+        $jaid = base64_decode($_GET['jaid']);
+        $sql = DB::table('jobapply')->select(
+            'jobcandidates.Title',
+            'jobcandidates.FName',
+            'jobcandidates.MName',
+            'jobcandidates.LName',
+        )
+            ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
+        $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
+        $sql = DB::table('jobapply')
+            ->leftJoin('appointing', 'appointing.JAId', '=', 'jobapply.JAId')
+            ->leftJoin('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
+            ->leftJoin('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+            ->leftJoin('candjoining', 'jobapply.JAId', '=', 'candjoining.JAId')
+            ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
+            ->leftJoin('jf_family_det', 'jobcandidates.JCId', '=', 'jf_family_det.JCId')
+            ->select('appointing.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobcandidates.Aadhaar', 'jobcandidates.Email', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
+            ->where('jobapply.JAId', $jaid)
+            ->first();
+
+        ini_set('memory_limit', -1);
+        $mpdfConfig = array(
+            'mode' => 'utf-8',
+            'margin_header' => 10,     // 30mm not pixel
+            'margin_footer' => 12,     // 10mm
+            'orientation' => 'P'
+        );
+        $pdf = new mPDF($mpdfConfig);
+
+        $pdf->SetDefaultBodyCSS('font-family', 'freeserif');
+        $pdf->setAutoBottomMargin = 'stretch';
+        $pdf->setAutoTopMargin = 'stretch';
+        $pdf->SetHTMLFooter('
+            <div style="text-align: center; font-weight:bold; ">
+            <div style="float: left; width: 33%; text-align: left;">___________________<br>Authorized Signatory</div>
+            <div style="float: left; width: 33%; text-align: center;"><br><br>Page {PAGENO} of {nbpg}</div>
+            <div style="float: right; width: 33%; text-align: right;">_________________<br>' . $candidate_name . '</div>
+            </div>
+
+        ');
+
+        $pdf->WriteHTML('<div style="margin-bottom:8px;">&nbsp;</div>');
+
+        $pdf->SetHTMLHeader('<div style="text-align: center; font-weight:bold;height:40px;">
+        <div style="float: left; width: 50%; text-align: left;">Ref:' . $sql->BLtrNo . '</div>
+        <div style="float: right; width: 50%; text-align: right;">Date: ' . date('d-m-Y', strtotime($sql->B_Date)) . '</div>
+        </div>');
+
+        $html = View::make('onboarding.service_bond_print_old_stamp')->render();
+
+        $pdf->WriteHTML($html);
+        $pdf->Output('Service Bond.pdf', 'I');
     }
 
     public function conf_agreement_generate(Request $request)
@@ -957,17 +1311,148 @@ class AboutCandidateController extends Controller
         return view('onboarding.conf_agreement');
     }
 
+    public function conf_agreement_print_e_first()
+    {
+        $jaid = base64_decode($_GET['jaid']);
+        $sql = DB::table('jobapply')->select(
+            'jobcandidates.Title',
+            'jobcandidates.FName',
+            'jobcandidates.MName',
+            'jobcandidates.LName',
+        )
+            ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
+        $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
+        $sql = DB::table('jobapply')
+            ->leftJoin('appointing', 'appointing.JAId', '=', 'jobapply.JAId')
+            ->leftJoin('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
+            ->leftJoin('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+            ->leftJoin('candjoining', 'jobapply.JAId', '=', 'candjoining.JAId')
+            ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
+            ->leftJoin('jf_family_det', 'jobcandidates.JCId', '=', 'jf_family_det.JCId')
+            ->select('appointing.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobcandidates.Aadhaar', 'jobcandidates.Email', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
+            ->where('jobapply.JAId', $jaid)
+            ->first();
+
+        ini_set('memory_limit', -1);
+        $mpdfConfig = array(
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'margin_header' => 10,     // 30mm not pixel
+            'margin_footer' => 10,     // 10mm
+            'orientation' => 'P'
+        );
+        $pdf = new mPDF($mpdfConfig);
+
+        $pdf->SetDefaultBodyCSS('font-family', 'freeserif');
+
+
+        $pdf->WriteHTML('<div style="margin-bottom:8px;">&nbsp;</div>');
+        $html = '<div style="height:700px;"></div>
+                 <div style="text-align: center; font-weight:bold; margin-top:10px; "></div>
+        <b>
+            <p style="text-align: center;font-weight:bold;">Confidentiality Agreement</p>
+        </b>
+
+        <p>For, ' . getCompanyName($sql->Company) . ',</p>
+        <div style="text-align: center; font-weight:bold; margin-top:50px; height:70px;">
+        <div style="float: left; width: 50%; text-align: left;">___________________<br>Authorized Signatory</div>
+
+        <div style="float: right; width: 50%; text-align: right;">_________________<br>' . $candidate_name . '</div>
+        </div>
+
+        ';
+
+        $pdf->WriteHTML($html);
+        $pdf->Output('Confidentiality Agreement.pdf', 'I');
+    }
+
     public function conf_agreement_print()
     {
-        return view('onboarding.conf_agreement_print');
+        $jaid = base64_decode($_GET['jaid']);
+        $sql = DB::table('jobapply')->select(
+            'jobcandidates.Title',
+            'jobcandidates.FName',
+            'jobcandidates.MName',
+            'jobcandidates.LName',
+        )
+            ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
+        $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
+        ini_set('memory_limit', -1);
+        $mpdfConfig = array(
+            'mode' => 'utf-8',
+            'format' => 'Legal',
+            'margin_header' => 10,     // 30mm not pixel
+            'margin_footer' => 10,     // 10mm
+            'orientation' => 'P'
+        );
+        $pdf = new mPDF($mpdfConfig);
+        $pdf->SetDefaultBodyCSS('font-family', 'freeserif');
+        $pdf->setAutoBottomMargin = 'stretch';
+        $pdf->setAutoTopMargin = 'stretch';
+        $html = View::make('onboarding.conf_agreement_print')->render();
+        $pdf->SetHTMLFooter('
+                <div style="text-align: center; font-weight:bold; margin-top:10px; height:90px;">
+                <div style="float: left; width: 33%; text-align: left;">___________________<br>Authorized Signatory</div>
+                <div style="float: left; width: 33%; text-align: center;"><br><br>Page {PAGENO} of {nbpg}</div>
+                <div style="float: right; width: 33%; text-align: right;">_________________<br>' . $candidate_name . '</div>
+                </div>
+        ');
+
+        $pdf->WriteHTML($html);
+        $pdf->Output('Confidentiality Agreement.pdf', 'I');
+
     }
 
-
-  public function conf_agreement_print_old_stamp()
+    public function conf_agreement_print_old_stamp()
     {
-        return view('onboarding.conf_agreement_print_old_stamp');
-    }
+        $jaid = base64_decode($_GET['jaid']);
+        $sql = DB::table('jobapply')->select(
+            'jobcandidates.Title',
+            'jobcandidates.FName',
+            'jobcandidates.MName',
+            'jobcandidates.LName',
+        )
+            ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
+        $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
+        $sql = DB::table('jobapply')
+            ->leftJoin('appointing', 'appointing.JAId', '=', 'jobapply.JAId')
+            ->leftJoin('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
+            ->leftJoin('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+            ->leftJoin('candjoining', 'jobapply.JAId', '=', 'candjoining.JAId')
+            ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
+            ->leftJoin('jf_family_det', 'jobcandidates.JCId', '=', 'jf_family_det.JCId')
+            ->select('appointing.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobcandidates.Aadhaar', 'jobcandidates.Email', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
+            ->where('jobapply.JAId', $jaid)
+            ->first();
 
+        ini_set('memory_limit', -1);
+        $mpdfConfig = array(
+            'mode' => 'utf-8',
+            'margin_header' => 10,     // 30mm not pixel
+            'margin_footer' => 12,     // 10mm
+            'orientation' => 'P'
+        );
+        $pdf = new mPDF($mpdfConfig);
+
+        $pdf->SetDefaultBodyCSS('font-family', 'freeserif');
+        $pdf->setAutoBottomMargin = 'stretch';
+        $pdf->setAutoTopMargin = 'stretch';
+        $pdf->SetHTMLFooter('
+                <div style="text-align: center; font-weight:bold; margin-top:10px; height:90px;">
+                <div style="float: left; width: 33%; text-align: left;">___________________<br>Authorized Signatory</div>
+                <div style="float: left; width: 33%; text-align: center;"><br><br>Page {PAGENO} of {nbpg}</div>
+                <div style="float: right; width: 33%; text-align: right;">_________________<br>' . $candidate_name . '</div>
+                </div>
+        ');
+        $pdf->WriteHTML('<div style="margin-bottom:8px;">&nbsp;</div>');
+
+
+        $html = View::make('onboarding.conf_agreement_print_old_stamp')->render();
+
+        $pdf->WriteHTML($html);
+        $pdf->Output('Confidentiality Agreement.pdf', 'I');
+
+    }
 
 
     public function send_for_ref_chk(Request $request)
@@ -1140,7 +1625,7 @@ class AboutCandidateController extends Controller
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         }
     }
-    
+
     public function open_joining_form(Request $request)
     {
         $query = jobcandidate::where('JCId', $request->JCId)->update(['FinalSubmit' => '0']);
@@ -1150,4 +1635,6 @@ class AboutCandidateController extends Controller
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         }
     }
+
+
 }
