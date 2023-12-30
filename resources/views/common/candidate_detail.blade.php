@@ -260,8 +260,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
 
                                                 @if ($OfBasic != null && $OfBasic->OfferLtrGen == 1)
                                                     <div class="title">
-                                                        <a href="javascript:void(0);" class="text-danger"
-                                                            onclick="OfferLetterPrint('{{ route('offer_ltr_print') }}?jaid={{ $Rec->JAId }}');">Offer
+                                                        <a href="{{ route('offer_ltr_print') }}?jaid={{ $Rec->JAId }}" class="text-danger"
+                                                            >Offer
                                                             Letter</a>
                                                     </div>
                                                 @endif

@@ -231,7 +231,7 @@
         association with us. </p>
     <p>Yours Sincerely,</p>
 
-
+  <pagebreak>
     <p>I, {{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }},
         @if ($sql->Gender == 'M')
             S/o.
