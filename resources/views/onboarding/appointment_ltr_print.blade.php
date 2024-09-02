@@ -56,9 +56,6 @@
 @endphp
 
 <body>
-
-
-
         <p style="text-align: center;font-weight: bold;"><b><u> APPOINTMENT LETTER</u></b></p>
         <div style="font-size: 14px; font-weight: bold;">
             <div style="float: left; width: 60%; text-align: left;">Ref:
@@ -447,7 +444,7 @@
         <p>We wish you a long and successful association with the Company.</p>
         <br>
         <p><strong>Declaration</strong></p>
-        <br>
+      
 
         @php
             if ($sql->MaritalStatus != '' || $sql->MaritalStatus != null) {
@@ -490,7 +487,7 @@
                 <div style="float: left; width: 33%; text-align: right;">{{ $sql->Title }} {{ $sql->FName }}
                     {{ $sql->MName }} {{ $sql->LName }}</div>
             </div>
-        <br><br>
+       
         <strong>
             <p>Enclosed:</p>
         </strong>

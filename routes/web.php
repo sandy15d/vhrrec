@@ -302,6 +302,7 @@ Route::get('offer-letter-review', [OfferLtrController::class, 'offer_letter_revi
 Route::get('viewReview', [OfferLtrController::class, 'viewReview'])->name('viewReview');
 Route::post('ReviewResponse', [OfferLtrController::class, 'ReviewResponse'])->name('ReviewResponse');
 Route::post('saveEmpCode', [OfferLtrController::class, 'saveEmpCode'])->name('saveEmpCode');
+Route::get('get_designation_by_grade_department', [OfferLtrController::class, 'get_designation_by_grade_department'])->name('get_designation_by_grade_department');
 
 Route::get('candidate_joining', [OfferLtrController::class, 'candidate_joining'])->name('candidate_joining');
 

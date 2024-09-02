@@ -117,12 +117,28 @@ class OfferLtrController extends Controller
         }
 
         $designation_list = DB::table("master_designation")->where('DesigStatus', 'A')->where('CompanyId', $company)->where('DepartmentId', $Department)->orderBy('DesigName', 'ASC')->pluck("DesigId", "DesigName");
+        if ($candidate_detail[0]->Grade != 0) {
+            $grade_designation_list = DB::table('master_grade_designation')
+                ->select('master_designation.DesigId', 'master_designation.DesigName')
+                ->leftJoin('master_designation', 'master_designation.DesigId', '=', 'master_grade_designation.designation_id')
+                ->where('department_id', $Department)
+                ->where(function ($query) use ($candidate_detail) {
+                    $query->where('grade_1', $candidate_detail[0]->Grade)
+                        ->orWhere('grade_2', $candidate_detail[0]->Grade)
+                        ->orWhere('grade_3', $candidate_detail[0]->Grade)
+                        ->orWhere('grade_4', $candidate_detail[0]->Grade)
+                        ->orWhere('grade_5', $candidate_detail[0]->Grade);
+                })
+                ->pluck("DesigId", "DesigName");
+        } else {
+            $grade_designation_list = '';
+        }
         $vertical_list = DB::table("master_vertical")->where('CompanyId', $company)->where('DepartmentId', $Department)->orderBy('VerticalName', 'ASC')->pluck("VerticalId", "VerticalName");
         $department_list = DB::table("master_department")->where('DeptStatus', 'A')->where('CompanyId', $company)->orderBy('DepartmentName', 'ASC')->pluck("DepartmentId", "DepartmentName");
         $employee_list = master_employee::select(DB::raw("CONCAT(Fname,' ',Lname) AS name"), 'EmployeeID')->where('CompanyId', $company)->where('EmpStatus', 'A')->pluck('name', 'EmployeeID');
         $headquarter_list = DB::table("master_headquater")->where('CompanyId', $company)->orderBy('HqName', 'ASC')->pluck("HqId", "HqName");
         $state_list = DB::table("master_state")->leftJoin('master_headquater', 'master_headquater.StateId', '=', 'master_state.StateId')->where('master_headquater.CompanyId', $company)->orderBy('StateName', 'ASC')->pluck("master_state.StateId", "master_state.StateName");
-        return response(array('candidate_detail' => $candidate_detail[0], 'grade_list' => $grade_list, 'designation_list' => $designation_list, 'department_list' => $department_list, 'employee_list' => $employee_list, 'headquarter_list' => $headquarter_list, 'state_list' => $state_list, 'vertical_list' => $vertical_list, 'status' => 200));
+        return response(array('candidate_detail' => $candidate_detail[0], 'grade_list' => $grade_list, 'designation_list' => $designation_list, 'department_list' => $department_list, 'employee_list' => $employee_list, 'headquarter_list' => $headquarter_list, 'state_list' => $state_list, 'vertical_list' => $vertical_list,'grade_designation_list'=>$grade_designation_list, 'status' => 200));
     }
 
     public function update_offerletter_basic(Request $request)
@@ -982,5 +998,25 @@ class OfferLtrController extends Controller
         ];
         Mail::to($query->Email)->send(new JoiningFormMail($details));
         return response()->json(['status' => 200, 'msg' => 'Joining Form Sent Successfully']);
+    }
+    
+    
+     public function get_designation_by_grade_department(Request $request)
+    {
+        $DepartmentId = $request->DepartmentId;
+        $GradeId = $request->GradeId;
+        $grade_designation_list = DB::table('master_grade_designation')
+            ->select('master_designation.DesigId', 'master_designation.DesigName')
+            ->join('master_designation', 'master_designation.DesigId', '=', 'master_grade_designation.designation_id')
+            ->where('department_id', $DepartmentId)
+            ->where(function ($query) use ($GradeId) {
+                $query->where('grade_1', $GradeId)
+                    ->orWhere('grade_2', $GradeId)
+                    ->orWhere('grade_3', $GradeId)
+                    ->orWhere('grade_4', $GradeId)
+                    ->orWhere('grade_5', $GradeId);
+            })
+            ->pluck("DesigId", "DesigName");
+        return response(array('grade_designation_list' => $grade_designation_list, 'status' => 200));
     }
 }

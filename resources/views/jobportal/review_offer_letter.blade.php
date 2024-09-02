@@ -169,6 +169,11 @@ $candJoin = DB::table('candjoining')
     ->first();
 $LinkValidityEnd = $candJoin->LinkValidityEnd ?? date('Y-m-d');
 $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 'Four' => '4 (Four)', 'Five' => '5 (Five)', 'Six' => '6 (Six)', 'Seven' => '7 (Seven)', 'Eight' => '8 (Eight)', 'Nine' => '9 (Nine)', 'Ten' => '10 (Ten)', 'Eleven' => '11 (Eleven)', 'Twelve' => '12 (Twelve)'];
+$check = DB::table('offerletter_review')
+        ->where('JAId', $JAId)
+        ->where('EmpId', $EmpId)
+        ->where('OfferLetterNo',$sql->LtrNo)
+        ->first();
 @endphp
 
 <body>
@@ -764,41 +769,58 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
             </div>
         </div>
 
-        <div class="generate" id="generate">
-            <form method="POST" action="{{ route('ReviewResponse') }}" id="responseform">
-                @csrf
-                <input type="hidden" name="JAId" value="{{ $JAId }}" id="JAId">
-                <input type="hidden" name="EmpId" value="{{ $EmpId }}" id="EmpId">
-                <div class="mb-5 ">
-                    <center>
-                        <b>Offer Letter Review Reply</b><br><br>
-                        <label class="btn btn-sm text-success font-weight-bold"
-                            onclick="$('#jnfrmFormDiv').show(500);$('#Rejreason').hide(500);$('#RejReason').removeAttr('required'); $('#JoinOnDt').attr('required', 'true');">
-                            <input type="radio" name="Answer" value="Accepted">
-                            <i class="fa fa-check" aria-hidden="true"></i> Accept Offer
-                        </label>
-                        <label class="btn btn-sm text-danger font-weight-bold"
-                            onclick="$('#jnfrmFormDiv').hide(500);$('#Rejreason').show(500);$('#RejReason').attr('required', 'true');$('#JoinOnDt').removeAttr('required'); ">
-                            <input type="radio" name="Answer" value="Rejected">
-                            <i class="fa fa-times" aria-hidden="true"></i> Reject Offer
-                        </label>
-                        <br>
+       @if ($check->Status == null)
+            <div class="generate" id="generate">
+                <form method="POST" action="{{ route('ReviewResponse') }}" id="responseform">
+                    @csrf
+                    <input type="hidden" name="JAId" value="{{ $JAId }}" id="JAId">
+                    <input type="hidden" name="EmpId" value="{{ $EmpId }}" id="EmpId">
+                    <div class="mb-5 ">
+                        <center>
+                            <b>Offer Letter Review Reply</b><br><br>
+                            <label class="btn btn-sm text-success font-weight-bold"
+                                onclick="$('#jnfrmFormDiv').show(500);$('#Rejreason').hide(500);$('#RejReason').removeAttr('required'); $('#JoinOnDt').attr('required', 'true');">
+                                <input type="radio" name="Answer" value="Accepted">
+                                <i class="fa fa-check" aria-hidden="true"></i> Approve Offer
+                            </label>
+                            <label class="btn btn-sm text-danger font-weight-bold"
+                                onclick="$('#jnfrmFormDiv').hide(500);$('#Rejreason').show(500);$('#RejReason').attr('required', 'true');$('#JoinOnDt').removeAttr('required'); ">
+                                <input type="radio" name="Answer" value="Rejected">
+                                <i class="fa fa-times" aria-hidden="true"></i> Reject Offer
+                            </label>
+                            <br>
 
-                        <span id="Rejreason" style="display: none;">
-                            <br>
-                            Please Mention Reason for Rejection:
-                            <br>
-                            <textarea class="form-control d-inline-block frminp reqinp" name="RejReason" id="RejReason" style="width: 400px;"></textarea>
-                            <br>
-                        </span>
-                        <button class="btn btn-sm btn-primary px-5" type="submit">
-                            Submit
-                        </button>
-                    </center>
-                </div>
-            </form>
+                            <span id="Rejreason" style="display: none;">
+                                <br>
+                                Please Mention Reason for Rejection:
+                                <br>
+                                <textarea class="form-control d-inline-block frminp reqinp" name="RejReason" id="RejReason" style="width: 400px;"></textarea>
+                                <br>
+                            </span>
+                            <button class="btn btn-sm btn-primary px-5" type="submit">
+                                Submit
+                            </button>
+                        </center>
+                    </div>
+                </form>
 
-        </div>
+            </div>
+        @else
+            <div class="generate mb-4" id="generate">
+                <center>
+                    <p style="font-size:18px;color:indigo">
+                        @if ($check->Status == 'Accepted')
+                        <b>Your response "{{ $check->Status }}" is duly submitted.</b>
+
+                        @else
+                            <b>Your response "{{$check->Status}}" with reason "{{$check->RejReason}}" is duly submitted.</b>
+                        @endif
+
+
+                    </p>
+                </center>
+            </div>
+        @endif
     </div>
 
     <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>

@@ -624,14 +624,14 @@
                                         ( Max 75Kms/day and 1800km/month)
                                     @endif
                                 </td>
-                                <td><input type="number" class="form-control text-center" id="TwoWheel"
+                                <td><input type="text" class="form-control text-center" id="TwoWheel"
                                         style=" height:20px;border: 0px none;" value="{{ $elg->TwoWheel ?? '' }}">
                                 </td>
                             </tr>
                             <tr class="d-none">
                                 <td></td>
                                 <td style="width:400px;">Four Wheeler </td>
-                                <td><input type="number" class="form-control text-center" id="FourWheel"
+                                <td><input type="text" class="form-control text-center" id="FourWheel"
                                         style=" height:20px;border: 0px none;" value="{{ $elg->FourWheel ?? '' }}">
                                 </td>
                             </tr>
@@ -932,29 +932,42 @@ checked
     <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
     <script>
         function calculate() {
-
+        debugger;
             var basic = $('#basic').val();
             var hra = $('#hra').val();
             var bonus = $('#bonus').val();
             var special_alw = $('#special_alw').val();
-
-            if (isNaN(basic) || basic == '') {
+            var emplyPF = 0;
+            if (isNaN(basic) || basic.trim() === '') {
                 basic = 0;
             }
-            if (isNaN(hra) || hra == '') {
+            if (isNaN(hra) || hra.trim() === '') {
                 hra = 0;
             }
-            if (isNaN(bonus) || bonus == '') {
+            if (isNaN(bonus) || bonus.trim() === '') {
                 bonus = 0;
             }
-            if (isNaN(special_alw) || special_alw == '') {
+            if (isNaN(special_alw) || special_alw.trim() === '') {
                 special_alw = 0;
             }
 
             var grsM_salary = Math.round(parseFloat(basic) + parseFloat(hra) + parseFloat(bonus) + parseFloat(special_alw));
             $('#grsM_salary').val(grsM_salary);
 
-            var emplyPF = Math.round(parseFloat(basic * 12 / 100));
+            if (basic >= 15000) {
+                emplyPF = Math.round(parseFloat(basic * 12 / 100));
+            } else {
+                if ( (parseFloat(basic) + parseFloat(special_alw)) >= 15000) {
+                emplyPF = Math.round(parseFloat(15000 * 12 / 100));
+                } else {
+                    var totalBasicSpecial = parseFloat(basic) + parseFloat(special_alw);
+                    emplyPF = Math.round(parseFloat(totalBasicSpecial * 12 / 100));
+                }
+            }
+            
+
+
+          
             $('#emplyPF').val(emplyPF);
             var emplyESIC = 0;
             if (grsM_salary > 21000) {

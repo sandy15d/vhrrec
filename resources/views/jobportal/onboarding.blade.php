@@ -3071,7 +3071,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                             id="PFForm11Upload">Upload</button>
                                                                     </td>
                                                                     <td style="width: 10%; text-align:center">
-                                                                        @if ($Docs != null && $Docs->PF_Form2 != null)
+                                                                        @if ($Docs != null && $Docs->PF_Form11 != null)
                                                                             <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->PF_Form11 }}"
                                                                                 target="_blank"
                                                                                 class="btn btn-primary btn-sm">View</a>

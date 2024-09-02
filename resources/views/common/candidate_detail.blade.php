@@ -1855,7 +1855,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
 
                                             </div>
                                         </li>
-                                        @if ($OfBasic != null && ($OfBasic->Department == '1003' || $OfBasic->Department == '1006'))
+                                        @if ($OfBasic != null && $OfBasic->ServiceBond == 'Yes')
                                             <li>
                                                 <div class="title" style="width: 150px;"> Service Bond <span
                                                         style="float: right">:</span> </div>
@@ -6425,17 +6425,27 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
             }
         });
 
-        /* $(document).on('change', '#Grade', function() {
-            var Grade = $(this).val();
-            var value = 'nopnot';
-            if (Grade >= 70) {
-                $('.scon').css('display', 'none');
-                $("input[name=ServiceCond][value=" + value + "]").prop('checked', true);
-            } else {
-                $('.scon').css('display', 'inline-block');
-                $("input[name=ServiceCond][value=" + value + "]").prop('checked', false);
-            }
-        }); */
+         $(document).on('change', '#Grade', function() {
+            $.ajax({
+                type: "GET",
+                url: "{{ route('get_designation_by_grade_department') }}?GradeId=" + Grade +
+                    "&DepartmentId=" + $('#SelectedForD').val(),
+                success: function (res) {
+                    if (res.status == 200) {
+                        $("#Designation").empty();
+                        $("#Designation").append(
+                            '<option value="" selected>Select Designation</option>');
+                        $.each(res.grade_designation_list, function (key, value) {
+                            $("#Designation").append('<option value="' + value + '">' +
+                                key +
+                                '</option>');
+                        });
+                    } else {
+                        $("#Designation").empty();
+                    }
+                }
+            });
+        }); 
 
         $(document).on('click', '#offerltredit', function() {
             var JAId = $(this).data('id');
@@ -6468,7 +6478,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#Designation").empty();
                         $("#Designation").append(
                             '<option value="0">Select Designation</option>');
-                        $.each(res.designation_list, function(key, value) {
+                        $.each(res.grade_designation_list, function(key, value) {
                             $("#Designation").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });

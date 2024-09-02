@@ -57,6 +57,7 @@ use function App\Helpers\has_permission;
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTablesButtons.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
+    <!--<script src="https://kit.fontawesome.com/ffb012e977.js" crossorigin="anonymous"></script>-->
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
 
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>

@@ -63,7 +63,7 @@
 
     <div style="height:360px;"></div>
 
-    <div style="text-align: center; font-weight:bold; height:50px;">
+    <div style="text-align: center; font-weight:bold; height:30px;">
         <div style="float: left; width: 50%; text-align: left;">Ref:
             {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}
         </div>

@@ -21,8 +21,7 @@
                                 <td>Designation Name</td>
                                 <td>Designation Code</td>
                                 <td>Department</td>
-                                <td>Company</td>
-                                <td>Status</td>
+                               
                             </tr>
                         </thead>
                         <tbody>
@@ -56,14 +55,7 @@
                     data: 'DepartmentCode',
                     name: 'DepartmentCode'
                 },
-                {
-                    data: 'CompanyCode',
-                    name: 'CompanyCode'
-                },
-                {
-                    data: 'DesigStatus',
-                    name: 'DesigStatus'
-                }
+               
             ],
 
         });

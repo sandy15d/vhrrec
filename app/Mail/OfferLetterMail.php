@@ -28,6 +28,6 @@ class OfferLetterMail extends Mailable
      */
     public function build()
     {
-        return $this->from("recruitment@vnrseeds.com", "VNR Recruitment")->subject($this->details['subject'])->markdown('emails.OfferLetterMail')->with("details", $this->details);
+        return $this->from("webadmin@vnrseeds.com", "VNR Recruitment")->subject($this->details['subject'])->markdown('emails.OfferLetterMail')->with("details", $this->details);
     }
 }

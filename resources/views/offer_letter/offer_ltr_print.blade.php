@@ -80,10 +80,10 @@
     <p>We are pleased to offer you the position of <b>{{ getDesignation($sql->Designation) }}</b> at
         <b>Grade - {{ getGradeValue($sql->Grade) }}</b> in
         <b>{{ getDepartment($sql->Department) }}</b>
-        Department of {{ getCompanyName($sql->Company) }} (<strong>"Company"</strong>)
-    </p>
-    <p>This offer is subject to following terms and conditions:</p>
+        Department of {{ getCompanyName($sql->Company) }} (<strong>"Company"</strong>)</p>
+        <p> This offer is subject to following terms and conditions:</p>
     <ol>
+        
         @if ($sql->ServiceCondition == 'Training' && $sql->OrientationPeriod != null && $sql->Stipend != null)
             <li>You shall report at
                 <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>,
@@ -182,9 +182,6 @@
             </li>
         @endif
 
-
-
-
         @if ($sql->Department == 1002 || $sql->Department == 1040)
             <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
                 terminate
@@ -228,8 +225,7 @@
     </ol>
     <p>We are glad that very soon you will be part of our team. We look forward to your long and
         meaningful
-        association with us. </p>
-    <p>Yours Sincerely,</p>
+        association with us. <br>Yours Sincerely,</p>
 
   <pagebreak>
     <p>I, {{ $sql->Title }} {{ $sql->FName }} {{ $sql->MName }} {{ $sql->LName }},

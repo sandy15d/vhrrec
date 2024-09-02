@@ -856,8 +856,7 @@ class AboutCandidateController extends Controller
             'jobcandidates.Title',
             'jobcandidates.FName',
             'jobcandidates.MName',
-            'jobcandidates.LName',
-        )
+            'jobcandidates.LName')
             ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
         $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
         ini_set('memory_limit', -1);
@@ -879,7 +878,7 @@ class AboutCandidateController extends Controller
 
         $html = View::make('onboarding.appointment_ltr_print')->render();
         $pdf->SetTitle('Appointment Letter');
-        $pdf->WriteHTML($html,);
+        $pdf->WriteHTML($html);
         $pdf->Output('Appointment Letter.pdf', 'I');
     }
     public function appointmentGen(Request $request)
@@ -936,8 +935,7 @@ class AboutCandidateController extends Controller
             'jobcandidates.Title',
             'jobcandidates.FName',
             'jobcandidates.MName',
-            'jobcandidates.LName',
-        )
+            'jobcandidates.LName')
             ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
         $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
         $sql = DB::table('jobapply')
@@ -994,8 +992,7 @@ class AboutCandidateController extends Controller
             'jobcandidates.Title',
             'jobcandidates.FName',
             'jobcandidates.MName',
-            'jobcandidates.LName',
-        )
+            'jobcandidates.LName')
             ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
         $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
         $sql = DB::table('jobapply')
@@ -1050,8 +1047,7 @@ class AboutCandidateController extends Controller
             'jobcandidates.Title',
             'jobcandidates.FName',
             'jobcandidates.MName',
-            'jobcandidates.LName',
-        )
+            'jobcandidates.LName')
             ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
         $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
         $sql = DB::table('jobapply')
@@ -1128,7 +1124,7 @@ class AboutCandidateController extends Controller
             'jobcandidates.Title',
             'jobcandidates.FName',
             'jobcandidates.MName',
-            'jobcandidates.LName',
+            'jobcandidates.LName'
         )
             ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
         $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
@@ -1160,7 +1156,7 @@ class AboutCandidateController extends Controller
         $html = '<div style="height:700px;"></div>
                  <div style="text-align: center; font-weight:bold; margin-top:10px; ">
                  <div style="float: left; width: 50%; text-align: left;">Ref:' . $sql->BLtrNo . '</div>
-                 <div style="float: right; width: 50%; text-align: right;">Date: ' . date('d-m-Y', strtotime($sql->B_Date)) . '</div>
+                 <div style="float: right; width: 50%; text-align: right;">Date: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </div>
         </div>
         <b>
             <p style="text-align: center;font-weight:bold;">Service Bond (Annexure)</p>
@@ -1186,7 +1182,7 @@ class AboutCandidateController extends Controller
             'jobcandidates.Title',
             'jobcandidates.FName',
             'jobcandidates.MName',
-            'jobcandidates.LName',
+            'jobcandidates.LName'
         )
             ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
         $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
@@ -1225,11 +1221,11 @@ class AboutCandidateController extends Controller
 
         $pdf->SetHTMLHeader('<div style="text-align: center; font-weight:bold;height:40px;">
              <div style="float: left; width: 50%; text-align: left;">Ref:' . $sql->BLtrNo . '</div>
-             <div style="float: right; width: 50%; text-align: right;">Date: ' . date('d-m-Y', strtotime($sql->B_Date)) . '</div>
+             <div style="float: right; width: 50%; text-align: right;">Date: </div>
             </div>');
         $pdf->SetHTMLHeader('<div style="text-align: center; font-weight:bold;height:40px;">
         <div style="float: left; width: 50%; text-align: left;">Ref:' . $sql->BLtrNo . '</div>
-        <div style="float: right; width: 50%; text-align: right;">Date: ' . date('d-m-Y', strtotime($sql->B_Date)) . '</div>
+        <div style="float: right; width: 50%; text-align: right;">Date: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
         </div>');
 
         $html = View::make('onboarding.service_bond_print')->render();
@@ -1245,7 +1241,7 @@ class AboutCandidateController extends Controller
             'jobcandidates.Title',
             'jobcandidates.FName',
             'jobcandidates.MName',
-            'jobcandidates.LName',
+            'jobcandidates.LName'
         )
             ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
         $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
@@ -1285,7 +1281,7 @@ class AboutCandidateController extends Controller
 
         $pdf->SetHTMLHeader('<div style="text-align: center; font-weight:bold;height:40px;">
         <div style="float: left; width: 50%; text-align: left;">Ref:' . $sql->BLtrNo . '</div>
-        <div style="float: right; width: 50%; text-align: right;">Date: ' . date('d-m-Y', strtotime($sql->B_Date)) . '</div>
+        <div style="float: right; width: 50%; text-align: right;">Date: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
         </div>');
 
         $html = View::make('onboarding.service_bond_print_old_stamp')->render();
@@ -1318,7 +1314,7 @@ class AboutCandidateController extends Controller
             'jobcandidates.Title',
             'jobcandidates.FName',
             'jobcandidates.MName',
-            'jobcandidates.LName',
+            'jobcandidates.LName'
         )
             ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
         $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
@@ -1373,7 +1369,7 @@ class AboutCandidateController extends Controller
             'jobcandidates.Title',
             'jobcandidates.FName',
             'jobcandidates.MName',
-            'jobcandidates.LName',
+            'jobcandidates.LName'
         )
             ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
         $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
@@ -1410,7 +1406,7 @@ class AboutCandidateController extends Controller
             'jobcandidates.Title',
             'jobcandidates.FName',
             'jobcandidates.MName',
-            'jobcandidates.LName',
+            'jobcandidates.LName'
         )
             ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->where('jobapply.JAId', $jaid)->first();
         $candidate_name = $sql->Title . ' ' .$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;

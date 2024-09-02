@@ -131,6 +131,9 @@
             with the said terms and conditions of his
             or her employment.
         </li>
+        </ol>
+             <pagebreak sheet-size="Legal-P" />
+       <ol type="a" start="2">      
         <li>The Company and its direct or indirect subsidiaries or affiliates or associate companies
             develop and use valuable technical, non-technical, proprietary information, Intellectual
             Property and confidential information (hereinafter defined), and the thus Company wishes to
@@ -163,6 +166,7 @@
             of this agreement without limit in time.</li>
 
     </ol>
+
     <p style="text-align: justify">NOW THEREFORE, in consideration of the mutual covenants and subject
         to the terms and conditions hereinafter set forth, the Parties, intending to be legally bound,
         mutually covenant and agree as follows:</p>
@@ -552,15 +556,10 @@
             <p style="text-align: justify">This agreement may be executed in one or more counterparts including
                 counterparts transmitted by facsimile, each of which shall be deemed an original, but all of
                 which signed and taken together, shall constitute one document. </p>
-            <br><br>
+           
             <p style="margin-bottom: 0px;">on behalf of <b>{{ getCompanyName($sql->Company) }}</b>
-                &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<span
-                    style="text-align: right">_______________________</span></p>
-            <p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Employee
-                Signature</p>
-
-            <p style="margin-bottom: 0px;">__________________________</p>
-            <p>Authorized Signatory </p>
+            <br><br><br><br>
+           
 
 
 

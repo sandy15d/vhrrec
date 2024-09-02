@@ -89,10 +89,11 @@ class CommonController extends Controller
 
     public function getDesignation(Request $request)
     {
-        $designation = DB::table("master_designation")->orderBy('DesigName', 'asc')
-            ->where("DepartmentId", $request->DepartmentId)
-            ->where("DesigStatus", 'A')
-            ->pluck("DesigId", "DesigName");
+        $designation = DB::table("master_grade_designation as d")->orderBy('de.DesigName', 'asc')
+            ->join('master_designation as de', 'de.DesigId', '=', 'd.designation_id')
+            ->where("d.department_id", $request->DepartmentId)
+            ->where("de.DesigStatus", 'A')
+            ->pluck("de.DesigId", "de.DesigName");
         return response()->json($designation);
     }
 

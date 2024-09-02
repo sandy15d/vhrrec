@@ -43,6 +43,41 @@ if (!function_exists('getFullName')) {
 	}
 }
 
+if (!function_exists('getFullNameByEmail')) {
+
+    /**
+     * Get full name by retrieving employee details
+     *
+     * @param integer|null $employeeId The ID of the employee. Null values return empty strings.
+     * @return string The full name of the employee or empty string if no match was found.
+     */
+    function getFullNameByEmail($email): string
+    {
+        // if null, return empty string to avoid unnecessary database query
+        if ($email === null || $email === '') {
+            return '';
+        }
+
+
+
+        // use Laravel's Query Builder to retrieve employee data more efficiently
+        $employee = DB::table('master_employee')->select('Title', 'Fname', 'Sname', 'Lname')->where('Email', $email)->first();
+
+        // if employee data not found, return empty string
+        if ($employee === null) {
+            return '';
+        }
+
+        // combine employee name fields into full name and return properly formatted
+        $fullNameParts = array_filter([$employee->Title, $employee->Fname, $employee->Sname, $employee->Lname], function ($part) {
+            return $part !== null && trim($part) !== "";
+        });
+        $fullName = ucwords(strtolower(implode(" ", $fullNameParts)));
+
+        return $fullName;
+    }
+}
+
 function getEmailID($empid)
 {
 	if ($empid == null) {
@@ -169,7 +204,12 @@ function getDesignation($DesigId)
 		return "";
 	} else {
 		$DesigName = Db::table('master_designation')->select('DesigName')->where('DesigId', $DesigId)->first();
-		return $DesigName->DesigName;
+		if(is_null($DesigName)){
+		    return "";
+		}else{
+		    return $DesigName->DesigName;
+		}
+		
 	}
 }
 

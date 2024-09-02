@@ -1506,7 +1506,7 @@ class JobApplicationController extends Controller
 
     public function PF_Form11Upload(Request $request)
     {
-        $request->validate(['PF_Form11' => 'required|mimes:pdf|max:2048']);
+        $request->validate(['PF_Form11' => 'required|mimes:pdf|max:8048']);
         $JCId = $request->JCId;
         $filename = 'PF_Form11_' . $JCId . '.' . $request->PF_Form11->extension();
 

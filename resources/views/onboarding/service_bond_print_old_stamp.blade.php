@@ -67,7 +67,7 @@
            {{$sql->BLtrNo}}
         </div>
         <div style="float: right; width: 50%; text-align: right;">Date:
-                {{ date('d-m-Y', strtotime($sql->B_Date)) }}
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
         </div>
     </div>
