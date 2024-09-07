@@ -606,7 +606,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                 </tr>
                             @endif
 
-
+                            @if ($elg->Train_Class != '')
                             <tr>
                                 <td class="text-center"><?= ++$rowCount ?></td>
                                 <td colspan="2"><b>Mode of Travel outside HQ</b></b></td>
@@ -619,6 +619,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                 <td class="text-center"> {{ $sql->Train_Class }}</td>
                                 </td>
                             </tr>
+                            @endif
                             @if ($sql->Flight == 'Y')
                                 <tr>
                                     <td></td>

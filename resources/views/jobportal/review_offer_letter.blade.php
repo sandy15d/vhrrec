@@ -637,7 +637,7 @@ $check = DB::table('offerletter_review')
                                     </tr>
                                 @endif
                             @endif
-
+                            @if ($elg->Train_Class != '')
                             <tr>
                                 <td class="text-center"><?= ++$rowCount ?></td>
                                 <td colspan="2"><b>Mode of Travel outside HQ</b></b></td>
@@ -650,6 +650,7 @@ $check = DB::table('offerletter_review')
                                 <td class="text-center"> {{ $elg->Train_Class }}</td>
                                 </td>
                             </tr>
+                            @endif
                             @if ($elg->Flight == 'Y')
                                 <tr>
                                     <td></td>

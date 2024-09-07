@@ -435,17 +435,20 @@
                 @endif
 
             @endif
+            @if ($elg->Train_Class != '')
             <tr>
                 <td class="text-center"><?= ++$rowCount ?></td>
                 <td colspan="2"><b>Mode of Travel outside HQ</b></td>
             </tr>
-
+            @endif
+            @if ($elg->Train_Class != '')
             <tr>
                 <td></td>
                 <td>Bus/Train</td>
                 <td class="text-center"> {{ $elg->Train_Class }}</td>
 
             </tr>
+            @endif
             @if ($elg->Flight == 'Y')
                 <tr>
                     <td></td>
