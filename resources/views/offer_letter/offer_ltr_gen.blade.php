@@ -196,7 +196,7 @@
                     <ol>
                         @if ($sql->ServiceCondition == 'Training' && $sql->OrientationPeriod != null && $sql->Stipend != null)
                             <li>You shall report at
-                                <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>,
+                                <strong>{{ optional($sql)->F_City ? $sql->F_City . ',' : '' }}{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>,
                                 for an orientation program of {{ $sql->OrientationPeriod }} months.
                                 After completion of the orientation period, you shall be on a Training period of 12
                                 months and during the period of training, you may be allocated various assignments at
@@ -211,7 +211,7 @@
                                 <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
                                 and then
                                 your principal place of employment shall be at
-                                <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>.
+                                <strong>{{ optional($sql)->F_City ? $sql->F_City . ',' : '' }}{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>.
                                 However, you may be
                                 required to (i) relocate to other locations in India; and/or (ii) undertake such travel
                                 in India, (iii) overseas locations, from time to time, as may be necessary in the
@@ -577,6 +577,40 @@
                             @php
                                 $rowCount = 0;
                             @endphp
+                            @if($sql->Grade == '1011')
+                            <tr>
+                              <td class="text-center"><?= ++$rowCount ?></td>
+                              <td><b>Lodging :</b> Actual with upper limits per day as mentioned
+                                  below
+                              </td>
+                              <td>Amount(in Rs.)</td>
+                             
+                          </tr>
+                            <tr>
+                              <td></td>
+                              <td>Lodging for City in Category A</td>
+                              <td><input type="text" class="form-control text-center" id="LoadCityA"
+                                         style="height:20px;border: 0px none;" value="{{ $elg->LoadCityA ?? '' }}">
+                              </td>
+                             
+                          </tr>
+                            <tr>
+                              <td></td>
+                              <td>Lodging for City in Category B</td>
+                              <td><input type="text" class="form-control text-center" id="LoadCityB"
+                                         style=" height:20px;border: 0px none;" value="{{ $elg->LoadCityB ?? '' }}">
+                              </td>
+                             
+                          </tr>
+                            <tr>
+                              <td></td>
+                              <td>Lodging for City in Category C</td>
+                              <td><input type="text" class="form-control text-center" id="LoadCityC"
+                                         style=" height:20px;border: 0px none;" value="{{ $elg->LoadCityC ?? '' }}">
+                              </td>
+                             
+                          </tr>
+                            @else
                             <tr>
                                 <td class="text-center"><?= ++$rowCount ?></td>
                                 <td style="width:402px;"><b>Lodging </b> (Actual with upper limits per day)
@@ -585,7 +619,7 @@
                                         style="height:20px;border: 0px none;" value="{{ $elg->LoadCityA ?? '' }}">
                                 </td>
                             </tr>
-
+                            @endif
 
                             <tr>
                                 <td class="text-center"><?= ++$rowCount ?></td>

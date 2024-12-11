@@ -579,12 +579,45 @@ $check = DB::table('offerletter_review')
                                 <th class="text-center" style="width:60px;">SN</th>
                                 <th colspan="2" class="text-center">Entitlements</th>
                             </tr>
+                              @if($sql->Grade == '1011')
+                            <tr>
+                              <td class="text-center"><?= ++$rowCount ?></td>
+                              <td><b>Lodging :</b> Actual with upper limits per day as mentioned
+                                  below
+                              </td>
+                              <td>Amount(in Rs.)</td>
+                             
+                          </tr>
+                            <tr>
+                              <td></td>
+                              <td>Lodging for City in Category A</td>
+                              <td>{{ $elg->LoadCityA ?? '' }}
+                              </td>
+                             
+                          </tr>
+                            <tr>
+                              <td></td>
+                              <td>Lodging for City in Category B</td>
+                              <td>{{ $elg->LoadCityB ?? '' }}
+                              </td>
+                             
+                          </tr>
+                            <tr>
+                              <td></td>
+                              <td>Lodging for City in Category C</td>
+                              <td>{{ $elg->LoadCityC ?? '' }}
+                              </td>
+                             
+                          </tr>
+                            @else
                             <tr>
                                 <td class="text-center"><?= ++$rowCount ?></td>
-                                <td style="width:502px;"><b>Lodging </b> (Actual with upper limits per day)
+                                <td style="width:402px;"><b>Lodging </b> (Actual with upper limits per day)
                                 </td>
-                                <td class="text-center" style="width: 200px;">Rs. {{ $elg->LoadCityA }}</td>
+                                <td>{{ $elg->LoadCityA ?? '' }}
+                                </td>
                             </tr>
+                            @endif
 
                             @if ($elg->DAOut != '')
                                 <tr>

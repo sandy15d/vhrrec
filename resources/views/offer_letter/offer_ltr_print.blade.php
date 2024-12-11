@@ -86,7 +86,7 @@
         
         @if ($sql->ServiceCondition == 'Training' && $sql->OrientationPeriod != null && $sql->Stipend != null)
             <li>You shall report at
-                <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>,
+                <strong>{{ optional($sql)->F_City ? $sql->F_City . ',' : '' }}{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>,
                 for an orientation program of {{ $sql->OrientationPeriod }} months.
                 After completion of the orientation period, you shall be on a Training period of 12
                 months and during the period of training, you may be allocated various assignments at
@@ -98,10 +98,10 @@
         @elseif($sql->TempS == 1 && $sql->FixedS == 1)
             <li>For initial {{ $months_word[$sql->TempM] }} months, your temporary headquarter will
                 be
-                <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
+                <strong>{{ optional($sql)->T_City ? $sql->T_City . ',' : '' }}{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
                 and then
                 your principal place of employment shall be at
-                <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>.
+                <strong>{{ optional($sql)->F_City ? $sql->F_City . ',' : '' }}{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>.
                 However, you may be
                 required to (i) relocate to other locations in India; and/or (ii) undertake such travel
                 in India, (iii) overseas locations, from time to time, as may be necessary in the
@@ -110,14 +110,14 @@
         @elseif($sql->TempS == 1 && $sql->FixedS == 0)
             <li>For initial {{ $months_word[$sql->TempM] }} months, your temporary headquarter will
                 be
-                <strong>{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
+                <strong>{{ optional($sql)->T_City ? $sql->T_City . ',' : '' }}{{ getHq($sql->T_LocationHq) }}({{ getHqStateCode($sql->T_StateHq) }})</strong>
                 However, you may be required to (i) relocate to other locations in India; and/or (ii)
                 undertake such travel in India, iii) overseas locations, from time to time, as may be
                 necessary in the interests of the Company's business.
             </li>
         @else
             <li>Your principal place of employment shall be at
-                <strong>{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>.
+                <strong>{{ optional($sql)->F_City ? $sql->F_City . ',' : '' }}{{ getHq($sql->F_LocationHq) }}({{ getHqStateCode($sql->F_StateHq) }})</strong>.
                 However, you may be
                 required to (i) relocate to other locations in India; and/or (ii) undertake such travel
                 in India, (iii) overseas locations, from time to time, as may be necessary in the
@@ -374,15 +374,48 @@
                 $rowCount = 0;
             @endphp
             <tr>
-                <th class="text-center" style="width:60px;">SN</th>
+                <th class="text-center" style="width:40px;">SN</th>
                 <th colspan="2" class="text-center">Entitlements</th>
             </tr>
+             @if($sql->Grade == '1011')
+                <tr>
+                  <td class="text-center"><?= ++$rowCount ?></td>
+                  <td><b>Lodging :</b> Actual with upper limits per day as mentioned
+                      below
+                  </td>
+                  <td>Amount(in Rs.)</td>
+                 
+              </tr>
+                <tr>
+                  <td></td>
+                  <td>Lodging for City in Category A</td>
+                  <td>{{ $elg->LoadCityA ?? '' }}
+                  </td>
+                 
+              </tr>
+                <tr>
+                  <td></td>
+                  <td>Lodging for City in Category B</td>
+                  <td>{{ $elg->LoadCityB ?? '' }}
+                  </td>
+                 
+              </tr>
+                <tr>
+                  <td></td>
+                  <td>Lodging for City in Category C</td>
+                  <td>{{ $elg->LoadCityC ?? '' }}
+                  </td>
+                 
+              </tr>
+            @else
             <tr>
                 <td class="text-center"><?= ++$rowCount ?></td>
-                <td style="width:502px;"><b>Lodging </b> (Actual with upper limits per day)
+                <td style="width:402px;"><b>Lodging </b> (Actual with upper limits per day)
                 </td>
-                <td class="text-center" style="width: 200px;">Rs. {{ $elg->LoadCityA }}</td>
+                <td style="width:120px;">{{ $elg->LoadCityA ?? '' }}
+                </td>
             </tr>
+            @endif
 
             @if ($elg->DAOut != '')
                 <tr>

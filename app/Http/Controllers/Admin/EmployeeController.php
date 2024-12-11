@@ -18,6 +18,7 @@ class EmployeeController extends Controller
     }
     public function getAllEmployeeData()
     {
+        ini_set('memory_limit', '-1');
         $employee = DB::table('master_employee as e')
             ->join('master_company as c', 'e.CompanyId', '=', 'c.CompanyId')
             ->join('master_employee as e1', 'e1.EmployeeID', '=', 'e.RepEmployeeID')
@@ -44,6 +45,7 @@ class EmployeeController extends Controller
 
     public function syncEmployee()
     {
+        ini_set('memory_limit', '-1');
 
         $query =  master_employee::truncate();
         $response = Http::get('https://www.vnress.in/RcdDetails.php?action=Details&val=Employee')->json();
