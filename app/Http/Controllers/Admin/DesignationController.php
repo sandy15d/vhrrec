@@ -39,12 +39,12 @@ $response1 = Http::get('https://vnrseeds.co.in/RcdDetails.php?action=Details&val
 foreach ($response1['Designation_list'] as $key => $value) {
 
     $temp = array();
-    $temp['DesigId'] = $value['DesigId'];
-    $temp['DesigName'] = $value['DesigName'];
-    $temp['DesigCode'] = $value['DesigCode'];
-    $temp['Desig_ShortCode'] = $value['Desig_ShortCode'];
-    $temp['CompanyId'] = $value['CompanyId'];
-    $temp['DesigStatus'] = $value['DesigStatus'];
+    $temp['DesigId'] = $value['id'];
+    $temp['DesigName'] = $value['designation_name'];
+    $temp['DesigCode'] = '';
+    $temp['Desig_ShortCode'] = '';
+    $temp['CompanyId'] = 1;
+    $temp['DesigStatus'] = 'A';
 
     // Check if the DesigId already exists in the master_designation table
     $existing_designation = DB::table('master_designation')

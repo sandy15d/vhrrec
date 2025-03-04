@@ -215,22 +215,30 @@ function getDesignation($DesigId)
 
 function getGradeValue($GradeId)
 {
-	if ($GradeId == null) {
-		return "";
-	} else {
-		$GradeValue = Db::table('master_grade')->select('GradeValue')->where('GradeId', $GradeId)->first();
-		return $GradeValue->GradeValue;
-	}
+    if ($GradeId == null) {
+        return "";
+    } else {
+        $GradeValue = Db::table('master_grade')->select('GradeValue')->where('GradeId', $GradeId)->first();
+        if (is_null($GradeValue)) {
+            return '';
+        } else {
+            return $GradeValue->GradeValue;
+        }
+    }
 }
 
 function getHQ($HqId)
 {
-	if ($HqId == null || $HqId == 0) {
-		return "";
-	} else {
-		$HqName = Db::table('master_headquater')->select('HqName')->where('HqId', $HqId)->first();
-		return $HqName->HqName;
-	}
+    if ($HqId == null || $HqId == 0) {
+        return "";
+    } else {
+        $HqName = Db::table('master_headquater')->select('HqName')->where('HqId', $HqId)->first();
+        if (is_null($HqName)) {
+            return '';
+        } else {
+            return $HqName->HqName;
+        }
+    }
 }
 
 function getStateCode($StateId)
@@ -468,12 +476,12 @@ function CheckCommControl($Id)
 
 function has_permission($resultArray, $pageName)
 {
-	foreach ($resultArray as $key => $value) {
-		if ($value['PageName'] == $pageName) {
-			return true;
-		}
-	}
-	return false;
+    foreach ($resultArray as $key => $value) {
+        if ($value['PageName'] == $pageName) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function CheckDuplicate($Fname, $Phone, $Email, $Dob, $FatherName)
@@ -492,4 +500,14 @@ function getStateIdByName($StateName)
 	} else {
 		return $StateId->StateId;
 	}
+}
+if (!function_exists('CheckReportee')) {
+function CheckReportee($empid)
+{
+    $isReportee = DB::table('master_employee')
+        ->where('RepEmployeeID', $empid)
+        ->exists();
+
+    return $isReportee ? '1' : '0';
+}
 }

@@ -1,7 +1,5 @@
 @php
-use function App\Helpers\getDesignationCode;
-use function App\Helpers\getGradeValue;
-use function App\Helpers\getHQ;
+
 
 $RepEmpId = request()->query('ei');
 $res = DB::table('master_employee')
@@ -19,6 +17,9 @@ $education_list = DB::table('master_education')
 $institute_list = DB::table('master_institute')
     ->orderBy('InstituteName', 'asc')
     ->pluck('InstituteName', 'InstituteId');
+use function App\Helpers\getDesignationCode;
+use function App\Helpers\getGradeValue;
+use function App\Helpers\getHQ;
 @endphp
 @extends('layouts.master')
 @section('title', 'Replacement Manpower Requisition Form')
@@ -42,7 +43,7 @@ $institute_list = DB::table('master_institute')
                     </div>
                     <hr>
                     <form action="{{ route('addRepMrf') }}" method="POST" id="addRepMrfForm">
-                       
+
                         <table class="table">
                             <tr>
                                 <th style="width: 25%;">Replacement For:</th>

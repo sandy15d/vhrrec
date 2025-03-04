@@ -2,9 +2,16 @@
 
 @section('title', 'MRF')
 @section('PageContent')
-
+    @php
+        $permission = DB::table('permission')
+               ->leftJoin('user_permission', 'permission.PId', '=', 'user_permission.PId')
+               ->where('user_permission.UserId', Auth::user()->id)
+               ->select('permission.PageName')
+               ->get();
+            $resultArray = json_decode(json_encode($permission), true);
+    @endphp
     <style>
-        .table>:not(caption)>*>* {
+        .table > :not(caption) > * > * {
             padding: 2px 2px;
         }
 
@@ -15,15 +22,20 @@
             <div class="breadcrumb-title pe-3">Manpower Requisition Form</div>
 
             <div class="ms-auto">
-                <a class="btn btn--new btn-sm" href="{{ route('new_mrf') }}"><i class="bx bx-plus"></i> New MRF</a>
-                <a class="btn btn--green btn-sm" href="{{ route('sip_mrf') }}"><i class="bx bx-plus"></i> MRF-
-                    SIP/Internship</a>
-                <a class="btn btn--red btn-sm" href="{{ route('campus_mrf') }}"><i class="bx bx-plus"></i> MRF-Campus
-                    Hiring</a>
+               
+                    <a class="btn btn--new btn-sm" href="{{ route('new_mrf') }}"><i class="bx bx-plus"></i> New MRF</a>
+              
+                    <a class="btn btn--green btn-sm" href="{{ route('sip_mrf') }}"><i class="bx bx-plus"></i> MRF-
+                        SIP/Internship</a>
+               
+                    <a class="btn btn--red btn-sm" href="{{ route('campus_mrf') }}"><i class="bx bx-plus"></i>
+                        MRF-Campus
+                        Hiring</a>
+               
             </div>
         </div>
         <!--end breadcrumb-->
-        <hr />
+        <hr/>
         <div class="card border-top border-0 border-4 border-primary">
             <div class="card-body">
                 <div class="card-title d-flex align-items-center">
@@ -31,22 +43,109 @@
                     </div>
                     <h6 class="mb-0 text-primary">MRF Summary</h6>
                 </div>
+                <div class="mt-2 mb-2">
+                    <div class="col-12 d-flex justify-content-between" style="padding:5px;">
+                        <span class="d-inline fw-bold">Filter</span>
+                        <span class="text-danger fw-bold" style="font-size: 14px; cursor: pointer;"
+                              id="reset"><i
+                                    class="bx bx-refresh"></i>Reset</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">
+                            <select name="Type" id="Type" class="form-select form-select-sm"
+                                    onchange="GetApplications();">
+                                <option value="">Select Type</option>
+                                @php
+                                    $types = [
+                                        'N' => 'New',
+                                        'N_HrManual' => 'New by HR',
+                                        'SIP' => 'SIP/Internship',
+                                        'SIP_HrManual' => 'SIP/Internship by HR',
+                                        'Campus' => 'Campus',
+                                        'Campus_HrManual' => 'Campus by HR',
+                                        'R' => 'Replacement',
+                                        'R_HrManual' => 'Replacement by HR',
+                                      ];
+                                @endphp
+                                @foreach($types as $key=>$value)
+                                    <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
+
+                        </div>
+                        <div class="col-2">
+                            <select name="Fill_Department" id="Fill_Department"
+                                    class="form-select form-select-sm"
+                                    onchange="GetApplications();">
+                                <option value="">Select Department</option>
+                                @foreach($department_list1 as $department)
+                                    <option value="{{ $department->DepartmentId }}">{{ $department->DepartmentCode }}
+                                        ~ {{$department->CompanyCode}}</option>
+                                @endforeach
+                            </select>
+
+                        </div>
+                        <div class="col-2">
+                            <select name="Year" id="Year" class="form-select form-select-sm"
+                                    onchange="GetApplications();">
+                                <option value="">Select Year</option>
+                                @for ($i = 2021; $i <= date('Y'); $i++)
+                                    <option value="{{ $i }}">{{ $i }}</option>
+                                @endfor
+                            </select>
+
+                        </div>
+                        <div class="col-2">
+                            <select name="Month" id="Month" class="form-select form-select-sm"
+                                    onchange="GetApplications();">
+                                <option value="">Select Month</option>
+                                @foreach ($months as $key => $value)
+                                    <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
+
+                        </div>
+                        <div class="col-2">
+                            <select name="Status" id="Status" class="form-select form-select-sm"
+                                    onchange="GetApplications();">
+                                <option value="">Select Status</option>
+                                <option value="Approved">Approved</option>
+                                <option value="Close">Close</option>
+                                <option value="New">New</option>
+                            </select>
+
+                        </div>
+                        <div class="col-2">
+                            <select name="Recruiter" id="Recruiter" class="form-select form-select-sm"
+                                    onchange="GetApplications();">
+                                <option value="">Select Recruiter</option>
+                                @foreach ($recruiter_list as $key => $value)
+                                    <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
                 <hr>
                 <div class="table-responsive">
                     <table class="table table-striped table-hover display compact text-center table-bordered"
-                        id="mrfsummarytable" style="width: 100%">
+                           id="mrfsummarytable" style="width: 100%">
                         <thead class="bg-primary text-light">
-                            <tr>
-                                <th></th>
-                                <th class="th-sm">S.No</th>
-                                <th class="th-sm">Type</th>
-                                <th>Job Code</th>
-                                <th>Designation</th>
-                                <th>Status</th>
-                                <th>MRF Date</th>
-                                <th>Details</th>
-                                <th style="text-align: center;">Delete</th>
-                            </tr>
+                        <tr>
+                            <th></th>
+                            <th class="th-sm">S.No</th>
+                            <th class="th-sm">Type</th>
+                            <th>Job Code</th>
+                            <th>Designation</th>
+                            <th>Reporting Approve</th>
+                            <th>HOD Approve</th>
+                            <th>Management Approve</th>
+                            <th>Status</th>
+                            <th>MRF Date</th>
+                            <th>Details</th>
+                            <th style="text-align: center;">Delete</th>
+                        </tr>
                         </thead>
                         <tbody>
                         </tbody>
@@ -58,14 +157,16 @@
     </div>
 
     <div class="modal fade" id="editMRFModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
-        data-bs-keyboard="false">
+         data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-info bg-gradient">
                     <h5 class="modal-title text-white">MRF Details</h5>
 
-                    <button type="button" class="btn btn-info" style="margin-left: 510px; opacity:1" id="edit_mrf_btn"><i
-                            class="fa fa-pencil"></i>Edit</button>
+                    <button type="button" class="btn btn-info" style="margin-left: 510px; opacity:1" id="edit_mrf_btn">
+                        <i
+                                class="fa fa-pencil"></i>Edit
+                    </button>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('updateMRF') }}" method="POST" id="update_mrf_form">
@@ -73,221 +174,221 @@
                     <div class="modal-body">
                         <table class="table borderless">
                             <tbody>
-                                <tr>
-                                    <input type="hidden" name="MRFId" id="MRFId">
-                                    <input type="hidden" name="MRF_Type" id="MRF_Type">
-                                    <th style="width:250px;">Reason for Creating New Position<font class="text-danger">*
-                                        </font>
-                                    </th>
-                                    <td>
+                            <tr>
+                                <input type="hidden" name="MRFId" id="MRFId">
+                                <input type="hidden" name="MRF_Type" id="MRF_Type">
+                                <th style="width:250px;">Reason for Creating New Position<font class="text-danger">*
+                                    </font>
+                                </th>
+                                <td>
                                         <textarea class="form-control" rows="1" name="Reason" id="Reason" tabindex="1"
-                                            autofocus></textarea>
-                                        <span class="text-danger error-text Reason_error"></span>
+                                                  autofocus></textarea>
+                                    <span class="text-danger error-text Reason_error"></span>
 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Company<font class="text-danger">*</font>
-                                    </th>
-                                    <td><select id="Company" name="Company" class="form-control form-select form-select-sm">
-                                            <option value="" selected disabled>Select Company</option>
-                                            @foreach ($company_list as $key => $value)
-                                                <option value="{{ $key }}">{{ $value }}</option>
-                                            @endforeach
-                                        </select>
-                                        <span class="text-danger error-text Company_error"></span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Deartment<font class="text-danger">*</font>
-                                    </th>
-                                    <td>
-                                        <div class="spinner-border text-primary d-none" role="status" id="DeptLoader"> <span
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Company<font class="text-danger">*</font>
+                                </th>
+                                <td><select id="Company" name="Company" class="form-control form-select form-select-sm">
+                                        <option value="" selected disabled>Select Company</option>
+                                        @foreach ($company_list as $key => $value)
+                                            <option value="{{ $key }}">{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+                                    <span class="text-danger error-text Company_error"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Department<font class="text-danger">*</font>
+                                </th>
+                                <td>
+                                    <div class="spinner-border text-primary d-none" role="status" id="DeptLoader"> <span
                                                 class="visually-hidden">Loading...</span>
-                                        </div>
-                                        <select id="Department" name="Department" id="Department"
+                                    </div>
+                                    <select id="Department" name="Department" id="Department"
                                             class="form-control form-select form-select-sm">
-                                            <option value="" selected disabled>Select Department</option>
-                                            @foreach ($department_list as $key => $value)
-                                                <option value="{{ $key }}">{{ $value }}</option>
-                                            @endforeach
-                                        </select>
-                                        <span class="text-danger error-text Department_error"></span>
-                                    </td>
-                                </tr>
-                                <tr id="deisgnation_tr" class="d-none">
-                                    <th>Designation<font class="text-danger">*</font>
-                                    </th>
-                                    <td>
-                                        <div class="spinner-border text-primary d-none" role="status" id="DesigLoader">
-                                            <span class="visually-hidden">Loading...</span>
-                                        </div>
-                                        <select id="Designation" name="Designation"
+                                        <option value="" selected disabled>Select Department</option>
+                                        @foreach ($department_list as $key => $value)
+                                            <option value="{{ $key }}">{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+                                    <span class="text-danger error-text Department_error"></span>
+                                </td>
+                            </tr>
+                            <tr id="deisgnation_tr" class="d-none">
+                                <th>Designation<font class="text-danger">*</font>
+                                </th>
+                                <td>
+                                    <div class="spinner-border text-primary d-none" role="status" id="DesigLoader">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <select id="Designation" name="Designation"
                                             class="form-control form-select form-select-sm">
-                                            <option value="" selected disabled>Select Designation</option>
-                                            @foreach ($designation_list as $key => $value)
-                                                <option value="{{ $key }}">{{ $value }}</option>
-                                            @endforeach
-                                        </select>
-                                        <span class="text-danger error-text Designation_error"></span>
-                                    </td>
-                                </tr>
+                                        <option value="" selected disabled>Select Designation</option>
+                                        @foreach ($designation_list as $key => $value)
+                                            <option value="{{ $key }}">{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+                                    <span class="text-danger error-text Designation_error"></span>
+                                </td>
+                            </tr>
 
-                                <tr>
-                                    <th>Location & Man Power <font class="text-danger">*</font>
-                                    </th>
-                                    <td>
-                                        <table class="table borderless" style="margin-bottom: 0px;">
-                                            <tbody id="MulLocation">
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                                <tr id="ctc_tr">
-                                    <th>Desired CTC (in Rs.) <font class="text-danger">*</font>
-                                    </th>
-                                    <td>
-                                        <table class="table borderless" style="margin-bottom: 0px;">
-                                            <tr>
-                                                <td><input type="text" name="MinCTC" id="MinCTC"
-                                                        class="form-control form-control-sm" placeholder="Min"></td>
-                                                <td><input type="text" name="MaxCTC" id="MaxCTC"
-                                                        class="form-control form-control-sm" placeholder="Max"> </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                                <tr id="stipend_tr">
-                                    <th>Desired Stipend (in Rs. Per Month) <font class="text-danger">*</font>
-                                    </th>
-                                    <td>
-                                        <input type="text" name="Stipend" id="Stipend" class="form-control form-control-sm">
-                                    </td>
-                                </tr>
-                                <tr id="other_benifit_tr">
-                                    <th>Other Benefits</th>
-                                    <td>
-                                        <table class="table borderless" style="margin-bottom: 0px;">
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input " type="checkbox"
-                                                                id="two_wheeler_check">
-                                                            <label class="form-check-label" for="two_wheeler_check">2
-                                                                Wheeler reimbursement Rs.
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline d-none"
-                                                            id="two_wheeler_div">
-                                                            <input type="text" name="two_wheeler" id="two_wheeler"
-                                                                style="border-radius: .2rem; border:1px solid #ced4da; padding:.25rem">
-                                                            per
-                                                            km
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="form-check form-check-inline" style="width: 200px;">
-                                                            <input class="form-check-input " type="checkbox" id="da_check">
-                                                            <label class="form-check-label" for="da_check">DA
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline d-none" id="da_div">
-                                                            <input type="text" name="da" id="da"
-                                                                style="border-radius: .2rem; border:1px solid #ced4da; padding:.25rem">
-                                                            Rs. per
-                                                            Day
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                            <tr>
+                                <th>Location & Man Power <font class="text-danger">*</font>
+                                </th>
+                                <td>
+                                    <table class="table borderless" style="margin-bottom: 0px;">
+                                        <tbody id="MulLocation">
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr id="ctc_tr">
+                                <th>Desired CTC (in Rs.) <font class="text-danger">*</font>
+                                </th>
+                                <td>
+                                    <table class="table borderless" style="margin-bottom: 0px;">
+                                        <tr>
+                                            <td><input type="text" name="MinCTC" id="MinCTC"
+                                                       class="form-control form-control-sm" placeholder="Min"></td>
+                                            <td><input type="text" name="MaxCTC" id="MaxCTC"
+                                                       class="form-control form-control-sm" placeholder="Max"></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr id="stipend_tr">
+                                <th>Desired Stipend (in Rs. Per Month) <font class="text-danger">*</font>
+                                </th>
+                                <td>
+                                    <input type="text" name="Stipend" id="Stipend" class="form-control form-control-sm">
+                                </td>
+                            </tr>
+                            <tr id="other_benifit_tr">
+                                <th>Other Benefits</th>
+                                <td>
+                                    <table class="table borderless" style="margin-bottom: 0px;">
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input " type="checkbox"
+                                                           id="two_wheeler_check">
+                                                    <label class="form-check-label" for="two_wheeler_check">2
+                                                        Wheeler reimbursement Rs.
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline d-none"
+                                                     id="two_wheeler_div">
+                                                    <input type="text" name="two_wheeler" id="two_wheeler"
+                                                           style="border-radius: .2rem; border:1px solid #ced4da; padding:.25rem">
+                                                    per
+                                                    km
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="form-check form-check-inline" style="width: 200px;">
+                                                    <input class="form-check-input " type="checkbox" id="da_check">
+                                                    <label class="form-check-label" for="da_check">DA
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline d-none" id="da_div">
+                                                    <input type="text" name="da" id="da"
+                                                           style="border-radius: .2rem; border:1px solid #ced4da; padding:.25rem">
+                                                    Rs. per
+                                                    Day
+                                                </div>
+                                            </td>
+                                        </tr>
 
-                                            </tbody>
-                                        </table>
+                                        </tbody>
+                                    </table>
 
-                                    </td>
-                                </tr>
+                                </td>
+                            </tr>
 
 
-                                <tr>
-                                    <th>Desired Eductaion
-                                    </th>
-                                    <td>
-                                        <table class="table borderless" style="margin-bottom: 0px;">
-                                            <tbody id="MulEducation">
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
+                            <tr>
+                                <th>Desired Eductaion
+                                </th>
+                                <td>
+                                    <table class="table borderless" style="margin-bottom: 0px;">
+                                        <tbody id="MulEducation">
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
 
-                                <tr>
-                                    <th>Desired University/College</th>
-                                    <td>
-                                        <select name="University[]" id="University"
+                            <tr>
+                                <th>Desired University/College</th>
+                                <td>
+                                    <select name="University[]" id="University"
                                             class="form-control form-select form-select-sm multiple-select"
                                             multiple="multiple">
 
-                                            @foreach ($institute_list as $key => $value)
-                                                <option value="{{ $key }}">{{ $value }}</option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr id="work_exp_tr">
-                                    <th>Work Experience <font class="text-danger">*</font>
-                                    </th>
-                                    <td>
-                                        <input type="text" name="WorkExp" id="WorkExp" class="form-control form-control-sm">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Job Description</th>
-                                    <td>
-                                        <textarea name="JobInfo" id="JobInfo" class="form-control"></textarea>
-                                    </td>
-                                </tr>
-                                <tr id="duration_tr">
-                                    <th>Training Duration</th>
-                                    <td>
-                                        <table class="table borderless" style="margin-bottom: 0px;">
-                                            <tbody>
-                                                <tr>
-                                                    <td valign="middle">From</td>
-                                                    <td>
-                                                        <input type="date" name="Tr_Frm_Date" id="Tr_Frm_Date"
-                                                            class="form-control form-control-sm">
-                                                        <span class="text-danger error-text Tr_Frm_Date_error"></span>
-                                                    </td>
-                                                    <td valign="middle">To</td>
-                                                    <td>
-                                                        <input type="date" name="Tr_To_Date" id="Tr_To_Date"
-                                                            class="form-control form-control-sm">
-                                                        <span class="text-danger error-text Tr_To_Date_error"></span>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Mandatory Requirement</th>
-                                    <td>
+                                        @foreach ($institute_list as $key => $value)
+                                            <option value="{{ $key }}">{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr id="work_exp_tr">
+                                <th>Work Experience <font class="text-danger">*</font>
+                                </th>
+                                <td>
+                                    <input type="text" name="WorkExp" id="WorkExp" class="form-control form-control-sm">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Job Description</th>
+                                <td>
+                                    <textarea name="JobInfo" id="JobInfo" class="form-control"></textarea>
+                                </td>
+                            </tr>
+                            <tr id="duration_tr">
+                                <th>Training Duration</th>
+                                <td>
+                                    <table class="table borderless" style="margin-bottom: 0px;">
+                                        <tbody>
+                                        <tr>
+                                            <td valign="middle">From</td>
+                                            <td>
+                                                <input type="date" name="Tr_Frm_Date" id="Tr_Frm_Date"
+                                                       class="form-control form-control-sm">
+                                                <span class="text-danger error-text Tr_Frm_Date_error"></span>
+                                            </td>
+                                            <td valign="middle">To</td>
+                                            <td>
+                                                <input type="date" name="Tr_To_Date" id="Tr_To_Date"
+                                                       class="form-control form-control-sm">
+                                                <span class="text-danger error-text Tr_To_Date_error"></span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Mandatory Requirement</th>
+                                <td>
 
-                                        <table class="table borderless" style="margin-bottom: 0px;">
-                                            <tbody id="MulKP">
-                                            </tbody>
-                                        </table>
-                                        <button type="button" name="add" id="addKP"
+                                    <table class="table borderless" style="margin-bottom: 0px;">
+                                        <tbody id="MulKP">
+                                        </tbody>
+                                    </table>
+                                    <button type="button" name="add" id="addKP"
                                             class="btn btn-warning btn-sm mb-2 mt-2"><i class="bx bx-plus"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Any Other Remark</th>
-                                    <td>
-                                        <textarea name="Remark" id="Remark" class="form-control"></textarea>
-                                    </td>
-                                </tr>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Any Other Remark</th>
+                                <td>
+                                    <textarea name="Remark" id="Remark" class="form-control"></textarea>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -304,17 +405,108 @@
 @section('scriptsection')
 
     <script>
+        $(document).ready(function () {
+            $('#mrfsummarytable').DataTable({
+                processing: true,
+                serverSide: true,
+                ordering: false,
+                searching: false,
+                lengthChange: true,
+                info: true,
+                ajax: {
+                    url: "{{ route('getAllMRFCreatedByMe') }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: function (d) {
+                        d.Type = $('#Type').val();
+                        d.Department = $('#Fill_Department').val();
+                        d.Year = $('#Year').val();
+                        d.Month = $('#Month').val();
+                        d.Status = $('#Status').val();
+                        d.Recruiter = $('#Recruiter').val();
+                    },
+                    type: 'POST',
+                    dataType: "JSON",
+                },
+                columns: [
+
+                    {
+                        data: 'chk',
+                        name: 'chk'
+                    },
+                    {
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex'
+                    },
+                    {
+                        data: 'Type',
+                        name: 'Type'
+
+                    },
+                    {
+                        data: 'JobCode',
+                        name: 'JobCode'
+                    },
+
+                    {
+                        data: 'DesigName',
+                        name: 'DesigName'
+                    },
+                    {
+                        data: 'reporting_approve',
+                        name: 'reporting_approve',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'hod_approve',
+                        name: 'hod_approve',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'management_approve',
+                        name: 'management_approve',
+                        className: 'text-center'
+                    },
+
+                    {
+                        data: 'Status',
+                        name: 'Status'
+                    },
+
+                    {
+                        data: 'MRFDate',
+                        name: 'MRFDate'
+                    },
+
+                    {
+                        data: 'actions1',
+                        name: 'actions1'
+                    },
+                    {
+                        data: 'delete',
+                        name: 'delete'
+                    }
+                ],
+
+            });
+        });
+
+        function GetApplications() {
+            $('#mrfsummarytable').DataTable().draw(true);
+        }
+
         CKEDITOR.replace('JobInfo', {
             height: 100
         });
-        $("#two_wheeler_check").change(function() {
+        $("#two_wheeler_check").change(function () {
             if (!this.checked) {
                 $("#two_wheeler_div").addClass("d-none");
             } else {
                 $("#two_wheeler_div").removeClass("d-none");
             }
         });
-        $("#da_check").change(function() {
+        $("#da_check").change(function () {
             if (!this.checked) {
                 $("#da_div").addClass("d-none");
             } else {
@@ -323,60 +515,8 @@
         });
         var KPCount;
 
-        $('#mrfsummarytable').DataTable({
-            processing: true,
-            ordering: false,
-            info: true,
-            ajax: "{{ route('getAllMRFCreatedByMe') }}",
-            columns: [
 
-                {
-                    data: 'chk',
-                    name: 'chk'
-                },
-                {
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex'
-                },
-                {
-                    data: 'Type',
-                    name: 'Type'
-
-                },
-                {
-                    data: 'JobCode',
-                    name: 'JobCode'
-                },
-
-                {
-                    data: 'DesigName',
-                    name: 'DesigName'
-                },
-
-
-                {
-                    data: 'Status',
-                    name: 'Status'
-                },
-
-                {
-                    data: 'MRFDate',
-                    name: 'MRFDate'
-                },
-
-                {
-                    data: 'actions',
-                    name: 'actions'
-                },
-                {
-                    data: 'delete',
-                    name: 'delete'
-                }
-            ],
-
-        });
-
-        $(document).on('click', '#edit_mrf_btn', function() {
+        $(document).on('click', '#edit_mrf_btn', function () {
             var form = document.getElementById("update_mrf_form");
             var elements = form.elements;
             for (var i = 0, len = elements.length; i < len; ++i) {
@@ -387,15 +527,15 @@
         });
 
 
-        $(document).on('click', '#reset', function() {
+        $(document).on('click', '#reset', function () {
             location.reload();
         });
 
-        $(document).on('click', '#viewMRF', function() {
+        $(document).on('click', '#viewMRF', function () {
             var MRFId = $(this).data('id');
             $.post('<?= route('getMRFDetails') ?>', {
                 MRFId: MRFId
-            }, function(data) {
+            }, function (data) {
                 if (data.MRFDetails.Status == 'New') {
                     $('#edit_mrf_btn').removeClass('d-none');
                 } else {
@@ -433,9 +573,9 @@
                 LocCount = (data.LocationDetails).length;
                 for (j = 1; j <= LocCount; j++) {
                     mulLocation(j);
-                    $('#State' + j).val(data.LocationDetails[j - 1].state);
-                    $('#City' + j).val(data.LocationDetails[j - 1].city);
-                    $('#ManPower' + j).val(data.LocationDetails[j - 1].nop);
+                    $('#State' + j).val(data.LocationDetails[j - 1].State);
+                    $('#City' + j).val(data.LocationDetails[j - 1].City);
+                    $('#ManPower' + j).val(data.LocationDetails[j - 1].Nop);
 
                 }
 
@@ -488,23 +628,22 @@
                 }
 
 
-
                 $('.modal-footer').addClass('d-none');
                 $('#editMRFModal').modal('show');
             }, 'json');
         });
         //==================================Get Department List on Change Company========================//
-        $('#Company').change(function() {
+        $('#Company').change(function () {
             var CompanyId = $(this).val();
             if (CompanyId) {
                 $.ajax({
                     type: "GET",
                     url: "{{ route('getDepartment') }}?CompanyId=" + CompanyId,
-                    beforeSend: function() {
+                    beforeSend: function () {
                         $('#DeptLoader').removeClass('d-none');
                         $('#Department').addClass('d-none');
                     },
-                    success: function(res) {
+                    success: function (res) {
                         if (res) {
                             $('#DeptLoader').addClass('d-none');
                             $('#Department').removeClass('d-none');
@@ -516,7 +655,7 @@
                             $("#Designation").append(
                                 '<option value="" selected disabled >Select Designation</option>');
 
-                            $.each(res, function(key, value) {
+                            $.each(res, function (key, value) {
                                 $("#Department").append('<option value="' + value + '">' +
                                     key +
                                     '</option>');
@@ -531,17 +670,17 @@
             }
         });
         //===============================Ge Designation on Change of Department====================//
-        $('#Department').change(function() {
+        $('#Department').change(function () {
             var DepartmentId = $(this).val();
             if (DepartmentId) {
                 $.ajax({
                     type: "GET",
                     url: "{{ route('getDesignation') }}?DepartmentId=" + DepartmentId,
-                    beforeSend: function() {
+                    beforeSend: function () {
                         $('#DesigLoader').removeClass('d-none');
                         $('#Designation').addClass('d-none');
                     },
-                    success: function(res) {
+                    success: function (res) {
                         if (res) {
                             $('#DesigLoader').addClass('d-none');
                             $('#Designation').removeClass('d-none');
@@ -549,7 +688,7 @@
                             $("#ReportingManager").empty();
                             $("#Designation").append(
                                 '<option value="" selected disabled >Select Designation</option>');
-                            $.each(res, function(key, value) {
+                            $.each(res, function (key, value) {
                                 $("#Designation").append('<option value="' + value + '">' +
                                     key +
                                     '</option>');
@@ -575,9 +714,9 @@
                 type: "GET",
                 url: "{{ route('getState') }}",
                 async: false,
-                success: function(res) {
+                success: function (res) {
                     if (res) {
-                        $.each(res, function(key, value) {
+                        $.each(res, function (key, value) {
                             StateList = StateList + '<option value="' + value + '">' + key +
                                 '</option>';
                         });
@@ -585,6 +724,7 @@
                 }
             });
         }
+
         getCity();
 
         function getCity() {
@@ -592,9 +732,9 @@
                 type: "GET",
                 url: "{{ route('getAllDistrict') }}",
                 async: false,
-                success: function(res) {
+                success: function (res) {
                     if (res) {
-                        $.each(res, function(key, value) {
+                        $.each(res, function (key, value) {
                             CityList = CityList + '<option value="' + value + '">' + key +
                                 '</option>';
                         });
@@ -602,6 +742,7 @@
                 }
             });
         }
+
         getEducation();
         getAllSP();
 
@@ -610,9 +751,9 @@
                 type: "GET",
                 url: "{{ route('getEducation') }}",
                 async: false,
-                success: function(res) {
+                success: function (res) {
                     if (res) {
-                        $.each(res, function(key, value) {
+                        $.each(res, function (key, value) {
                             EducationList = EducationList + '<option value="' + value + '">' + key +
                                 '</option>';
                         });
@@ -626,9 +767,9 @@
                 type: "GET",
                 url: "{{ route('getAllSP') }}",
                 async: false,
-                success: function(res) {
+                success: function (res) {
                     if (res) {
-                        $.each(res, function(key, value) {
+                        $.each(res, function (key, value) {
                             SpecializationList = SpecializationList + '<option value="' + key + '">' +
                                 value +
                                 '</option>';
@@ -645,12 +786,12 @@
                 type: "GET",
                 url: "{{ route('getSpecialization') }}?EducationId=" + EducationId,
                 async: false,
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#SpeLoader' + No).removeClass('d-none');
                     $('#Specialization' + No).addClass('d-none');
                 },
 
-                success: function(res) {
+                success: function (res) {
 
                     if (res) {
                         $('#SpeLoader' + No).addClass('d-none');
@@ -659,7 +800,7 @@
                         $("#Specialization" + No).append(
                             '<option value="" selected disabled >Select Specialization</option>');
 
-                        $.each(res, function(key, value) {
+                        $.each(res, function (key, value) {
                             $("#Specialization" + No).append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
@@ -710,11 +851,12 @@
                 $('#MulLocation').html(x);
             }
         }
-        $(document).on('click', '#addLocation', function() {
+
+        $(document).on('click', '#addLocation', function () {
             LocCount++;
             mulLocation(LocCount);
         });
-        $(document).on('click', '.removeLocation', function() {
+        $(document).on('click', '.removeLocation', function () {
             LocCount--;
             $(this).closest("tr").remove();
         });
@@ -735,11 +877,12 @@
                 $('#MulKP').html(x);
             }
         }
-        $(document).on('click', '#addKP', function() {
+
+        $(document).on('click', '#addKP', function () {
             KPCount++;
             mulKP(KPCount);
         });
-        $(document).on('click', '.removeKP', function() {
+        $(document).on('click', '.removeKP', function () {
             KPCount--;
             $(this).closest("tr").remove();
         });
@@ -782,18 +925,18 @@
             }
         }
 
-        $(document).on('click', '#addEducation', function() {
+        $(document).on('click', '#addEducation', function () {
             EduCount++;
             mulEducation(EduCount);
         });
 
-        $(document).on('click', '.removeEducation', function() {
+        $(document).on('click', '.removeEducation', function () {
             EduCount--;
             $(this).closest("tr").remove();
         });
 
 
-        $(document).on('click', '.select_all', function() {
+        $(document).on('click', '.select_all', function () {
             if ($(this).prop("checked") == true) {
                 $(this).closest("tr").addClass("bg-secondary bg-gradient text-light");
             } else {
@@ -808,12 +951,12 @@
                 type: "GET",
                 url: "{{ route('getDistrict') }}?StateId=" + StateId,
                 async: false,
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#LocLoader' + No).removeClass('d-none');
                     $('#City' + No).addClass('d-none');
                 },
 
-                success: function(res) {
+                success: function (res) {
 
                     if (res) {
                         $('#LocLoader' + No).addClass('d-none');
@@ -822,7 +965,7 @@
                         $("#City" + No).append(
                             '<option value="0" selected>Select City</option>');
 
-                        $.each(res, function(key, value) {
+                        $.each(res, function (key, value) {
                             $("#City" + No).append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
@@ -834,7 +977,7 @@
             });
         }
 
-        $('#update_mrf_form').on('submit', function(e) {
+        $('#update_mrf_form').on('submit', function (e) {
             e.preventDefault();
             var form = this;
             for (instance in CKEDITOR.instances) {
@@ -848,29 +991,29 @@
                 processData: false,
                 dataType: 'json',
                 contentType: false,
-                beforeSend: function() {
+                beforeSend: function () {
 
                     $(form).find('span.error-text').text('');
                     $("#loader").modal('show');
                 },
 
-                success: function(data) {
+                success: function (data) {
                     if (data.status == 400) {
                         $("#loader").modal('hide');
-                        $.each(data.error, function(prefix, val) {
+                        $.each(data.error, function (prefix, val) {
                             $(form).find('span.' + prefix + '_error').text(val[0]);
                         });
                     } else {
                         $(form)[0].reset();
                         $('#loader').modal('hide');
                         toastr.success(data.msg);
-                     window.location.reload();
+                        window.location.reload();
                     }
                 }
             });
         });
 
-        $(document).on('click', '#deleteMrf', function() {
+        $(document).on('click', '#deleteMrf', function () {
             var MRFId = $(this).data('id');
             var url = '<?= route('deleteMRF') ?>';
             swal.fire({
@@ -885,11 +1028,11 @@
                 width: 400,
                 allowOutsideClick: false
 
-            }).then(function(result) {
+            }).then(function (result) {
                 if (result.value) {
                     $.post(url, {
                         MRFId: MRFId
-                    }, function(data) {
+                    }, function (data) {
                         if (data.status == 200) {
                             $('#mrfsummarytable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);

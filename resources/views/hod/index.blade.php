@@ -1,118 +1,342 @@
-@php
-$sql = DB::table('master_employee')
-    ->where('RepEmployeeID', Auth::user()->id)
-    ->where('Empstatus', 'A')
-  /*   ->where('CountryId',session('Set_Country')) */
-    ->get();
-$ActiveMember = $sql->count();
-$query = DB::table('screening')
-    ->Join('jobapply', 'screening.JAId', '=', 'jobapply.JAId')
-    ->Join('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
-    ->Join('manpowerrequisition', 'jobpost.MRFId', '=', 'manpowerrequisition.MRFId')
-    ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
-    ->where('jobpost.Status', 'Open')
-    ->whereNull('screening.IntervStatus')
-    ->where(function ($query) {
-        $query->where('manpowerrequisition.CreatedBy', Auth::user()->id)->orWhere('manpowerrequisition.OnBehalf', Auth::user()->id);
-    })
-    
-    ->orderBy('screening.IntervDt', 'asc')
-    ->count();
-@endphp
+
 @extends('layouts.master')
 @section('title', 'Dashboard')
 @section('PageContent')
+@php
+    $sql = DB::table('master_employee')
+        ->where('RepEmployeeID', Auth::user()->id)
+        ->where('Empstatus', 'A')
+        ->get();
+    $ActiveMember = $sql->count();
+
+    $sql1 = DB::table('master_employee')
+        ->where('RepEmployeeID', Auth::user()->id)
+        ->where('EmpStatus', 'D')
+        ->where('DateOfSepration', '>=', '2021-01-01')
+        ->get();
+
+    $ResignedMember = $sql1->count();
+
+    $interview_schedule = DB::table('screening')
+        ->leftJoin('screen2ndround', 'screen2ndround.ScId', '=', 'screening.ScId')
+        ->leftJoin('jobapply', 'screening.JAId', '=', 'jobapply.JAId')
+        ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
+       ->where('jobpost.Status', 'Open')
+        ->where(function ($query) {
+            $query->where('screening.IntervDt', '>=', now()->toDateString())->orWhere(function ($query) {
+                $query->where('screening.IntervStatus', '=', '2nd Round Interview')->where('screen2ndround.IntervDt2', '>=', now()->toDateString());
+            });
+        })
+        ->where(function ($query) {
+            $userId = Auth::user()->id;
+            $query->whereRaw('FIND_IN_SET(?, screening.IntervPanel) OR FIND_IN_SET(?, screen2ndround.IntervPanel2)', [$userId, $userId]);
+        })
+        ->count();
+
+    $pending_scr = DB::table('screening')
+        ->leftJoin('jobapply', 'screening.JAId', '=', 'jobapply.JAId')
+        ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
+        ->whereRaw('FIND_IN_SET(?, ScreeningBy)', [Auth::user()->id])
+        ->where('jobpost.Status', 'Open')
+        ->whereNull('ScreenStatus')
+        ->count();
+
+
+    $user = Auth::user();
+
+    $mrf_approval_pending = DB::table('manpowerrequisition')
+        ->where(function ($query) use ($user) {
+            $query
+                ->where(function ($query) use ($user) {
+                    $query->where('reporting_id', $user->id)->where('reporting_approve', 'N');
+                })
+                ->orWhere(function ($query) use ($user) {
+                    $query->where('hod_id', $user->id)->where('hod_approve', 'N');
+                })
+                ->orWhere(function ($query) use ($user) {
+                    $query->where('management_id', $user->id)->where('management_approve', 'N');
+                });
+        })
+        ->count();
+
+    $permission = DB::table('permission')
+        ->leftJoin('user_permission', 'permission.PId', '=', 'user_permission.PId')
+        ->where('user_permission.UserId', Auth::user()->id)
+        ->select('permission.PageName')
+        ->get();
+    $resultArray = json_decode(json_encode($permission), true);
+
+@endphp
     <style>
-        .table>:not(caption)>*>* {
+        .table > :not(caption) > * > * {
             padding: 2px 2px;
         }
-
     </style>
     <div class="page-content">
-        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
-            <div class="col">
-                <a href="/hod/myteam">
-                    <div class="card radius-10 border-start border-0 border-3 border-success">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div>
-                                    <p class="mb-0 text-secondary">Active Team Member</p>
-                                    <h3 class="my-1 text-success">{{ $ActiveMember }}</h3>
-                                </div>
-                                <div class="widgets-icons-2 rounded-circle bg-gradient-ohhappiness text-white ms-auto"><i
-                                        class="bx bxs-group"></i>
+        <div class="row">
+          
+                <div class="col">
+                    <a href="/hod/myteam">
+                        <div class="card radius-10 border-start border-0 border-4 border-info">
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <h5 class="my-1">{{ $ActiveMember }}</h5>
+                                    <p class="mb-0">My Active Team Member</p>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col">
-                <div class="card radius-10 border-start border-0 border-3 border-danger">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div>
-                                <p class="mb-0 text-secondary">Interview Schedule</p>
-                                <h3 class="my-1 text-danger">{{ $query }}</h3>
-                            </div>
-                            <div class="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto"><i
-                                    class="fadeIn animated bx bx-network-chart"></i>
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="/hod/my_resigned_team">
+                        <div class="card radius-10 border-start border-0 border-4 border-danger">
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <h5 class="my-1">{{ $ResignedMember }}</h5>
+                                    <p class="mb-0">Resigned Team Member</p>
+                                </div>
                             </div>
                         </div>
+                    </a>
+                </div>
+           
+                <div class="col">
+                    <div class="card radius-10 border-start border-0 border-4 border-success">
+                        <a href="/hod/interviewschedule">
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <h5 class="my-1">{{ $interview_schedule }}</h5>
+                                    <p class="mb-0y">Interview Schedule</p>
+                                </div>
+                            </div>
+                        </a>
                     </div>
                 </div>
-            </div>
+            
+                <div class="col">
+                    <div class="card radius-10 border-start border-0 border-4 border-warning">
+                        <a href="/hod/pending_screening">
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <h5 class="my-1">{{ $pending_scr }}</h5>
+                                    <p class="mb-0">Pending for Tech. Screening</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            
+                <div class="col">
+                    <div class="card radius-10 border-start border-0 border-4 border-info">
+                        <a href="/hod/mrf_approval_list">
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <h5 class="my-1">{{ $mrf_approval_pending }}</h5>
+                                    <p class="mb-0 text-secondary">MRF Pending for Approvals</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+          
+
         </div>
         <!--end row-->
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="card-title d-flex align-items-center">
-                        <div><i class="bx bx-info-square me-1 font-20 text-primary"></i>
+       
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title d-flex align-items-center">
+                            <div><i class="bx bx-info-square me-1 font-20 text-primary"></i>
+                            </div>
+                            <h6 class="mb-0 text-primary">MRF Summary</h6>
                         </div>
-                        <h6 class="mb-0 text-primary">MRF Summary</h6>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover display compact table-bordered text-center"
-                            id="mrfsummarytable" style="width: 100%">
-                            <thead class="bg-primary text-light">
-                                <tr>
-                                    <th></th>
-                                    <th class="th-sm">S.No</th>
-                                    <th class="th-sm">Type</th>
-                                    <th>Job Code</th>
-                                    <th>Designation</th>
-                                    <th>Status</th>
-                                    <th>MRF Date</th>
-                                    <th>MRF By</th>
-                                    <th>Details</th>
-                                    <th style="text-align: center;">Delete</th>
-                                </tr>
+                        <div class="mt-2 mb-2">
+                            <div class="col-12 d-flex justify-content-between" style="padding:5px;">
+                                <span class="d-inline fw-bold">Filter</span>
+                                <span class="text-danger fw-bold" style="font-size: 14px; cursor: pointer;"
+                                      id="reset"><i class="bx bx-refresh"></i>Reset</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-2">
+                                    <label for="" class="form-label">MRF Type:</label>
+                                    <select name="Type" id="Type" class="form-select form-select-sm"
+                                            onchange="GetApplications();">
+                                        <option value="">Select</option>
+                                        @php
+                                            $types = [
+                                                'N' => 'New',
+                                                'N_HrManual' => 'New by HR',
+                                                'SIP' => 'SIP/Internship',
+                                                'SIP_HrManual' => 'SIP/Internship by HR',
+                                                'Campus' => 'Campus',
+                                                'Campus_HrManual' => 'Campus by HR',
+                                                'R' => 'Replacement',
+                                                'R_HrManual' => 'Replacement by HR',
+                                            ];
+                                        @endphp
+                                        @foreach ($types as $key => $value)
+                                            <option value="{{ $key }}">{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+
+                                </div>
+                                <div class="col-2">
+                                    <label for="" class="form-label">Department:</label>
+                                    <select name="Fill_Department" id="Fill_Department"
+                                            class="form-select form-select-sm"
+                                            onchange="GetApplications();">
+                                        <option value="">Select</option>
+                                        @foreach ($department_list as $department)
+                                            <option value="{{ $department->DepartmentId }}">
+                                                {{ $department->DepartmentCode }}
+                                                ~ {{ $department->CompanyCode }}</option>
+                                        @endforeach
+                                    </select>
+
+                                </div>
+                                <div class="col-2">
+                                    <label for="" class="form-label">Year:</label>
+                                    <select name="Year" id="Year" class="form-select form-select-sm"
+                                            onchange="GetApplications();">
+                                        <option value="">Select</option>
+                                        @for ($i = 2021; $i <= date('Y'); $i++)
+                                            <option value="{{ $i }}">{{ $i }}</option>
+                                        @endfor
+                                    </select>
+
+                                </div>
+                                <div class="col-2">
+                                    <label for="" class="form-label">Month:</label>
+                                    <select name="Month" id="Month" class="form-select form-select-sm"
+                                            onchange="GetApplications();">
+                                        <option value="">Select</option>
+                                        @foreach ($months as $key => $value)
+                                            <option value="{{ $key }}">{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+
+                                </div>
+                                <div class="col-2">
+                                    <label for="" class="form-label">MRF Status:</label>
+                                    <select name="Status" id="Status" class="form-select form-select-sm"
+                                            onchange="GetApplications();">
+                                        {{--    <option value="">Select MRF Status</option>--}}
+                                        <option value="Approved">Active</option>
+                                        <option value="Close">Close</option>
+                                        <option value="New">New</option>
+                                    </select>
+
+                                </div>
+                                <div class="col-2">
+                                    <label for="" class="form-label">Recruiter:</label>
+                                    <select name="Recruiter" id="Recruiter" class="form-select form-select-sm"
+                                            onchange="GetApplications();">
+                                        <option value="">Select</option>
+                                        @foreach ($recruiter_list as $key => $value)
+                                            <option value="{{ $key }}">{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table table-striped table-hover table-bordered" id="myTable" style="width: 100%">
+                            <thead class="bg-success text-light">
+                            <tr class=" text-center">
+                                <th class="th-sm">S.No</th>
+                                <th>MRF Type</th>
+                                <th>MRF Code</th>
+                                <th>POST</th>
+                                <th>Recruiter</th>
+                                <th>MRF Open Date</th>
+                                <th>Status</th>
+                                <th>MRF Closing Date</th>
+                                {{-- <th>Action</th> --}}
+                                <th>View Details</th>
+
+                            </tr>
                             </thead>
                             <tbody>
                             </tbody>
                         </table>
+
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal fade" id="editMRFModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
-        data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-info bg-gradient">
-                    <h5 class="modal-title text-white">MRF Details</h5>
+        <div class="row">
 
-                    <button type="button" class="btn btn-info" style="margin-left: 510px; opacity:1" id="edit_mrf_btn"><i
-                            class="fa fa-pencil"></i>Edit</button>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="col-lg-12">
+                <div class="card" style="margin-bottom: 0.5rem">
+                    <div class="card-body">
+                        <div class="col-md-2">
+                            <label for="select_mrf_tat" class="form-label fw-bold">Select MRF </label>
+                            <select name="select_mrf_tat" id="select_mrf_tat" class="form-select form-select-sm"
+                                    onchange="getMRFTAT();">
+                                <option value="">Select MRF</option>
+                                @foreach ($active_mrf as $key => $value)
+                                    <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div id="chartContainer" style="height: 400px;" class="d-none"></div>
+                    </div>
                 </div>
-                <form action="{{ route('updateMRF') }}" method="POST" id="update_mrf_form">
-                    @csrf
-                    <div class="modal-body">
-                        <table class="table borderless">
-                            <tbody>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <div id='calendar'></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card" style="margin-bottom: 0.5rem">
+                    <div class="card-body">
+                        <p class="text-center mb-0 fw-bold">Active Pipeline</p>
+                        <form action="">
+                            <div class="row mb-4">
+                                <div class="col-sm-8">
+                                    <select name="select_mrf" id="select_mrf" class="form-select form-select-sm"
+                                            onchange="getActiveMrfPipeline();">
+                                        <option value="">Select MRF</option>
+                                        @foreach ($active_mrf as $key => $value)
+                                            <option value="{{ $key }}">{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+
+                                </div>
+                            </div>
+                        </form>
+
+                        <div id="active_mrf_chart" style="height: 300px;"></div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="editMRFModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+             data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-info bg-gradient">
+                        <h5 class="modal-title text-white">MRF Details</h5>
+
+                        <button type="button" class="btn btn-info" style="margin-left: 510px; opacity:1"
+                                id="edit_mrf_btn">
+                            <i class="fa fa-pencil"></i>Edit
+                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('updateMRF') }}" method="POST" id="update_mrf_form">
+                        @csrf
+                        <div class="modal-body">
+                            <table class="table borderless">
+                                <tbody>
                                 <tr>
                                     <input type="hidden" name="MRFId" id="MRFId">
                                     <input type="hidden" name="MRF_Type" id="MRF_Type">
@@ -121,7 +345,7 @@ $query = DB::table('screening')
                                     </th>
                                     <td>
                                         <textarea class="form-control" rows="1" name="Reason" id="Reason" tabindex="1"
-                                            autofocus></textarea>
+                                                  autofocus></textarea>
                                         <span class="text-danger error-text Reason_error"></span>
 
                                     </td>
@@ -129,7 +353,8 @@ $query = DB::table('screening')
                                 <tr>
                                     <th>Company<font class="text-danger">*</font>
                                     </th>
-                                    <td><select id="Company" name="Company" class="form-control form-select form-select-sm">
+                                    <td><select id="Company" name="Company"
+                                                class="form-control form-select form-select-sm">
                                             <option value="" selected disabled>Select Company</option>
                                             @foreach ($company_list as $key => $value)
                                                 <option value="{{ $key }}">{{ $value }}</option>
@@ -139,17 +364,18 @@ $query = DB::table('screening')
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Deartment<font class="text-danger">*</font>
+                                    <th>Department<font class="text-danger">*</font>
                                     </th>
                                     <td>
-                                        <div class="spinner-border text-primary d-none" role="status" id="DeptLoader"> <span
-                                                class="visually-hidden">Loading...</span>
+                                        <div class="spinner-border text-primary d-none" role="status" id="DeptLoader">
+                                            <span class="visually-hidden">Loading...</span>
                                         </div>
                                         <select id="Department" name="Department" id="Department"
-                                            class="form-control form-select form-select-sm">
+                                                class="form-control form-select form-select-sm">
                                             <option value="" selected disabled>Select Department</option>
-                                            @foreach ($department_list as $key => $value)
-                                                <option value="{{ $key }}">{{ $value }}</option>
+                                            @foreach ($department_list as $department)
+                                                <option value="{{ $department->DepartmentId }}">
+                                                    {{ $department->DepartmentCode }}</option>
                                             @endforeach
                                         </select>
                                         <span class="text-danger error-text Department_error"></span>
@@ -163,7 +389,7 @@ $query = DB::table('screening')
                                             <span class="visually-hidden">Loading...</span>
                                         </div>
                                         <select id="Designation" name="Designation"
-                                            class="form-control form-select form-select-sm">
+                                                class="form-control form-select form-select-sm">
                                             <option value="" selected disabled>Select Designation</option>
                                             @foreach ($designation_list as $key => $value)
                                                 <option value="{{ $key }}">{{ $value }}</option>
@@ -190,9 +416,9 @@ $query = DB::table('screening')
                                         <table class="table borderless" style="margin-bottom: 0px;">
                                             <tr>
                                                 <td><input type="text" name="MinCTC" id="MinCTC"
-                                                        class="form-control form-control-sm" placeholder="Min"></td>
+                                                           class="form-control form-control-sm" placeholder="Min"></td>
                                                 <td><input type="text" name="MaxCTC" id="MaxCTC"
-                                                        class="form-control form-control-sm" placeholder="Max"> </td>
+                                                           class="form-control form-control-sm" placeholder="Max"></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -201,7 +427,8 @@ $query = DB::table('screening')
                                     <th>Desired Stipend (in Rs. Per Month) <font class="text-danger">*</font>
                                     </th>
                                     <td>
-                                        <input type="text" name="Stipend" id="Stipend" class="form-control form-control-sm">
+                                        <input type="text" name="Stipend" id="Stipend"
+                                               class="form-control form-control-sm">
                                     </td>
                                 </tr>
                                 <tr id="other_benifit_tr">
@@ -209,39 +436,40 @@ $query = DB::table('screening')
                                     <td>
                                         <table class="table borderless" style="margin-bottom: 0px;">
                                             <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input " type="checkbox"
-                                                                id="two_wheeler_check">
-                                                            <label class="form-check-label" for="two_wheeler_check">2
-                                                                Wheeler reimbursement Rs.
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline d-none"
-                                                            id="two_wheeler_div">
-                                                            <input type="text" name="two_wheeler" id="two_wheeler"
-                                                                style="border-radius: .2rem; border:1px solid #ced4da; padding:.25rem">
-                                                            per
-                                                            km
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div class="form-check form-check-inline" style="width: 200px;">
-                                                            <input class="form-check-input " type="checkbox" id="da_check">
-                                                            <label class="form-check-label" for="da_check">DA
-                                                            </label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline d-none" id="da_div">
-                                                            <input type="text" name="da" id="da"
-                                                                style="border-radius: .2rem; border:1px solid #ced4da; padding:.25rem">
-                                                            Rs. per
-                                                            Day
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input " type="checkbox"
+                                                               id="two_wheeler_check">
+                                                        <label class="form-check-label" for="two_wheeler_check">2
+                                                            Wheeler reimbursement Rs.
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline d-none"
+                                                         id="two_wheeler_div">
+                                                        <input type="text" name="two_wheeler" id="two_wheeler"
+                                                               style="border-radius: .2rem; border:1px solid #ced4da; padding:.25rem">
+                                                        per
+                                                        km
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check form-check-inline" style="width: 200px;">
+                                                        <input class="form-check-input " type="checkbox"
+                                                               id="da_check">
+                                                        <label class="form-check-label" for="da_check">DA
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline d-none" id="da_div">
+                                                        <input type="text" name="da" id="da"
+                                                               style="border-radius: .2rem; border:1px solid #ced4da; padding:.25rem">
+                                                        Rs. per
+                                                        Day
+                                                    </div>
+                                                </td>
+                                            </tr>
 
                                             </tbody>
                                         </table>
@@ -265,8 +493,8 @@ $query = DB::table('screening')
                                     <th>Desired University/College</th>
                                     <td>
                                         <select name="University[]" id="University"
-                                            class="form-control form-select form-select-sm multiple-select"
-                                            multiple="multiple">
+                                                class="form-control form-select form-select-sm multiple-select"
+                                                multiple="multiple">
 
                                             @foreach ($institute_list as $key => $value)
                                                 <option value="{{ $key }}">{{ $value }}</option>
@@ -278,7 +506,8 @@ $query = DB::table('screening')
                                     <th>Work Experience <font class="text-danger">*</font>
                                     </th>
                                     <td>
-                                        <input type="text" name="WorkExp" id="WorkExp" class="form-control form-control-sm">
+                                        <input type="text" name="WorkExp" id="WorkExp"
+                                               class="form-control form-control-sm">
                                     </td>
                                 </tr>
                                 <tr>
@@ -292,20 +521,20 @@ $query = DB::table('screening')
                                     <td>
                                         <table class="table borderless" style="margin-bottom: 0px;">
                                             <tbody>
-                                                <tr>
-                                                    <td valign="middle">From</td>
-                                                    <td>
-                                                        <input type="date" name="Tr_Frm_Date" id="Tr_Frm_Date"
-                                                            class="form-control form-control-sm">
-                                                        <span class="text-danger error-text Tr_Frm_Date_error"></span>
-                                                    </td>
-                                                    <td valign="middle">To</td>
-                                                    <td>
-                                                        <input type="date" name="Tr_To_Date" id="Tr_To_Date"
-                                                            class="form-control form-control-sm">
-                                                        <span class="text-danger error-text Tr_To_Date_error"></span>
-                                                    </td>
-                                                </tr>
+                                            <tr>
+                                                <td valign="middle">From</td>
+                                                <td>
+                                                    <input type="date" name="Tr_Frm_Date" id="Tr_Frm_Date"
+                                                           class="form-control form-control-sm">
+                                                    <span class="text-danger error-text Tr_Frm_Date_error"></span>
+                                                </td>
+                                                <td valign="middle">To</td>
+                                                <td>
+                                                    <input type="date" name="Tr_To_Date" id="Tr_To_Date"
+                                                           class="form-control form-control-sm">
+                                                    <span class="text-danger error-text Tr_To_Date_error"></span>
+                                                </td>
+                                            </tr>
                                             </tbody>
                                         </table>
                                     </td>
@@ -319,7 +548,8 @@ $query = DB::table('screening')
                                             </tbody>
                                         </table>
                                         <button type="button" name="add" id="addKP"
-                                            class="btn btn-warning btn-sm mb-2 mt-2"><i class="bx bx-plus"></i></button>
+                                                class="btn btn-warning btn-sm mb-2 mt-2"><i class="bx bx-plus"></i>
+                                        </button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -328,27 +558,116 @@ $query = DB::table('screening')
                                         <textarea name="Remark" id="Remark" class="form-control"></textarea>
                                     </td>
                                 </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="UpdateMRF">Save changes</button>
-                    </div>
-                </form>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" id="UpdateMRF">Save changes</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 @endsection
-
 @section('scriptsection')
-
     <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ordering: false,
+                searching: false,
+                lengthChange: true,
+                info: true,
+                dom: "<'row'<'col-sm-6'><'col-sm-6'f>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-4'i><'col-sm-4 text-center'l><'col-sm-4'p>>",
+                ajax: {
+                    url: "{{ route('getAllMRFCreatedByMe') }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: function (d) {
+                        d.Type = $('#Type').val();
+                        d.Department = $('#Fill_Department').val();
+                        d.Year = $('#Year').val();
+                        d.Month = $('#Month').val();
+                        d.Status = $('#Status').val();
+                        d.Recruiter = $('#Recruiter').val();
+                    },
+                    type: 'POST',
+                    dataType: "JSON",
+                },
+                columns: [
+
+
+                    {
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        className: 'text-center',
+                    },
+                    {
+                        data: 'Type',
+                        name: 'Type',
+                        className: 'text-center'
+
+                    },
+                    {
+                        data: 'JobCode',
+                        name: 'JobCode'
+                    },
+
+                    {
+                        data: 'DesigName',
+                        name: 'DesigName'
+                    },
+                    {
+                        data: 'recruiter',
+                        name: 'recruiter'
+                    },
+                    {
+                        data: 'MRFDate',
+                        name: 'MRFDate',
+                        className: 'text-center',
+                    },
+
+                    {
+                        data: 'Status',
+                        name: 'Status',
+                        className: 'text-center',
+                    }, {
+                        data: 'MRFCloseDate',
+                        name: 'MRFCloseDate',
+                        className: 'text-center',
+                    },
+                    /*{
+                        data: 'actions',
+                        name: 'actions',
+                        className: 'text-center',
+                    },*/
+                    {
+                        data: 'details',
+                        name: 'details',
+                        className: 'text-center',
+                    },
+
+
+                ],
+
+            });
+        });
+
+        function GetApplications() {
+            $('#myTable').DataTable().draw(true);
+        }
+
         CKEDITOR.replace('JobInfo', {
             height: 100
         });
 
-        $("#two_wheeler_check").change(function() {
+        $("#two_wheeler_check").change(function () {
             if (!this.checked) {
                 $("#two_wheeler_div").addClass("d-none");
             } else {
@@ -356,7 +675,7 @@ $query = DB::table('screening')
             }
         });
 
-        $("#da_check").change(function() {
+        $("#da_check").change(function () {
             if (!this.checked) {
                 $("#da_div").addClass("d-none");
             } else {
@@ -365,67 +684,7 @@ $query = DB::table('screening')
         });
 
 
-
-        $('#mrfsummarytable').DataTable({
-            processing: true,
-            searching: false,
-            lengthChange: false,
-            ordering: false,
-            info: true,
-            ajax: "{{ route('getAllMRFCreatedByMe') }}",
-            columns: [
-
-                {
-                    data: 'chk',
-                    name: 'chk'
-                },
-                {
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex'
-                },
-                {
-                    data: 'Type',
-                    name: 'Type'
-
-                },
-                {
-                    data: 'JobCode',
-                    name: 'JobCode'
-                },
-
-                {
-                    data: 'DesigName',
-                    name: 'DesigName'
-                },
-
-
-                {
-                    data: 'Status',
-                    name: 'Status'
-                },
-
-                {
-                    data: 'MRFDate',
-                    name: 'MRFDate'
-                },
-                {
-                    data: 'CreatedBy',
-                    name: 'CreatedBy'
-                },
-
-                {
-                    data: 'actions',
-                    name: 'actions'
-                },
-                {
-                    data: 'delete',
-                    name: 'delete'
-                }
-            ],
-
-        });
-
-        $(document).on('click', '#edit_mrf_btn', function() {
+        $(document).on('click', '#edit_mrf_btn', function () {
             var form = document.getElementById("update_mrf_form");
             var elements = form.elements;
             for (var i = 0, len = elements.length; i < len; ++i) {
@@ -443,7 +702,7 @@ $query = DB::table('screening')
             $('#allocate' + id).prop("disabled", false);
         }
 
-        $(document).on('click', '#edit_mrf_btn', function() {
+        $(document).on('click', '#edit_mrf_btn', function () {
             var form = document.getElementById("update_mrf_form");
             var elements = form.elements;
             for (var i = 0, len = elements.length; i < len; ++i) {
@@ -465,10 +724,10 @@ $query = DB::table('screening')
                             RemarkHr: RemarkHr
                         },
                         dataType: 'json',
-                        beforeSend: function() {
+                        beforeSend: function () {
                             $("#loader").modal('show');
                         },
-                        success: function(data) {
+                        success: function (data) {
                             if (data.status == 200) {
                                 $("#loader").modal('hide');
                                 $('#MRFTable').DataTable().ajax.reload(null, false);
@@ -492,10 +751,10 @@ $query = DB::table('screening')
                         RemarkHr: RemarkHr
                     },
                     dataType: 'json',
-                    beforeSend: function() {
+                    beforeSend: function () {
                         $("#loader").modal('show');
                     },
-                    success: function(data) {
+                    success: function (data) {
                         if (data.status == 200) {
                             $("#loader").modal('hide');
                             $('#MRFTable').DataTable().ajax.reload(null, false);
@@ -517,10 +776,10 @@ $query = DB::table('screening')
                     va: va
                 },
                 dataType: 'json',
-                beforeSend: function() {
+                beforeSend: function () {
                     $("#loader").modal('show');
                 },
-                success: function(data) {
+                success: function (data) {
                     if (data.status == 200) {
                         $("#loader").modal('hide');
                         $('#MRFTable').DataTable().ajax.reload(null, false);
@@ -532,15 +791,15 @@ $query = DB::table('screening')
             });
         }
 
-        $(document).on('click', '#reset', function() {
+        $(document).on('click', '#reset', function () {
             location.reload();
         });
 
-        $(document).on('click', '#viewMRF', function() {
+        $(document).on('click', '#viewMRF', function () {
             var MRFId = $(this).data('id');
             $.post('<?= route('getMRFDetails') ?>', {
                 MRFId: MRFId
-            }, function(data) {
+            }, function (data) {
                 if (data.MRFDetails.Status == 'New') {
                     $('#edit_mrf_btn').removeClass('d-none');
                 } else {
@@ -632,24 +891,23 @@ $query = DB::table('screening')
                 }
 
 
-
                 $('.modal-footer').addClass('d-none');
                 $('#editMRFModal').modal('show');
             }, 'json');
         });
 
         //==================================Get Department List on Change Company========================//
-        $('#Company').change(function() {
+        $('#Company').change(function () {
             var CompanyId = $(this).val();
             if (CompanyId) {
                 $.ajax({
                     type: "GET",
                     url: "{{ route('getDepartment') }}?CompanyId=" + CompanyId,
-                    beforeSend: function() {
+                    beforeSend: function () {
                         $('#DeptLoader').removeClass('d-none');
                         $('#Department').addClass('d-none');
                     },
-                    success: function(res) {
+                    success: function (res) {
                         if (res) {
                             $('#DeptLoader').addClass('d-none');
                             $('#Department').removeClass('d-none');
@@ -661,7 +919,7 @@ $query = DB::table('screening')
                             $("#Designation").append(
                                 '<option value="" selected disabled >Select Designation</option>');
 
-                            $.each(res, function(key, value) {
+                            $.each(res, function (key, value) {
                                 $("#Department").append('<option value="' + value + '">' +
                                     key +
                                     '</option>');
@@ -677,17 +935,17 @@ $query = DB::table('screening')
         });
 
         //===============================Ge Designation on Change of Department====================//
-        $('#Department').change(function() {
+        $('#Department').change(function () {
             var DepartmentId = $(this).val();
             if (DepartmentId) {
                 $.ajax({
                     type: "GET",
                     url: "{{ route('getDesignation') }}?DepartmentId=" + DepartmentId,
-                    beforeSend: function() {
+                    beforeSend: function () {
                         $('#DesigLoader').removeClass('d-none');
                         $('#Designation').addClass('d-none');
                     },
-                    success: function(res) {
+                    success: function (res) {
                         if (res) {
                             $('#DesigLoader').addClass('d-none');
                             $('#Designation').removeClass('d-none');
@@ -695,7 +953,7 @@ $query = DB::table('screening')
                             $("#ReportingManager").empty();
                             $("#Designation").append(
                                 '<option value="" selected disabled >Select Designation</option>');
-                            $.each(res, function(key, value) {
+                            $.each(res, function (key, value) {
                                 $("#Designation").append('<option value="' + value + '">' +
                                     key +
                                     '</option>');
@@ -722,9 +980,9 @@ $query = DB::table('screening')
                 type: "GET",
                 url: "{{ route('getState') }}",
                 async: false,
-                success: function(res) {
+                success: function (res) {
                     if (res) {
-                        $.each(res, function(key, value) {
+                        $.each(res, function (key, value) {
                             StateList = StateList + '<option value="' + value + '">' + key +
                                 '</option>';
                         });
@@ -732,6 +990,7 @@ $query = DB::table('screening')
                 }
             });
         }
+
         getCity();
 
         function getCity() {
@@ -739,9 +998,9 @@ $query = DB::table('screening')
                 type: "GET",
                 url: "{{ route('getAllDistrict') }}",
                 async: false,
-                success: function(res) {
+                success: function (res) {
                     if (res) {
-                        $.each(res, function(key, value) {
+                        $.each(res, function (key, value) {
                             CityList = CityList + '<option value="' + value + '">' + key +
                                 '</option>';
                         });
@@ -758,9 +1017,9 @@ $query = DB::table('screening')
                 type: "GET",
                 url: "{{ route('getEducation') }}",
                 async: false,
-                success: function(res) {
+                success: function (res) {
                     if (res) {
-                        $.each(res, function(key, value) {
+                        $.each(res, function (key, value) {
                             EducationList = EducationList + '<option value="' + value + '">' + key +
                                 '</option>';
                         });
@@ -774,9 +1033,9 @@ $query = DB::table('screening')
                 type: "GET",
                 url: "{{ route('getAllSP') }}",
                 async: false,
-                success: function(res) {
+                success: function (res) {
                     if (res) {
-                        $.each(res, function(key, value) {
+                        $.each(res, function (key, value) {
                             SpecializationList = SpecializationList + '<option value="' + key + '">' +
                                 value +
                                 '</option>';
@@ -793,12 +1052,12 @@ $query = DB::table('screening')
                 type: "GET",
                 url: "{{ route('getSpecialization') }}?EducationId=" + EducationId,
                 async: false,
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#SpeLoader' + No).removeClass('d-none');
                     $('#Specialization' + No).addClass('d-none');
                 },
 
-                success: function(res) {
+                success: function (res) {
 
                     if (res) {
                         $('#SpeLoader' + No).addClass('d-none');
@@ -807,7 +1066,7 @@ $query = DB::table('screening')
                         $("#Specialization" + No).append(
                             '<option value="" selected disabled >Select Specialization</option>');
 
-                        $.each(res, function(key, value) {
+                        $.each(res, function (key, value) {
                             $("#Specialization" + No).append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
@@ -859,12 +1118,12 @@ $query = DB::table('screening')
             }
         }
 
-        $(document).on('click', '#addLocation', function() {
+        $(document).on('click', '#addLocation', function () {
             LocCount++;
             mulLocation(LocCount);
         });
 
-        $(document).on('click', '.removeLocation', function() {
+        $(document).on('click', '.removeLocation', function () {
             LocCount--;
             $(this).closest("tr").remove();
         });
@@ -887,12 +1146,12 @@ $query = DB::table('screening')
             }
         }
 
-        $(document).on('click', '#addKP', function() {
+        $(document).on('click', '#addKP', function () {
             KPCount++;
             mulKP(KPCount);
         });
 
-        $(document).on('click', '.removeKP', function() {
+        $(document).on('click', '.removeKP', function () {
             KPCount--;
             $(this).closest("tr").remove();
         });
@@ -935,18 +1194,18 @@ $query = DB::table('screening')
             }
         }
 
-        $(document).on('click', '#addEducation', function() {
+        $(document).on('click', '#addEducation', function () {
             EduCount++;
             mulEducation(EduCount);
         });
 
-        $(document).on('click', '.removeEducation', function() {
+        $(document).on('click', '.removeEducation', function () {
             EduCount--;
             $(this).closest("tr").remove();
         });
 
 
-        $(document).on('click', '.select_all', function() {
+        $(document).on('click', '.select_all', function () {
             if ($(this).prop("checked") == true) {
                 $(this).closest("tr").addClass("bg-secondary bg-gradient text-light");
             } else {
@@ -961,12 +1220,12 @@ $query = DB::table('screening')
                 type: "GET",
                 url: "{{ route('getDistrict') }}?StateId=" + StateId,
                 async: false,
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#LocLoader' + No).removeClass('d-none');
                     $('#City' + No).addClass('d-none');
                 },
 
-                success: function(res) {
+                success: function (res) {
 
                     if (res) {
                         $('#LocLoader' + No).addClass('d-none');
@@ -975,7 +1234,7 @@ $query = DB::table('screening')
                         $("#City" + No).append(
                             '<option value="0" selected>Select City</option>');
 
-                        $.each(res, function(key, value) {
+                        $.each(res, function (key, value) {
                             $("#City" + No).append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
@@ -987,7 +1246,7 @@ $query = DB::table('screening')
             });
         }
 
-        $('#update_mrf_form').on('submit', function(e) {
+        $('#update_mrf_form').on('submit', function (e) {
             e.preventDefault();
             var form = this;
             for (instance in CKEDITOR.instances) {
@@ -1001,16 +1260,16 @@ $query = DB::table('screening')
                 processData: false,
                 dataType: 'json',
                 contentType: false,
-                beforeSend: function() {
+                beforeSend: function () {
 
                     $(form).find('span.error-text').text('');
                     $("#loader").modal('show');
                 },
 
-                success: function(data) {
+                success: function (data) {
                     if (data.status == 400) {
                         $("#loader").modal('hide');
-                        $.each(data.error, function(prefix, val) {
+                        $.each(data.error, function (prefix, val) {
                             $(form).find('span.' + prefix + '_error').text(val[0]);
                         });
                     } else {
@@ -1023,7 +1282,7 @@ $query = DB::table('screening')
             });
         });
 
-        $(document).on('click', '#deleteMrf', function() {
+        $(document).on('click', '#deleteMrf', function () {
             var MRFId = $(this).data('id');
             var url = '<?= route('deleteMRF') ?>';
             swal.fire({
@@ -1038,11 +1297,11 @@ $query = DB::table('screening')
                 width: 400,
                 allowOutsideClick: false
 
-            }).then(function(result) {
+            }).then(function (result) {
                 if (result.value) {
                     $.post(url, {
                         MRFId: MRFId
-                    }, function(data) {
+                    }, function (data) {
                         if (data.status == 200) {
                             $('#mrfsummarytable').DataTable().ajax.reload(null, false);
                             toastr.success(data.msg);
@@ -1053,6 +1312,266 @@ $query = DB::table('screening')
                     }, 'json');
                 }
             });
+        });
+
+        function getActiveMrfPipeline() {
+            var MRFId = $("#select_mrf").val();
+            $.ajax({
+                type: "POST",
+                url: "{{ route('getActiveMRFWiesData') }}",
+                data: {
+                    MRFId: MRFId
+                },
+                dataType: "JSON",
+                success: function (res) {
+
+                    document.getElementById("chartContainer").style.height = "400px";
+                    var chart = new CanvasJS.Chart("active_mrf_chart", {
+                        animationEnabled: true,
+                        theme: "light2", //"light1", "dark1", "dark2"
+                        data: [{
+                            type: "funnel",
+                            indexLabel: "{label} - {y}",
+                            toolTipContent: "<b>{label}</b>: {y} ",
+                            neckWidth: 20,
+                            neckHeight: 0,
+                            valueRepresents: "area",
+                            dataPoints: res,
+                        }]
+                    });
+
+                    chart.render();
+                }
+            });
+
+        }
+
+        window.onload = function () {
+            var chart1 = new CanvasJS.Chart("active_mrf_chart", {
+                animationEnabled: true,
+                theme: "light2", //"light1", "dark1", "dark2"
+
+                data: [{
+                    type: "funnel",
+                    indexLabel: "{label} - {y}",
+                    toolTipContent: "<b>{label}</b>: {y} ",
+
+                    valueRepresents: "area",
+                    dataPoints: <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>
+                }]
+            });
+            chart1.render();
+            getMRFTAT();
+        }
+
+        function getMRFTAT() {
+            var MRFId = $("#select_mrf_tat").val();
+            $.ajax({
+                type: "POST",
+                url: "{{ route('getMRFTAT') }}",
+                data: {
+                    MRFId: MRFId
+                },
+                dataType: "JSON",
+                success: function (res) {
+                    $("#chartContainer").removeClass('d-none')
+                    var chart2 = new CanvasJS.Chart("chartContainer", {
+
+                        title: {
+                            text: "MRF : " + res.job_code,
+                            fontSize: 15,
+                        },
+                        theme: "light2",
+                        animationEnabled: true,
+                        toolTip: {
+                            shared: true,
+                            reversed: true
+                        },
+                        axisY: {
+                            title: "Count",
+                            /*   suffix: " MW"*/
+                        },
+                        axisX: {
+                            labelAngle: -10 // Change the angle as per your requirement
+                        },
+                        legend: {
+                            cursor: "pointer",
+                            itemclick: toggleDataSeries
+                        },
+                        dataPointWidth: 40,
+                        data: [
+
+                            {
+                                type: "stackedColumn",
+                                name: "CV Received",
+                                showInLegend: true,
+                                yValueFormatString: "#",
+                                indexLabel: "{y}",
+                                indexLabelPlacement: "inside",
+                                indexLabelFontWeight: "bolder",
+                                indexLabelFontColor: "white",
+
+                                dataPoints: res.cv_receive
+                            }, {
+                                type: "stackedColumn",
+                                name: "CV Screening",
+                                showInLegend: true,
+                                yValueFormatString: "#",
+                                indexLabel: "{y}",
+                                indexLabelPlacement: "inside",
+                                indexLabelFontWeight: "bolder",
+                                indexLabelFontColor: "white",
+                                dataPoints: res.resume_screening
+                            }, {
+                                type: "stackedColumn",
+                                name: "HR Screening",
+                                showInLegend: true,
+                                yValueFormatString: "#",
+                                indexLabel: "{y}",
+                                indexLabelPlacement: "inside",
+                                indexLabelFontWeight: "bolder",
+                                indexLabelFontColor: "white",
+                                dataPoints: res.hr_screening
+                            }, {
+                                type: "stackedColumn",
+                                name: "Technical Screening",
+                                showInLegend: true,
+                                yValueFormatString: "#",
+                                indexLabel: "{y}",
+                                indexLabelPlacement: "inside",
+                                indexLabelFontWeight: "bolder",
+                                indexLabelFontColor: "white",
+                                dataPoints: res.tech_screening
+                            },
+                            {
+                                type: "stackedColumn",
+                                name: "Interview",
+                                showInLegend: true,
+                                yValueFormatString: "#",
+                                indexLabel: "{y}",
+                                indexLabelPlacement: "inside",
+                                indexLabelFontWeight: "bolder",
+                                indexLabelFontColor: "white",
+                                dataPoints: res.interview_arr
+                            }, {
+                                type: "stackedColumn",
+                                name: "Second Round Interview",
+                                showInLegend: true,
+                                yValueFormatString: "#",
+                                indexLabel: "{y}",
+                                indexLabelPlacement: "inside",
+                                indexLabelFontWeight: "bolder",
+                                indexLabelFontColor: "white",
+                                dataPoints: res.second_interview
+                            }, {
+                                type: "stackedColumn",
+                                name: "Job Offered",
+                                showInLegend: true,
+                                yValueFormatString: "#",
+                                indexLabel: "{y}",
+                                indexLabelPlacement: "inside",
+                                indexLabelFontWeight: "bolder",
+                                indexLabelFontColor: "white",
+                                dataPoints: res.job_offer
+                            }, {
+                                type: "stackedColumn",
+                                name: "Offer Accepted",
+                                showInLegend: true,
+                                yValueFormatString: "#",
+                                indexLabel: "{y}",
+                                indexLabelPlacement: "inside",
+                                indexLabelFontWeight: "bolder",
+                                indexLabelFontColor: "white",
+                                dataPoints: res.offer_accepted
+                            }, {
+                                type: "stackedColumn",
+                                name: "Joined",
+                                showInLegend: true,
+                                yValueFormatString: "#",
+                                indexLabel: "{y}",
+                                indexLabelPlacement: "inside",
+                                indexLabelFontWeight: "bolder",
+                                indexLabelFontColor: "white",
+                                dataPoints: res.joined
+                            }
+                        ]
+                    });
+                    chart2.render();
+                    function toggleDataSeries(e) {
+                        if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                            e.dataSeries.visible = false;
+                        } else {
+                            e.dataSeries.visible = true;
+                        }
+                        e.chart.render();
+                    }
+                }
+            });
+
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            let calendarEl = document.getElementById('calendar');
+            const currentDate = new Date();
+            const year = currentDate.getFullYear();
+            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+            const day = String(currentDate.getDate()).padStart(2, '0');
+            const formattedDate = `${year}-${month}-${day}`;
+
+            let calendar = new FullCalendar.Calendar(calendarEl, {
+                customButtons: {
+                    myCustomButton: {
+                        text: 'Add New',
+                        click: function () {
+                            $("#eventModal").modal('show');
+                        }
+                    }
+                },
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,listWeek'
+                },
+
+                initialView: 'dayGridMonth',
+                initialDate: formattedDate,
+                navLinks: true,
+                selectable: false,
+                nowIndicator: true,
+                dayMaxEvents: true,
+                editable: false,
+                businessHours: true,
+                events: @json($events),
+                eventDidMount: function (info) {
+                    $(info.el).on('click', function () {
+                        $(this).tooltip({
+                            title: info.event.extendedProps.description,
+                        });
+                        $(this).tooltip('show'); // Show the tooltip on mouseover
+                    });
+                },
+                eventContent: function (info) {
+                    if (calendar.view.type === 'listWeek') {
+                        return {
+                            html: `${info.event.extendedProps.description}`
+                        };
+                    } else {
+                        return {
+                            //html: `${info.timeText}<br>${info.event.extendedProps.description}`
+                            html: `${info.timeText}<br>${info.event.title}`
+                        };
+                    }
+                },
+                eventTimeFormat: {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    meridiem: true
+                },
+
+            });
+
+            calendar.render();
         });
     </script>
 @endsection

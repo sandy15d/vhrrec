@@ -20,7 +20,7 @@ use function App\Helpers\getDepartmentCode;
 
 use function App\Helpers\getDesignationCode;
 use function App\Helpers\getFullName;
-
+use Citco\Carbon;
 class CommonController extends Controller
 {
 
@@ -439,4 +439,483 @@ class CommonController extends Controller
     {
         return view('common.upcoming_interview');
     }
+    
+    public function candidate_association(Request $request)
+    {
+        $MRFId = base64_decode($_GET['mrf']);
+        $resume_list = DB::table('master_resumesource')->where([['Status', 'A'], ['ResumeSouId', '!=', '7']])->pluck('ResumeSource', 'ResumeSouId');
+        $mrf = DB::table('manpowerrequisition as mrf')->selectRaw('ROW_NUMBER() OVER (ORDER BY mrf.MRFId) AS `S.No`')
+            ->select('ja.Department', 'mrf.JobCode', 'md.DepartmentName', 'jp.Title', 'mrf.MRFId')
+            ->selectRaw('COUNT(DISTINCT ja.JAId) AS `Total`')
+            ->selectRaw('(
+                    SELECT SUM(CASE WHEN ja.Status IS NOT NULL THEN 1 ELSE 0 END)
+                     FROM jobapply AS ja
+                     WHERE ja.JPId = jp.JPId
+                    ) AS `HR_Screening`')
+            ->selectRaw('(
+            SELECT SUM(CASE WHEN ja.FwdTechScr = "Yes" THEN 1 ELSE 0 END)
+            FROM jobapply AS ja
+            WHERE ja.JPId = jp.JPId
+            ) AS `Technical_Screening`')
+            ->selectRaw('SUM(CASE WHEN s.InterAtt = "Yes" THEN 1 ELSE 0 END) AS `Interviewed`')
+            ->selectRaw('SUM(CASE WHEN s.IntervStatus = "Selected" OR sr.IntervStatus2 = "Selected" THEN 1 ELSE 0 END) AS `Selected`')
+            ->selectRaw('SUM(CASE WHEN ob.OfferLetterSent = "Yes" THEN 1 ELSE 0 END) AS `Offered`')
+            ->selectRaw('SUM(CASE WHEN ob.Answer = "Accepted" THEN 1 ELSE 0 END) AS `Accepted`')
+            ->selectRaw('SUM(CASE WHEN cd.Joined = "Yes" THEN 1 ELSE 0 END) AS `Joined`')
+            ->selectRaw('SUM(IF(ob.Answer = "Accepted" AND cd.Joined IS NULL, 1, 0)) AS Yet_to_Joined')
+            ->leftJoin('master_department as md', 'md.DepartmentId', 'mrf.DepartmentId')
+            ->leftJoin('jobpost AS jp', 'jp.MRFId', '=', 'mrf.MRFId')
+            ->leftJoin('jobapply AS ja', 'ja.JPId', '=', 'jp.JPId')
+            ->leftJoin('screening AS s', 's.JAId', '=', 'ja.JAId')
+            ->leftJoin('screen2ndround AS sr', 'sr.ScId', '=', 's.ScId')
+            ->leftJoin('offerletterbasic AS ob', 'ob.JAId', '=', 'ja.JAId')
+            ->leftJoin('candjoining AS cd', 'cd.JAId', '=', 'ja.JAId')
+            ->where('mrf.MRFId', $MRFId)->first();
+        $education_list = DB::table('master_education')->pluck('EducationCode', 'EducationId');
+        $candidate_list = [];
+        $filter = $request->get('filter');
+        $usersQuery = master_mrf::query()
+            ->select('jobcandidates.*', 'jobapply.JAId', 'jobapply.ApplyDate', 'jobapply.ResumeSource', 'jobapply.SLDPT',
+                'jobapply.Status as hr_screening_status', 'jobapply.RejectRemark as hr_screening_remark', 'jobapply.Type',
+                'jobapply.SelectedBy as hr_screening_by', 'jobapply.FwdTechScr', 'screening.ScreeningBy as tech_screening_by', 'screening.ScreenStatus as tech_screening_status',
+                'screening.screening_remark', 'screening.IntervStatus'
+            )
+            ->leftJoin('jobpost', 'manpowerrequisition.MRFId', '=', 'jobpost.MRFId')
+            ->join('jobapply', 'jobapply.JPId', '=', 'jobpost.JPId')
+            ->leftJoin('screening', 'screening.JAId', 'jobapply.JAId')
+            ->leftJoin('screen2ndround', 'screen2ndround.ScId', 'screening.ScId')
+            ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+            ->leftJoin('offerletterbasic', 'offerletterbasic.JAId', 'jobapply.JAId')
+            ->leftJoin('candjoining', 'candjoining.JAId', '=', 'jobapply.JAId')
+            ->where('manpowerrequisition.MRFId', $MRFId)
+            ->groupBy('jobapply.JAId');
+        $Gender = $request->get('Gender');
+        if ($Gender != '') {
+            $usersQuery = $usersQuery->where('jobcandidates.Gender', $Gender);
+        }
+        $Type = $request->get('Type');
+        if ($Type != '') {
+            $usersQuery = $usersQuery->where('jobapply.Type', $Type);
+        }
+        $Source = $request->get('Source');
+        if ($Source != '') {
+            $usersQuery = $usersQuery->where('jobapply.ResumeSource', $Source);
+        }
+        if ($filter === 'total') {
+            $Hr_Screening_Perform = $request->get('Hr_Screening_Perform');
+            $candidate_list = $usersQuery;
+            if ($Hr_Screening_Perform != '') {
+                if ($Hr_Screening_Perform == 'Yes') {
+                    $candidate_list = $candidate_list->whereNotNull('jobapply.Status');
+                }
+                if ($Hr_Screening_Perform == 'No') {
+                    $candidate_list = $candidate_list->whereNull('jobapply.Status');
+                }
+
+            }
+            $candidate_list = $usersQuery->paginate(10);
+            $candidate_list->appends(['mrf' => $_GET['mrf'], 'filter' => 'total']);
+        } elseif ($filter === 'hr_screening') {
+            $HR_Scr_Status = $request->get('HR_Scr_Status');
+            $statusMapping = [
+                'Selected' => ['Selected'],
+                'Rejected' => ['Rejected', 'Irrelevant'],
+            ];
+
+            $candidate_list = $usersQuery
+                ->selectRaw('(CASE WHEN jobapply.Status = "Selected" THEN "Selected" ELSE "Rejected" END) AS `candidate_status`');
+            if ($HR_Scr_Status != '') {
+                $filteredStatus = $statusMapping[$HR_Scr_Status] ?? [];
+                $candidate_list = $candidate_list->whereIn('jobapply.Status', $filteredStatus);
+            }
+
+            $candidate_list = $candidate_list
+                ->whereNotNull('jobapply.Status')
+                ->paginate(10);
+            $candidate_list->appends(['mrf' => $_GET['mrf'], 'filter' => 'hr_screening']);
+        } elseif ($filter === 'tech_screening') {
+            $Tech_Scr_Status = $request->get('Tech_Scr_Status');
+
+            $candidate_list = $usersQuery
+                ->selectRaw('(CASE WHEN screening.ScreenStatus = "Shortlist" THEN "Selected" ELSE "Rejected" END) AS `candidate_status`')
+                ->where('jobapply.FwdTechScr', 'Yes');
+            if ($Tech_Scr_Status != '') {
+                if ($Tech_Scr_Status == 'Selected') {
+                    $candidate_list = $candidate_list->where('screening.ScreenStatus', 'Shortlist');
+                } elseif ($Tech_Scr_Status == 'Rejected') {
+                    $candidate_list = $candidate_list->where('screening.ScreenStatus', 'Reject');
+                }
+
+            }
+            $candidate_list = $candidate_list->paginate(10);
+            $candidate_list->appends(['mrf' => $_GET['mrf'], 'filter' => 'tech_screening']);
+        } elseif ($filter === 'interviewed') {
+            $Interview_Status = $request->get('Interview_Status');
+            $candidate_list = $usersQuery
+                ->selectRaw('(CASE WHEN screening.IntervStatus = "Selected" OR screen2ndround.IntervStatus2 = "Selected" THEN "Selected" ELSE "Rejected" END) AS `candidate_status`')
+                ->where('screening.InterAtt', 'Yes');
+
+            if ($Interview_Status != '') {
+                if ($Interview_Status == 'Selected') {
+                    $candidate_list = $candidate_list->where(function ($query) {
+                        $query->where('screening.IntervStatus', 'Selected')
+                            ->orWhere('screen2ndround.IntervStatus2', 'Selected');
+                    });
+                } elseif ($Interview_Status == 'Rejected') {
+                    $candidate_list = $candidate_list->where(function ($query) {
+                        $query->where('screening.IntervStatus', 'Reject')
+                            ->orWhere('screen2ndround.IntervStatus2', 'Reject');
+                    });
+                }
+            }
+
+            $candidate_list = $candidate_list->paginate(10);
+
+            $candidate_list->appends(['mrf' => $_GET['mrf'], 'filter' => 'interviewed']);
+        } elseif ($filter === 'selected') {
+            $candidate_list = $usersQuery
+                ->where(function ($query) {
+                    $query->where('screening.IntervStatus', 'Selected')
+                        ->orWhere('screen2ndround.IntervStatus2', 'Selected');
+                })
+                ->paginate(10);
+            $candidate_list->appends(['mrf' => $_GET['mrf'], 'filter' => 'selected']);
+        } elseif ($filter === 'offered') {
+            $candidate_list = $usersQuery
+                ->where('offerletterbasic.OfferLetterSent', 'Yes')
+                ->paginate(10);
+            $candidate_list->appends(['mrf' => $_GET['mrf'], 'filter' => 'offered']);
+        } elseif ($filter === 'accepted') {
+            $candidate_list = $usersQuery
+                ->where('offerletterbasic.Answer', 'Accepted')
+                ->paginate(10);
+            $candidate_list->appends(['mrf' => $_GET['mrf'], 'filter' => 'accepted']);
+        } elseif ($filter === 'joined') {
+            $candidate_list = $usersQuery
+                ->where('candjoining.Joined', 'Yes')
+                ->paginate(10);
+            $candidate_list->appends(['mrf' => $_GET['mrf'], 'filter' => 'joined']);
+        }
+
+
+        return view('common.candidate_association', compact('mrf', 'candidate_list', 'education_list', 'resume_list'));
+    }
+
+    public function suitable_candidate(Request $request)
+    {
+        $JCId = $request->SuitableJCId;
+        if ($request->suitable_department != null) {
+            $Suitable_For = implode(', ', $request->suitable_department);
+        } else {
+            $Suitable_For = '';
+        }
+
+        $Suitable_Remark = $request->suitable_remark;
+        $Irrelevant_Candidate = $request->Irrelevant_Candidate;
+        $query = jobcandidate::find($JCId);
+        $query->Irrelevant_Candidate = $Irrelevant_Candidate;
+        $query->Suitable_For = $Suitable_For;
+        $query->Suitable_Remark = $Suitable_Remark;
+        $query->ProfileViewed = 'Y';
+        $query->Suitable_Chk_Date = now();
+        $query->Suitable_Chk_By = Auth::user()->id;
+        $query->save();
+        if ($query) {
+            return response()->json(['status' => 200, 'msg' => 'Save Changes Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+
+    }
+
+    public function sldpt_process(Request $request)
+    {
+        $JAId = $request->JAId;
+
+        $query = jobapply::find($JAId);
+
+        $JPId = $query->JPId;
+
+
+        $JCId = $query->JCId;
+
+
+        $query->SLDPT = 'Y';
+        $query->SLDPT_By = Auth::user()->id;
+        $query->SLDPT_Date = now();
+        $query->save();
+
+        $jobpost = jobpost::find($JPId);
+        $job_code = $jobpost->JobCode;
+
+        $candidate = jobcandidate::find($JCId);
+        $Name = implode(' ', [$candidate->FName, $candidate->LName]);
+        $ReferenceNo = $candidate->ReferenceNo;
+        $Email = $candidate->Email;
+        $Phone = $candidate->Phone;
+
+        $Employee = getFullName(Auth::user()->id);
+        $Recruiter_Name = getFullName($jobpost->CreatedBy);
+
+        if ($query) {
+
+            $detals = [
+                'subject' => 'Shortlisting Notification: ' . $Name . ' for Interview',
+                'Name' => $Name,
+                'ReferenceNo' => $ReferenceNo,
+                'Email' => $Email,
+                'Phone' => $Phone,
+                'Employee' => $Employee,
+                'Recruiter_Name' => $Recruiter_Name,
+                'Job_Code' => $job_code
+            ];
+
+            Mail::to(getEmailID($jobpost->CreatedBy))->send(new SLDPTMail($detals));
+            UserNotification::notifyUser($jobpost->CreatedBy, 'Shortlisting Notification', $job_code);
+            return response()->json(['status' => 200, 'msg' => 'Candidate Shortlisted Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    public function sldpt_process_from_databank(Request $request)
+    {
+        $JAId = $request->JAId;
+
+        $query = jobapply::find($JAId);
+
+        $JCId = $query->JCId;
+
+        $query->SLDPT = 'Y';
+        $query->SLDPT_By = Auth::user()->id;
+        $query->SLDPT_Date = now();
+        $query->save();
+
+
+        $candidate = jobcandidate::find($JCId);
+        $Name = implode(' ', [$candidate->FName, $candidate->LName]);
+        $ReferenceNo = $candidate->ReferenceNo;
+        $Email = $candidate->Email;
+        $Phone = $candidate->Phone;
+
+        $Employee = getFullName(Auth::user()->id);
+
+
+        if ($query) {
+
+            $detals = [
+                'subject' => 'Shortlisting Notification: ' . $Name . ' for Interview',
+                'Name' => $Name,
+                'ReferenceNo' => $ReferenceNo,
+                'Email' => $Email,
+                'Phone' => $Phone,
+                'Employee' => $Employee,
+                'Recruiter_Name' => 'Recruiter',
+                'Job_Code' => getDepartmentCode($query->Department).' Department'
+            ];
+
+            Mail::to('am2.hr@vnrseeds.com')->cc('debrat.roy@vnrseeds.com')->send(new SLDPTMail($detals));
+
+            return response()->json(['status' => 200, 'msg' => 'Candidate Shortlisted Successfully']);
+        } else {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        }
+    }
+
+    function getMRFTAT(Request $request)
+    {
+
+        $MRFId = $request->MRFId;
+        // Fetch the start date from the 'manpowerrequisition' table where 'MRFId' is  $MRFId
+        $startDate = Carbon::parse(DB::table('manpowerrequisition')->where('MRFId', $MRFId)->value('CreatedTime'));
+
+        // Get the current date
+        $endDate = Carbon::now();
+
+        // Define the day of the week from which you want to group the weeks (1 for Monday)
+        $startOfWeek = 1;
+
+        // Initialize an array to store the grouped weeks
+        $weeks = [];
+
+        $currentDate = $startDate->copy();
+
+        while ($currentDate->lte($endDate)) {
+            $weekStart = $currentDate->copy()->startOfWeek($startOfWeek);
+
+            // Exclude Sunday from the end of the week
+            $weekEnd = $currentDate->copy()->startOfWeek($startOfWeek)->next(Carbon::SUNDAY);
+            //$weekEnd = $currentDate->copy()->endOfWeek($startOfWeek);
+
+
+            // Store the week in your desired format
+            $week = [
+                'start' => $weekStart->format('Y-m-d'),
+                'end' => $weekEnd->format('Y-m-d'),
+            ];
+
+            $weeks[] = $week;
+
+            // Move to the next week
+            $currentDate->startOfWeek()->next(Carbon::SUNDAY)->addDay();
+
+
+        }
+
+        $cv_receive = [];
+        $resume_screening = [];
+        $hr_screening = [];
+        $tech_screening = [];
+        $interview_arr = [];
+        $second_interview = [];
+        $job_offer = [];
+        $offer_accepted = [];
+        $joined = [];
+
+        // Display the grouped weeks
+        foreach ($weeks as $week) {
+
+            $applyCounts = DB::table('jobapply')
+                ->leftJoin('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
+                ->where('jobpost.MRFId', $MRFId)
+                ->whereBetween(DB::raw('DATE(ApplyDate)'), [$week['start'], $week['end']])
+                ->count();
+
+            $cv_receive[] = [
+                "label" => $week['start'] . ' - ' . $week['end'],
+                "y" => $applyCounts
+            ];
+
+            $resumeScreening = DB::table('jobcandidates')
+                ->leftJoin('jobapply', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+                ->leftJoin('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
+                ->where('jobpost.MRFId', $MRFId)
+                ->whereBetween(DB::raw('DATE(Suitable_Chk_Date)'), [$week['start'], $week['end']])
+                ->count();
+
+            $resume_screening[] = [
+                "label" => date('d-m-Y', strtotime($week['start'])) . ' - ' . date('d-m-Y', strtotime($week['end'])),
+                "y" => $resumeScreening
+            ];
+
+            $hrScreening = DB::table('jobapply')
+                ->leftJoin('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
+                ->where('jobpost.MRFId', $MRFId)
+                ->whereBetween(DB::raw('DATE(HrScreeningDate)'), [$week['start'], $week['end']])
+                ->count();
+
+            $hr_screening[] = [
+                "label" => date('d-m-Y', strtotime($week['start'])) . ' - ' . date('d-m-Y', strtotime($week['end'])),
+                "y" => $hrScreening
+            ];
+
+            $techScreening = DB::table('screening')
+                ->leftJoin('jobapply', 'jobapply.JAId', '=', 'screening.JAId')
+                ->leftJoin('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
+                ->where('jobpost.MRFId', $MRFId)
+                ->whereBetween(DB::raw('DATE(ResScreened)'), [$week['start'], $week['end']])
+                ->count();
+
+            $tech_screening[] = [
+                "label" => date('d-m-Y', strtotime($week['start'])) . ' - ' . date('d-m-Y', strtotime($week['end'])),
+                "y" => $techScreening
+            ];
+
+            $interview = DB::table('screening')->leftJoin('jobapply', 'jobapply.JAId', '=', 'screening.JAId')
+                ->leftJoin('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
+                ->where('jobpost.MRFId', $MRFId)
+                ->whereBetween(DB::raw('DATE(IntervDt)'), [$week['start'], $week['end']])
+                ->count();
+
+            $interview_arr[] = [
+                "label" => date('d-m-Y', strtotime($week['start'])) . ' - ' . date('d-m-Y', strtotime($week['end'])),
+                "y" => $interview
+            ];
+
+            $interview2nd = DB::table('screen2ndround')
+                ->leftJoin('screening', 'screening.ScId', '=', 'screen2ndround.ScId')
+                ->leftJoin('jobapply', 'jobapply.JAId', '=', 'screening.JAId')
+                ->leftJoin('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
+                ->where('jobpost.MRFId', $MRFId)
+                ->whereBetween(DB::raw('DATE(IntervDt2)'), [$week['start'], $week['end']])
+                ->count();
+
+            $second_interview[] = [
+                "label" => date('d-m-Y', strtotime($week['start'])) . ' - ' . date('d-m-Y', strtotime($week['end'])),
+                "y" => $interview2nd
+            ];
+
+            $offer = DB::table('candjoining')->leftJoin('jobapply', 'jobapply.JAId', '=', 'candjoining.JAId')
+                ->leftJoin('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
+                ->where('jobpost.MRFId', $MRFId)
+                ->whereBetween(DB::raw('DATE(LinkValidityStart)'), [$week['start'], $week['end']])
+                ->count();
+
+            $job_offer[] = [
+                "label" => date('d-m-Y', strtotime($week['start'])) . ' - ' . date('d-m-Y', strtotime($week['end'])),
+                "y" => $offer
+            ];
+
+            $accept = DB::table('candjoining')->leftJoin('jobapply', 'jobapply.JAId', '=', 'candjoining.JAId')
+                ->leftJoin('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
+                ->where('jobpost.MRFId', $MRFId)
+                ->whereBetween(DB::raw('DATE(Date)'), [$week['start'], $week['end']])
+                ->count();
+
+            $offer_accepted[] = [
+                "label" => date('d-m-Y', strtotime($week['start'])) . ' - ' . date('d-m-Y', strtotime($week['end'])),
+                "y" => $accept
+            ];
+
+            $join = DB::table('candjoining')->leftJoin('jobapply', 'jobapply.JAId', '=', 'candjoining.JAId')
+                ->leftJoin('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
+                ->where('jobpost.MRFId', $MRFId)
+                ->whereBetween(DB::raw('DATE(JoinOnDt)'), [$week['start'], $week['end']])
+                ->count();
+
+            $joined[] = [
+                "label" => date('d-m-Y', strtotime($week['start'])) . ' - ' . date('d-m-Y', strtotime($week['end'])),
+                "y" => $join
+            ];
+
+        }
+
+        $job_code = DB::table('jobpost')->where('MRFId', $MRFId)->value('JobCode');
+
+        $final = [
+            "job_code" => $job_code,
+            "cv_receive" => $cv_receive,
+            "resume_screening" => $resume_screening,
+            "tech_screening" => $tech_screening,
+            "interview" => $interview_arr,
+            "second_interview" => $second_interview,
+            "hr_screening" => $hr_screening,
+            "job_offer" => $job_offer,
+            "offer_accepted" => $offer_accepted,
+            "joined" => $joined
+        ];
+
+        return $final;
+
+    }
+
+    public function download_candidate_data_mrf_wise(int $mrfid)
+    {
+        try {
+            $job_code = jobpost::where('MRFId', $mrfid)->value('JobCode');
+            return Excel::download(new HodMrfWiseData(), $job_code . '.xlsx');
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Something went wrong' . $e->getMessage()]);
+        }
+    }
+
+    public function checkDuplicate(Request $request)
+    {
+        $count = DB::table('jobcandidates')
+            ->where('Phone', '=', $request->Phone)
+            ->orWhere('Email', '=', $request->Email)
+            ->count();
+        return response()->json(['count' => $count]);
+    }
+
 }

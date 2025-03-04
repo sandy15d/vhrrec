@@ -1,19 +1,29 @@
 @php
+    $userId = auth()->user()->id;
 
-$query = DB::table('screening')
-    ->Join('jobapply', 'screening.JAId', '=', 'jobapply.JAId')
-    ->Join('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
-    ->Join('manpowerrequisition', 'jobpost.MRFId', '=', 'manpowerrequisition.MRFId')
-    ->Join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
-    ->where('jobpost.Status', 'Open')
-    ->whereNull('screening.IntervStatus')
-    ->where(function ($query) {
-        $query->where('manpowerrequisition.CreatedBy', Auth::user()->id)->orWhere('manpowerrequisition.OnBehalf', Auth::user()->id);
-    })
+      $query = DB::table('screening')
+          ->leftJoin('screen2ndround', 'screen2ndround.ScId', '=', 'screening.ScId')
+          ->leftJoin('jobapply', 'screening.JAId', '=', 'jobapply.JAId')
+          ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
+          ->leftJoin('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+          ->where('jobpost.Status', 'Open')
 
-    ->orderBy('screening.IntervDt', 'asc')
-    ->select('jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobpost.Title', 'screening.IntervDt', 'screening.IntervTime', 'screening.IntervPanel')
-    ->get();
+          ->where(function ($query) {
+              $query->where('screening.IntervDt', '>=', date('Y-m-d'))->orWhere(function ($query) {
+                  $query->where('screening.IntervStatus', '=', '2nd Round Interview')->where('screen2ndround.IntervDt2', '>=', date('Y-m-d'));
+              });
+          })
+        ->where(function ($query) use ($userId) {
+          $query->where(function ($query) use ($userId) {
+              $query->whereRaw('FIND_IN_SET(?, screening.IntervPanel) > 0', [$userId]);
+          })->orWhere(function ($query) use ($userId) {
+              $query->whereRaw('FIND_IN_SET(?, screen2ndround.IntervPanel2) > 0', [$userId]);
+          });
+      })
+
+          ->orderBy('screening.IntervDt', 'asc')
+          ->select('jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobpost.Title', 'screening.IntervDt', 'screen2ndround.IntervDt2', 'screening.IntervTime', 'screen2ndround.IntervTime2', 'screening.IntervPanel', 'screen2ndround.IntervPanel2', 'screening.IntervStatus')
+          ->get();
 
 @endphp
 @extends('layouts.master')
@@ -49,9 +59,37 @@ $query = DB::table('screening')
                                     <td class="text-center">{{ $i }}</td>
                                     <td>{{ $value->FName }} {{ $value->MName }} {{ $value->LName }}</td>
                                     <td>{{ $value->Title }}</td>
-                                    <td class="text-center">{{ date('d-m-Y', strtotime($value->IntervDt)) }}</td>
-                                    <td class="text-center">{{ date('h:i:s a', strtotime($value->IntervTime)) }}</td>
-                                    <td>{{ $value->IntervPanel }}</td>
+                                    @if ($value->IntervStatus === '2nd Round Interview')
+                                        <td class="text-center">
+                                            {{ date('d-m-Y', strtotime($value->IntervDt2)) }}
+                                        </td>
+                                        <td class="text-center">{{ date('h:i:s a', strtotime($value->IntervTime2)) }}</td>
+                                        <td>
+                                            @php
+                                                $panel_member = explode(',',$value->IntervPanel2);
+                                                foreach ($panel_member as $row) {
+                                                    $panel[] = getFullName($row);
+                                                }
+                                                echo implode(', ',$panel);
+                                            @endphp
+                                        </td>
+                                    @else
+                                        <td class="text-center">
+                                            {{ date('d-m-Y', strtotime($value->IntervDt)) }}
+                                        </td>
+                                        <td class="text-center">{{ date('h:i:s a', strtotime($value->IntervTime)) }}</td>
+                                        <td>
+                                            @php
+                                            $panel_member = explode(',',$value->IntervPanel);
+                                            foreach ($panel_member as $row) {
+                                                $panel[] = getFullName($row);
+                                            }
+                                            echo implode(', ',$panel);
+                                        @endphp
+                                        </td>
+                                    @endif
+
+
                                 </tr>
                                 @php
                                     $i++;

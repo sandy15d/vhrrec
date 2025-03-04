@@ -1,6 +1,7 @@
 @php
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use app\Helpers\Helpers;
 $Notification = DB::table('notification')
     ->where('userid', Auth::user()->id)
     ->where('status', 0)
@@ -21,8 +22,16 @@ $permission = DB::table('permission')
     ->select('permission.PageName')
     ->get();
 $resultArray = json_decode(json_encode($permission), true);
+function has_permission($resultArray, $pageName)
+{
+    foreach ($resultArray as $key => $value) {
+        if ($value['PageName'] == $pageName) {
+            return true;
+        }
+    }
+    return false;
+}
 
-use function App\Helpers\has_permission;
 
 @endphp
 <!doctype html>

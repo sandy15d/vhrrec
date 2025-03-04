@@ -53,7 +53,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Deartment<font class="text-danger">*</font>
+                                        <th>Department<font class="text-danger">*</font>
                                         </th>
                                         <td>
                                             <div class="spinner-border text-primary d-none" role="status" id="DeptLoader">

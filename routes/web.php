@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\HeadquarterController;
 use App\Http\Controllers\Admin\ResumeSourcController;
 use App\Http\Controllers\Common\ManualEntryController;
 use App\Http\Controllers\Admin\CommunicationController;
+use App\Http\Controllers\CKEditorController;
 use App\Http\Controllers\Recruiter\RecruiterController;
 use App\Http\Controllers\Common\AboutCandidateController;
 use App\Http\Controllers\Common\JobApplicationController;
@@ -37,10 +38,17 @@ use App\Http\Controllers\Common\PositionCodeController;
 use App\Http\Controllers\DepartmentVertical;
 use App\Http\Controllers\ElgController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\JobPostAPI;
 use App\Http\Controllers\ProcessToEss;
 use App\Http\Controllers\Recruiter\MrfAllocatedController;
 use App\Http\Controllers\Report\CandidateVsJobController;
 use App\Http\Controllers\Report\Reports;
+use App\Http\Controllers\TestModule\QuestionBankController;
+use App\Http\Controllers\TestModule\SubjectMasterController;
+use App\Http\Controllers\TestModule\TestCandidateController;
+use App\Http\Controllers\TestModule\ExamController;
+use App\Http\Controllers\Admin\MinimumWageController;
+use App\Http\Controllers\Admin\RegionController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -52,7 +60,7 @@ Route::middleware(['middleware' => 'PreventBackHistory'])->group(function () {
 
 
 Route::group(['prefix' => 'jobportal'], function () {
-    Route::get('jobs', [JobController::class, 'jobs'])->name('jobs');
+    Route::view('jobs', 'jobportal.jobs');
     Route::get('job_apply_form', [JobController::class, 'job_apply_form'])->name('job_apply_form');
     Route::get('jobapply', [JobController::class, 'job_apply_form_manual']);
     Route::post('job_apply', [JobController::class, 'job_apply'])->name('job_apply');
@@ -78,6 +86,7 @@ Route::group(['prefix' => 'jobportal'], function () {
     Route::post('firob_submit_exam', [JobController::class, 'firob_submit_exam'])->name('firob_submit_exam');
     Route::get('firob_result', [JobController::class, 'firob_result'])->name('firob_result');
     Route::get('firob_result_summery', [JobController::class, 'firob_result_summery'])->name('firob_result_summery');
+    Route::post('deleteFirob', [JobController::class, 'deleteFirob'])->name('deleteFirob');
 });
 
 Route::post('setTheme', [CommonController::class, 'setTheme'])->name('setTheme');
@@ -106,9 +115,10 @@ Route::get('getMRFByDepartment', [CommonController::class, 'getMRFByDepartment']
 Route::post('sendMailToCandidate', [CommonController::class, 'sendMailToCandidate'])->name('sendMailToCandidate');
 Route::get('getEmpByCompany', [CommonController::class, 'getEmpByCompany'])->name('getEmpByCompany');
 Route::get('change-password', [CommonController::class, 'changePassword'])->name('change-password');
+Route::get('one_time_pwd_change', [CommonController::class, 'one_time_pwd_change'])->name('one_time_pwd_change');
 Route::post('passwordChange', [CommonController::class, 'passwordChange'])->name('passwordChange');
 Route::get('upcoming_interview', [CommonController::class, 'upcoming_interview'])->name('upcoming_interview');
-
+Route::post('getInstituteListByJobPost', [CommonController::class, 'getInstituteListByJobPost'])->name('getInstituteListByJobPost');
 Route::get('candidate_detail', [AboutCandidateController::class, 'candidate_detail'])->name('candidate_detail');
 
 Route::get('interview_form_detail', [AboutCandidateController::class, 'interview_form_detail'])->name('interview_form_detail');
@@ -169,9 +179,9 @@ Route::post('Candidate_Language_Save', [AboutCandidateController::class, 'Candid
 
 Route::get('appointment_letter', [AboutCandidateController::class, 'appointment_letter'])->name('appointment_letter');
 Route::get('appointment_ltr_print', [AboutCandidateController::class, 'appointment_ltr_print'])->name('appointment_ltr_print');
+
 Route::post('appointmentGen', [AboutCandidateController::class, 'appointmentGen'])->name('appointmentGen');
 Route::post('appointment_letter_generate', [AboutCandidateController::class, 'appointment_letter_generate'])->name('appointment_letter_generate');
-
 
 Route::get('service_agreement', [AboutCandidateController::class, 'service_agreement'])->name('service_agreement');
 Route::get('service_agreement_print', [AboutCandidateController::class, 'service_agreement_print'])->name('service_agreement_print');
@@ -197,6 +207,8 @@ Route::get('reference_check', [AboutCandidateController::class, 'reference_check
 Route::get('view_reference_check', [AboutCandidateController::class, 'view_reference_check'])->name('view_reference_check');
 Route::post('reference_chk_response', [AboutCandidateController::class, 'reference_chk_response'])->name('reference_chk_response');
 Route::post('VerificationSave', [AboutCandidateController::class, 'VerificationSave'])->name('VerificationSave');
+Route::post('TwoWheelRCSave', [AboutCandidateController::class, 'TwoWheelRCSave'])->name('TwoWheelRCSave');
+Route::post('FourWheelRCSave', [AboutCandidateController::class, 'FourWheelRCSave'])->name('FourWheelRCSave');
 Route::post('JoinedSave', [AboutCandidateController::class, 'JoinedSave'])->name('JoinedSave');
 Route::post('AssignPositionCode', [AboutCandidateController::class, 'AssignPositionCode'])->name('AssignPositionCode');
 Route::post('changeOffLtrDate', [AboutCandidateController::class, 'changeOffLtrDate'])->name('changeOffLtrDate');
@@ -204,17 +216,23 @@ Route::post('changeA_Date', [AboutCandidateController::class, 'changeA_Date'])->
 Route::post('changeAgr_Date', [AboutCandidateController::class, 'changeAgr_Date'])->name('changeAgr_Date');
 Route::post('changeB_Date', [AboutCandidateController::class, 'changeB_Date'])->name('changeB_Date');
 Route::post('changeConf_Date', [AboutCandidateController::class, 'changeConf_Date'])->name('changeConf_Date');
+Route::post('CandidateClosure', [AboutCandidateController::class, 'CandidateClosure'])->name('CandidateClosure');
+Route::post('get_candidate_suitablity', [AboutCandidateController::class, 'get_candidate_suitablity'])->name('get_candidate_suitablity');
+
 
 Route::get('process_to_ess_form', [AboutCandidateController::class, 'process_to_ess_form'])->name('process_to_ess_form');
 Route::post('open_joining_form', [AboutCandidateController::class, 'open_joining_form'])->name('open_joining_form');
+Route::post('disable_offer_letter', [AboutCandidateController::class, 'disable_offer_letter'])->name('disable_offer_letter');
+Route::post('enable_offer_letter', [AboutCandidateController::class, 'enable_offer_letter'])->name('enable_offer_letter');
+Route::get('get_mw_by_designation', [AboutCandidateController::class, 'get_mw_by_designation'])->name('get_mw_by_designation');
+Route::post('ol_action_on_behalf_candidate', [AboutCandidateController::class, 'ol_action_on_behalf_candidate'])->name('ol_action_on_behalf_candidate');
 Route::post('processDataToEss', [ProcessToEss::class, 'processDataToEss'])->name('processDataToEss');
 Route::get('ImportFromOld', [ProcessToEss::class, 'ImportFromOld'])->name('ImportFromOld');
 
 
-
-
 Route::get('job_response', [JobApplicationController::class, 'job_response'])->name('job_response');
 Route::get('job_applications', [JobApplicationController::class, 'job_applications'])->name('job_applications');
+Route::get('job_applications_not_viewed', [JobApplicationController::class, 'job_applications_not_viewed'])->name('job_applications_not_viewed');
 Route::get('get_duplicate_record', [JobApplicationController::class, 'get_duplicate_record'])->name('get_duplicate_record');
 Route::post('delete_duplicate_record', [JobApplicationController::class, 'delete_duplicate_record'])->name('delete_duplicate_record');
 Route::post('getJobResponseSummary', [JobApplicationController::class, 'getJobResponseSummary'])->name('getJobResponseSummary');
@@ -231,8 +249,11 @@ Route::get('getManualEntryCandidate', [JobApplicationController::class, 'getManu
 Route::post('getJobResponseCandidateByJPId', [JobApplicationController::class, 'getJobResponseCandidateByJPId'])->name('getJobResponseCandidateByJPId');
 Route::post('cropImage', [JobApplicationController::class, 'cropImage'])->name('cropImage');
 Route::get('candidate-interview-form', [JobApplicationController::class, 'candidate_interview_form'])->name('candidate-interview-form');
+Route::post('SaveInterviewConfirmation', [JobApplicationController::class, 'SaveInterviewConfirmation'])->name('SaveInterviewConfirmation');
 Route::post('candidate_interview', [JobApplicationController::class, 'candidate_interview'])->name('candidate_interview');
 Route::get('candidate-joining-form', [JobApplicationController::class, 'CandidateJoiningForm'])->name('candidate-joining-form');
+Route::get('candidate-vehicle-form', [JobApplicationController::class, 'CandidateVehicleForm'])->name('candidate-vehicle-form');
+Route::post('SaveVehicleForm', [JobApplicationController::class, 'SaveVehicleForm'])->name('SaveVehicleForm');
 Route::get('onboarding', [JobApplicationController::class, 'onboarding'])->name('onboarding');
 Route::post('SavePersonalInfo', [JobApplicationController::class, 'SavePersonalInfo'])->name('SavePersonalInfo');
 Route::post('SaveContact', [JobApplicationController::class, 'SaveContact'])->name('SaveContact');
@@ -246,6 +267,11 @@ Route::post('RelievingLtrFileUpload', [JobApplicationController::class, 'Relievi
 Route::post('SalarySlipFileUpload', [JobApplicationController::class, 'SalarySlipFileUpload'])->name('SalarySlipFileUpload');
 Route::post('AppraisalLtrFileUpload', [JobApplicationController::class, 'AppraisalLtrFileUpload'])->name('AppraisalLtrFileUpload');
 Route::post('VaccinationCertFileUpload', [JobApplicationController::class, 'VaccinationCertFileUpload'])->name('VaccinationCertFileUpload');
+Route::post('PFeNominationFileUpload', [JobApplicationController::class, 'PFeNominationFileUpload'])->name('PFeNominationFileUpload');
+Route::post('ResignationFileUpload', [JobApplicationController::class, 'ResignationFileUpload'])->name('ResignationFileUpload');
+Route::post('ResignationAcceptFileUpload', [JobApplicationController::class, 'ResignationAcceptFileUpload'])->name('ResignationAcceptFileUpload');
+Route::post('Epfo_JointFileUpload', [JobApplicationController::class, 'Epfo_JointFileUpload'])->name('Epfo_JointFileUpload');
+Route::post('Form16FileUpload', [JobApplicationController::class, 'Form16FileUpload'])->name('Form16FileUpload');
 Route::post('CheckDocumentUpload', [JobApplicationController::class, 'CheckDocumentUpload'])->name('CheckDocumentUpload');
 Route::post('FinalSubmitInterviewApplicationForm', [JobApplicationController::class, 'FinalSubmitInterviewApplicationForm'])->name('FinalSubmitInterviewApplicationForm');
 
@@ -261,14 +287,18 @@ Route::post('FamilyUpload', [JobApplicationController::class, 'FamilyUpload'])->
 Route::post('HealthUpload', [JobApplicationController::class, 'HealthUpload'])->name('HealthUpload');
 Route::post('EthicalUpload', [JobApplicationController::class, 'EthicalUpload'])->name('EthicalUpload');
 Route::post('BloodGroupUpload', [JobApplicationController::class, 'BloodGroupUpload'])->name('BloodGroupUpload');
+Route::post('Invst_DeclUpload', [JobApplicationController::class, 'Invst_DeclUpload'])->name('Invst_DeclUpload');
 Route::post('BankUpload', [JobApplicationController::class, 'BankUpload'])->name('BankUpload');
+Route::post('TestPaperUpload', [JobApplicationController::class, 'TestPaperUpload'])->name('TestPaperUpload');
+Route::post('IntervAssessmentUpload', [JobApplicationController::class, 'IntervAssessmentUpload'])->name('IntervAssessmentUpload');
 Route::post('CheckDocumentUpload_JoiningForm', [JobApplicationController::class, 'CheckDocumentUpload_JoiningForm'])->name('CheckDocumentUpload_JoiningForm');
 Route::post('JoiningFormSubmit', [JobApplicationController::class, 'JoiningFormSubmit'])->name('JoiningFormSubmit');
-
+Route::post('/import-cv', [JobApplicationController::class, 'import'])->name('import.cv');
 
 Route::get('TechnicalScreening', [TrackerController::class, 'TechnicalScreening'])->name('TechnicalScreening');
 Route::post('getTechnicalSceeningCandidate', [TrackerController::class, 'getTechnicalSceeningCandidate'])->name('getTechnicalSceeningCandidate');
 Route::post('getScreenDetail', [TrackerController::class, 'getScreenDetail'])->name('getScreenDetail');
+Route::post('getInterviewDetail', [TrackerController::class, 'getInterviewDetail'])->name('getInterviewDetail');
 Route::post('CandidateTechnicalScreening', [TrackerController::class, 'CandidateTechnicalScreening'])->name('CandidateTechnicalScreening');
 Route::post('getInterviewTrackerCandidate', [TrackerController::class, 'getInterviewTrackerCandidate'])->name('getInterviewTrackerCandidate');
 Route::get('interview_tracker', [TrackerController::class, 'interview_tracker'])->name('interview_tracker');
@@ -294,6 +324,7 @@ Route::get('getDetailForReview', [OfferLtrController::class, 'getDetailForReview
 Route::post('saveJoinDate', [OfferLtrController::class, 'saveJoinDate'])->name('saveJoinDate');
 Route::post('SendOfferLtr', [OfferLtrController::class, 'SendOfferLtr'])->name('SendOfferLtr');
 Route::post('SendJoiningForm', [OfferLtrController::class, 'SendJoiningForm'])->name('SendJoiningForm');
+Route::post('SendVehicleForm', [JobApplicationController::class, 'SendVehicleForm'])->name('SendVehicleForm');
 Route::post('OfferResponse', [OfferLtrController::class, 'OfferResponse'])->name('OfferResponse');
 Route::get('offer-letter-response', [OfferLtrController::class, 'OfferLetterResponse'])->name('offer-letter-response');
 Route::post('offerReopen', [OfferLtrController::class, 'offerReopen'])->name('offerReopen');
@@ -303,8 +334,9 @@ Route::get('viewReview', [OfferLtrController::class, 'viewReview'])->name('viewR
 Route::post('ReviewResponse', [OfferLtrController::class, 'ReviewResponse'])->name('ReviewResponse');
 Route::post('saveEmpCode', [OfferLtrController::class, 'saveEmpCode'])->name('saveEmpCode');
 Route::get('get_designation_by_grade_department', [OfferLtrController::class, 'get_designation_by_grade_department'])->name('get_designation_by_grade_department');
-
 Route::get('candidate_joining', [OfferLtrController::class, 'candidate_joining'])->name('candidate_joining');
+Route::post('update_two_wheel', [OfferLtrController::class, 'update_two_wheel'])->name('update_two_wheel');
+Route::post('update_four_wheel', [OfferLtrController::class, 'update_four_wheel'])->name('update_four_wheel');
 
 Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');
 Route::post('get_all_manual_mrf_created_by_me', [ManualEntryController::class, 'get_all_manual_mrf_created_by_me'])->name('get_all_manual_mrf_created_by_me');
@@ -344,6 +376,7 @@ Route::get('campus_hiring_costing', [CampusController::class, 'campus_hiring_cos
 Route::post('getCampusCosting', [CampusController::class, 'getCampusCosting'])->name('getCampusCosting');
 Route::post('updateCosting', [CampusController::class, 'updateCosting'])->name('updateCosting');
 Route::post('getCostingDetail', [CampusController::class, 'getCostingDetail'])->name('getCostingDetail');
+Route::post('deleteCampusCandidate', [CampusController::class, 'deleteCampusCandidate'])->name('deleteCampusCandidate');
 
 
 Route::get('trainee_mrf_allocated', [TraineeController::class, 'trainee_mrf_allocated'])->name('trainee_mrf_allocated');
@@ -367,7 +400,11 @@ Route::post('get_expense_list', [TraineeController::class, 'get_expense_list'])-
 Route::post('add_expense', [TraineeController::class, 'add_expense'])->name('add_expense');
 Route::post('map_trainee_to_job', [TraineeController::class, 'map_trainee_to_job'])->name('map_trainee_to_job');
 Route::get('trainee_detail', [TraineeController::class, 'trainee_detail'])->name('trainee_detail');
-
+Route::post('SetAllTraineeInterviewDetails', [TraineeController::class, 'SetAllTraineeInterviewDetails'])->name('SetAllTraineeInterviewDetails');
+Route::post('deleteTraineeCandidate', [TraineeController::class, 'deleteTraineeCandidate'])->name('deleteTraineeCandidate');
+Route::get('getInterviewDetailsTrainee', [TraineeController::class, 'getInterviewDetailsTrainee'])->name('getInterviewDetailsTrainee');
+Route::post('SendFirobToTrainee', [TraineeController::class, 'SendFirobToTrainee'])->name('SendFirobToTrainee');
+Route::post('import_trainee_expense',[TraineeController::class,'import_trainee_expense'])->name('import_trainee_expense');
 Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('mrf', [AdminController::class, 'mrf'])->name('admin.mrf');
@@ -380,13 +417,16 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('allocateMRF', [AdminController::class, 'allocateMRF'])->name('allocateMRF');
     Route::post('getTaskList', [AdminController::class, 'getTaskList'])->name('getTaskList');
     Route::post('getRecruiterName', [AdminController::class, 'getRecruiterName'])->name('getRecruiterName');
-    Route::get('setting', [AdminController::class, 'setting'])->name('admin.setting');
+
     Route::get('userlogs', [AdminController::class, 'userlogs'])->name('admin.userlogs');
     Route::post('getAllLogs', [AdminController::class, 'getAllLogs'])->name('getAllLogs');
-
+    Route::post('changeMRFStatusOnBehalfReporting', [AdminController::class, 'changeMRFStatusOnBehalfReporting'])->name('changeMRFStatusOnBehalfReporting');
+    Route::post('changeMRFStatusOnBehalfHod', [AdminController::class, 'changeMRFStatusOnBehalfHod'])->name('changeMRFStatusOnBehalfHod');
+    Route::post('changeMRFStatusOnBehalfManagement', [AdminController::class, 'changeMRFStatusOnBehalfManagement'])->name('changeMRFStatusOnBehalfManagement');
 
     // ! ======================Master Company ========================//
-    Route::get('company', [CompanyController::class, 'company'])->name('admin.company');
+
+     Route::get('company', [CompanyController::class, 'company'])->name('admin.company');
     Route::post('addCompany', [CompanyController::class, 'addCompany'])->name('addCompany');
     Route::get('getAllCompanyData', [CompanyController::class, 'getAllCompanyData'])->name('getAllCompanyData');
     Route::post('getCompanyDetails', [CompanyController::class, 'getCompanyDetails'])->name('getCompanyDetails');
@@ -396,7 +436,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     // ! =====================================================================//
 
     // ?==========================Master Country ==============================//
-    Route::get('country', [CountryController::class, 'country'])->name('admin.country');
+   Route::get('country', [CountryController::class, 'country'])->name('admin.country');
     Route::post('addCountry', [CountryController::class, 'addCountry'])->name('addCountry');
     Route::get('getAllCountryData', [CountryController::class, 'getAllCountryData'])->name('getAllCountryData');
     Route::post('getCountryDetails', [CountryController::class, 'getCountryDetails'])->name('getCountryDetails');
@@ -423,6 +463,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('getStateDetails_general', [StateController::class, 'getStateDetails_general'])->name('getStateDetails_general');
     Route::post('deleteState_general', [StateController::class, 'deleteState_general'])->name('deleteState_general');
 
+
     // ?=========================================================================================//
 
     //*====================================Master Employee ==================================//
@@ -444,7 +485,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     //*========================================================================================//
 
     //*====================================Master Designation ==================================//
-    Route::get('designation', [DesignationController::class, 'designation'])->name('admin.designation');
+    // Route::get('designation', [DesignationController::class, 'designation'])->name('admin.designation');
+    Route::view('designation', 'admin.designation');
     Route::get('getAllDesignation', [DesignationController::class, 'getAllDesignation'])->name('getAllDesignation');
     Route::post('syncDesignation', [DesignationController::class, 'syncDesignation'])->name('syncDesignation');
     //*=================================================================================================//
@@ -482,7 +524,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('deleteEduSpe', [EduSpecialController::class, 'deleteEduSpe'])->name('deleteEduSpe');
     //**====================================================================== */
 
-    //? ======================= Education Specialization ===================== */
+    //? ======================= Education Institute ===================== */
     Route::get('institute', [InstituteController::class, 'institute'])->name('admin.institute');
     Route::post('addInstitute', [InstituteController::class, 'addInstitute'])->name('addInstitute');
     Route::get('getAllInstitute', [InstituteController::class, 'getAllInstitute'])->name('getAllInstitute');
@@ -494,7 +536,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
 
     // !======================== Department Vertical=========================== */
 
-    Route::get('department_vertical', [DepartmentVertical::class, 'department_vertical'])->name('admin.department_vertical');
+
+    Route::view('department_vertical', 'admin.department_vertical');
     Route::get('getAllVertical', [DepartmentVertical::class, 'getAllVertical'])->name('getAllVertical');
     Route::post('syncVertical', [DepartmentVertical::class, 'syncVertical'])->name('syncVertical');
 
@@ -506,6 +549,17 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('getAllLodging', [ElgController::class, 'getAllLodging'])->name('getAllLodging');
     Route::post('getAllTravel', [ElgController::class, 'getAllTravel'])->name('getAllTravel');
     Route::post('syncELg', [ElgController::class, 'syncELg'])->name('syncELg');
+
+
+    //!======================== Region Master =========================== */
+
+    Route::get('region', [RegionController::class, 'region'])->name('admin.region');
+    Route::post('syncRegion', [RegionController::class, 'syncRegion'])->name('syncRegion');
+    Route::get('getAllRegion', [RegionController::class, 'getAllRegion'])->name('getAllRegion');
+    Route::get('getAllZone', [RegionController::class, 'getAllZone'])->name('getAllZone');
+    Route::get('hq_wise_region', [RegionController::class, 'hq_wise_region'])->name('hq_wise_region');
+    Route::post('syncHqRegion', [RegionController::class, 'syncHqRegion'])->name('syncHqRegion');
+    Route::post('getAllRegionHq', [RegionController::class, 'getAllRegionHq'])->name('getAllRegionHq');
 
     //**=============================Resume Source================================================= */
     Route::get('resumesource', [ResumeSourcController::class, 'resumesource'])->name('admin.resumesource');
@@ -527,30 +581,47 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::post('setpermission', [UserController::class, 'setpermission'])->name('setpermission');
     Route::get('getEmployee', [UserController::class, 'getEmployee'])->name('getEmployee');
     Route::get('getEmployeeDetail', [UserController::class, 'getEmployeeDetail'])->name('getEmployeeDetail');
+    Route::get('user_department_list', [UserController::class, 'user_department_list'])->name('user_department_list');
+    Route::post('map_user_department', [UserController::class, 'map_user_department'])->name('map_user_department');
 
+    //======================================Minimum Wage=========================//
+    Route::get('minimum_wage', [MinimumWageController::class, 'minimum_wage'])->name('admin.minimum_wage');
+    Route::post('syncMW', [MinimumWageController::class, 'syncMW'])->name('syncMW');
+    Route::get('getAllMW', [MinimumWageController::class, 'getAllMW'])->name('getAllMW');
     //?====================================================================== */
-    Route::get('communication_control', [CommunicationController::class, 'communication_control'])->name('admin.communication_control');
-    Route::get('getCommunicationTopic', [CommunicationController::class, 'getCommunicationTopic'])->name('getCommunicationTopic');
+    //Route::get('communication_control', [CommunicationController::class, 'communication_control'])->name('admin.communication_control');
+    Route::view('communication_control', 'admin.communication');
     Route::post('setCommunication', [CommunicationController::class, 'setCommunication'])->name('setCommunication');
 });
 
-
+Route::post('getRegionByVertical', [RegionController::class, 'getRegionByVertical'])->name('getRegionByVertical');
 Route::group(['prefix' => 'recruiter', 'middleware' => ['isRecruiter', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [RecruiterController::class, 'index'])->name('recruiter.dashboard');
     Route::get('mrf_allocated', [MrfAllocatedController::class, 'mrf_allocated'])->name('mrf_allocated');
     Route::post('getAllAllocatedMRF', [MrfAllocatedController::class, 'getAllAllocatedMRF'])->name('getAllAllocatedMRF');
-    Route::post('getDetailForJobPost', [MrfAllocatedController::class, 'getDetailForJobPost'])->name('getDetailForJobPost');
+
     Route::post('createJobPost', [MrfAllocatedController::class, 'createJobPost'])->name('createJobPost');
-    Route::post('ChngPostingView', [MrfAllocatedController::class, 'ChngPostingView'])->name('ChngPostingView');
+    Route::get('get_mrf_position_filled_detail', [MrfAllocatedController::class, 'get_mrf_position_filled_detail'])->name('get_mrf_position_filled_detail');
+    Route::post('save_mrf_position_filled', [MrfAllocatedController::class, 'save_mrf_position_filled'])->name('save_mrf_position_filled');
 });
+Route::post('getDetailForJobPost', [MrfAllocatedController::class, 'getDetailForJobPost'])->name('getDetailForJobPost');
+
+Route::post('ChngPostingView', [MrfAllocatedController::class, 'ChngPostingView'])->name('ChngPostingView');
 Route::post('close_mrf', [MrfAllocatedController::class, 'close_mrf'])->name('close_mrf');
+
 Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [HodController::class, 'index'])->name('hod.dashboard');
     Route::get('mrfbyme', [HodController::class, 'mrfbyme'])->name('mrfbyme');
     Route::get('interviewschedule', [HodController::class, 'interviewschedule'])->name('interviewschedule');
+    Route::get('pending_screening', [HodController::class, 'pending_screening'])->name('pending_screening');
+    Route::post('show_resume', [HodController::class, 'show_resume'])->name('show_resume');
+    Route::post('change_screen_status', [HodController::class, 'change_screen_status'])->name('change_screen_status');
+    Route::get('rejected_candidate', [HodController::class, 'hr_screening_rejected_list'])->name('rejected_candidate');
     //**========================My Team =========================================== */
     Route::get('myteam', [MyTeamController::class, 'myteam'])->name('myteam');
-    Route::get('getAllMyTeamMember', [MyTeamController::class, 'getAllMyTeamMember'])->name('getAllMyTeamMember');
+    Route::get('my_resigned_team', [MyTeamController::class, 'my_resigned_team'])->name('my_resigned_team');
+    Route::post('getAllMyTeamMember', [MyTeamController::class, 'getAllMyTeamMember'])->name('getAllMyTeamMember');
+    Route::post('getResignedMember', [MyTeamController::class, 'getResignedMember'])->name('getResignedMember');
     Route::post('getMyTeam', [MyTeamController::class, 'getMyTeam'])->name('getMyTeam');
     Route::get('repmrf', [MyTeamController::class, 'repmrf'])->name('repmrf');
     //!=============================MRF===============================================//
@@ -562,7 +633,12 @@ Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackH
     Route::post('addSipMrf', [MrfController::class, 'addSipMrf'])->name('addSipMrf');
     Route::post('addCampusMrf', [MrfController::class, 'addCampusMrf'])->name('addCampusMrf');
     Route::post('addRepMrf', [MrfController::class, 'addRepMrf'])->name('addRepMrf');
-    Route::get('getAllMRFCreatedByMe', [MrfController::class, 'getAllMRFCreatedByMe'])->name('getAllMRFCreatedByMe');
+    Route::post('getAllMRFCreatedByMe', [MrfController::class, 'getAllMRFCreatedByMe'])->name('getAllMRFCreatedByMe');
+    Route::get('mrf_approval_list', [HodController::class, 'mrf_approval_list'])->name('mrf_approval_list');
+    Route::post('approveMRF', [MrfController::class, 'approveMRF'])->name('approveMRF');
+    Route::post('rejectMRF', [MrfController::class, 'rejectMRF'])->name('rejectMRF');
+    Route::get('resume_databank', [HodController::class, 'resume_databank'])->name('resume_databank');
+    Route::get('shared_profile', [HodController::class, 'shared_profile'])->name('shared_profile');
     //!==============================================================================//
 });
 
@@ -583,23 +659,97 @@ Route::get('job_offer_report', [Reports::class, 'job_offer_report'])->name('job_
 Route::post('get_job_offer_report', [Reports::class, 'get_job_offer_report'])->name('get_job_offer_report');
 Route::get('candidate_joining_report', [Reports::class, 'candidate_joining_report'])->name('candidate_joining_report');
 Route::post('get_candidate_joining_report', [Reports::class, 'get_candidate_joining_report'])->name('get_candidate_joining_report');
-
-
-
 Route::get('application_source_report', [Reports::class, 'application_source_report'])->name('application_source_report');
 Route::post('getApplicationSource', [Reports::class, 'getApplicationSource'])->name('getApplicationSource');
 Route::post('getActiveMRFWiesData', [Reports::class, 'getActiveMRFWiesData'])->name('getActiveMRFWiesData');
 Route::post('mrf_status_open_days', [Reports::class, 'mrf_status_open_days'])->name('mrf_status_open_days');
+Route::get('mrf_report', [Reports::class, 'mrf_report'])->name('mrf_report');
+Route::post('get_mrf_report_data', [Reports::class, 'get_mrf_report_data'])->name('get_mrf_report_data');
+Route::get('recruiter_report', [Reports::class, 'recruiter_report'])->name('recruiter_report');
+Route::post('get_recruiter_wise_data', [Reports::class, 'get_recruiter_wise_data'])->name('get_recruiter_wise_data');
 
+Route::get('manual_entry_report', [Reports::class, 'manual_entry_report'])->name('manual_entry_report');
+Route::post('get_manual_entry_data', [Reports::class, 'get_manual_entry_data'])->name('get_manual_entry_data');
 
+Route::get('candidate_wise_trainee_report', [Reports::class, 'candidate_wise_trainee_report'])->name('candidate_wise_trainee_report');
+Route::post('get_candidate_wise_trainee_data', [Reports::class, 'get_candidate_wise_trainee_data'])->name('get_candidate_wise_trainee_data');
+
+Route::get('college_wise_trainee_report', [Reports::class, 'college_wise_trainee_report'])->name('college_wise_trainee_report');
+Route::post('get_college_wise_trainee_data', [Reports::class, 'get_college_wise_trainee_data'])->name('get_college_wise_trainee_data');
+
+Route::get('active_trainee_report', [Reports::class, 'active_trainee_report'])->name('active_trainee_report');
+Route::post('get_active_trainee_data', [Reports::class, 'get_active_trainee_data'])->name('get_active_trainee_data');
+
+Route::get('all_candidate_report', [Reports::class, 'all_candidate_report'])->name('all_candidate_report');
+
+Route::get('mrf_tat', [Reports::class, 'mrf_tat'])->name('mrf_tat');
+Route::post('get_mrf_tat_data', [Reports::class, 'get_mrf_tat_data'])->name('get_mrf_tat_data');
+
+Route::post('job_response_data_download', [Reports::class, 'job_response_data_download'])->name('job_response_data_download');
 //==========================================================================================
 
-Route::get('importview', [ImportController::class, 'importview'])->name('importview');
-Route::post('import', [ImportController::class, 'import'])->name('import');
-Route::get('createmrf', [importController::class, 'createmrf'])->name('createmrf');
+Route::get('Import', [ImportController::class, 'Import'])->name('Import');
 
 Route::get('position_code', [PositionCodeController::class, 'show_position_code'])->name('position_code');
 Route::post('show_all_position_code', [PositionCodeController::class, 'show_all_position_code'])->name('show_all_position_code');
 Route::post('unused_position_code', [PositionCodeController::class, 'unused_position_code'])->name('unused_position_code');
 Route::post('SyncPositionCode', [PositionCodeController::class, 'SyncPositionCode'])->name('SyncPositionCode');
 Route::post('add_position_code', [PositionCodeController::class, 'add_position_code'])->name('add_position_code');
+
+
+//=============================Test Module=====================================================//
+Route::resource('subject_master', SubjectMasterController::class);
+Route::post('get_sub_dept_map', [SubjectMasterController::class, 'get_sub_dept_map'])->name('get_sub_dept_map');
+Route::post('map_sub_with_dpt', [SubjectMasterController::class, 'map_sub_with_dpt'])->name('map_sub_with_dpt');
+
+Route::resource('question_bank', QuestionBankController::class);
+Route::post('get_question_bank_questions/{id}', [QuestionBankController::class, 'get_question_bank_questions'])->name('get_question_bank_questions');
+Route::post('ckeditor/upload', [CKEditorController::class, 'upload'])->name('ckeditor.image-upload');
+
+Route::resource('test_candidate', TestCandidateController::class);
+Route::post('test_candidate.import', [TestCandidateController::class, 'import'])->name('test_candidate.import');
+Route::get('candidate_assessment_report', [TestCandidateController::class, 'candidate_assessment_report'])->name('candidate_assessment_report');
+Route::get('candidate_assessment_result', [TestCandidateController::class, 'candidate_assessment_result'])->name('candidate_assessment_result');
+Route::resource('exam_master', ExamController::class);
+Route::post('setExam', [ExamController::class, 'setExam'])->name('setExam');
+Route::get('candidate_assessment_login/{id}/{exam_id}', [ExamController::class, 'candidate_assessment_login'])->name('candidate_assessment_login');
+Route::get('candidate_assessment_instruction', [ExamController::class, 'candidate_assessment_instruction'])->name('candidate_assessment_instruction');
+Route::get('candidate_assessment_select_paper', [ExamController::class, 'candidate_assessment_select_paper'])->name('candidate_assessment_select_paper');
+Route::get('candidate_assessment', [ExamController::class, 'candidate_assessment'])->name('candidate_assessment');
+Route::post('sendCandidateAssessmentMail', [ExamController::class, 'sendCandidateAssessmentMail'])->name('sendCandidateAssessmentMail');
+Route::post('candidate_assessment_save', [ExamController::class, 'candidate_assessment_save'])->name('candidate_assessment_save');
+Route::post('candidate_assessment_final_submit', [ExamController::class, 'candidate_assessment_final_submit'])->name('candidate_assessment_final_submit');
+Route::post('candidate_assessment_stop', [ExamController::class, 'candidate_assessment_stop'])->name('candidate_assessment_stop');
+
+
+
+
+//Save Event
+Route::post('save_event', [CommonController::class, 'save_event'])->name('save_event');
+// routes/web.php
+Route::post('/check-duplicate', [CommonController::class, 'checkDuplicate'])->name('check.duplicate');
+
+
+//Reminder Interview Mail
+Route::get('reminder_interview_mail', [CommonController::class, 'reminder_interview_mail'])->name('reminder_interview_mail');
+Route::get('reminder_interview_mail_second_round', [CommonController::class, 'reminder_interview_mail_second_round'])->name('reminder_interview_mail_second_round');
+Route::get('duplicate', [CommonController::class, 'duplicate'])->name('duplicate');
+Route::get('candidate_association', [CommonController::class, 'candidate_association'])->name('candidate_association');
+Route::post('suitable_candidate', [CommonController::class, 'suitable_candidate'])->name('suitable_candidate');
+Route::post('sldpt_process', [CommonController::class, 'sldpt_process'])->name('sldpt_process');
+Route::post('sldpt_process_from_databank', [CommonController::class, 'sldpt_process_from_databank'])->name('sldpt_process_from_databank');
+Route::post('getMRFTAT', [CommonController::class, 'getMRFTAT'])->name('getMRFTAT');
+Route::get('download_candidate_data_mrf_wise/{mrfid}', [CommonController::class, 'download_candidate_data_mrf_wise'])->name('download_candidate_data_mrf_wise');
+Route::resource('test', \App\Http\Controllers\Master\TestController::class);
+
+
+Route::resource('case-study-question', App\Http\Controllers\CaseStudyQuestionController::class);
+
+Route::resource('case-study-answer', App\Http\Controllers\CaseStudyAnswerController::class);
+
+Route::resource('core_api', \App\Http\Controllers\CoreAPIController::class);
+Route::get('core_api_sync', [\App\Http\Controllers\CoreAPIController::class, 'sync'])->name('core_api_sync');
+Route::get('sync_company', [CompanyController::class, 'sync'])->name('sync_company');
+Route::get('sync_country', [CountryController::class, 'sync'])->name('sync_country');
+Route::get('sync_state', [StateController::class, 'sync'])->name('sync_state');
+Route::get('sync_district', [DistrictController::class, 'sync'])->name('sync_district');
