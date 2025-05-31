@@ -49,7 +49,8 @@ use App\Http\Controllers\TestModule\TestCandidateController;
 use App\Http\Controllers\TestModule\ExamController;
 use App\Http\Controllers\Admin\MinimumWageController;
 use App\Http\Controllers\Admin\RegionController;
-
+use App\Http\Controllers\CoreAPIController;
+use App\Http\Controllers\Master\TestController;
 Route::get('/', function () {
     return view('auth.login');
 });
@@ -482,6 +483,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     Route::get('department', [DepartmentController::class, 'department'])->name('admin.department');
     Route::get('getAllDepartment', [DepartmentController::class, 'getAllDepartment'])->name('getAllDepartment');
     Route::post('syncDepartment', [DepartmentController::class, 'syncDepartment'])->name('syncDepartment');
+     Route::post('getSubDepartmentByDepartment', [DepartmentController::class, 'getSubDepartmentByDepartment'])->name('getSubDepartmentByDepartment');
     //*========================================================================================//
 
     //*====================================Master Designation ==================================//
@@ -747,9 +749,20 @@ Route::resource('case-study-question', App\Http\Controllers\CaseStudyQuestionCon
 
 Route::resource('case-study-answer', App\Http\Controllers\CaseStudyAnswerController::class);
 
-Route::resource('core_api', \App\Http\Controllers\CoreAPIController::class);
-Route::get('core_api_sync', [\App\Http\Controllers\CoreAPIController::class, 'sync'])->name('core_api_sync');
+Route::resource('core_api', CoreAPIController::class);
+Route::get('core_api_sync', [CoreAPIController::class, 'sync'])->name('core_api_sync');
+Route::post('importAPISData', [CoreAPIController::class, 'importAPISData'])->name('importAPISData');
+
 Route::get('sync_company', [CompanyController::class, 'sync'])->name('sync_company');
 Route::get('sync_country', [CountryController::class, 'sync'])->name('sync_country');
 Route::get('sync_state', [StateController::class, 'sync'])->name('sync_state');
 Route::get('sync_district', [DistrictController::class, 'sync'])->name('sync_district');
+Route::resource('test', TestController::class);
+Route::get('core_department_map', [TestController::class, 'core_department_map'])->name('core_department_map');
+Route::get('core_designation_map', [TestController::class, 'core_designation_map'])->name('core_designation_map');
+Route::get('core_job_map', [TestController::class, 'core_job_map'])->name('core_job_map');
+Route::post('mapCoreDepartment', [TestController::class, 'mapCoreDepartment'])->name('mapCoreDepartment');
+Route::post('mapCoreDesignation', [TestController::class, 'mapCoreDesignation'])->name('mapCoreDesignation');
+Route::post('mapCoreJobPost', [TestController::class, 'mapCoreJobPost'])->name('mapCoreJobPost');
+Route::get('sync_data', [TestController::class, 'sync_data'])->name('sync_data');
+

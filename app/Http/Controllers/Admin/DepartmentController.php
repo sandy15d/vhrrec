@@ -1,12 +1,15 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
 
 use App\Models\Admin\master_department;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use DataTables;
+use Illuminate\Support\Facades\Log;
 
 class DepartmentController extends Controller
 {
@@ -14,43 +17,40 @@ class DepartmentController extends Controller
     {
         return view('admin.department');
     }
+
     public function getAllDepartment()
     {
-        $department = DB::table('master_department')
-            ->join('master_company', 'master_department.CompanyId', '=', 'master_company.CompanyId')
-            ->where('master_department.CompanyId', '=', session('Set_Company'))
-            ->select(['master_department.*', 'master_company.CompanyCode']);
-
+        $department = master_department::where('is_active', '1');
         return datatables()->of($department)
             ->addIndexColumn()
             ->make(true);
     }
-
-    public function syncDepartment()
+    public function getSubDepartmentByDepartment(Request $request)
     {
-
-        $query =  master_department::truncate();
-        $response = Http::get('https://www.vnress.in/RcdDetails.php?action=Details&val=Department')->json();
-        $data = array();
-        foreach ($response['department_list'] as $key => $value) {
-
-            $temp = array();
-            $temp['DepartmentId'] = $value['DepartmentId'];
-            $temp['DepartmentName'] = $value['DepartmentName'];
-            $temp['DepartmentCode'] = $value['DepartmentCode'];
-            
-            $temp['CompanyId'] = $value['CompanyId'];
-            $temp['DeptStatus'] = $value['DeptStatus'];
-            array_push($data, $temp);
+        // Validate that 'Department' is provided in the request
+        $department = $request->input('Department');
+        if (!$department) {
+            return response()->json(['error' => 'Department is required.'], 400);
         }
-       
-        $query = master_department::insert($data);
 
+        // Retrieve the 'fun_vertical_dept_id' for the given department
+        $fun_vertical_dept_ids = DB::table('core_fun_vertical_dept_mapping')
+            ->where('department_id', $department)
+            ->pluck('id');
 
-        if ($query) {
-            return response()->json(['status' => 200, 'msg' => 'Department data has been Synchronized.']);
-        } else {
-            return response()->json(['status' => 500, 'msg' => 'Something went wrong..!!']);
+        // If no department mappings found, return an empty array or handle it
+        if ($fun_vertical_dept_ids->isEmpty()) {
+            return response()->json(['sub_departments' => []]);
         }
+
+        // Retrieve distinct sub_departments related to the found fun_vertical_dept_ids
+        $sub_departments_ids = DB::table('core_department_subdepartment_mapping')
+            ->whereIn('fun_vertical_dept_id', $fun_vertical_dept_ids)
+            ->distinct()
+            ->pluck('sub_department_id');
+        $sub_departments = DB::table('core_sub_department')->whereIn('id', $sub_departments_ids)->select(['id', 'sub_department_name'])->get();
+        // Return the sub_departments as a response
+        return response()->json(['sub_departments' => $sub_departments]);
     }
+
 }

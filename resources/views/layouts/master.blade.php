@@ -242,6 +242,23 @@ function has_permission($resultArray, $pageName)
                             </li>
                             <li> <a href="/admin/communication_control"><i
                                         class="bx bx-right-arrow-alt"></i>Communication Control</a></li>
+                                          <li><a title="Communication Control" href="{{route('core_api.index')}}"><i
+                                    class="bx bx-right-arrow-alt"></i>Core API</a></li>
+                        <li>
+                            <a title="Eligibility" class="has-arrow" href="javascript:;">
+                                <i class="bx bx-right-arrow-alt"></i>Core Mapping</a>
+                            <ul>
+                                <li><a title="Department" href="{{route('core_department_map')}}"><i
+                                            class="bx bx-right-arrow-alt"></i>Department Mapping</a>
+                                </li>
+                                <li><a title="Designation" href="{{route('core_designation_map')}}"><i
+                                            class="bx bx-right-arrow-alt"></i> Designation Mapping</a>
+                                </li>
+                                <li><a title="Designation" href="{{route('core_job_map')}}"><i
+                                            class="bx bx-right-arrow-alt"></i> JobPost Mapping</a>
+                                </li>
+                            </ul>
+                        </li>
                         </ul>
                     </li>
                     <li>

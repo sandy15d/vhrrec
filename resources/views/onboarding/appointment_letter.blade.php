@@ -679,7 +679,16 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                 <th>Total Cost to Company</th>
                                 <td class="text-center">{{ $ctc->total_ctc ?? '' }} </td>
                             </tr>
-
+                                @if ($ctc->communication_allowance_amount != null || $ctc->communication_allowance_amount != '')
+                                        <tr>
+                                            <td>Communication Allowance</td>
+                                            <td class="text-center">{{ $ctc->communication_allowance_amount ?? '' }}</td>
+                                        </tr>
+                                        <tr>
+                                        <th>Total Gross CTC</th>
+                                        <td class="text-center">{{ $ctc->total_gross_ctc ?? '' }} </td>
+                                    </tr>
+                                    @endif
                         </table>
                     </center>
                         <p><b>Notes:</b></p>

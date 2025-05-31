@@ -300,6 +300,8 @@ class OfferLtrController extends Controller
         $emplyerESIC = $request->emplyerESIC;
         $medical = $request->medical;
         $total_ctc = $request->total_ctc;
+        $communication_allowance = $request->communication_allowance;
+        $total_gross_ctc = $request->total_gross_ctc;
         $query1 = DB::table('candidate_ctc')->where('JAId', $jaid)->update(
             [
                 'ctc_date' => now(),
@@ -319,6 +321,8 @@ class OfferLtrController extends Controller
                 'emplyerESIC' => $emplyerESIC,
                 'medical' => $medical,
                 'total_ctc' => $total_ctc,
+                'communication_allowance_amount'=>$communication_allowance,
+                'total_gross_ctc'=>$total_gross_ctc,
                 'created_on' => now(),
                 'created_by' => Auth::user()->id
             ]

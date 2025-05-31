@@ -523,10 +523,23 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>Total Cost to Company</th>
+                                <th>Total CTC</th>
                                 <td><input type="text" class="form-control text-center font-weight-bold"
                                         id="total_ctc" style="height: 21px;border: 0px none;"
                                         value="{{ $ctc->total_ctc ?? '' }}" readonly>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Communication Allowance</td>
+                                <td><input type="text" class="form-control text-center" id="communication_allowance_amount"
+                                        style="height: 21px;border: 0px none;" value="{{ $ctc->communication_allowance_amount ?? '' }}">
+                                </td>
+                            </tr>
+                              <tr>
+                                <th>Gross CTC</th>
+                                <td><input type="text" class="form-control text-center font-weight-bold"
+                                        id="total_gross_ctc" style="height: 21px;border: 0px none;"
+                                        value="{{ $ctc->total_gross_ctc ?? '' }}" readonly>
                                 </td>
                             </tr>
                         </form>
@@ -1040,7 +1053,17 @@ checked
                     '#emplyerESIC').val()) +
                 parseFloat($('#medical').val()));
             $('#total_ctc').val(total_ctc);
+            $('#total_gross_ctc').val(total_ctc);
         }
+        
+        $(document).on("change", "#communication_allowance_amount", function () {
+        var total_ctc = parseFloat($("#total_ctc").val()) || 0;
+        var comm_alw = parseFloat($(this).val()) || 0;
+        var gross_ctc = total_ctc + comm_alw;
+    
+        $('#total_gross_ctc').val(gross_ctc); // Optional: formats to 2 decimal places
+    });
+
 
         $(document).on('click', '#generateLtr', function() {
             if (confirm('Are you sure you want to generate letter?')) {
@@ -1180,6 +1203,8 @@ checked
                     emplyerESIC: $('#emplyerESIC').val(),
                     medical: $('#medical').val(),
                     total_ctc: $('#total_ctc').val(),
+                    communication_allowance:$('#communication_allowance_amount').val(),
+                    total_gross_ctc:$('#total_gross_ctc').val()
                 };
                 $.ajax({
                     type: 'POST',

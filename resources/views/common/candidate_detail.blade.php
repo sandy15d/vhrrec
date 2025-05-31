@@ -4023,7 +4023,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                     <td>CTC:Rs. <input type="text" name="CTC" id="CTC"
                                             class="form-control form-control-sm d-inline" style="width: 200px;"></td>
                                 </tr>
-
+                       
                                 <tr>
                                     <td>Service Condition</td>
                                     <td>

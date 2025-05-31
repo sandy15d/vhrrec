@@ -69,6 +69,8 @@ class ProcessToEss extends Controller
             'emplyerESIC' => $ctc_query->emplyerESIC,
             'medical' => $ctc_query->medical,
             'total_ctc' => $ctc_query->total_ctc,
+            'communication_allowance'=>$ctc_query->communication_allowance_amount,
+            'total_gross_ctc'=>$ctc_query->total_gross_ctc
         ]);
 
         $edu_array = [];

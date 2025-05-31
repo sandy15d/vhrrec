@@ -32,41 +32,6 @@ class DesignationController extends Controller
     public function syncDesignation()
     {
 
-        $query =  master_designation::truncate();
-
-$response1 = Http::get('https://vnrseeds.co.in/RcdDetails.php?action=Details&val=Designation')->json();
-
-foreach ($response1['Designation_list'] as $key => $value) {
-
-    $temp = array();
-    $temp['DesigId'] = $value['id'];
-    $temp['DesigName'] = $value['designation_name'];
-    $temp['DesigCode'] = '';
-    $temp['Desig_ShortCode'] = '';
-    $temp['CompanyId'] = 1;
-    $temp['DesigStatus'] = 'A';
-
-    // Check if the DesigId already exists in the master_designation table
-    $existing_designation = DB::table('master_designation')
-                            ->where('DesigId', $temp['DesigId'])
-                            ->first();
-
-    if (!$existing_designation) {
-        // If DesigId doesn't exist, then insert the data into master_designation table
-        $query = DB::table('master_designation')->insert($temp);
-    }
-
-}
-
-$response2 = Http::get('https://vnrseeds.co.in/RcdDetails.php?action=Details&val=DeptDesig')->json();
-
-foreach ($response2['Department_Designation_list'] as $key => $value) {
-    // Update the DepartmentId for each DesigId in master_designation table
-    $data2 = DB::table('master_designation')
-            ->where('DesigId', $value['DesigId'])
-            ->update(['DepartmentId' => $value['DepartmentId']]);
-}
-
 
 
 
