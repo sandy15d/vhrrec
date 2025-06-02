@@ -123,7 +123,7 @@ class OfferLtrController extends Controller
             ->first();
         $company = $candidate_detail->SelectedForC;
         $Department = $candidate_detail->SelectedForD;
-        $grade_list = DB::table("master_grade")->where('GradeStatus', 'A')->where('CompanyId', $company)->orderBy('GradeValue', 'desc')->orderBy('GradeValue', 'ASC')->pluck("GradeId", "GradeValue");
+        $grade_list = DB::table("core_grade")->where('is_active', '1')->where('company_id', $company)->orderBy('grade_name', 'ASC')->pluck("id", "grade_name");
 
         $grade_designation_list = DB::table('core_designation_department_mapping')
             ->join('core_designation', 'core_designation.id', '=', 'core_designation_department_mapping.designation_id')

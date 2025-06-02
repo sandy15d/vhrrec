@@ -65,7 +65,7 @@ function CheckReplacementMRF($empid)
             ->leftJoin('master_employee as e1', 'e1.EmployeeID', '=', 'master_employee.RepEmployeeID')
             ->leftJoin('master_department as d', 'd.DepartmentId', '=', 'master_employee.DepartmentId')
             ->leftJoin('master_designation as dg', 'dg.DesigId', '=', 'master_employee.DesigId')
-            ->leftJoin('master_grade as g', 'g.GradeId', '=', 'master_employee.GradeId')
+            ->leftJoin('core_grade as g', 'g.id', '=', 'master_employee.GradeId')
             ->leftJoin('master_headquater as h', 'h.HqId', '=', 'master_employee.Location')
             ->where('master_employee.RepEmployeeID', Auth::user()->id)
             ->where('master_employee.EmpStatus', 'A')
@@ -77,7 +77,7 @@ function CheckReplacementMRF($empid)
                 'c.CompanyCode',
                 'd.DepartmentCode',
                 'dg.DesigName',
-                'g.GradeValue',
+                'g.grade_name',
                 'h.HqName'
             ]);
 
@@ -120,7 +120,7 @@ function CheckReplacementMRF($empid)
              ->leftJoin('master_employee as e1', 'e1.EmployeeID', '=', 'e.RepEmployeeID')
              ->leftJoin('master_department as d', 'd.DepartmentId', '=', 'e.DepartmentId')
              ->leftJoin('master_designation as dg', 'dg.DesigId', '=', 'e.DesigId')
-             ->leftJoin('master_grade as g', 'g.GradeId', '=', 'e.GradeId')
+             ->leftJoin('core_grade as g', 'g.id', '=', 'e.GradeId')
              ->leftJoin('master_headquater as h', 'h.HqId', '=', 'e.Location')
              ->orWhere(function ($query) {
                  $query->orWhere(function ($query) {
@@ -131,17 +131,17 @@ function CheckReplacementMRF($empid)
              })
              ->where('e.RepEmployeeID', $request->EmployeeID)
              ->select(['e.*', 'e1.Fname as RFname', 'e1.Sname as RSname', 'e1.Lname as RLname',
-                 'c.CompanyCode', 'd.DepartmentCode', 'dg.DesigName', 'g.GradeValue', 'h.HqName'])
+                 'c.CompanyCode', 'd.DepartmentCode', 'dg.DesigName', 'g.grade_name', 'h.HqName'])
              ->orderByRaw('(CASE WHEN EXISTS (SELECT MRFId FROM manpowerrequisition WHERE RepEmployeeID = e.EmployeeID) THEN 1 ELSE 0 END) ASC');*/
 
         $emp = DB::select("
-                        SELECT e.*, e1.Fname AS RFname, e1.Sname AS RSname, e1.Lname AS RLname, c.CompanyCode, d.DepartmentCode, dg.DesigName, g.GradeValue, h.HqName
+                        SELECT e.*, e1.Fname AS RFname, e1.Sname AS RSname, e1.Lname AS RLname, c.CompanyCode, d.DepartmentCode, dg.DesigName, g.grade_name, h.HqName
                         FROM master_employee AS e
                         LEFT JOIN master_company AS c ON e.CompanyId = c.CompanyId
                         LEFT JOIN master_employee AS e1 ON e1.EmployeeID = e.RepEmployeeID
                         LEFT JOIN master_department AS d ON d.DepartmentId = e.DepartmentId
                         LEFT JOIN master_designation AS dg ON dg.DesigId = e.DesigId
-                        LEFT JOIN master_grade AS g ON g.GradeId = e.GradeId
+                        LEFT JOIN core_grade AS g ON g.id = e.GradeId
                         LEFT JOIN master_headquater AS h ON h.HqId = e.Location
                         WHERE ((e.EmpStatus = 'D' AND e.DateOfSepration >= '2021-01-01') OR e.EmpStatus = 'A')
                         AND e.RepEmployeeID = " . $request->EmployeeID . "
@@ -197,7 +197,7 @@ function CheckReplacementMRF($empid)
             ->leftJoin('master_employee as e1', 'e1.EmployeeID', '=', 'master_employee.RepEmployeeID')
             ->leftJoin('master_department as d', 'd.DepartmentId', '=', 'master_employee.DepartmentId')
             ->leftJoin('master_designation as dg', 'dg.DesigId', '=', 'master_employee.DesigId')
-            ->leftJoin('master_grade as g', 'g.GradeId', '=', 'master_employee.GradeId')
+            ->leftJoin('core_grade as g', 'g.id', '=', 'master_employee.GradeId')
             ->leftJoin('master_headquater as h', 'h.HqId', '=', 'master_employee.Location')
             ->where('master_employee.RepEmployeeID', Auth::user()->id)
             ->where('master_employee.EmpStatus', 'D')
@@ -210,7 +210,7 @@ function CheckReplacementMRF($empid)
                 'c.CompanyCode',
                 'd.DepartmentCode',
                 'dg.DesigName',
-                'g.GradeValue',
+                'g.grade_name',
                 'h.HqName'
             ]);
 

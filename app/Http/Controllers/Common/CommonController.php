@@ -101,9 +101,9 @@ class CommonController extends Controller
     {
         $company = $request->CompanyId;
         if ($company == 1) {
-            $grade_list = DB::table("master_grade")->where('GradeStatus', 'A')->where('CompanyId', $company)->where('GradeId', '>=', '61')->orderBy('GradeValue', 'ASC')->pluck("GradeId", "GradeValue");
+            $grade_list = DB::table("core_grade")->where('is_active', '1')->where('company_id', $company)->where('id', '>=', '61')->orderBy('grade_name', 'ASC')->pluck("id", "grade_name");
         } else {
-            $grade_list = DB::table("master_grade")->where('GradeStatus', 'A')->where('CompanyId', $company)->orderBy('GradeValue', 'desc')->orderBy('GradeValue', 'ASC')->pluck("GradeId", "GradeValue");
+            $grade_list = DB::table("core_grade")->where('is_active', '1')->where('company_id', $company)->orderBy('grade_name', 'desc')->orderBy('grade_name', 'ASC')->pluck("id", "grade_name");
         }
 
         return response()->json($grade_list);

@@ -1,6 +1,4 @@
 @php
-use function App\Helpers\getDepartmentCode;
-use function App\Helpers\getCompanyCode;
 $Year = date('Y');
 $LtrIssue = DB::table('offerletterbasic')
     ->join('jobapply', 'jobapply.JAId', '=', 'offerletterbasic.JAId')
@@ -243,7 +241,6 @@ $rejected = DB::table('offerletterbasic')
                                             target="_blank">{{ $row->FName }} {{ $row->MName }}
                                             {{ $row->LName }}</a> </td>
                                     <td>{{ getDepartmentCode($row->SelectedForD) }}
-                                        ({{ getCompanyCode($row->SelectedForC) }})
                                     </td>
                                     <td>
                                         {{ $row->FinalSubmit == 1 ? 'Yes' : 'No' }}

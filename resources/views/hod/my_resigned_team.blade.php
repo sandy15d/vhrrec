@@ -108,8 +108,8 @@
                         name: 'DesigName'
                     },
                     {
-                        data: 'GradeValue',
-                        name: 'GradeValue',
+                        data: 'grade_name',
+                        name: 'grade_name',
                         className: 'text-center'
                     },
                     {

@@ -17,9 +17,7 @@ $education_list = DB::table('master_education')
 $institute_list = DB::table('master_institute')
     ->orderBy('InstituteName', 'asc')
     ->pluck('InstituteName', 'InstituteId');
-use function App\Helpers\getDesignationCode;
-use function App\Helpers\getGradeValue;
-use function App\Helpers\getHQ;
+
 @endphp
 @extends('layouts.master')
 @section('title', 'Replacement Manpower Requisition Form')

@@ -25,10 +25,10 @@ class EmployeeController extends Controller
             ->leftJoin('master_employee as e1', 'e1.EmployeeID', '=', 'e.RepEmployeeID')
             ->leftJoin('core_department as d', 'd.id', '=', 'e.DepartmentId')
             ->leftJoin('core_designation as dg', 'dg.id', '=', 'e.DesigId')
-            ->leftJoin('master_grade as g', 'g.GradeId', '=', 'e.GradeId')
+            ->leftJoin('core_grade as g', 'g.id', '=', 'e.GradeId')
             ->where('e.CountryId', session('Set_Country'))
             ->where('e.EmployeeId','>','100000')
-              ->select(['e.*', 'e1.Fname as RFname', 'e1.Sname as RSname', 'e1.Lname as RLname', 'c.company_code', 'd.department_code', 'dg.designation_name', 'g.GradeValue']);
+              ->select(['e.*', 'e1.Fname as RFname', 'e1.Sname as RSname', 'e1.Lname as RLname', 'c.company_code', 'd.department_code', 'dg.designation_name', 'g.grade_name']);
 
         return datatables()->of($employee)
             ->addIndexColumn()

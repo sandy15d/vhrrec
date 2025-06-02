@@ -55,7 +55,7 @@
                         </thead>
                         <tbody>
                             @php
-                                $sql = "SELECT d.DepartmentCode,c.CompanyCode,
+                                $sql = "SELECT d.department_name,c.company_code,
                                             COUNT(CASE WHEN ResumeSource = '1' THEN '' END) as 'Company_Site',
                                             COUNT(CASE WHEN ResumeSource = '2' THEN '' END) as 'Naukri',
                                             COUNT(CASE WHEN ResumeSource = '3' THEN '' END) as 'LinkedIn',
@@ -64,13 +64,13 @@
                                             COUNT(CASE WHEN ResumeSource = '6' THEN '' END) as 'Placement_Agencies',
                                             COUNT(CASE WHEN ResumeSource = '7' THEN '' END) as 'Campus',
                                             COUNT(CASE WHEN ResumeSource = '8' THEN '' END) as 'Others'
-                                            FROM jobapply ja  LEFT JOIN master_department d ON d.DepartmentId = ja.Department LEFT JOIN master_company c ON c.CompanyId = ja.Company GROUP BY ja.Department";
+                                            FROM jobapply ja  LEFT JOIN core_department d ON d.id = ja.Department LEFT JOIN core_company c ON c.id = ja.Company GROUP BY ja.Department";
                                 $result = DB::select($sql);
                                 
                             @endphp
                             @foreach ($result as $row)
                                 <tr class="text-center">
-                                    <td style="text-align: left">{{$row->DepartmentCode}} ({{$row->CompanyCode}})</td>
+                                    <td style="text-align: left">{{$row->department_name}}</td>
                                     <td>{{$row->Company_Site}}</td>
                                     <td>{{$row->Naukri}}</td>
                                     <td>{{$row->LinkedIn}}</td>

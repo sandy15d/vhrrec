@@ -4,19 +4,7 @@
     }
 </style>
 @php
-    use function App\Helpers\getDesignation;
-    use function App\Helpers\getHqStateCode;
-    use function App\Helpers\getHq;
-    use function App\Helpers\getDepartmentCode;
-    use function App\Helpers\getDepartment;
-    use function App\Helpers\getCompanyCode;
-    use function App\Helpers\getCompanyName;
-    use function App\Helpers\getFullName;
-    use function App\Helpers\getGradeValue;
-    use function App\Helpers\getStateName;
-    use function App\Helpers\getStateCode;
-    use function App\Helpers\getDistrictName;
-    use function App\Helpers\getEmployeeDesignation;
+
 
     $JAId = base64_decode($_REQUEST['jaid']);
 

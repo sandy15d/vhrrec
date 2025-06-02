@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class master_grade extends Model
 {
     use HasFactory;
-    protected $table = 'master_grade';
-    protected $primaryKey = 'GradeId';
+    protected $table = 'core_grade';
+    protected $primaryKey = 'id';
     public $timestamps = false;
     protected $fillable = [
-        'GradeId',
-        'GradeValue',
-        'CompanyId',
-        'GadeStatus'
+        'id',
+        'grade_name',
+        'company_id',
+        'is_active',
 
     ];
 }

@@ -467,7 +467,7 @@ use function App\Helpers\getHQ;
                 success: function(data) {
                     if (data.empDetails != '') {
                         $('#Designation').val(data.empDetails[0].DesigName);
-                        $('#Grade').val(data.empDetails[0].GradeValue);
+                        $('#Grade').val(data.empDetails[0].grade_name);
                         $('#ExistingLocation').val(data.empDetails[0].HqName);
                         $('#ExCTC').val(data.empDetails[0].CTC);
                     }

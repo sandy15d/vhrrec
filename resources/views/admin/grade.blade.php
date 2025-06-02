@@ -43,8 +43,8 @@
                     name: 'DT_RowIndex'
                 },
                 {
-                    data: 'GradeValue',
-                    name: 'GradeValue'
+                    data: 'grade_name',
+                    name: 'grade_name'
                 },
                 {
                     data: 'CompanyCode',
