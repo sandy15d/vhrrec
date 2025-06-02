@@ -1,9 +1,4 @@
-@php
-use function App\Helpers\getDepartmentCode;
-use function App\Helpers\getDesignationCode;
-use function App\Helpers\getFullName;
-use function App\Helpers\getCompanyCode;
-@endphp
+
 @extends('layouts.master')
 @section('title', 'Job Offers Report')
 @section('PageContent')
@@ -81,7 +76,7 @@ use function App\Helpers\getCompanyCode;
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->ReferenceNo }}</td>
-                                    <td>{{ getCompanyCode($item->Company) }}</td>
+                                    <td>{{ getcompany_code($item->Company) }}</td>
                                     <td>{{ getDepartmentCode($item->Department) }}</td>
                                    
                                     <td>{{ $item->JobCode }}</td>

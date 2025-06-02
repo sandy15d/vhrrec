@@ -48,7 +48,7 @@
         <p style="text-align: center;font-weight: bold;"><b><u> APPOINTMENT LETTER</u></b></p>
         <div style="font-size: 14px; font-weight: bold;">
             <div style="float: left; width: 60%; text-align: left;">Ref:
-                {{ getCompanyCode($sql->Company) . '_AL/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}
+                {{ getcompany_code($sql->Company) . '_AL/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}
             </div>
             <div style="float: left; width: 40%; text-align: right;">Date:{{ date('d-m-Y', strtotime($sql->A_Date)) }}</div>
         </div>
@@ -65,7 +65,7 @@
 
         <p style="text-align:justify">We take pleasure in appointing you as
             <b>{{ getDesignation($sql->Designation) }}</b> at
-            <b>Grade-{{ getGradeValue($sql->Grade) }}</b> at {{ getCompanyName($sql->Company) }}
+            <b>Grade-{{ getGradeValue($sql->Grade) }}</b> at {{ getcompany_name($sql->Company) }}
             (<strong>"Company"</strong>). The said appointment shall be governed by the terms and
             conditions, specified
             hereinbelow, apart from other service rules and conditions that are applicable or may become

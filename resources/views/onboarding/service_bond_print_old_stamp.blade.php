@@ -74,7 +74,7 @@
 
     <p><b>BETWEEN</b></p>
 
-    <p style="text-align: justify"><b>{{ getCompanyName($sql->Company) }}</b> a Company incorporated
+    <p style="text-align: justify"><b>{{ getcompany_name($sql->Company) }}</b> a Company incorporated
         under the provisions of the Companies Act, 1956 and having its registered office situated at
         Corporate Centre, Canal Road Crossing, Ring Road No.1, Raipur, Chhattisgarh- 492006,
         (hereinafter referred to as the <b>“Company”</b>) which expression shall unless repugnant to the
@@ -123,7 +123,7 @@
     <p style="text-align: justify"><b>AND WHEREAS</b>, in terms of the said letter of appointment, the
         Employee is required to provide an independent undertaking, as herein appearing to back up the
         obligations and liabilities of the Employee as condition of his/her employment.</p>
-        <p style="margin-bottom: 0px;">on behalf of <b>{{ getCompanyName($sql->Company) }}</b></p>
+        <p style="margin-bottom: 0px;">on behalf of <b>{{ getcompany_name($sql->Company) }}</b></p>
     <pagebreak sheet-size="Legal-P" />
     <p style="text-align: justify">NOW, THEREFORE, THIS AGREEMENT WITNESSETH AND THE PARTIES HERETO
         AGREE AS UNDER:</p>
@@ -179,7 +179,7 @@
     <p>IN WITNESS WHEREOF the parties, to this Agreement have signed on the date, month and year first
         mentioned hereinabove. </p>
 
-    <p style="margin-bottom: 0px;">on behalf of <b>{{ getCompanyName($sql->Company) }}</b>
+    <p style="margin-bottom: 0px;">on behalf of <b>{{ getcompany_name($sql->Company) }}</b>
         &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<span
             style="text-align: right">_______________________</span></p>
     <p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;{{ $sql->FName }}

@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 use function App\Helpers\CheckCommControl;
-use function App\Helpers\getCompanyCode;
+use function App\Helpers\getcompany_code;
 use function App\Helpers\getDesignation;
 use function App\Helpers\SendOTP;
 
@@ -144,7 +144,7 @@ class JobController extends Controller
         $jobApply->Department = $DepartmentId;
         $jobApply->save();
         if ($JPId != 0) {
-            CandidateActivityLog::addToCandLog($JCId, $request->Aadhaar, 'Applied for ' . $Title . ' in ' . getCompanyCode($CompanyId));
+            CandidateActivityLog::addToCandLog($JCId, $request->Aadhaar, 'Applied for ' . $Title . ' in ' . getcompany_code($CompanyId));
         } else {
             CandidateActivityLog::addToCandLog($JCId, $request->Aadhaar, 'Candidate Applied without Job Post');
         }

@@ -189,7 +189,7 @@ class MrfController extends Controller
             $InsertId = $MRF->MRFId;
 
 
-            $jobCode = getCompanyCode($request->Company) . '/' . getDepartmentCode($request->Department) . '/' . getDesignationCode($request->Designation) . '/' . $InsertId . '-' . date('Y');
+            $jobCode = getcompany_code($request->Company) . '/' . getDepartmentCode($request->Department) . '/' . getDesignationCode($request->Designation) . '/' . $InsertId . '-' . date('Y');
             $query1 = DB::table('manpowerrequisition')
                 ->where('MRFId', $InsertId)
                 ->update(['JobCode' => $jobCode]);
@@ -325,7 +325,7 @@ class MrfController extends Controller
 
             $InsertId = $MRF->MRFId;
 
-            $jobCode = getCompanyCode($request->Company) . '/' . getDepartmentCode($request->Department) . '/SIP/' . $InsertId . '-' . date('Y');
+            $jobCode = getcompany_code($request->Company) . '/' . getDepartmentCode($request->Department) . '/SIP/' . $InsertId . '-' . date('Y');
             $query1 = DB::table('manpowerrequisition')
                 ->where('MRFId', $InsertId)
                 ->update(['JobCode' => $jobCode]);
@@ -457,7 +457,7 @@ class MrfController extends Controller
 
         $InsertId = $MRF->MRFId;
 
-        $jobCode = getCompanyCode($CompanyId) . '/' . getDepartmentCode($DepartmentId) . '/' . getDesignationCode($DesigId) . '/' . $InsertId . '-' . date('Y');
+        $jobCode = getcompany_code($CompanyId) . '/' . getDepartmentCode($DepartmentId) . '/' . getDesignationCode($DesigId) . '/' . $InsertId . '-' . date('Y');
         $query1 = DB::table('manpowerrequisition')
             ->where('MRFId', $InsertId)
             ->update(['JobCode' => $jobCode]);
@@ -588,7 +588,7 @@ class MrfController extends Controller
 
             $InsertId = $MRF->MRFId;
 
-            $jobCode = getCompanyCode($request->Company) . '/' . getDepartmentCode($request->Department) . '/' . getDesignationCode($request->Designation) . '/' . $InsertId . '-' . date('Y');
+            $jobCode = getcompany_code($request->Company) . '/' . getDepartmentCode($request->Department) . '/' . getDesignationCode($request->Designation) . '/' . $InsertId . '-' . date('Y');
             $query1 = DB::table('manpowerrequisition')
                 ->where('MRFId', $InsertId)
                 ->update(['JobCode' => $jobCode]);

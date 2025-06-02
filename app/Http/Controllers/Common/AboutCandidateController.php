@@ -19,8 +19,6 @@ use App\Models\jobcandidate;
 use Illuminate\Support\Facades\View;
 use Mpdf\Mpdf;
 
-use function App\Helpers\getCompanyName;
-
 class AboutCandidateController extends Controller
 {
     public function candidate_detail()
@@ -973,7 +971,7 @@ class AboutCandidateController extends Controller
             <p style="text-align: center;font-weight:bold;">Service Agreement</p>
         </b>
 
-        <p>For, ' . getCompanyName($sql->Company) . ',</p>
+        <p>For, ' . getcompany_name($sql->Company) . ',</p>
         <div style="text-align: center; font-weight:bold; margin-top:50px; height:70px;">
         <div style="float: left; width: 50%; text-align: left;">___________________<br>Authorized Signatory</div>
 
@@ -1163,7 +1161,7 @@ class AboutCandidateController extends Controller
             <p style="text-align: center;font-weight:bold;">Service Bond (Annexure)</p>
         </b>
 
-        <p>For, ' . getCompanyName($sql->Company) . ',</p>
+        <p>For, ' . getcompany_name($sql->Company) . ',</p>
         <div style="text-align: center; font-weight:bold; margin-top:50px; height:70px;">
         <div style="float: left; width: 50%; text-align: left;">___________________<br>Authorized Signatory</div>
 
@@ -1350,7 +1348,7 @@ class AboutCandidateController extends Controller
             <p style="text-align: center;font-weight:bold;">Confidentiality Agreement</p>
         </b>
 
-        <p>For, ' . getCompanyName($sql->Company) . ',</p>
+        <p>For, ' . getcompany_name($sql->Company) . ',</p>
         <div style="text-align: center; font-weight:bold; margin-top:50px; height:70px;">
         <div style="float: left; width: 50%; text-align: left;">___________________<br>Authorized Signatory</div>
 

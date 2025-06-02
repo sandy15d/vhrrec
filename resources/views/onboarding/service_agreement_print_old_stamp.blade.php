@@ -52,7 +52,7 @@
 
     <div style="text-align: center; font-weight:bold; height:30px;">
         <div style="float: left; width: 50%; text-align: left;">Ref:
-            {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}
+            {{ getcompany_code($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}
         </div>
         <div style="float: right; width: 50%; text-align: right;">Date: @if ($sql->Agr_Date == null)
                 {{ date('d-M-Y') }}
@@ -70,7 +70,7 @@
     <p><b>BY AND BETWEEN:</b></p>
     <ol>
         <li>
-            <b> {{ strtoupper(getCompanyName($sql->Company)) }}</b>, a
+            <b> {{ strtoupper(getcompany_name($sql->Company)) }}</b>, a
             company
             registered under the laws of India with corporate identification number:
             {{ $sql->Company == 1 ? 'U00512CT2004PTC017187' : 'U01400CT2012PTC000139' }},

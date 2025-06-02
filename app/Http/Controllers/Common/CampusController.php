@@ -18,24 +18,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Recruiter\master_post;
-use function App\Helpers\convertData;
 
-use function App\Helpers\getFullName;
-use function App\Helpers\GetJobPostId;
-use function App\Helpers\getStateCode;
-use function App\Helpers\getDepartment;
-use function App\Helpers\getCollegeById;
-use function App\Helpers\getCollegeCode;
-use function App\Helpers\getCompanyCode;
-use function App\Helpers\getDesignation;
-use function App\Helpers\getDistrictName;
-use Illuminate\Support\Facades\Validator;
-use function App\Helpers\getEducationById;
-use function App\Helpers\getDepartmentCode;
-use function App\Helpers\getDesignationCode;
-use function App\Helpers\CheckJobPostCreated;
-use function App\Helpers\getEducationCodeById;
-use function App\Helpers\getSpecializationbyId;
 
 
 class CampusController extends Controller
@@ -753,7 +736,7 @@ class CampusController extends Controller
 
             ->editColumn('SelectedForC', function ($data) {
                 if ($data->SelectedForC != null) {
-                    return getCompanyCode($data->SelectedForC);
+                    return getcompany_code($data->SelectedForC);
                 } else {
                     return '';
                 }

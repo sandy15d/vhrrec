@@ -34,7 +34,7 @@
 
 <p><b>BETWEEN</b></p>
 
-<p style="text-align: justify"><b>{{ getCompanyName($sql->Company) }}</b> a Company incorporated
+<p style="text-align: justify"><b>{{ getcompany_name($sql->Company) }}</b> a Company incorporated
     under the provisions of the Companies Act, 1956 and having its registered office situated at
     Corporate Centre, Canal Road Crossing, Ring Road No.1, Raipur, Chhattisgarh- 492006,
     (hereinafter referred to as the <b>“Company”</b>) which expression shall unless repugnant to the
@@ -138,7 +138,7 @@
 <p>IN WITNESS WHEREOF the parties, to this Agreement have signed on the date, month and year first
     mentioned hereinabove. </p>
 <br><br>
-<p style="margin-bottom: 0px;">on behalf of <b>{{ getCompanyName($sql->Company) }}</b>
+<p style="margin-bottom: 0px;">on behalf of <b>{{ getcompany_name($sql->Company) }}</b>
 
     <br><br>
 <table class="table" style="width: 100%">

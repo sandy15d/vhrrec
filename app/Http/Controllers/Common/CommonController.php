@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 use function App\Helpers\convertData;
-use function App\Helpers\getCompanyCode;
+use function App\Helpers\getcompany_code;
 use function App\Helpers\getDepartmentCode;
 
 use function App\Helpers\getDesignationCode;
@@ -357,9 +357,9 @@ class CommonController extends Controller
         $query = $MRF->save();
         $InsertId = $MRF->MRFId;
         if ($request->MRF_Type == 'SIP' || $request->MRF_Type == 'SIP_HrManual') {
-            $jobCode = getCompanyCode($request->Company) . '/' . getDepartmentCode($request->Department) . '/SIP/' . $InsertId . '-' . date('Y');
+            $jobCode = getcompany_code($request->Company) . '/' . getDepartmentCode($request->Department) . '/SIP/' . $InsertId . '-' . date('Y');
         } else {
-            $jobCode = getCompanyCode($request->Company) . '/' . getDepartmentCode($request->Department) . '/' . getDesignationCode($request->Designation) . '/' . $InsertId . '-' . date('Y');
+            $jobCode = getcompany_code($request->Company) . '/' . getDepartmentCode($request->Department) . '/' . getDesignationCode($request->Designation) . '/' . $InsertId . '-' . date('Y');
         }
 
         $query1 = DB::table('manpowerrequisition')

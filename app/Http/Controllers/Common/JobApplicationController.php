@@ -305,7 +305,7 @@ class JobApplicationController extends Controller
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
-            CandidateActivityLog::addToCandLog($JCId, $Aadhaar, 'Candidate Moved To, ' . getCompanyCode($Company) . ' ,' . getDepartmentCode($Department) . ' Department');
+            CandidateActivityLog::addToCandLog($JCId, $Aadhaar, 'Candidate Moved To, ' . getcompany_code($Company) . ' ,' . getDepartmentCode($Department) . ' Department');
             return response()->json(['status' => 200, 'msg' => 'Candidate Moved Successfully.']);
         }
     }

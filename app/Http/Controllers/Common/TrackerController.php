@@ -148,7 +148,7 @@ class TrackerController extends Controller
         $Aadhaar = $jobcandidates->Aadhaar;
         $CandidateEmail = $jobcandidates->Email;
         $Company = $jobapply->Company;
-        $CompanyName = getCompanyName($Company);
+        $CompanyName = getcompany_name($Company);
 
         if ($BlackList == 1) {
             $query1 = jobcandidate::find($JCId);
@@ -395,7 +395,7 @@ class TrackerController extends Controller
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
-            CandidateActivityLog::addToCandLog($query->JCId, $query->Aadhaar, 'Candidate Slected For - ' . getDepartmentCode($request->SelectedForD) . ' - ' . getCompanyCode($request->SelectedForC));
+            CandidateActivityLog::addToCandLog($query->JCId, $query->Aadhaar, 'Candidate Slected For - ' . getDepartmentCode($request->SelectedForD) . ' - ' . getcompany_code($request->SelectedForC));
             return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully.']);
         }
     }

@@ -129,7 +129,7 @@ $sql = DB::table('jobapply')
     <div class="container">
         <input type="hidden" name="jaid" id="jaid" value="{{ $JAId }}">
         <input type="hidden" name="ltrno" id="ltrno"
-            value="{{ getCompanyCode($sql->Company) .'_SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$sql->JAId }}">
+            value="{{ getcompany_code($sql->Company) .'_SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$sql->JAId }}">
 
         <div id="servicebond_ltr">
 
@@ -140,7 +140,7 @@ $sql = DB::table('jobapply')
                     <p style="margin-bottom:50px;"></p>
                     <p class="text-center "><b> Service Bond (Annexure)</b></p>
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) .'_SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$sql->JAId }}</b>
+                            {{ getcompany_code($sql->Company) .'_SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$sql->JAId }}</b>
                         <span style="float:right"><b>Date:@if ($sql->B_Date != '')
                                     {{ date('d/m/Y', strtotime($sql->B_Date)) }}
                                 @else
@@ -161,7 +161,7 @@ $sql = DB::table('jobapply')
 
                     <p><b>BETWEEN</b></p>
 
-                    <p style="text-align: justify"><b>{{ getCompanyName($sql->Company) }}</b> a Company incorporated
+                    <p style="text-align: justify"><b>{{ getcompany_name($sql->Company) }}</b> a Company incorporated
                         under the provisions of the Companies Act, 1956 and having its registered office situated at
                         Corporate Centre, Canal Road Crossing, Ring Road No.1, Raipur, Chhattisgarh- 492006,
                         (hereinafter referred to as the <b>“Company”</b>) which expression shall unless repugnant to the
@@ -210,7 +210,7 @@ $sql = DB::table('jobapply')
                         Employee is required to provide an independent undertaking, as herein appearing to back up the
                         obligations and liabilities of the Employee as condition of his/her employment.</p>
                     <br><br>
-                    <p style="margin-bottom: 0px;">on behalf of <b>{{ getCompanyName($sql->Company) }}</b>
+                    <p style="margin-bottom: 0px;">on behalf of <b>{{ getcompany_name($sql->Company) }}</b>
                         &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<span
                             style="text-align: right">_______________________</span></p>
                     <p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Employee
@@ -225,7 +225,7 @@ $sql = DB::table('jobapply')
                 <div class="subpage ml-3">
 
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) .'_SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$sql->JAId }}</b>
+                            {{ getcompany_code($sql->Company) .'_SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$sql->JAId }}</b>
                         <span style="float:right"><b>Date:@if ($sql->B_Date != '')
                                     {{ date('d/m/Y', strtotime($sql->B_Date)) }}
                                 @else
@@ -273,7 +273,7 @@ $sql = DB::table('jobapply')
                     </ol>
 
                     <br><br>
-                    <p style="margin-bottom: 0px;">on behalf of <b>{{ getCompanyName($sql->Company) }}</b>
+                    <p style="margin-bottom: 0px;">on behalf of <b>{{ getcompany_name($sql->Company) }}</b>
                         &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<span
                             style="text-align: right">_______________________</span></p>
                     <p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Employee
@@ -288,7 +288,7 @@ $sql = DB::table('jobapply')
                 <div class="subpage ml-3">
 
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) .'_SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$sql->JAId }}</b>
+                            {{ getcompany_code($sql->Company) .'_SB/' .getDepartmentCode($sql->Department) .'/' .date('M-Y', strtotime($sql->JoinOnDt)) .'/' .$sql->JAId }}</b>
                         <span style="float:right"><b>Date:@if ($sql->B_Date != '')
                                     {{ date('d/m/Y', strtotime($sql->B_Date)) }}
                                 @else
@@ -313,7 +313,7 @@ $sql = DB::table('jobapply')
                     <p>IN WITNESS WHEREOF the parties, to this Agreement have signed on the date, month and year first
                         mentioned hereinabove. </p>
                     <br><br>
-                    <p style="margin-bottom: 0px;">on behalf of <b>{{ getCompanyName($sql->Company) }}</b>
+                    <p style="margin-bottom: 0px;">on behalf of <b>{{ getcompany_name($sql->Company) }}</b>
                         &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<span
                             style="text-align: right">_______________________</span></p>
                     <p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Employee

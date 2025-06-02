@@ -123,18 +123,7 @@
     </style>
 </head>
 @php
-use function App\Helpers\getDesignation;
-use function App\Helpers\getHqStateCode;
-use function App\Helpers\getHq;
-use function App\Helpers\getDepartmentCode;
-use function App\Helpers\getDepartment;
-use function App\Helpers\getCompanyCode;
-use function App\Helpers\getCompanyName;
-use function App\Helpers\getFullName;
-use function App\Helpers\getGradeValue;
-use function App\Helpers\getStateName;
-use function App\Helpers\getDistrictName;
-use function App\Helpers\getEmployeeDesignation;
+
 $LtrId = $_REQUEST['LtrId'];
 $sql = DB::table('offerletterbasic_history')
     ->leftJoin('jobapply', 'offerletterbasic_history.JAId', '=', 'jobapply.JAId')
@@ -183,7 +172,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                         <b>{{ getDesignation($sql->Designation) }}</b> at
                         <b>Grade - {{ getGradeValue($sql->Grade) }}</b> in
                         <b>{{ getDepartment($sql->Department) }}</b>
-                        Department of {{ getCompanyName($sql->Company) }} (<strong>"Company"</strong>)
+                        Department of {{ getcompany_name($sql->Company) }} (<strong>"Company"</strong>)
                     </p>
                     <p>This offer is subject to following terms and conditions:</p>
                     <ol>
@@ -502,7 +491,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                 <td>Employer’s ESIC contribution</td>
                                 <td class="text-center">{{ $sql->emplyerESIC ?? '' }} </td>
                             </tr>
-                           <tr class="{{ $ctc->medical <= 0 ? 'd-none' : '' }}">
+                           <tr class="{{ $sql->medical <= 0 ? 'd-none' : '' }}">
                                 <td>Insurance Policy Premium </td>
                                 <td class="text-center">{{ $sql->medical ?? '' }}</td>
                             </tr>
@@ -560,21 +549,21 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             <tr>
                               <td></td>
                               <td>Lodging for City in Category A</td>
-                              <td>{{ $elg->LoadCityA ?? '' }}
+                              <td>{{ $sql->LoadCityA ?? '' }}
                               </td>
                              
                           </tr>
                             <tr>
                               <td></td>
                               <td>Lodging for City in Category B</td>
-                              <td>{{ $elg->LoadCityB ?? '' }}
+                              <td>{{ $sql->LoadCityB ?? '' }}
                               </td>
                              
                           </tr>
                             <tr>
                               <td></td>
                               <td>Lodging for City in Category C</td>
-                              <td>{{ $elg->LoadCityC ?? '' }}
+                              <td>{{ $sql->LoadCityC ?? '' }}
                               </td>
                              
                           </tr>
@@ -583,7 +572,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                 <td class="text-center"><?= ++$rowCount ?></td>
                                 <td style="width:402px;"><b>Lodging </b> (Actual with upper limits per day)
                                 </td>
-                                <td style="width:120px;">{{ $elg->LoadCityA ?? '' }}
+                                <td style="width:120px;">{{ $sql->LoadCityA ?? '' }}
                                 </td>
                             </tr>
                             @endif
@@ -627,7 +616,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                                          ( Max 75Kms/day and 1800km/month)
                                                  @endif 
                                                 </td>
-                                                <td class="text-center">{{ $elg->TwoWheel }}</td>
+                                                <td class="text-center">{{ $sql->TwoWheel }}</td>
                                             </tr>
                                         @endif
                             @if ($sql->FourWheel != '')
@@ -639,7 +628,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                 </tr>
                             @endif
 
-                            @if ($elg->Train_Class != '')
+                            @if ($sql->Train_Class != '')
                             <tr>
                                 <td class="text-center"><?= ++$rowCount ?></td>
                                 <td colspan="2"><b>Mode of Travel outside HQ</b></b></td>

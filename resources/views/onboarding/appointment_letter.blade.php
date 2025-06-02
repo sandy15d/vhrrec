@@ -147,7 +147,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
     <div class="container">
         <input type="hidden" name="jaid" id="jaid" value="{{ $JAId }}">
         <input type="hidden" name="ltrno" id="ltrno"
-            value="{{ getCompanyCode($sql->Company) . '_AL/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}">
+            value="{{ getcompany_code($sql->Company) . '_AL/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}">
 
         <div id="appointment_ltr">
             <div class="page">
@@ -156,7 +156,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                     <p style="margin-bottom:100px;"></p>
                     <p class="text-center "><b><u> APPOINTMENT LETTER</u></b></p>
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                            {{ getcompany_code($sql->Company) . '_AL/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date:{{ date('d-m-Y', strtotime($sql->A_Date)) }}</span></b>
                     </p>
 
@@ -182,7 +182,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
 
                     <p style="text-align:justify">We take pleasure in appointing you as
                         <b>{{ getDesignation($sql->Designation) }}</b> at
-                        <b>Grade-{{ getGradeValue($sql->Grade) }}</b> at {{ getCompanyName($sql->Company) }}
+                        <b>Grade-{{ getGradeValue($sql->Grade) }}</b> at {{ getcompany_code($sql->Company) }}
                         (<strong>"Company"</strong>). The said appointment shall be governed by the terms and
                         conditions, specified
                         hereinbelow, apart from other service rules and conditions that are applicable or may become
@@ -500,7 +500,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                     <br>
                     <p>We wish you a long and successful association with the Company.</p>
                     <br><br>
-                    <p><strong>For, {{ getCompanyName($sql->Company) }}</strong></p>
+                    <p><strong>For, {{ getcompany_name($sql->Company) }}</strong></p>
                     <br>
                     <br>
                     ------------------------------------

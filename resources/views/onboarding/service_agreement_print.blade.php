@@ -46,7 +46,7 @@
     <p><b>BY AND BETWEEN:</b></p>
     <ol>
         <li>
-            <p style="text-align: justify"><b> {{ strtoupper(getCompanyName($sql->Company)) }}</b>, a
+            <p style="text-align: justify"><b> {{ strtoupper(getcompany_name($sql->Company)) }}</b>, a
                 company
                 registered under the laws of India with corporate identification number:
                 U00512CT2004PTC017187,

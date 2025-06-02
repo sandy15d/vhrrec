@@ -18,11 +18,6 @@ use App\Models\jobapply;
 use App\Models\jobpost;
 use Illuminate\Support\Facades\Mail;
 
-use function App\Helpers\getCompanyCode;
-use function App\Helpers\getCompanyName;
-use function App\Helpers\getDepartmentCode;
-use function App\Helpers\getEmployeeEmailId;
-use function App\Helpers\getGradeValue;
 use Illuminate\Support\Facades\View;
 use Mpdf\Mpdf;
 
@@ -482,7 +477,7 @@ class OfferLtrController extends Controller
 
         $Month = date('M');
         $Year = date('Y');
-        $LtrNo = getCompanyCode($SelectedForC) . '_OL/' . getDepartmentCode($SelectedForD) . '/' . $Month . '-' . $Year . '/' . $JAId . $postfix_ltr;
+        $LtrNo = getcompany_code($SelectedForC) . '_OL/' . getDepartmentCode($SelectedForD) . '/' . $Month . '-' . $Year . '/' . $JAId . $postfix_ltr;
         $LtrDate = now();
         $update_query = DB::table('offerletterbasic')->where('JAId', $JAId)->update(
             [
@@ -728,7 +723,7 @@ class OfferLtrController extends Controller
                 "candidate_name" => $query->FName . ' ' . $query->MName . ' ' . $query->LName,
                 "reference_no" => $query->ReferenceNo,
                 "job_title" => $query->DesigName,
-                "company" => getCompanyName($query->Company),
+                "company" => getcompany_name($query->Company),
                 "grade" => getGradeValue($query->Grade),
                 "subject" => "Job Offer Letter",
                 "offer_link" => route('candidate-offer-letter') . '?jaid=' . $sendId

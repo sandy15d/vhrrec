@@ -12,12 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
-use function App\Helpers\getCompanyCode;
-use function App\Helpers\getDepartmentCode;
-use function App\Helpers\getDepartmentShortCode;
-use function App\Helpers\getDesignationCode;
-use function App\Helpers\getFullName;
-use function App\Helpers\getGradeValue;
+
 
 class PositionCodeController extends Controller
 {
@@ -121,7 +116,7 @@ class PositionCodeController extends Controller
                 return getFullName($sql->employee_id);
             })
             ->addColumn('Company', function ($sql) {
-                return getCompanyCode($sql->company_id);
+                return getcompany_code($sql->company_id);
             })
             ->addColumn('Department', function ($sql) {
                 return getDepartmentCode($sql->department_id);
@@ -159,7 +154,7 @@ class PositionCodeController extends Controller
             ->addIndexColumn()
 
             ->addColumn('Company', function ($sql) {
-                return getCompanyCode($sql->company_id);
+                return getcompany_code($sql->company_id);
             })
             ->addColumn('Department', function ($sql) {
                 return getDepartmentCode($sql->department_id);

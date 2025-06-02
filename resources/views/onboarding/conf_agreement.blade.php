@@ -169,7 +169,7 @@ $sql = DB::table('jobapply')
                     </p>
                     <p>By and Between</p>
 
-                    <p style="text-align: justify"><b> {{ strtoupper(getCompanyName($sql->Company)) }}</b>, a
+                    <p style="text-align: justify"><b> {{ strtoupper(getcompany_name($sql->Company)) }}</b>, a
                         private limited company incorporated under the provisions of the Companies Act, 1956 and
                         having its Registered and Administrative office situated at Corporate Centre, Canal Road
                         Crossing, Ring Road No.1, Raipur 492006, C.G. (hereinafter referred to as the “Company”,
@@ -680,7 +680,7 @@ $sql = DB::table('jobapply')
                     <br><br>
                     <p style="margin-bottom: 0px;">Signed and Delivered by      &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<span
                         style="text-align: right">Signed and Delivered By</span></p>
-                    <p style="margin-bottom: 0px;"><b>{{ getCompanyName($sql->Company) }}</b>
+                    <p style="margin-bottom: 0px;"><b>{{ getcompany_name($sql->Company) }}</b>
                       </p>
                   <br><br>
                                 <p style="margin-bottom: 0px;"><b>Authorized Signatory</b>

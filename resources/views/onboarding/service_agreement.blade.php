@@ -140,7 +140,7 @@ $SQL = DB::getQueryLog();
     <div class="container">
         <input type="hidden" name="jaid" id="jaid" value="{{ $JAId }}">
         <input type="hidden" name="ltrno" id="ltrno"
-            value="{{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}">
+            value="{{ getcompany_code($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}">
 
         <div id="ServiceAgreement_ltr">
 
@@ -148,7 +148,7 @@ $SQL = DB::getQueryLog();
                 <div class="subpage">
                     <p style="margin-bottom: 30px;"></p>
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                            {{ getcompany_code($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date: @if ($sql->Agr_Date != '')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @else
@@ -165,7 +165,7 @@ $SQL = DB::getQueryLog();
                     <p><b>BY AND BETWEEN:</b></p>
                     <ol>
                         <li>
-                            <p style="text-align: justify"><b> {{ strtoupper(getCompanyName($sql->Company)) }}</b>, a
+                            <p style="text-align: justify"><b> {{ strtoupper(getcompany_name($sql->Company)) }}</b>, a
                                 company
                                 registered under the laws of India with corporate identification number:
                                 U00512CT2004PTC017187,
@@ -257,7 +257,7 @@ $SQL = DB::getQueryLog();
                 <div class="subpage">
 
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                            {{ getcompany_code($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date: @if ($sql->Agr_Date != '')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @else
@@ -328,7 +328,7 @@ $SQL = DB::getQueryLog();
             <div class="page">
                 <div class="subpage">
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                            {{ getcompany_code($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date: @if ($sql->Agr_Date != '')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @else
@@ -398,7 +398,7 @@ $SQL = DB::getQueryLog();
             <div class="page">
                 <div class="subpage">
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                            {{ getcompany_code($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date: @if ($sql->Agr_Date != '')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @else
@@ -469,7 +469,7 @@ $SQL = DB::getQueryLog();
             <div class="page">
                 <div class="subpage">
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                            {{ getcompany_code($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date: @if ($sql->Agr_Date != '')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @else
@@ -574,7 +574,7 @@ $SQL = DB::getQueryLog();
             <div class="page">
                 <div class="subpage">
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                            {{ getcompany_code($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date: @if ($sql->Agr_Date != '')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @else
@@ -639,7 +639,7 @@ $SQL = DB::getQueryLog();
             <div class="page">
                 <div class="subpage">
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                            {{ getcompany_code($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date: @if ($sql->Agr_Date != '')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @else
@@ -717,7 +717,7 @@ $SQL = DB::getQueryLog();
             <div class="page">
                 <div class="subpage">
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                            {{ getcompany_code($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date: @if ($sql->Agr_Date != '')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @else
@@ -793,7 +793,7 @@ $SQL = DB::getQueryLog();
             <div class="page">
                 <div class="subpage">
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                            {{ getcompany_code($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date: @if ($sql->Agr_Date != '')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @else
@@ -873,7 +873,7 @@ $SQL = DB::getQueryLog();
             <div class="page">
                 <div class="subpage">
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                            {{ getcompany_code($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date: @if ($sql->Agr_Date != '')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @else
@@ -946,7 +946,7 @@ $SQL = DB::getQueryLog();
             <div class="page">
                 <div class="subpage">
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                            {{ getcompany_code($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date: @if ($sql->Agr_Date != '')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @else
@@ -1015,7 +1015,7 @@ $SQL = DB::getQueryLog();
             <div class="page">
                 <div class="subpage">
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                            {{ getcompany_code($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date: @if ($sql->Agr_Date != '')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @else
@@ -1093,7 +1093,7 @@ $SQL = DB::getQueryLog();
             <div class="page">
                 <div class="subpage">
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                            {{ getcompany_code($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date: @if ($sql->Agr_Date != '')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @else
@@ -1166,7 +1166,7 @@ $SQL = DB::getQueryLog();
             <div class="page">
                 <div class="subpage">
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                            {{ getcompany_code($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date: @if ($sql->Agr_Date != '')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @else
@@ -1239,7 +1239,7 @@ $SQL = DB::getQueryLog();
             <div class="page">
                 <div class="subpage">
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                            {{ getcompany_code($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date: @if ($sql->Agr_Date != '')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @else
@@ -1335,7 +1335,7 @@ $SQL = DB::getQueryLog();
             <div class="page">
                 <div class="subpage">
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                            {{ getcompany_code($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date: @if ($sql->Agr_Date != '')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @else
@@ -1365,7 +1365,7 @@ $SQL = DB::getQueryLog();
                 <div class="subpage">
 
                     <p style="font-size:16px;"><b>Ref:
-                            {{ getCompanyCode($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
+                            {{ getcompany_code($sql->Company) . '_AL-SA/' . getDepartmentCode($sql->Department) . '/' . date('M-Y', strtotime($sql->JoinOnDt)) . '/' . $JAId }}</b>
                         <span style="float:right"><b>Date: @if ($sql->Agr_Date != '')
                                     {{ date('d-m-Y', strtotime($sql->Agr_Date)) }}
                                 @else
