@@ -11,15 +11,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Helpers\CandidateActivityLog;
-use App\Helpers\UserNotification;
 
 
-use function App\Helpers\getCompanyCode;
-use function App\Helpers\getDepartment;
-use function App\Helpers\getDepartmentCode;
-use function App\Helpers\getDesignation;
-use function App\Helpers\ResumeSourceCount;
 use Image;
 
 class JobApplicationController extends Controller
@@ -28,7 +21,7 @@ class JobApplicationController extends Controller
 
     public function job_response()
     {
-        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
+        $company_list = DB::table("core_company")->orderBy('company_code', 'desc')->pluck("company_code", "id");
         $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
         $source_list = DB::table("master_resumesource")->where('Status', 'A')->Where('ResumeSouId', '!=', '7')->pluck('ResumeSource', 'ResumeSouId');
         return view('common.job_response', compact('company_list', 'months', 'source_list'));
@@ -105,7 +98,7 @@ class JobApplicationController extends Controller
 
     public function job_applications(Request $request)
     {
-        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
+        $company_list = DB::table("core_company")->orderBy('company_code', 'desc')->pluck("company_code", "id");
         $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
         $source_list = DB::table("master_resumesource")->where('Status', 'A')->Where('ResumeSouId', '!=', '7')->pluck('ResumeSource', 'ResumeSouId');
         $education_list = DB::table("master_education")->where('Status', 'A')->orderBy('EducationCode', 'asc')->pluck("EducationCode", "EducationId");

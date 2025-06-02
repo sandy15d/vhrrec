@@ -550,9 +550,9 @@
                 LocCount = (data.LocationDetails).length;
                 for (j = 1; j <= LocCount; j++) {
                     mulLocation(j);
-                    $('#State' + j).val(data.LocationDetails[j - 1].state);
-                    $('#City' + j).val(data.LocationDetails[j - 1].city);
-                    $('#ManPower' + j).val(data.LocationDetails[j - 1].nop);
+                    $('#State' + j).val(data.LocationDetails[j - 1].State);
+                    $('#City' + j).val(data.LocationDetails[j - 1].City);
+                    $('#ManPower' + j).val(data.LocationDetails[j - 1].Nop);
 
                 }
 

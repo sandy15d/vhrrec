@@ -249,7 +249,7 @@ class CommonController extends Controller
     {
         $MRFId = $request->MRFId;
         $MRFDetails = master_mrf::find($MRFId);
-        $LocationDetail = unserialize($MRFDetails->LocationIds);
+        $LocationDetail = DB::table('mrf_location_position')->where('MRFId', $request->MRFId)->get();
         $UniversityDetail = unserialize($MRFDetails->EducationInsId);
         $KPDetail = unserialize($MRFDetails->KeyPositionCriteria);
         $EducationDetail = unserialize($MRFDetails->EducationId);

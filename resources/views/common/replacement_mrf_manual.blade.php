@@ -1,7 +1,5 @@
 @php
-use function App\Helpers\getDesignationCode;
-use function App\Helpers\getGradeValue;
-use function App\Helpers\getHQ;
+
 @endphp
 @extends('layouts.master')
 @section('title', 'New Manpower Requisition Form')
@@ -73,7 +71,7 @@ use function App\Helpers\getHQ;
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Deartment<font class="text-danger">*</font>
+                                        <th>Department<font class="text-danger">*</font>
                                         </th>
                                         <td>
                                             <div class="spinner-border text-primary d-none" role="status" id="DeptLoader">
@@ -134,16 +132,16 @@ use function App\Helpers\getHQ;
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Desired Location:</th>
+                                        <th>Desired Location:</th>  
                                         <td>
                                             <div style="width: 50%;display: inline-block;float: left">
-                                                <select id="State" name="State"
+                                                <select id="State" name="State[]"
                                                     class="form-control form-select form-select-sm reqinp"
                                                     onchange="getLocation(this.value)">
                                                     <option disabled="" selected="">Select State</option>
                                                     @foreach ($state_list as $key => $value)
                                                         <option value="{{ $key }}">{{ $value }}</option>
-                                                    @endforeach
+                                                    @endforeach 
                                                 </select>
                                             </div>
                                             <div class="spinner-border text-primary d-none" role="status" id="LocLoader">
@@ -151,10 +149,10 @@ use function App\Helpers\getHQ;
                                             </div>
                                             <div style="width: 50%;display: inline-block;float: left"
                                                 class="ml-3">
-                                                <select id="City" name="City"
+                                                <select id="City" name="City[]"  
                                                     class="form-control form-select form-select-sm">
                                                     <option disabled="" selected="">Select City</option>
-                                                </select>
+                                                </select> 
                                             </div>
                                         </td>
                                     </tr>
@@ -165,9 +163,11 @@ use function App\Helpers\getHQ;
                                             <table class="table borderless" style="margin-bottom: 0px;">
                                                 <tr>
                                                     <td><input type="text" name="MinCTC" id="MinCTC"
-                                                            class="form-control form-control-sm" placeholder="Min"></td>
+                                                            class="form-control form-control-sm" placeholder="Min">
+                                                    </td>
                                                     <td><input type="text" name="MaxCTC" id="MaxCTC"
-                                                            class="form-control form-control-sm" placeholder="Max"> </td>
+                                                            class="form-control form-control-sm" placeholder="Max"> 
+                                                    </td>
                                                 </tr>
                                             </table>
                                         </td>
@@ -242,8 +242,8 @@ use function App\Helpers\getHQ;
                             </table>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" id="Cancle">Cancle</button>
-                            <button type="submit" class="btn btn-primary" id="SaveNewMrf">Save changes</button>
+                            <button type="button" class="btn btn-secondary" id="Cancle">Cancel</button>
+                            <button type="submit" class="btn btn-primary" id="SaveNewMrf">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -466,7 +466,7 @@ use function App\Helpers\getHQ;
                 },
                 success: function(data) {
                     if (data.empDetails != '') {
-                        $('#Designation').val(data.empDetails[0].DesigName);
+                        $('#Designation').val(data.empDetails[0].designation_name);
                         $('#Grade').val(data.empDetails[0].grade_name);
                         $('#ExistingLocation').val(data.empDetails[0].HqName);
                         $('#ExCTC').val(data.empDetails[0].CTC);

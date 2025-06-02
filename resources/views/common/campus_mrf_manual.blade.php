@@ -81,7 +81,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Deartment<font class="text-danger">*</font>
+                                        <th>Department<font class="text-danger">*</font>
                                         </th>
                                         <td>
                                             <div class="spinner-border text-primary d-none" role="status" id="DeptLoader">
@@ -131,7 +131,7 @@
                                         <td>
                                             <table class="table borderless" style="margin-bottom: 0px;">
                                                 <tr>
-                                                   
+
                                                     <td><input type="text" name="MaxCTC" id="MaxCTC"
                                                             class="form-control form-control-sm" placeholder="Max"> </td>
                                                             <td> CTC per annum</td>
@@ -197,8 +197,8 @@
                             </table>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" id="Cancle">Cancle</button>
-                            <button type="submit" class="btn btn-danger" id="SaveNewMrf">Save changes</button>
+                            <button type="button" class="btn btn-secondary" id="Cancle">Cancel</button>
+                            <button type="submit" class="btn btn-danger" id="SaveNewMrf">Submit</button>
                         </div>
                     </form>
                 </div>

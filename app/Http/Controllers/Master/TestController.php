@@ -18,9 +18,9 @@ use ZipArchive;
 
 class TestController extends Controller
 {
-    /*
+    
     // Fetch the 'LocationIds' and 'MRFId' columns from the manpowerrequisition table
-    public function index()
+   /*  public function index()
     {
 
         $locationIds = DB::table('manpowerrequisition')->pluck('LocationIds', 'MRFId')->toArray(); // Convert collection to array
@@ -67,8 +67,8 @@ class TestController extends Controller
                 \Log::warning("Records for MRFId: $mrfId are not properly structured as an array.");
             }
         }
-    }
-    */
+    } */
+   
 
 
     public function core_department_map()
@@ -412,7 +412,7 @@ class TestController extends Controller
     }
 
 
-    public function index()
+   /*  public function index()
     {
         // Select resumes from the database with explicit column selection
         $resumes = DB::table('jobcandidates')
@@ -452,5 +452,5 @@ class TestController extends Controller
         }
     
         return response()->json(['error' => 'Failed to create zip file'], 500);
-    }
+    } */
 }

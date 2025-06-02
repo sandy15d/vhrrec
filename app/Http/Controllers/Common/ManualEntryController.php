@@ -191,7 +191,7 @@ class ManualEntryController extends Controller
             $KeyPosition = $request->KeyPosition;
 
 
-            $locArray =[];
+            $locArray = [];
             // Check if $State is a non-empty array
             if (!empty($State) && is_array($State)) {
                 // Iterate over the array with index
@@ -247,7 +247,7 @@ class ManualEntryController extends Controller
             $MRF->DepartmentId = $request->Department;
             $MRF->DesigId = $request->Designation;
             $MRF->Positions = array_sum($ManPower);
-           // $MRF->LocationIds = $locArray_str;
+            // $MRF->LocationIds = $locArray_str;
             $MRF->MinCTC = $request->MinCTC;
             $MRF->MaxCTC = $request->MaxCTC;
             $MRF->WorkExp = $request->WorkExp;
@@ -289,9 +289,9 @@ class ManualEntryController extends Controller
                     "subject" => 'New Manual MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id),
                     "Employee" => getFullName(Auth::user()->id),
                 ];
-                if (CheckCommControl(3) == 1) {  //if MRF created by Recruiter  communication control is on
+               /*  if (CheckCommControl(3) == 1) {  //if MRF created by Recruiter  communication control is on
                     Mail::to("khushboo.sahu@vnrseeds.com")->send(new MrfCreationMail($details));
-                }
+                } */
                 return response()->json(['status' => 200, 'msg' => 'New Manual MRF has been successfully created.']);
             }
         }
@@ -317,7 +317,7 @@ class ManualEntryController extends Controller
             $Education = $request->Education;
             $Specialization = $request->Specialization;
             $KeyPosition = $request->KeyPosition;
-            $locArray =[];
+            $locArray = [];
             // Check if $State is a non-empty array
             if (!empty($State) && is_array($State)) {
                 // Iterate over the array with index
@@ -369,7 +369,7 @@ class ManualEntryController extends Controller
             $MRF->CompanyId = $request->Company;
             $MRF->DepartmentId = $request->Department;
             $MRF->Positions = array_sum($ManPower);
-          //  $MRF->LocationIds = $locArray_str;
+            //  $MRF->LocationIds = $locArray_str;
             $MRF->Stipend = $request->Stipend;
             $MRF->TwoWheeler = $request->two_wheeler;
             $MRF->DA = $request->da;
@@ -415,9 +415,9 @@ class ManualEntryController extends Controller
                     "subject" => 'Manual SIP MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id),
                     "Employee" => getFullName(Auth::user()->id),
                 ];
-                if (CheckCommControl(3) == 1) {  //if MRF created by Recruiter  communication control is on
+                /* if (CheckCommControl(3) == 1) {  //if MRF created by Recruiter  communication control is on
                     Mail::to("khushboo.sahu@vnrseeds.com")->send(new MrfCreationMail($details));
-                }
+                } */
                 return response()->json(['status' => 200, 'msg' => 'SIP/Internship MRF has been successfully created.']);
             }
         }
@@ -437,7 +437,7 @@ class ManualEntryController extends Controller
         $Education = $request->Education;
         $Specialization = $request->Specialization;
         $KeyPosition = $request->KeyPosition;
-        $locArray =[];
+        $locArray = [];
         // Check if $State is a non-empty array
         if (!empty($State) && is_array($State)) {
             // Iterate over the array with index
@@ -564,7 +564,7 @@ class ManualEntryController extends Controller
             $Education = $request->Education;
             $Specialization = $request->Specialization;
             $KeyPosition = $request->KeyPosition;
-            $locArray =[];
+            $locArray = [];
             // Check if $State is a non-empty array
             if (!empty($State) && is_array($State)) {
                 // Iterate over the array with index
@@ -659,10 +659,10 @@ class ManualEntryController extends Controller
                     "subject" => 'Manual Campus Hiring MRF ' . $jobCode . ' is created by ' . getFullName(Auth::user()->id),
                     "Employee" => getFullName(Auth::user()->id),
                 ];
-                if (CheckCommControl(3) == 1) {  //if MRF created by Recruiter  communication control is on
+               /*  if (CheckCommControl(3) == 1) {  //if MRF created by Recruiter  communication control is on
                     Mail::to("khushboo.sahu@vnrseeds.com")->send(new MrfCreationMail($details));
                     Mail::to(getEmailID($request->OnBehalf))->send(new MrfCreationMail($details));
-                }
+                } */
                 return response()->json(['status' => 200, 'msg' => 'Manual Campus Hiring MRF has been successfully created.']);
             }
         }

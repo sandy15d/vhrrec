@@ -1,10 +1,5 @@
 @php
-use function App\Helpers\getDesignation;
-use function App\Helpers\getEducationCodeById;
-use function App\Helpers\getSpecializationbyId;
-use function App\Helpers\getResumeSourceById;
-use function App\Helpers\getStateName;
-use function App\Helpers\CheckDuplicate;
+
 $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
 @endphp
 @extends('layouts.master')

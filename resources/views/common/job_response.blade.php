@@ -1,10 +1,4 @@
-@php
-use function App\Helpers\getDesignation;
-use function App\Helpers\getEducationById;
-use function App\Helpers\getSpecializationbyId;
-use function App\Helpers\getResumeSourceById;
-use function App\Helpers\getStateName;
-@endphp
+
 @extends('layouts.master')
 @section('title', 'Jobs & Response')
 @section('PageContent')

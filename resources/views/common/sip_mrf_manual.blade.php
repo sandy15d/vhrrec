@@ -67,7 +67,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Deartment<font class="text-danger">*</font>
+                                        <th>Department<font class="text-danger">*</font>
                                         </th>
                                         <td>
                                             <div class="spinner-border text-primary d-none" role="status" id="DeptLoader">
@@ -236,8 +236,8 @@
                             </table>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" id="Cancle">Cancle</button>
-                            <button type="submit" class="btn btn-success" id="SaveSipMrf">Save changes</button>
+                            <button type="button" class="btn btn-secondary" id="Cancle">Cancel</button>
+                            <button type="submit" class="btn btn-success" id="SaveSipMrf">Submit</button>
                         </div>
                     </form>
                 </div>
