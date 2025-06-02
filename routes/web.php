@@ -547,13 +547,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
 
     //!======================== Region Master =========================== */
 
-    Route::get('region', [RegionController::class, 'region'])->name('admin.region');
+/*     Route::get('region', [RegionController::class, 'region'])->name('admin.region');
     Route::post('syncRegion', [RegionController::class, 'syncRegion'])->name('syncRegion');
     Route::get('getAllRegion', [RegionController::class, 'getAllRegion'])->name('getAllRegion');
     Route::get('getAllZone', [RegionController::class, 'getAllZone'])->name('getAllZone');
     Route::get('hq_wise_region', [RegionController::class, 'hq_wise_region'])->name('hq_wise_region');
     Route::post('syncHqRegion', [RegionController::class, 'syncHqRegion'])->name('syncHqRegion');
-    Route::post('getAllRegionHq', [RegionController::class, 'getAllRegionHq'])->name('getAllRegionHq');
+    Route::post('getAllRegionHq', [RegionController::class, 'getAllRegionHq'])->name('getAllRegionHq'); */
 
     //**=============================Resume Source================================================= */
     Route::get('resumesource', [ResumeSourcController::class, 'resumesource'])->name('admin.resumesource');

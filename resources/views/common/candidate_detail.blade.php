@@ -6683,7 +6683,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         } else {
                             $("#administrative_div").addClass("d-none");
                         }
-
+  $('#CTC').val(res.candidate_detail.CTC);
                         if (res.candidate_detail.repchk != '') {
                             $("input[name=repchk][value=" + res.candidate_detail.repchk +
                                 "]").prop('checked', true);

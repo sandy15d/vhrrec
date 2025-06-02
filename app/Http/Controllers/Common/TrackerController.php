@@ -16,11 +16,6 @@ use App\Models\screening;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
-use function App\Helpers\getCompanyCode;
-use function App\Helpers\getCompanyName;
-use function App\Helpers\getDepartment;
-use function App\Helpers\getDepartmentCode;
-use function App\Helpers\getFullName;
 
 
 class TrackerController extends Controller
@@ -303,7 +298,7 @@ class TrackerController extends Controller
 
             ->editColumn('SelectedForC', function ($data) {
                 if ($data->SelectedForC != null) {
-                    return getCompanyCode($data->SelectedForC);
+                    return getcompany_code($data->SelectedForC);
                 } else {
                     return '';
                 }

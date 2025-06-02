@@ -29,11 +29,11 @@ class ElgController extends Controller
         if ($Department != '') {
             $usersQuery->where("master_eligibility.DepartmentId", $Department);
         }
-        $elg = $usersQuery->select(['master_eligibility.*', 'master_company.CompanyCode', 'master_department.DepartmentCode', 'master_vertical.VerticalName'])
-            ->leftjoin('master_company', 'master_eligibility.CompanyId', '=', 'master_company.CompanyId')
-            ->leftjoin('master_department', 'master_eligibility.DepartmentId', '=', 'master_department.DepartmentId')
-            ->leftjoin('master_vertical', 'master_eligibility.VerticalId', '=', 'master_vertical.VerticalId')
-            ->orderBy('master_department.DepartmentId', 'ASC')
+        $elg = $usersQuery->select(['master_eligibility.*', 'core_company.company_code', 'core_department.department_code', 'core_vertical.vertical_name'])
+            ->leftjoin('core_company', 'master_eligibility.CompanyId', '=', 'core_company.id')
+            ->leftjoin('core_department', 'master_eligibility.DepartmentId', '=', 'core_department.id')
+            ->leftjoin('core_vertical', 'master_eligibility.VerticalId', '=', 'core_vertical.id')
+            ->orderBy('core_department.id', 'ASC')
             ->orderBy('master_eligibility.GradeId', 'ASC');
 
 

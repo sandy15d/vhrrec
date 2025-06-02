@@ -131,16 +131,16 @@
                         name: 'DT_RowIndex'
                     },
                     {
-                        data: 'DepartmentCode',
-                        name: 'DepartmentCode'
+                        data: 'department_code',
+                        name: 'department_code',
                     },
                     {
-                        data: 'grade_name',
-                        name: 'grade_name',
+                        data: 'GradeValue',
+                        name: 'GradeValue',
                     },
                     {
-                        data: 'VerticalName',
-                        name: 'VerticalName'
+                        data: 'vertical_name',
+                        name: 'vertical_name',
                     },
                     {
                         data: 'CategoryA',
