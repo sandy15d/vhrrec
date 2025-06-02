@@ -10,13 +10,9 @@ use Illuminate\Http\Request;
 use App\Models\CandidateJoining;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use function App\Helpers\getFullName;
-use function App\Helpers\getDepartment;
-use function App\Helpers\getCompanyCode;
-use function App\Helpers\getDesignation;
+
 use App\Models\Admin\resumesource_master;
-use function App\Helpers\getDepartmentCode;
-use function App\Helpers\getDesignationCode;
+
 
 class Reports extends Controller
 {
@@ -35,8 +31,8 @@ class Reports extends Controller
     {
 
         session()->put('submenu', 'mrfs_report');
-        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
-        $department_list = DB::table("master_department")->where('DeptStatus', 'A')->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
+        $company_list = DB::table("core_company")->orderBy('company_code', 'desc')->pluck("company_code", "id");
+        $department_list = DB::table("core_department")->where('is_active', '1')->orderBy('department_name', 'asc')->pluck("department_name", "id");
         $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
         return view('reports.mrfs_report', compact(['company_list', 'department_list', 'months']));
     }
@@ -131,8 +127,8 @@ class Reports extends Controller
     public function application_source_report()
     {
         session()->put('submenu', 'application_source_report');
-        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
-        $department_list = DB::table("master_department")->where('DeptStatus', 'A')->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
+        $company_list = DB::table("core_company")->orderBy('company_code', 'desc')->pluck("company_code", "id");
+        $department_list = DB::table("core_department")->where('is_active', '1')->orderBy('department_name', 'asc')->pluck("department_name", "id");
         return view('reports.application_source_report', compact(['company_list', 'department_list']));
     }
 
@@ -168,8 +164,8 @@ class Reports extends Controller
     public function hr_screening_report()
     {
         session()->put('submenu', 'hr_screening_report');
-        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
-        $department_list = DB::table("master_department")->where('DeptStatus', 'A')->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
+        $company_list = DB::table("core_company")->orderBy('company_code', 'desc')->pluck("company_code", "id");
+        $department_list = DB::table("core_department")->where('is_active', '1')->orderBy('department_name', 'asc')->pluck("department_name", "id");
         $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
         return view('reports.hr_screening_report', compact(['company_list', 'department_list', 'months']));
     }
@@ -219,8 +215,8 @@ class Reports extends Controller
     public function tech_screening_report()
     {
         session()->put('submenu', 'tech_screening_report');
-        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
-        $department_list = DB::table("master_department")->where('DeptStatus', 'A')->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
+        $company_list = DB::table("core_company")->orderBy('company_code', 'desc')->pluck("company_code", "id");
+        $department_list = DB::table("core_department")->where('is_active', '1')->orderBy('department_name', 'asc')->pluck("department_name", "id");
         $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
         return view('reports.tech_screening_report', compact(['company_list', 'department_list', 'months']));
     }
@@ -283,8 +279,8 @@ class Reports extends Controller
     public function interview_tracker_report()
     {
         session()->put('submenu', 'interview_tracker_report');
-        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
-        $department_list = DB::table("master_department")->where('DeptStatus', 'A')->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
+        $company_list = DB::table("core_company")->orderBy('company_code', 'desc')->pluck("company_code", "id");
+        $department_list = DB::table("core_department")->where('is_active', '1')->orderBy('department_name', 'asc')->pluck("department_name", "id");
         $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
         return view('reports.interview_tracker_report', compact(['company_list', 'department_list', 'months']));
     }
@@ -349,7 +345,7 @@ class Reports extends Controller
                 }
             })
             ->editColumn('SelectedForC', function ($mrf) {
-                return getCompanyCode($mrf->SelectedForC);
+                return getcompany_code($mrf->SelectedForC);
             })
             ->editColumn('SelectedForD', function ($mrf) {
                 return getDepartmentCode($mrf->SelectedForD);
@@ -361,8 +357,8 @@ class Reports extends Controller
     public function job_offer_report()
     {
         session()->put('submenu', 'job_offer_report');
-        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
-        $department_list = DB::table("master_department")->where('DeptStatus', 'A')->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
+        $company_list = DB::table("core_company")->orderBy('company_code', 'desc')->pluck("company_code", "id");
+        $department_list = DB::table("core_department")->where('is_active', '1')->orderBy('department_name', 'asc')->pluck("department_name", "id");
         $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
         return view('reports.job_offer_report', compact(['company_list', 'department_list', 'months']));
     }
@@ -422,7 +418,7 @@ class Reports extends Controller
         return datatables()->of($mrf)
             ->addIndexColumn()
             ->editColumn('Company', function ($mrf) {
-                return getCompanyCode($mrf->Company);
+                return getcompany_code($mrf->Company);
             })
             ->editColumn('Department', function ($mrf) {
                 return getDepartmentCode($mrf->Department);
@@ -479,8 +475,8 @@ class Reports extends Controller
             ->join('offerletterbasic', 'offerletterbasic.JAId', '=', 'candjoining.JAId')
             ->join('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
             ->get();
-        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
-        $department_list = DB::table("master_department")->where('DeptStatus', 'A')->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
+        $company_list = DB::table("core_company")->orderBy('company_code', 'desc')->pluck("company_code", "id");
+        $department_list = DB::table("core_department")->where('is_active', '1')->orderBy('department_name', 'asc')->pluck("department_name", "id");
         $months = [1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'];
         return view('reports.candidate_joining_report', compact(['company_list', 'department_list', 'months']));
     }
@@ -538,7 +534,7 @@ class Reports extends Controller
         return datatables()->of($mrf)
             ->addIndexColumn()
             ->editColumn('Company', function ($mrf) {
-                return getCompanyCode($mrf->Company);
+                return getcompany_code($mrf->Company);
             })
             ->editColumn('Department', function ($mrf) {
                 return getDepartmentCode($mrf->Department);

@@ -101,44 +101,81 @@ class OfferLtrController extends Controller
     {
         $JAId = $request->JAId;
 
-        $candidate_detail = DB::table('screening')->select('offerletterbasic.*', 'screening.SelectedForC', 'screening.SelectedForD', 'master_department.DepartmentName', 'jobcandidates.JCId', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherName')
+        $candidate_detail = DB::table('screening')->select(
+            'offerletterbasic.*',
+            'candidate_ctc.grsM_salary',
+            'candidate_ctc.communication_allowance',
+            'screening.SelectedForC',
+            'screening.SelectedForD',
+            'core_department.department_name',
+            'jobcandidates.JCId',
+            'jobcandidates.FName',
+            'jobcandidates.MName',
+            'jobcandidates.LName',
+            'jobcandidates.FatherName'
+        )
             ->join('jobapply', 'jobapply.JAId', '=', 'screening.JAId')
             ->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')
             ->leftJoin('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
-            ->leftJoin('master_department', 'master_department.DepartmentId', '=', 'screening.SelectedForD')
+            ->leftJoin('core_department', 'core_department.id', '=', 'screening.SelectedForD')
+            ->leftJoin('candidate_ctc', 'candidate_ctc.JAId', '=', 'jobapply.JAId')
             ->where('screening.JAId', $JAId)
-            ->get();
-        $company = $candidate_detail[0]->SelectedForC;
-        $Department = $candidate_detail[0]->SelectedForD;
-        if ($company == 1) {
-            $grade_list = DB::table("master_grade")->where('GradeStatus', 'A')->where('CompanyId', $company)->where('GradeId', '>=', '61')->orderBy('GradeValue', 'ASC')->pluck("GradeId", "GradeValue");
-        } else {
-            $grade_list = DB::table("master_grade")->where('GradeStatus', 'A')->where('CompanyId', $company)->orderBy('GradeValue', 'desc')->orderBy('GradeValue', 'ASC')->pluck("GradeId", "GradeValue");
-        }
+            ->first();
+        $company = $candidate_detail->SelectedForC;
+        $Department = $candidate_detail->SelectedForD;
+        $grade_list = DB::table("master_grade")->where('GradeStatus', 'A')->where('CompanyId', $company)->orderBy('GradeValue', 'desc')->orderBy('GradeValue', 'ASC')->pluck("GradeId", "GradeValue");
 
-        $designation_list = DB::table("master_designation")->where('DesigStatus', 'A')->where('CompanyId', $company)->where('DepartmentId', $Department)->orderBy('DesigName', 'ASC')->pluck("DesigId", "DesigName");
-        if ($candidate_detail[0]->Grade != 0) {
-            $grade_designation_list = DB::table('master_grade_designation')
-                ->select('master_designation.DesigId', 'master_designation.DesigName')
-                ->leftJoin('master_designation', 'master_designation.DesigId', '=', 'master_grade_designation.designation_id')
-                ->where('department_id', $Department)
-                ->where(function ($query) use ($candidate_detail) {
-                    $query->where('grade_1', $candidate_detail[0]->Grade)
-                        ->orWhere('grade_2', $candidate_detail[0]->Grade)
-                        ->orWhere('grade_3', $candidate_detail[0]->Grade)
-                        ->orWhere('grade_4', $candidate_detail[0]->Grade)
-                        ->orWhere('grade_5', $candidate_detail[0]->Grade);
-                })
-                ->pluck("DesigId", "DesigName");
-        } else {
-            $grade_designation_list = '';
-        }
-        $vertical_list = DB::table("master_vertical")->where('CompanyId', $company)->where('DepartmentId', $Department)->orderBy('VerticalName', 'ASC')->pluck("VerticalId", "VerticalName");
-        $department_list = DB::table("master_department")->where('DeptStatus', 'A')->where('CompanyId', $company)->orderBy('DepartmentName', 'ASC')->pluck("DepartmentId", "DepartmentName");
-        $employee_list = master_employee::select(DB::raw("CONCAT(Fname,' ',Lname) AS name"), 'EmployeeID')->where('CompanyId', $company)->where('EmpStatus', 'A')->pluck('name', 'EmployeeID');
-        $headquarter_list = DB::table("master_headquater")->where('CompanyId', $company)->orderBy('HqName', 'ASC')->pluck("HqId", "HqName");
-        $state_list = DB::table("master_state")->leftJoin('master_headquater', 'master_headquater.StateId', '=', 'master_state.StateId')->where('master_headquater.CompanyId', $company)->orderBy('StateName', 'ASC')->pluck("master_state.StateId", "master_state.StateName");
-        return response(array('candidate_detail' => $candidate_detail[0], 'grade_list' => $grade_list, 'designation_list' => $designation_list, 'department_list' => $department_list, 'employee_list' => $employee_list, 'headquarter_list' => $headquarter_list, 'state_list' => $state_list, 'vertical_list' => $vertical_list,'grade_designation_list'=>$grade_designation_list, 'status' => 200));
+        $grade_designation_list = DB::table('core_designation_department_mapping')
+            ->join('core_designation', 'core_designation.id', '=', 'core_designation_department_mapping.designation_id')
+            ->where('department_id', $Department)
+            ->pluck("core_designation.id", "designation_name");
+        $designation_list = DB::table("core_designation")
+            ->leftJoin('core_designation_department_mapping', 'core_designation_department_mapping.designation_id', '=', 'core_designation.id')->where('is_active', '1')->where('department_id', $Department)->orderBy('designation_name', 'ASC')->pluck("core_designation.id", "designation_name");
+        $vertical_list = DB::table("core_vertical")->orderBy('vertical_name', 'ASC')->pluck("id", "vertical_name");
+        $department_list = DB::table("core_department")->where('is_active', '1')->orderBy('department_name', 'ASC')->pluck("id", "department_name");
+        // Retrieve the 'fun_vertical_dept_id' for the given department
+        $fun_vertical_dept_ids = DB::table('core_fun_vertical_dept_mapping')
+            ->where('department_id', $Department)
+            ->pluck('id');
+
+
+        // Retrieve distinct sub_departments related to the found fun_vertical_dept_ids
+        $sub_departments_ids = DB::table('core_department_subdepartment_mapping')
+            ->whereIn('fun_vertical_dept_id', $fun_vertical_dept_ids)
+            ->distinct()
+            ->pluck('sub_department_id');
+        $sub_department_list = DB::table('core_sub_department')->whereIn('id', $sub_departments_ids)->pluck('id', 'sub_department_name');
+
+        $section_list = DB::table('core_department_section_mapping')->join('core_section', 'core_section.id', '=', 'core_department_section_mapping.section_id')->where('core_department_section_mapping.department_id', $Department)->pluck('core_section.id', 'core_section.section_name');
+        $employee_list = master_employee::select(
+            DB::raw("CONCAT(Fname, ' ', COALESCE(Sname, ''), ' ', Lname) AS name"),
+            'EmployeeID'
+        )
+            ->where('CompanyId', $company)
+            ->where('EmpStatus', 'A')
+            ->pluck('name', 'EmployeeID');
+        $perm_headquarter_list = DB::table("core_city_village")->where('id', $candidate_detail->F_LocationHq)->pluck("id", "city_village_name");
+        $temp_headquarter_list = DB::table("core_city_village")->where('id', $candidate_detail->T_LocationHq)->pluck("id", "city_village_name");
+        
+        $state_list = DB::table("core_state")->where('is_active', 1)->where('country_id', 1)->orderBy('state_name', 'ASC')->pluck("id", "state_name");
+        
+      
+        return response(array(
+            'candidate_detail' => $candidate_detail,
+            'grade_list' => $grade_list,
+            'department_list' => $department_list,
+            'sub_department_list' => $sub_department_list,
+            'designation_list' => $designation_list,
+            'section_list' => $section_list,
+            'employee_list' => $employee_list,
+            'perm_headquarter_list' => $perm_headquarter_list,
+            'temp_headquarter_list' => $temp_headquarter_list,
+            'state_list' => $state_list,
+            'vertical_list' => $vertical_list,
+            'grade_designation_list' => $grade_designation_list,
+          
+            'status' => 200
+        ));
     }
 
     public function update_offerletter_basic(Request $request)
@@ -321,8 +358,8 @@ class OfferLtrController extends Controller
                 'emplyerESIC' => $emplyerESIC,
                 'medical' => $medical,
                 'total_ctc' => $total_ctc,
-                'communication_allowance_amount'=>$communication_allowance,
-                'total_gross_ctc'=>$total_gross_ctc,
+                'communication_allowance_amount' => $communication_allowance,
+                'total_gross_ctc' => $total_gross_ctc,
                 'created_on' => now(),
                 'created_by' => Auth::user()->id
             ]
@@ -560,37 +597,37 @@ class OfferLtrController extends Controller
 
     public function offer_ltr_print(Request $request)
     {
-               //return view('offer_letter.offer_ltr_print');
-               $jaid = $_GET['jaid'];
-               $sql = DB::table('jobapply')->select(
-                   'jobcandidates.Title',
-                   'jobcandidates.FName',
-                   'jobcandidates.MName',
-                   'jobcandidates.LName',
-                   'offerletterbasic.SigningAuth',
-               )->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->leftJoin('offerletterbasic','jobapply.JAId','offerletterbasic.JAId')->where('jobapply.JAId', $jaid)->first();
-               $candidate_name = $sql->Title.' '.$sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
-               $signing_auth = $sql->SigningAuth;
-               ini_set('memory_limit', -1);
+        //return view('offer_letter.offer_ltr_print');
+        $jaid = $_GET['jaid'];
+        $sql = DB::table('jobapply')->select(
+            'jobcandidates.Title',
+            'jobcandidates.FName',
+            'jobcandidates.MName',
+            'jobcandidates.LName',
+            'offerletterbasic.SigningAuth',
+        )->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')->leftJoin('offerletterbasic', 'jobapply.JAId', 'offerletterbasic.JAId')->where('jobapply.JAId', $jaid)->first();
+        $candidate_name = $sql->Title . ' ' . $sql->FName . ' ' . $sql->MName . ' ' . $sql->LName;
+        $signing_auth = $sql->SigningAuth;
+        ini_set('memory_limit', -1);
 
-               $pdf = new mPDF(['utf-8', 'A4-C']);
+        $pdf = new mPDF(['utf-8', 'A4-C']);
 
-               $pdf->SetDefaultBodyCSS('font-family', 'freeserif');
-               $pdf->setAutoBottomMargin = 'stretch';
-               $pdf->WriteHTML('<div style="margin-bottom:40px;">&nbsp;</div>');
+        $pdf->SetDefaultBodyCSS('font-family', 'freeserif');
+        $pdf->setAutoBottomMargin = 'stretch';
+        $pdf->WriteHTML('<div style="margin-bottom:40px;">&nbsp;</div>');
 
-               $pdf->SetHTMLFooter('
+        $pdf->SetHTMLFooter('
                        <div style="text-align: center; font-weight:bold; margin-top:10px; height:90px;">
-                       <div style="float: left; width: 33%; text-align: center;">___________________<br>Authorized Signatory<br>'.$signing_auth.'</div>
+                       <div style="float: left; width: 33%; text-align: center;">___________________<br>Authorized Signatory<br>' . $signing_auth . '</div>
                        <div style="float: left; width: 33%; text-align: center;"><br><br>Page {PAGENO} of {nbpg}</div>
                        <div style="float: right; width: 33%; text-align: right;">_________________<br>' . $candidate_name . '</div>
                        </div>
                ');
 
-               $html = View::make('offer_letter.offer_ltr_print')->render();
-               $pdf->SetTitle('Offer Letter');
-               $pdf->WriteHTML($html,);
-               $pdf->Output('Offer Letter.pdf', 'I');
+        $html = View::make('offer_letter.offer_ltr_print')->render();
+        $pdf->SetTitle('Offer Letter');
+        $pdf->WriteHTML($html,);
+        $pdf->Output('Offer Letter.pdf', 'I');
     }
 
     function offerLtrHistory(Request $request)
@@ -652,8 +689,8 @@ class OfferLtrController extends Controller
         $JAId = $request->JAId;
         $sendId = base64_encode($JAId);
         $query = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->join('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')->join('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
-        ->join('master_designation', 'master_designation.DesigId', '=', 'offerletterbasic.Designation')
-        ->select('jobcandidates.ReferenceNo', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.Email', 'jobpost.Title', 'offerletterbasic.Company', 'offerletterbasic.Grade')->where('jobapply.JAId', $JAId)->first();
+            ->join('master_designation', 'master_designation.DesigId', '=', 'offerletterbasic.Designation')
+            ->select('jobcandidates.ReferenceNo', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.Email', 'jobpost.Title', 'offerletterbasic.Company', 'offerletterbasic.Grade')->where('jobapply.JAId', $JAId)->first();
         $update = DB::table('offerletterbasic')->where('JAId', $JAId)->update(
             [
                 'OfferLetterSent' => 'Yes',
@@ -690,14 +727,14 @@ class OfferLtrController extends Controller
             $details = [
                 "candidate_name" => $query->FName . ' ' . $query->MName . ' ' . $query->LName,
                 "reference_no" => $query->ReferenceNo,
-                   "job_title" => $query->DesigName,
+                "job_title" => $query->DesigName,
                 "company" => getCompanyName($query->Company),
                 "grade" => getGradeValue($query->Grade),
                 "subject" => "Job Offer Letter",
                 "offer_link" => route('candidate-offer-letter') . '?jaid=' . $sendId
             ];
 
-          //  Mail::to($query->Email)->send(new OfferLetterMail($details));
+            //  Mail::to($query->Email)->send(new OfferLetterMail($details));
             $sql = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->select('jobapply.JCId', 'Aadhaar')->where('JAId', $JAId)->first();
             CandidateActivityLog::addToCandLog($sql->JCId, $sql->Aadhaar, 'Offer Letter Send to Candidate');
             return response()->json(['status' => 200, 'msg' => 'Offer Letter Sent Successfully']);
@@ -746,7 +783,7 @@ class OfferLtrController extends Controller
                 "link" => route('candidate-joining-form') . '?jaid=' . $sendId
             ];
 
-           // Mail::to($row->Email)->send(new JoiningFormMail($details));
+            // Mail::to($row->Email)->send(new JoiningFormMail($details));
             $update = DB::table('offerletterbasic')->where('JAId', $JAId)->update(
                 [
                     'JoiningFormSent' => 'Yes',
@@ -757,7 +794,7 @@ class OfferLtrController extends Controller
         if ($query && $query1) {
             $sql = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->select('jobapply.JCId', 'Aadhaar')->where('JAId', $JAId)->first();
             CandidateActivityLog::addToCandLog($sql->JCId, $sql->Aadhaar, 'Candidate Response to Offer Letter-' . $Answer);
-            if($Answer =='Rejected'){
+            if ($Answer == 'Rejected') {
                 CandidateActivityLog::addToCandLog($sql->JCId, $sql->Aadhaar, 'Candidate Offer Letter Rejection Reason -' . $RejReason);
             }
             return response()->json(['status' => 200, 'msg' => 'Response Submitted Successfully']);
@@ -1003,9 +1040,9 @@ class OfferLtrController extends Controller
         Mail::to($query->Email)->send(new JoiningFormMail($details));
         return response()->json(['status' => 200, 'msg' => 'Joining Form Sent Successfully']);
     }
-    
-    
-     public function get_designation_by_grade_department(Request $request)
+
+
+    public function get_designation_by_grade_department(Request $request)
     {
         $DepartmentId = $request->DepartmentId;
         $GradeId = $request->GradeId;

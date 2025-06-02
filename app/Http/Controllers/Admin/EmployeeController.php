@@ -18,26 +18,28 @@ class EmployeeController extends Controller
     }
     public function getAllEmployeeData()
     {
+
         ini_set('memory_limit', '-1');
         $employee = DB::table('master_employee as e')
-            ->join('master_company as c', 'e.CompanyId', '=', 'c.CompanyId')
-            ->join('master_employee as e1', 'e1.EmployeeID', '=', 'e.RepEmployeeID')
-            ->join('master_department as d', 'd.DepartmentId', '=', 'e.DepartmentId')
-            ->join('master_designation as dg', 'dg.DesigId', '=', 'e.DesigId')
-            ->join('master_grade as g', 'g.GradeId', '=', 'e.GradeId')
-            ->where('e.CountryId', '=', session('Set_Country'))
-            ->select(['e.*', 'e1.Fname as RFname', 'e1.Sname as RSname', 'e1.Lname as RLname', 'c.CompanyCode', 'd.DepartmentCode', 'dg.DesigName', 'g.GradeValue']);
+            ->leftJoin('core_company as c', 'e.CompanyId', '=', 'c.id')
+            ->leftJoin('master_employee as e1', 'e1.EmployeeID', '=', 'e.RepEmployeeID')
+            ->leftJoin('core_department as d', 'd.id', '=', 'e.DepartmentId')
+            ->leftJoin('core_designation as dg', 'dg.id', '=', 'e.DesigId')
+            ->leftJoin('master_grade as g', 'g.GradeId', '=', 'e.GradeId')
+            ->where('e.CountryId', session('Set_Country'))
+            ->where('e.EmployeeId','>','100000')
+              ->select(['e.*', 'e1.Fname as RFname', 'e1.Sname as RSname', 'e1.Lname as RLname', 'c.company_code', 'd.department_code', 'dg.designation_name', 'g.GradeValue']);
 
         return datatables()->of($employee)
             ->addIndexColumn()
-            ->addColumn('chk', function () {
-                return '<input type="checkbox" class="select_all">';
+            ->addColumn('chk', function ($employee) {
+                return '<input type="checkbox" class="select_all" value="' . $employee->EmployeeID . '">';
             })
             ->addColumn('fullname', function ($employee) {
-                return $employee->Fname . ' ' . $employee->Sname . ' ' . $employee->Lname;
+                return trim("{$employee->Fname} {$employee->Sname} {$employee->Lname}");
             })
             ->addColumn('Reporting', function ($employee) {
-                return $employee->RFname . ' ' . $employee->RSname . ' ' . $employee->RLname;
+                return trim("{$employee->RFname} {$employee->RSname} {$employee->RLname}");
             })
             ->rawColumns(['chk'])
             ->make(true);
@@ -83,7 +85,7 @@ class EmployeeController extends Controller
             $temp['CountryId'] = 11;
             array_push($data, $temp);
         }
-       $query = master_employee::insert($data);
+        $query = master_employee::insert($data);
 
 
         if ($query) {

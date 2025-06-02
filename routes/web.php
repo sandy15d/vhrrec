@@ -51,6 +51,7 @@ use App\Http\Controllers\Admin\MinimumWageController;
 use App\Http\Controllers\Admin\RegionController;
 use App\Http\Controllers\CoreAPIController;
 use App\Http\Controllers\Master\TestController;
+
 Route::get('/', function () {
     return view('auth.login');
 });
@@ -405,7 +406,7 @@ Route::post('SetAllTraineeInterviewDetails', [TraineeController::class, 'SetAllT
 Route::post('deleteTraineeCandidate', [TraineeController::class, 'deleteTraineeCandidate'])->name('deleteTraineeCandidate');
 Route::get('getInterviewDetailsTrainee', [TraineeController::class, 'getInterviewDetailsTrainee'])->name('getInterviewDetailsTrainee');
 Route::post('SendFirobToTrainee', [TraineeController::class, 'SendFirobToTrainee'])->name('SendFirobToTrainee');
-Route::post('import_trainee_expense',[TraineeController::class,'import_trainee_expense'])->name('import_trainee_expense');
+Route::post('import_trainee_expense', [TraineeController::class, 'import_trainee_expense'])->name('import_trainee_expense');
 Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventBackHistory']], function () {
     Route::get('dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('mrf', [AdminController::class, 'mrf'])->name('admin.mrf');
@@ -427,23 +428,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
 
     // ! ======================Master Company ========================//
 
-     Route::get('company', [CompanyController::class, 'company'])->name('admin.company');
-    Route::post('addCompany', [CompanyController::class, 'addCompany'])->name('addCompany');
+    Route::view('company', 'admin.company');
     Route::get('getAllCompanyData', [CompanyController::class, 'getAllCompanyData'])->name('getAllCompanyData');
-    Route::post('getCompanyDetails', [CompanyController::class, 'getCompanyDetails'])->name('getCompanyDetails');
-    Route::post('editCompany', [CompanyController::class, 'editCompany'])->name('editCompany');
-    Route::post('deleteCompany', [CompanyController::class, 'deleteCompany'])->name('deleteCompany');
-    Route::post('syncCompany', [CompanyController::class, 'syncCompany'])->name('syncCompany');
     // ! =====================================================================//
 
     // ?==========================Master Country ==============================//
-   Route::get('country', [CountryController::class, 'country'])->name('admin.country');
-    Route::post('addCountry', [CountryController::class, 'addCountry'])->name('addCountry');
+    Route::view('country', 'admin.country');
     Route::get('getAllCountryData', [CountryController::class, 'getAllCountryData'])->name('getAllCountryData');
-    Route::post('getCountryDetails', [CountryController::class, 'getCountryDetails'])->name('getCountryDetails');
-    Route::post('editCountry', [CountryController::class, 'editCountry'])->name('editCountry');
-    Route::post('deleteCountry', [CountryController::class, 'deleteCountry'])->name('deleteCountry');
-    Route::post('syncCountry', [CountryController::class, 'syncCountry'])->name('syncCountry');
     // ?=========================================================================================//
 
     // ?==========================Master State ==============================//
@@ -480,10 +471,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['isAdmin', 'auth', 'PreventB
     //*==========================================================================================//
 
     //*====================================Master Department ==================================//
-    Route::get('department', [DepartmentController::class, 'department'])->name('admin.department');
+     Route::get('department', [DepartmentController::class, 'department'])->name('admin.department');
     Route::get('getAllDepartment', [DepartmentController::class, 'getAllDepartment'])->name('getAllDepartment');
-    Route::post('syncDepartment', [DepartmentController::class, 'syncDepartment'])->name('syncDepartment');
-     Route::post('getSubDepartmentByDepartment', [DepartmentController::class, 'getSubDepartmentByDepartment'])->name('getSubDepartmentByDepartment');
+
+
+    Route::post('getSubDepartmentByDepartment', [DepartmentController::class, 'getSubDepartmentByDepartment'])->name('getSubDepartmentByDepartment');
     //*========================================================================================//
 
     //*====================================Master Designation ==================================//
@@ -765,4 +757,3 @@ Route::post('mapCoreDepartment', [TestController::class, 'mapCoreDepartment'])->
 Route::post('mapCoreDesignation', [TestController::class, 'mapCoreDesignation'])->name('mapCoreDesignation');
 Route::post('mapCoreJobPost', [TestController::class, 'mapCoreJobPost'])->name('mapCoreJobPost');
 Route::get('sync_data', [TestController::class, 'sync_data'])->name('sync_data');
-

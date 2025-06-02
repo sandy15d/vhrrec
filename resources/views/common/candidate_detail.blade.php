@@ -1,71 +1,63 @@
 @php
 use Illuminate\Support\Carbon;
-use function App\Helpers\getDistrictName;
-use function App\Helpers\getStateName;
-use function App\Helpers\getEducationById;
-use function App\Helpers\getSpecializationbyId;
-use function App\Helpers\getCollegeById;
-use function App\Helpers\getDepartment;
-use function App\Helpers\getCompanyCode;
-use function App\Helpers\getDesignation;
-use function App\Helpers\getGradeValue;
-use function App\Helpers\getFullName;
+
 $sendingId = request()->query('jaid');
 $JAId = base64_decode($sendingId);
-$Rec = DB::table('jobapply')
-    ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
-    ->leftJoin('screening', 'screening.JAId', '=', 'jobapply.JAId')
-    ->leftJoin('screen2ndround', 'screen2ndround.ScId', '=', 'screening.ScId')
-    ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
-    ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
-    ->leftJoin('jf_pf_esic', 'jobcandidates.JCId', '=', 'jf_pf_esic.JCId')
-    ->leftJoin('master_country', 'jobcandidates.Nationality', '=', 'master_country.CountryId')
-    ->leftJoin('appointing', 'appointing.JAId', '=', 'jobapply.JAId')
-    ->where('jobapply.JAId', $JAId)
-    ->select(
-        'jobapply.*',
-        'jobcandidates.*',
-        'screening.ReSentForScreen',
-        'screening.ScreenStatus',
-        'screening.IntervStatus',
-        'screening.IntervDt',
-        'screen2ndround.IntervDt2',
-        'screen2ndround.IntervStatus2',
-        'screening.SelectedForD',
-        'jobpost.Title as JobTitle',
-        'jobpost.JobCode',
-        'jf_contact_det.pre_address',
-        'jf_contact_det.pre_city',
-        'jf_contact_det.pre_state',
-        'jf_contact_det.pre_pin',
-        'jf_contact_det.pre_dist',
-        'jf_contact_det.perm_address',
-        'jf_contact_det.perm_city',
-        'jf_contact_det.perm_state',
-        'jf_contact_det.perm_pin',
-        'jf_contact_det.perm_dist',
-        'jf_contact_det.cont_one_name',
-        'jf_contact_det.cont_one_relation',
-        'jf_contact_det.cont_one_number',
-        'jf_contact_det.cont_two_name',
-        'jf_contact_det.cont_two_relation',
-        'jf_contact_det.cont_two_number',
-        'jf_pf_esic.UAN',
-        'jf_pf_esic.PFNumber',
-        'jf_pf_esic.ESICNumber',
-        'jf_pf_esic.BankName',
-        'jf_pf_esic.BranchName',
-        'jf_pf_esic.IFSCCode',
-        'jf_pf_esic.AccountNumber',
-        'jf_pf_esic.PAN',
-        'jf_pf_esic.Passport',
-        'master_country.CountryName',
-        'appointing.AppLtrGen',
-        'appointing.AgrLtrGen',
-        'appointing.BLtrGen',
-        'appointing.ConfLtrGen',
-    )
-    ->first();
+    $Rec = DB::table('jobapply')
+        ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+        ->leftJoin('screening', 'screening.JAId', '=', 'jobapply.JAId')
+        ->leftJoin('screen2ndround', 'screen2ndround.ScId', '=', 'screening.ScId')
+        ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
+        ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
+        ->leftJoin('jf_pf_esic', 'jobcandidates.JCId', '=', 'jf_pf_esic.JCId')
+        ->leftJoin('core_country', 'jobcandidates.Nationality', '=', 'core_country.id')
+        ->leftJoin('appointing', 'appointing.JAId', '=', 'jobapply.JAId')
+        ->where('jobapply.JAId', $JAId)
+        ->select(
+            'jobapply.*',
+            'jobcandidates.*',
+            'screening.ReSentForScreen',
+            'screening.ResScreened',
+            'screening.ScreenStatus',
+            'screening.IntervStatus',
+            'screening.IntervDt',
+            'screen2ndround.IntervDt2',
+            'screen2ndround.IntervStatus2',
+            'screening.SelectedForD',
+            'jobpost.Title as JobTitle',
+            'jobpost.JobCode',
+            'jf_contact_det.pre_address',
+            'jf_contact_det.pre_city',
+            'jf_contact_det.pre_state',
+            'jf_contact_det.pre_pin',
+            'jf_contact_det.pre_dist',
+            'jf_contact_det.perm_address',
+            'jf_contact_det.perm_city',
+            'jf_contact_det.perm_state',
+            'jf_contact_det.perm_pin',
+            'jf_contact_det.perm_dist',
+            'jf_contact_det.cont_one_name',
+            'jf_contact_det.cont_one_relation',
+            'jf_contact_det.cont_one_number',
+            'jf_contact_det.cont_two_name',
+            'jf_contact_det.cont_two_relation',
+            'jf_contact_det.cont_two_number',
+            'jf_pf_esic.UAN',
+            'jf_pf_esic.PFNumber',
+            'jf_pf_esic.ESICNumber',
+            'jf_pf_esic.BankName',
+            'jf_pf_esic.BranchName',
+            'jf_pf_esic.IFSCCode',
+            'jf_pf_esic.AccountNumber',
+            'jf_pf_esic.PAN',
+            'jf_pf_esic.Passport',
+            'core_country.country_name',
+            'appointing.AppLtrGen',
+            'appointing.AgrLtrGen',
+            'appointing.BLtrGen',
+            'appointing.ConfLtrGen',
+        )
+        ->first();
 
 $JCId = $Rec->JCId;
 $firobid = base64_encode($Rec->JCId);
@@ -1562,7 +1554,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                         <div class="text">
                                             @if ($OfBasic != null)
                                                 {{ getDepartment($OfBasic->Department) ?? '-' }}
-                                                ({{ getCompanyCode($OfBasic->Company) }})
+                                                
                                             @else
                                                 -
                                             @endif
@@ -6447,12 +6439,12 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
             });
         }); 
 
-        $(document).on('click', '#offerltredit', function() {
+        $(document).on('click', '#offerltredit', function () {
             var JAId = $(this).data('id');
             $.ajax({
                 type: "GET",
                 url: "{{ route('get_offerltr_basic_detail') }}?JAId=" + JAId,
-                success: function(res) {
+                success: function (res) {
                     if (res.status == 200) {
                         $('#Of_JAId').val(JAId);
                         $('#JCId').val(res.candidate_detail.JCId);
@@ -6460,8 +6452,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $('#SelectedForD').val(res.candidate_detail.SelectedForD);
                         $("#Grade").empty();
                         $("#Grade").append(
-                            '<option value="0">Select Grade</option>');
-                        $.each(res.grade_list, function(key, value) {
+                            '<option value="">Select Grade</option>');
+                        $.each(res.grade_list, function (key, value) {
                             $("#Grade").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
@@ -6473,35 +6465,66 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         name += ' ' + res.candidate_detail.LName;
                         $('#CandidateName').val(name);
                         $('#Father').val(res.candidate_detail.FatherName);
-                        $('#SelectedDepartment').val(res.candidate_detail.DepartmentName);
+                        $('#SelectedDepartment').val(res.candidate_detail.department_name);
+
+                        $("#SubDepartment").empty();
+                        $("#SubDepartment").append(
+                            '<option value="">Select Sub Department</option>');
+                        $.each(res.sub_department_list, function (key, value) {
+                            $("#SubDepartment").append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+
+                        $('#SubDepartment').val(res.candidate_detail.SubDepartment);
+
+                        $("#Section").empty();
+                        $("#Section").append(
+                            '<option value="">Select Section</option>');
+                        $.each(res.section_list, function (key, value) {
+                            $("#Section").append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+
+                        $('#Section').val(res.candidate_detail.Section);
 
                         $("#Designation").empty();
                         $("#Designation").append(
-                            '<option value="0">Select Designation</option>');
-                        $.each(res.grade_designation_list, function(key, value) {
+                            '<option value="">Select Designation</option>');
+                        $.each(res.grade_designation_list, function (key, value) {
                             $("#Designation").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
 
                         $('#Designation').val(res.candidate_detail.Designation);
 
-
-                        $("#Vertical").empty();
-                        $("#Vertical").append(
-                            '<option value="0">Select Vertical</option>');
-                        $.each(res.vertical_list, function(key, value) {
-                            $("#Vertical").append('<option value="' + value + '">' + key +
+                        $('#DesigSuffix').val(res.candidate_detail.DesigSuffix);
+                        $("#DesignationRep").empty();
+                        $("#DesignationRep").append(
+                            '<option value="">Select Reporting Designation</option>');
+                        $.each(res.designation_list, function (key, value) {
+                            $("#DesignationRep").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
 
+                        $('#DesignationRep').val(res.candidate_detail.reporting_only_desig);
+
+
+                        $("#Vertical").empty();
+                        $("#Vertical").append(
+                            '<option value="">Select Vertical</option>');
+                        $.each(res.vertical_list, function (key, value) {
+                            $("#Vertical").append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+                        
+
                         $('#Vertical').val(res.candidate_detail.VerticalId);
-
-
+                        $("#RepLineVisibility").val(res.candidate_detail.RepLineVisibility);
 
                         $("#AdministrativeDepartment").empty();
                         $("#AdministrativeDepartment").append(
                             '<option value="">Select Department</option>');
-                        $.each(res.department_list, function(key, value) {
+                        $.each(res.department_list, function (key, value) {
                             $("#AdministrativeDepartment").append('<option value="' + value +
                                 '">' + key +
                                 '</option>');
@@ -6511,7 +6534,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#FunctionalDepartment").empty();
                         $("#FunctionalDepartment").append(
                             '<option value="">Select Department</option>');
-                        $.each(res.department_list, function(key, value) {
+                        $.each(res.department_list, function (key, value) {
                             $("#FunctionalDepartment").append('<option value="' + value + '">' +
                                 key +
                                 '</option>');
@@ -6520,7 +6543,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#AdministrativeEmployee").empty();
                         $("#AdministrativeEmployee").append(
                             '<option value="">Select Employee</option>');
-                        $.each(res.employee_list, function(key, value) {
+                        $.each(res.employee_list, function (key, value) {
                             $("#AdministrativeEmployee").append('<option value="' + key + '">' +
                                 value +
                                 '</option>');
@@ -6529,7 +6552,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#FunctionalEmployee").empty();
                         $("#FunctionalEmployee").append(
                             '<option value="">Select Employee</option>');
-                        $.each(res.employee_list, function(key, value) {
+                        $.each(res.employee_list, function (key, value) {
                             $("#FunctionalEmployee").append('<option value="' + key + '">' +
                                 value +
                                 '</option>');
@@ -6538,51 +6561,82 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#AftDesignation").empty();
                         $("#AftDesignation").append(
                             '<option value="0">Select Designation</option>');
-                        $.each(res.designation_list, function(key, value) {
+                        $.each(res.designation_list, function (key, value) {
                             $("#AftDesignation").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
 
                         $("#AftGrade").empty();
                         $("#AftGrade").append(
-                            '<option value="0">Select Grade</option>');
-                        $.each(res.grade_list, function(key, value) {
+                            '<option value="">Select Grade</option>');
+                        $.each(res.grade_list, function (key, value) {
                             $("#AftGrade").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
 
                         $("#Of_PermState").empty();
                         $("#Of_PermState").append(
-                            '<option value="0">Select State</option>');
-                        $.each(res.state_list, function(key, value) {
+                            '<option value="">Select State</option>');
+                        $.each(res.state_list, function (key, value) {
                             $("#Of_PermState").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
 
                         $("#PermHQ").empty();
                         $("#PermHQ").append(
-                            '<option value="0">Select HQ</option>');
-                        $.each(res.headquarter_list, function(key, value) {
+                            '<option value="">Select HQ</option>');
+                        $.each(res.perm_headquarter_list, function (key, value) {
                             $("#PermHQ").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
 
                         $("#TempState").empty();
                         $("#TempState").append(
-                            '<option value="0">Select State</option>');
-                        $.each(res.state_list, function(key, value) {
+                            '<option value="">Select State</option>');
+                        $.each(res.state_list, function (key, value) {
                             $("#TempState").append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+
+                        $("#TempState1").empty();
+                        $("#TempState1").append(
+                            '<option value="">Select State</option>');
+                        $.each(res.state_list, function (key, value) {
+                            $("#TempState1").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
 
                         $("#TempHQ").empty();
                         $("#TempHQ").append(
-                            '<option value="0">Select HQ</option>');
-                        $.each(res.headquarter_list, function(key, value) {
+                            '<option value="">Select HQ</option>');
+                        $.each(res.temp_headquarter_list, function (key, value) {
                             $("#TempHQ").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
 
+                        $("#TempHQ1").empty();
+                        $("#TempHQ1").append(
+                            '<option value="">Select HQ</option>');
+                        $.each(res.temp1_headquarter_list, function (key, value) {
+                            $("#TempHQ1").append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+
+                        $("#vehicle_policy").empty();
+                        $("#vehicle_policy").append('<option value="">Select Policy</option>');
+                        $("#vehicle_policy").append('<option value="NA">NA</option>');
+                        $.each(res.vehicle_policy_list, function (key, value) {
+                            $("#vehicle_policy").append('<option value="' + value + '">' + key +
+                                '</option>');
+                        });
+                        $("#vehicle_policy").val(res.candidate_detail.Vehicle_Policy);
+                        $("#mobile_allow").val(res.candidate_detail.Mobile_Handset);
+                        if (res.candidate_detail.GPRS == 1) {
+                            $("#GPRS").prop('checked', true);
+                            $("#GPRS").val('1');
+                        }
+                        $("#Mobile_Remb").val(res.candidate_detail.Mobile_Remb);
+                        $("#Communication_Allowance").val(res.candidate_detail.communication_allowance);
                         if (res.candidate_detail.FixedS == 1) {
                             $('#permanent_chk').prop('checked', true);
                             $("#permanent_div").removeClass("d-none");
@@ -6595,12 +6649,19 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         if (res.candidate_detail.TempS == 1) {
                             $('#temporary_chk').prop('checked', true);
                             $("#temporary_div").removeClass("d-none");
+                            $("#temporary_div1").removeClass("d-none");
                             $('#TempState').val(res.candidate_detail.T_StateHq);
                             $('#TempHQ').val(res.candidate_detail.T_LocationHq);
                             $('#TempCity').val(res.candidate_detail.T_City);
                             $('#TemporaryMonth').val(res.candidate_detail.TempM);
+
+                            $('#TempState1').val(res.candidate_detail.T_StateHq1);
+                            $('#TempHQ1').val(res.candidate_detail.T_LocationHq1);
+                            $('#TempCity1').val(res.candidate_detail.T_City1);
+                            $('#TemporaryMonth1').val(res.candidate_detail.TempM1);
                         } else {
                             $("#temporary_div").addClass("d-none");
+                            $("#temporary_div1").addClass("d-none");
                         }
 
                         if (res.candidate_detail.Functional_R == 1) {
@@ -6623,11 +6684,33 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             $("#administrative_div").addClass("d-none");
                         }
 
-                        $('#CTC').val(res.candidate_detail.CTC);
+                        if (res.candidate_detail.repchk != '') {
+                            $("input[name=repchk][value=" + res.candidate_detail.repchk +
+                                "]").prop('checked', true);
+                        }
+
+                        if (res.candidate_detail.repchk == 'RepWithoutEmp') {
+                            $('#rep_without_emp_tr').removeClass('d-none');
+                            $('#rep_with_emp_tr').addClass('d-none');
+                        } else {
+                            $('#rep_without_emp_tr').addClass('d-none');
+                            $('#rep_with_emp_tr').removeClass('d-none');
+                        }
+                        /*  $('#CTC').val(res.candidate_detail.CTC);*/
+                        $("#grsM_salary").val(res.candidate_detail.grsM_salary);
+                        $("#MW").val(res.candidate_detail.MW);
+                        if (res.candidate_detail.MinBasicSalary != null) {
+                            $("#MinBasicSalary").val(res.candidate_detail.MinBasicSalary);
+                        } else {
+                            $("#MinBasicSalary").val(15050);
+                        }
+
+                        $("#PF_Wage_Limit").val(res.candidate_detail.PF_Wage_Limit);
                         if (res.candidate_detail.ServiceCondition != '') {
                             $("input[name=ServiceCond][value=" + res.candidate_detail.ServiceCondition +
                                 "]").prop('checked', true);
                         }
+
 
                         if (res.candidate_detail.ServiceCondition === 'Training') {
                             $('#training_tr').removeClass('d-none');
@@ -6654,7 +6737,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
 
                         if (res.candidate_detail.PreMedicalCheckUp != '') {
                             $("input[name=MedicalCheckup][value=" + res.candidate_detail
-                                .PreMedicalCheckUp +
+                                    .PreMedicalCheckUp +
                                 "]").prop('checked', true);
                         }
 

@@ -4,10 +4,11 @@
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">District Master</div>
+            <div class="breadcrumb-title pe-3">All District</div>
             <div class="ms-auto">
-                <button class="btn btn--new btn-sm" id="addDistrict" data-bs-toggle="modal"
-                    data-bs-target="#addDistrictModal">Add New</button>
+               {{-- <button class="btn btn-primary btn-sm" id="addDistrict" data-bs-toggle="modal"
+                    data-bs-target="#addDistrictModal"><i class="fadeIn animated bx bx-plus"></i>Add New District</button>--}}
+                <button class="btn btn-sm btn--red" id="syncAPI"><i class="fadeIn animated bx bx-sync"></i>Sync Data</button>
             </div>
         </div>
         <!--end breadcrumb-->
@@ -15,10 +16,10 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover table-condensed text-center" id="DistrictTable" style="width: 100%">
-                        <thead class="bg-primary text-light ">
+                    <table class="table table-condensed" id="DistrictTable" style="width: 100%">
+                        <thead class="bg-success text-light text-center">
                             <tr>
-                                <td class="td-sm">S.No</td>
+                                <td class="td-sm">S.No.</td>
                                 <td>District Name</td>
                                 <td>State</td>
                                 <td>Country</td>
@@ -158,7 +159,8 @@
             ajax: "{{ route('getDistrictList') }}",
             columns: [{
                     data: 'DT_RowIndex',
-                    name: 'DT_RowIndex'
+                    name: 'DT_RowIndex',
+                    'className': 'text-center'
                 },
                 {
                     data: 'DistrictName',
@@ -169,19 +171,22 @@
                     name: 'StateName'
                 },
                 {
-                    data:'CountryName',
-                    name:'CountryName'
+                    data:'country_name',
+                    name:'country_name',
+                    'className': 'text-center'
                 },
                 {
                     data: 'Status',
-                    name: 'Status'
+                    name: 'Status',
+                    'className': 'text-center'
                 },
                 {
                     data: 'actions',
-                    name: 'actions'
+                    name: 'actions',
+                    'className': 'text-center'
                 },
             ],
-            
+
         });
         //===============Get District Record for Updation=================
         $(document).on('click', '#editBtn', function() {
@@ -255,6 +260,30 @@
                 }
             });
         });
-       
+
+        $(document).on('click', '#syncAPI', function () {
+
+            $.ajax({
+                url: "{{route('sync_district')}}",
+                method: 'GET',
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                beforeSend: function () {
+                    $("#loading").css('display', 'block');
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        $("#loading").css('display', 'none');
+                        toastr.success(data.msg);
+                        window.location.reload();
+                    } else {
+                        $("#loading").css('display', 'none');
+                        toastr.error(data.msg);
+                    }
+                }
+            });
+
+        });
     </script>
 @endsection

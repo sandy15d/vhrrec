@@ -7,9 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin\master_department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
-use DataTables;
-use Illuminate\Support\Facades\Log;
+
 
 class DepartmentController extends Controller
 {

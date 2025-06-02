@@ -1,36 +1,35 @@
 @php
-use function App\Helpers\getDepartmentCode;
-use function App\Helpers\getCompanyCode;
-$Year = date('Y');
-$LtrIssue = DB::table('offerletterbasic')
-    ->join('jobapply', 'jobapply.JAId', '=', 'offerletterbasic.JAId')
-    ->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')
-    ->where('jobcandidates.Nationality', session('Set_Country'))
-    ->where('OfferLtrGen', 1)
-    ->where('Year', $Year)
-    ->count();
-$pending = DB::table('offerletterbasic')
-    ->join('jobapply', 'jobapply.JAId', '=', 'offerletterbasic.JAId')
-    ->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')
-    ->where('jobcandidates.Nationality', session('Set_Country'))
-    ->where('OfferLtrGen', 1)
-    ->where('Answer', null)
-    ->where('Year', $Year)
-    ->count();
-$accepted = DB::table('offerletterbasic')
-    ->join('jobapply', 'jobapply.JAId', '=', 'offerletterbasic.JAId')
-    ->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')
-    ->where('jobcandidates.Nationality', session('Set_Country'))
-    ->where('Answer', 'Accepted')
-    ->where('Year', $Year)
-    ->count();
-$rejected = DB::table('offerletterbasic')
-    ->join('jobapply', 'jobapply.JAId', '=', 'offerletterbasic.JAId')
-    ->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')
-    ->where('jobcandidates.Nationality', session('Set_Country'))
-    ->where('Answer', 'Rejected')
-    ->where('Year', $Year)
-    ->count();
+  
+    $Year = date('Y');
+    $LtrIssue = DB::table('offerletterbasic')
+        ->join('jobapply', 'jobapply.JAId', '=', 'offerletterbasic.JAId')
+        ->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')
+        ->where('jobcandidates.Nationality', session('Set_Country'))
+        ->where('OfferLtrGen', 1)
+        ->where('Year', $Year)
+        ->count();
+    $pending = DB::table('offerletterbasic')
+        ->join('jobapply', 'jobapply.JAId', '=', 'offerletterbasic.JAId')
+        ->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')
+        ->where('jobcandidates.Nationality', session('Set_Country'))
+        ->where('OfferLtrGen', 1)
+        ->where('Answer', null)
+        ->where('Year', $Year)
+        ->count();
+    $accepted = DB::table('offerletterbasic')
+        ->join('jobapply', 'jobapply.JAId', '=', 'offerletterbasic.JAId')
+        ->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')
+        ->where('jobcandidates.Nationality', session('Set_Country'))
+        ->where('Answer', 'Accepted')
+        ->where('Year', $Year)
+        ->count();
+    $rejected = DB::table('offerletterbasic')
+        ->join('jobapply', 'jobapply.JAId', '=', 'offerletterbasic.JAId')
+        ->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')
+        ->where('jobcandidates.Nationality', session('Set_Country'))
+        ->where('Answer', 'Rejected')
+        ->where('Year', $Year)
+        ->count();
 
 @endphp
 @extends('layouts.master')
@@ -54,7 +53,6 @@ $rejected = DB::table('offerletterbasic')
             font-size: 11px;
             cursor: pointer;
         }
-
     </style>
     <div class="page-content">
         <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
@@ -146,7 +144,8 @@ $rejected = DB::table('offerletterbasic')
 
                     </div>
                     <div class="col-2">
-                        <select name="Year" id="Year" class="form-select form-select-sm" onchange="GetApplications();">
+                        <select name="Year" id="Year" class="form-select form-select-sm"
+                            onchange="GetApplications();">
                             <option value="">Select Year</option>
                             @for ($i = 2021; $i <= date('Y'); $i++)
                                 <option value="{{ $i }}">{{ $i }}</option>
@@ -159,7 +158,8 @@ $rejected = DB::table('offerletterbasic')
                         @endif
                     </div>
                     <div class="col-2">
-                        <select name="Month" id="Month" class="form-select form-select-sm" onchange="GetApplications();">
+                        <select name="Month" id="Month" class="form-select form-select-sm"
+                            onchange="GetApplications();">
                             <option value="">Select Month</option>
                             @foreach ($months as $key => $value)
                                 <option value="{{ $key }}">{{ $value }}</option>
@@ -172,7 +172,8 @@ $rejected = DB::table('offerletterbasic')
                         @endif
                     </div>
                     <div class="col-2">
-                        <select name="Status" id="Status" class="form-select form-select-sm" onchange="GetApplications();">
+                        <select name="Status" id="Status" class="form-select form-select-sm"
+                            onchange="GetApplications();">
                             <option value="">Select Status</option>
                             <option value="Accepted">Accepted</option>
                             <option value="Rejected">Rejected</option>
@@ -222,7 +223,7 @@ $rejected = DB::table('offerletterbasic')
                             @foreach ($candidate_list as $row)
                                 @php
                                     $sendingId = base64_encode($row->JAId);
-                                    
+
                                 @endphp
                                 <tr>
                                     <td>
@@ -233,7 +234,7 @@ $rejected = DB::table('offerletterbasic')
                                                 $y = $i;
                                             }
                                             echo $y;
-                                            
+
                                         @endphp
                                     </td>
                                     <td>{{ $row->ReferenceNo }}</td>
@@ -241,9 +242,8 @@ $rejected = DB::table('offerletterbasic')
                                             href="{{ route('candidate_detail') }}?jaid={{ $sendingId }}"
                                             target="_blank">{{ $row->FName }} {{ $row->MName }}
                                             {{ $row->LName }}</a> </td>
-                                    <td>{{ getDepartmentCode($row->SelectedForD) }}
-                                        ({{ getCompanyCode($row->SelectedForC) }})
-                                    </td>
+                                     <td>{{ getDepartmentCode($row->SelectedForD) }}
+                                </td>
                                     <td style="background-color: {{ $row->OfferLtrGen == '1' ? '' : '#F5B7B1' }}">
                                         @if ($row->OfferLtrGen == 1)
                                             Yes

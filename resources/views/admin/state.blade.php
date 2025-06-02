@@ -4,11 +4,10 @@
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">State Master(HQ)</div>
+            <div class="breadcrumb-title pe-3">All State(HQ)</div>
             <div class="ms-auto">
-                <button class="btn btn--new btn-sm" id="addState" data-bs-toggle="modal" data-bs-target="#addStateModal">Add
-                    New</button>
-                <button class="btn btn-sm btn--red" id="syncState">Sync</button>
+                <button class="btn btn-primary btn-sm" id="addState" data-bs-toggle="modal" data-bs-target="#addStateModal"><i class="fadeIn animated bx bx-plus"></i>Add New State</button>
+                <button class="btn btn-sm btn--red" id="syncState"><i class="fadeIn animated bx bx-sync"></i>Sync</button>
             </div>
         </div>
         <!--end breadcrumb-->
@@ -17,8 +16,8 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover table-condensed" id="Statetable" style="width: 100%">
-                        <thead class="bg-primary text-light text-center">
+                    <table class="table table-condensed" id="Statetable" style="width: 100%">
+                        <thead class="bg-success text-light text-center">
                             <tr>
                                 <td class="td-sm">S.No</td>
                                 <td>State Name</td>
@@ -79,7 +78,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="SaveState">Save changes</button>
+                        <button type="submit" class="btn btn-primary" id="SaveState">Save Changes</button>
                     </div>
                 </form>
             </div>
@@ -128,7 +127,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" id="UpdateState">Update changes</button>
+                        <button type="submit" class="btn btn-primary" id="UpdateState">Update Changes</button>
                     </div>
                 </form>
             </div>
@@ -171,28 +170,34 @@
             ajax: "{{ route('getAllStateData') }}",
             columns: [{
                     data: 'DT_RowIndex',
-                    name: 'DT_RowIndex'
+                    name: 'DT_RowIndex',
+                    'className': 'text-center'
                 },
                 {
                     data: 'StateName',
-                    name: 'StateName'
+                    name: 'StateName',
+                    'className': 'text-left'
                 },
                 {
                     data: 'StateCode',
-                    name: 'StateCode'
+                    name: 'StateCode',
+                    'className': 'text-center'
                 },
                 {
-                    data: 'CountryName',
-                    name: 'CountryName',
+                    data: 'country_name',
+                    name: 'country_name',
+                    'className': 'text-center'
 
                 },
                 {
                     data: 'Status',
-                    name: 'Status'
+                    name: 'Status',
+                    'className': 'text-center'
                 },
                 {
                     data: 'actions',
-                    name: 'actions'
+                    name: 'actions',
+                    'className': 'text-center'
                 },
             ],
 

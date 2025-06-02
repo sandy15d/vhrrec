@@ -423,8 +423,8 @@
                 },
 
                 {
-                    data: 'DesigName',
-                    name: 'DesigName'
+                    data: 'designation_name',
+                    name: 'designation_name'
                 },
 
 

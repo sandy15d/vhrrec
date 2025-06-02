@@ -67,16 +67,16 @@
                     name: 'EmpCode'
                 },
                 {
-                    data: 'CompanyCode',
-                    name: 'CompanyCode'
+                    data: 'company_code',
+                    name: 'company_code'
                 },
                 {
-                    data: 'DepartmentCode',
-                    name: 'DepartmentCode'
+                    data: 'department_code',
+                    name: 'department_code'
                 },
                 {
-                    data: 'DesigName',
-                    name: 'DesigName'
+                    data: 'designation_name',
+                    name: 'designation_name'
                 },
                 {
                     data: 'GradeValue',

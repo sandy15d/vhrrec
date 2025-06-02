@@ -12,15 +12,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
-use function App\Helpers\CheckCommControl;
-use function App\Helpers\convertData;
-
-use function App\Helpers\getFullName;
-use function App\Helpers\getCompanyCode;
 use Illuminate\Support\Facades\Validator;
-use function App\Helpers\getDepartmentCode;
-use function App\Helpers\getDesignationCode;
-use function App\Helpers\getEmailID;
+
 
 class ManualEntryController extends Controller
 {
@@ -32,8 +25,8 @@ class ManualEntryController extends Controller
 
     public function __construct()
     {
-        $this->company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
-        $this->department_list = DB::table("master_department")->where('DeptStatus', 'A')->where('CompanyId', session('Set_Company'))->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
+        $this->company_list = DB::table("core_company")->orderBy('company_code', 'desc')->pluck("company_code", "id");
+        $this->department_list = DB::table("core_department")->where('is_active', '1')->orderBy('department_name', 'asc')->pluck("department_name", "id");
         $this->state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
         $this->institute_list = DB::table("master_institute")->Join('states', 'states.StateId', '=', 'master_institute.StateId')->where('CountryId', session('Set_Country'))->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
         $this->userlist = DB::table("users")->where('role', 'H')->orderBy('name', 'asc')->pluck("name", "id");
@@ -42,11 +35,11 @@ class ManualEntryController extends Controller
     function recruiter_mrf_entry()
     {
         $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
-        $company_list = DB::table("master_company")->where('Status', 'A')->orderBy('CompanyCode', 'desc')->pluck("CompanyCode", "CompanyId");
-        $department_list = DB::table("master_department")->where('DeptStatus', 'A')->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
+        $company_list = DB::table("core_company")->orderBy('company_code', 'desc')->pluck("company_code", "id");
+        $department_list = DB::table("core_department")->where('is_active', '1')->orderBy('department_name', 'asc')->pluck("department_name", "id");
         $state_list = DB::table("states")->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
         $institute_list = DB::table("master_institute")->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
-        $designation_list = DB::table("master_designation")->where('DesigName', '!=', '')->orderBy('DesigName', 'asc')->pluck("DesigName", "DesigId");
+        $designation_list = DB::table("core_designation")->where('designation_name', '!=', '')->orderBy('designation_name', 'asc')->pluck("designation_name", "id");
         $userlist = DB::table("users")->where('role', 'H')->orderBy('name', 'asc')->pluck("name", "id");
         return view('common.recruiter_mrf_entry', compact('company_list', 'department_list', 'state_list', 'institute_list', 'designation_list', 'userlist'));
     }
@@ -86,8 +79,8 @@ class ManualEntryController extends Controller
             $usersQuery->where('CreatedBy', Auth::user()->id);
         }
 
-        $mrf = $usersQuery->select('manpowerrequisition.MRFId', 'manpowerrequisition.Type', 'manpowerrequisition.JobCode', 'manpowerrequisition.CreatedBy', 'master_designation.DesigName', 'manpowerrequisition.Status', 'manpowerrequisition.CreatedTime')
-            ->Join('master_designation', 'manpowerrequisition.DesigId', '=', 'master_designation.DesigId', 'left')->orderBy('manpowerrequisition.CreatedTime', 'desc');
+        $mrf = $usersQuery->select('manpowerrequisition.MRFId', 'manpowerrequisition.Type', 'manpowerrequisition.JobCode', 'manpowerrequisition.CreatedBy', 'core_designation.designation_name', 'manpowerrequisition.Status', 'manpowerrequisition.CreatedTime')
+            ->Join('core_designation', 'manpowerrequisition.DesigId', '=', 'core_designation.id', 'left')->orderBy('manpowerrequisition.CreatedTime', 'desc');
 
         return datatables()->of($mrf)
             ->addIndexColumn()
@@ -108,7 +101,7 @@ class ManualEntryController extends Controller
             })
             ->addColumn('actions', function ($mrf) {
 
-                return '<i class="bx bx-show text-info" style="font-size: 16px;cursor: pointer;" id="viewMRF" data-id=' . $mrf->MRFId . '></i>';
+                return '<i class="bx bx-show text-success" style="font-size: 16px;cursor: pointer;" id="viewMRF" data-id=' . $mrf->MRFId . '></i>';
             })
             ->addColumn('delete', function ($mrf) {
                 if ($mrf->Status == 'New') {
@@ -120,11 +113,11 @@ class ManualEntryController extends Controller
             ->addColumn('chk', function () {
                 return '<input type="checkbox" class="select_all">';
             })
-            ->editColumn('DesigName', function ($mrf) {
+            ->editColumn('designation_name', function ($mrf) {
                 if ($mrf->Type == 'SIP' || $mrf->Type == 'SIP_HrManual') {
                     return 'SIP/Internship';
                 } else {
-                    return $mrf->DesigName;
+                    return $mrf->designation_name;
                 }
             })
             ->rawColumns(['actions', 'delete', 'chk'])
@@ -197,18 +190,26 @@ class ManualEntryController extends Controller
             $Specialization = $request->Specialization;
             $KeyPosition = $request->KeyPosition;
 
-            $locArray = array();
-            if ($State != '') {
-                for ($lc = 0; $lc < Count($State); $lc++) {
-                    $location = array(
-                        "state" => $State[$lc],
-                        "city" => $City[$lc] == '' ? '' : $City[$lc],
-                        "nop" => $ManPower[$lc],
-                    );
+
+            $locArray =[];
+            // Check if $State is a non-empty array
+            if (!empty($State) && is_array($State)) {
+                // Iterate over the array with index
+                for ($lc = 0; $lc < count($State); $lc++) {
+                    // Fetch corresponding values safely using null coalescing to avoid undefined index errors
+                    $location = [
+                        "State" => $State[$lc] ?? '',  // Use null coalescing for safety
+                        "City" => $City[$lc] ?? '',    // Default to empty string if not set
+                        "Nop" => $ManPower[$lc] ?? 0,  // Default to 0 if manpower is not set
+                    ];
+                    // Add location to the array
                     array_push($locArray, $location);
                 }
             }
-            $locArray_str = serialize($locArray);
+
+
+
+            //$locArray_str = serialize($locArray);
 
             $Eduarray = array();
             if ($Education != '') {
@@ -232,9 +233,6 @@ class ManualEntryController extends Controller
                 $KpArray = serialize($KpArray);
             }
 
-
-
-
             $UniversityArray = array();
             if (isset($request->University)) {
                 $UniversityArray = serialize($request->University);
@@ -249,7 +247,7 @@ class ManualEntryController extends Controller
             $MRF->DepartmentId = $request->Department;
             $MRF->DesigId = $request->Designation;
             $MRF->Positions = array_sum($ManPower);
-            $MRF->LocationIds = $locArray_str;
+           // $MRF->LocationIds = $locArray_str;
             $MRF->MinCTC = $request->MinCTC;
             $MRF->MaxCTC = $request->MaxCTC;
             $MRF->WorkExp = $request->WorkExp;
@@ -266,11 +264,22 @@ class ManualEntryController extends Controller
 
             $InsertId = $MRF->MRFId;
 
-            $jobCode = getCompanyCode($request->Company) . '/' . getDepartmentCode($request->Department) . '/' . getDesignationCode($request->Designation) . '/' . $InsertId . '-' . date('Y');
+            $jobCode = getcompany_code($request->Company) . '/' . getDepartmentCode($request->Department) . '/' . getDesignationCode($request->Designation) . '/' . $InsertId . '-' . date('Y');
             $query1 = DB::table('manpowerrequisition')
                 ->where('MRFId', $InsertId)
                 ->update(['JobCode' => $jobCode]);
 
+            //=========Insert location and no of position in mrf_location_position table
+            // Insert into the database
+            foreach ($locArray as $loc) {
+                // Use the correct array access syntax for 'City'
+                DB::table('mrf_location_position')->insert([
+                    'MRFId' => $InsertId,
+                    'State' => $loc['State'],
+                    'City' => $loc['City'],  // Corrected array access
+                    'Nop' => $loc['Nop'],
+                ]);
+            }
             if (!$query1) {
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
@@ -281,7 +290,7 @@ class ManualEntryController extends Controller
                     "Employee" => getFullName(Auth::user()->id),
                 ];
                 if (CheckCommControl(3) == 1) {  //if MRF created by Recruiter  communication control is on
-                   Mail::to("parul.parmar@vnrseeds.com")->send(new MrfCreationMail($details));
+                    Mail::to("khushboo.sahu@vnrseeds.com")->send(new MrfCreationMail($details));
                 }
                 return response()->json(['status' => 200, 'msg' => 'New Manual MRF has been successfully created.']);
             }
@@ -308,19 +317,21 @@ class ManualEntryController extends Controller
             $Education = $request->Education;
             $Specialization = $request->Specialization;
             $KeyPosition = $request->KeyPosition;
-
-            $locArray = array();
-            if ($State != '') {
-                for ($lc = 0; $lc < Count($State); $lc++) {
-                    $location = array(
-                        "state" => $State[$lc],
-                        "city" => $City[$lc] == '' ? '' : $City[$lc],
-                        "nop" => $ManPower[$lc],
-                    );
+            $locArray =[];
+            // Check if $State is a non-empty array
+            if (!empty($State) && is_array($State)) {
+                // Iterate over the array with index
+                for ($lc = 0; $lc < count($State); $lc++) {
+                    // Fetch corresponding values safely using null coalescing to avoid undefined index errors
+                    $location = [
+                        "State" => $State[$lc] ?? '',  // Use null coalescing for safety
+                        "City" => $City[$lc] ?? '',    // Default to empty string if not set
+                        "Nop" => $ManPower[$lc] ?? 0,  // Default to 0 if manpower is not set
+                    ];
+                    // Add location to the array
                     array_push($locArray, $location);
                 }
             }
-            $locArray_str = serialize($locArray);
 
             $Eduarray = array();
             if ($Education != '') {
@@ -358,7 +369,7 @@ class ManualEntryController extends Controller
             $MRF->CompanyId = $request->Company;
             $MRF->DepartmentId = $request->Department;
             $MRF->Positions = array_sum($ManPower);
-            $MRF->LocationIds = $locArray_str;
+          //  $MRF->LocationIds = $locArray_str;
             $MRF->Stipend = $request->Stipend;
             $MRF->TwoWheeler = $request->two_wheeler;
             $MRF->DA = $request->da;
@@ -380,11 +391,21 @@ class ManualEntryController extends Controller
 
             $InsertId = $MRF->MRFId;
 
-            $jobCode = getCompanyCode($request->Company) . '/' . getDepartmentCode($request->Department) . '/SIP/' . $InsertId . '-' . date('Y');
+            $jobCode = getcompany_code($request->Company) . '/' . getDepartmentCode($request->Department) . '/SIP/' . $InsertId . '-' . date('Y');
             $query1 = DB::table('manpowerrequisition')
                 ->where('MRFId', $InsertId)
                 ->update(['JobCode' => $jobCode]);
-
+            //=========Insert location and no of position in mrf_location_position table
+            // Insert into the database
+            foreach ($locArray as $loc) {
+                // Use the correct array access syntax for 'City'
+                DB::table('mrf_location_position')->insert([
+                    'MRFId' => $InsertId,
+                    'State' => $loc['State'],
+                    'City' => $loc['City'],  // Corrected array access
+                    'Nop' => $loc['Nop'],
+                ]);
+            }
             if (!$query1) {
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
@@ -395,7 +416,7 @@ class ManualEntryController extends Controller
                     "Employee" => getFullName(Auth::user()->id),
                 ];
                 if (CheckCommControl(3) == 1) {  //if MRF created by Recruiter  communication control is on
-                    Mail::to("parul.parmar@vnrseeds.com")->send(new MrfCreationMail($details));
+                    Mail::to("khushboo.sahu@vnrseeds.com")->send(new MrfCreationMail($details));
                 }
                 return response()->json(['status' => 200, 'msg' => 'SIP/Internship MRF has been successfully created.']);
             }
@@ -416,17 +437,21 @@ class ManualEntryController extends Controller
         $Education = $request->Education;
         $Specialization = $request->Specialization;
         $KeyPosition = $request->KeyPosition;
-
-        $locArray = array();
-        if ($State != '') {
-            $location = array(
-                "state" => $State,
-                "city" => $City,
-                "nop" => '1',
-            );
-            array_push($locArray, $location);
+        $locArray =[];
+        // Check if $State is a non-empty array
+        if (!empty($State) && is_array($State)) {
+            // Iterate over the array with index
+            for ($lc = 0; $lc < count($State); $lc++) {
+                // Fetch corresponding values safely using null coalescing to avoid undefined index errors
+                $location = [
+                    "State" => $State[$lc] ?? '',  // Use null coalescing for safety
+                    "City" => $City[$lc] ?? '',    // Default to empty string if not set
+                    "Nop" => $ManPower[$lc] ?? 0,  // Default to 0 if manpower is not set
+                ];
+                // Add location to the array
+                array_push($locArray, $location);
+            }
         }
-        $locArray_str = serialize($locArray);
 
         $Eduarray = array();
         if ($Education != '') {
@@ -468,7 +493,7 @@ class ManualEntryController extends Controller
         $MRF->GradeId = $GradeId;
         $MRF->RepEmployeeID = $request->ReplacementFor;
         $MRF->Positions = 1;
-        $MRF->LocationIds = $locArray_str;
+        //$MRF->LocationIds = $locArray_str;
         $MRF->ExistCTC = $request->ExCTC;
         $MRF->MinCTC = $request->MinCTC;
         $MRF->MaxCTC = $request->MaxCTC;
@@ -488,11 +513,21 @@ class ManualEntryController extends Controller
 
         $InsertId = $MRF->MRFId;
 
-        $jobCode = getCompanyCode($CompanyId) . '/' . getDepartmentCode($DepartmentId) . '/' . getDesignationCode($DesigId) . '/' . $InsertId . '-' . date('Y');
+        $jobCode = getcompany_code($CompanyId) . '/' . getDepartmentCode($DepartmentId) . '/' . getDesignationCode($DesigId) . '/' . $InsertId . '-' . date('Y');
         $query1 = DB::table('manpowerrequisition')
             ->where('MRFId', $InsertId)
             ->update(['JobCode' => $jobCode]);
-
+        //=========Insert location and no of position in mrf_location_position table
+        // Insert into the database
+        foreach ($locArray as $loc) {
+            // Use the correct array access syntax for 'City'
+            DB::table('mrf_location_position')->insert([
+                'MRFId' => $InsertId,
+                'State' => $loc['State'],
+                'City' => $loc['City'],  // Corrected array access
+                'Nop' => $loc['Nop'],
+            ]);
+        }
         if (!$query1) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
@@ -503,7 +538,7 @@ class ManualEntryController extends Controller
                 "Employee" => getFullName(Auth::user()->id),
             ];
             if (CheckCommControl(3) == 1) {  //if MRF created by Recruiter  communication control is on
-                Mail::to("parul.parmar@vnrseeds.com")->send(new MrfCreationMail($details));
+                Mail::to("khushboo.sahu@vnrseeds.com")->send(new MrfCreationMail($details));
             }
             return response()->json(['status' => 200, 'msg' => 'Manual Replacement MRF has been successfully created.']);
         }
@@ -529,19 +564,21 @@ class ManualEntryController extends Controller
             $Education = $request->Education;
             $Specialization = $request->Specialization;
             $KeyPosition = $request->KeyPosition;
-
-            $locArray = array();
-            if ($State != '') {
-                for ($lc = 0; $lc < Count($State); $lc++) {
-                    $location = array(
-                        "state" => $State[$lc],
-                        "city" => $City[$lc] == '' ? '' : $City[$lc],
-                        "nop" => $ManPower[$lc],
-                    );
+            $locArray =[];
+            // Check if $State is a non-empty array
+            if (!empty($State) && is_array($State)) {
+                // Iterate over the array with index
+                for ($lc = 0; $lc < count($State); $lc++) {
+                    // Fetch corresponding values safely using null coalescing to avoid undefined index errors
+                    $location = [
+                        "State" => $State[$lc] ?? '',  // Use null coalescing for safety
+                        "City" => $City[$lc] ?? '',    // Default to empty string if not set
+                        "Nop" => $ManPower[$lc] ?? 0,  // Default to 0 if manpower is not set
+                    ];
+                    // Add location to the array
                     array_push($locArray, $location);
                 }
             }
-            $locArray_str = serialize($locArray);
 
             $Eduarray = array();
             if ($Education != '') {
@@ -580,7 +617,7 @@ class ManualEntryController extends Controller
             $MRF->DepartmentId = $request->Department;
             $MRF->DesigId = $request->Designation;
             $MRF->Positions = array_sum($ManPower);
-            $MRF->LocationIds = $locArray_str;
+            //$MRF->LocationIds = $locArray_str;
             // $MRF->MinCTC = $request->MinCTC;
             $MRF->MaxCTC = $request->MaxCTC;
             $MRF->WorkExp = $request->WorkExp;
@@ -598,11 +635,21 @@ class ManualEntryController extends Controller
 
             $InsertId = $MRF->MRFId;
 
-            $jobCode = getCompanyCode($request->Company) . '/' . getDepartmentCode($request->Department) . '/' . getDesignationCode($request->Designation) . '/' . $InsertId . '-' . date('Y');
+            $jobCode = getcompany_code($request->Company) . '/' . getDepartmentCode($request->Department) . '/' . getDesignationCode($request->Designation) . '/' . $InsertId . '-' . date('Y');
             $query1 = DB::table('manpowerrequisition')
                 ->where('MRFId', $InsertId)
                 ->update(['JobCode' => $jobCode]);
-
+            //=========Insert location and no of position in mrf_location_position table
+            // Insert into the database
+            foreach ($locArray as $loc) {
+                // Use the correct array access syntax for 'City'
+                DB::table('mrf_location_position')->insert([
+                    'MRFId' => $InsertId,
+                    'State' => $loc['State'],
+                    'City' => $loc['City'],  // Corrected array access
+                    'Nop' => $loc['Nop'],
+                ]);
+            }
             if (!$query1) {
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
             } else {
@@ -613,7 +660,7 @@ class ManualEntryController extends Controller
                     "Employee" => getFullName(Auth::user()->id),
                 ];
                 if (CheckCommControl(3) == 1) {  //if MRF created by Recruiter  communication control is on
-                    Mail::to("parul.parmar@vnrseeds.com")->send(new MrfCreationMail($details));
+                    Mail::to("khushboo.sahu@vnrseeds.com")->send(new MrfCreationMail($details));
                     Mail::to(getEmailID($request->OnBehalf))->send(new MrfCreationMail($details));
                 }
                 return response()->json(['status' => 200, 'msg' => 'Manual Campus Hiring MRF has been successfully created.']);

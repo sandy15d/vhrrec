@@ -89,11 +89,11 @@ class CommonController extends Controller
 
     public function getDesignation(Request $request)
     {
-        $designation = DB::table("master_grade_designation as d")->orderBy('de.DesigName', 'asc')
-            ->join('master_designation as de', 'de.DesigId', '=', 'd.designation_id')
+        $designation = DB::table("core_designation_department_mapping as d")->orderBy('de.designation_name', 'asc')
+            ->join('core_designation as de', 'de.id', '=', 'd.designation_id')
             ->where("d.department_id", $request->DepartmentId)
-            ->where("de.DesigStatus", 'A')
-            ->pluck("de.DesigId", "de.DesigName");
+            ->where("de.is_active", '1')
+            ->pluck("de.id", "de.designation_name");
         return response()->json($designation);
     }
 
@@ -111,7 +111,7 @@ class CommonController extends Controller
 
     public function getState()
     {
-        $State = DB::table("states")->where('CountryId', session('Set_Country'))->orderBy('StateName', 'asc')->pluck("StateId", "StateName");
+        $State = DB::table("states")->where('CountryId', 1)->orderBy('StateName', 'asc')->pluck("StateId", "StateName");
         return response()->json($State);
     }
 
@@ -166,10 +166,10 @@ class CommonController extends Controller
 
     public function getDepartment(Request $request)
     {
-        $Department = DB::table("master_department")->orderBy('DepartmentName', 'asc')
-            ->where("CompanyId", $request->CompanyId)
-            ->where('DepartmentId', '>', '1000')
-            ->pluck("DepartmentId", "DepartmentName");
+        $Department = DB::table("core_department")->orderBy('department_name', 'asc')
+            
+            ->where('is_active', '1')
+            ->pluck("id", "department_name");
         return response()->json($Department);
     }
 

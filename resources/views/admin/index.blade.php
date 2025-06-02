@@ -1,7 +1,7 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 @php
-use function App\Helpers\ActiveMRFCount;
+
 use Carbon\Carbon;
 $NewMRF = DB::table('manpowerrequisition')
     ->where('CountryId', session('Set_Country'))

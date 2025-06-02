@@ -2,6 +2,7 @@
 
 namespace App\Models\Admin;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,4 +21,11 @@ class master_district extends Model
 
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope('master_district', function (Builder $builder) {
+            $builder->orderBy('DistrictName', 'asc');
+        });
+    }
 }
