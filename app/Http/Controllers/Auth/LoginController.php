@@ -75,7 +75,7 @@ class LoginController extends Controller
                 $request->session()->put('ThemeStyle', $themedetail[0]->ThemeStyle);
                 $request->session()->put('SidebarColor', $themedetail[0]->SidebarColor);
             }
-            LogActivity::addToLog('User Login - ' . getFullName(Auth::user()->id), 'Login');
+           // LogActivity::addToLog('User Login - ' . getFullName(Auth::user()->id), 'Login');
             if (auth()->user()->role == 'A') {
                 return redirect()->route('admin.dashboard');
             } elseif (auth()->user()->role == 'R') {
