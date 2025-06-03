@@ -35,28 +35,23 @@
         .errorfield {
             border: 2px solid #E8290B;
         }
-
     </style>
 </head>
 @php
 
-$jpid = $_REQUEST['jpid'];
-$jpid = base64_decode($jpid);
-$query = DB::table('jobpost')
-    ->Where('JPId', $jpid)
-    ->first();
-$MRFId = $query->MRFId;
-$get_mrf = DB::table('manpowerrequisition')
-    ->where('MRFId', $MRFId)
-    ->first();
-$Education = unserialize($get_mrf->EducationId);
-$e_list = [];
-foreach ($Education as $edu) {
-    array_push($e_list, $edu['e']);
-}
-$Institute = unserialize($get_mrf->EducationInsId);
-/* $Institute = $Institute[0]; */
-$country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
+    $jpid = $_REQUEST['jpid'];
+    $jpid = base64_decode($jpid);
+    $query = DB::table('jobpost')->Where('JPId', $jpid)->first();
+    $MRFId = $query->MRFId;
+    $get_mrf = DB::table('manpowerrequisition')->where('MRFId', $MRFId)->first();
+    $Education = unserialize($get_mrf->EducationId);
+    $e_list = [];
+    foreach ($Education as $edu) {
+        array_push($e_list, $edu['e']);
+    }
+    $Institute = unserialize($get_mrf->EducationInsId);
+    /* $Institute = $Institute[0]; */
+    $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
 @endphp
 
 <body class="bg-login">
@@ -106,14 +101,17 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                 </font>
                                                             </td>
                                                             <td style="width:800px !important">
-                                                                <label><input type="radio" name="Title" value="Mr."
-                                                                        class="reqinp" checked>
+                                                                <label><input type="radio" name="Title"
+                                                                        value="Mr." class="reqinp" checked>
                                                                     Mr.</label>&emsp;
-                                                                <label><input type="radio" name="Title" value="Ms.">
+                                                                <label><input type="radio" name="Title"
+                                                                        value="Ms.">
                                                                     Ms.</label>&emsp;
-                                                                <label><input type="radio" name="Title" value="Mrs.">
+                                                                <label><input type="radio" name="Title"
+                                                                        value="Mrs.">
                                                                     Mrs.</label>&emsp;
-                                                                <label><input type="radio" name="Title" value="Dr.">
+                                                                <label><input type="radio" name="Title"
+                                                                        value="Dr.">
                                                                     Dr.</label>
 
                                                             </td>
@@ -132,8 +130,9 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                         <tr>
                                                             <td valign="middle">Middle Name</td>
                                                             <td>
-                                                                <input type="text" class="form-control form-control-sm"
-                                                                    name="MName" onblur="return convertCase(this)">
+                                                                <input type="text"
+                                                                    class="form-control form-control-sm" name="MName"
+                                                                    onblur="return convertCase(this)">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -177,7 +176,8 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                 <table style="width: 100%">
                                                                     <tr>
                                                                         <td>
-                                                                            <select name="FatherTitle" id="FatherTitle"
+                                                                            <select name="FatherTitle"
+                                                                                id="FatherTitle"
                                                                                 class="form-select form-select-sm d-inline"
                                                                                 style="width: 80%;">
                                                                                 <option value="Mr.">Mr.</option>
@@ -219,14 +219,15 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                             <td valign="middle">Nationality<font color="#FF0000">*
                                                                 </font>
                                                             <td> <select name="Nationality" id="Nationality"
-                                                                    class="form-select form-select-sm reqinp" onchange="getState(this.value);">
+                                                                    class="form-select form-select-sm reqinp"
+                                                                    onchange="getState(this.value);">
                                                                     <option value="">Select</option>
                                                                     @foreach ($country_list as $key => $value)
                                                                         <option value="{{ $key }}">
                                                                             {{ $value }}</option>
                                                                     @endforeach
                                                                 </select>
-                                                               </td>
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <td valign="middle">Address<font color="#FF0000">*
@@ -266,12 +267,12 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                             <select name="State" id="State"
                                                                                 class="form-select form-select-sm reqinp"
                                                                                 onchange="getLocation(this.value)">
-                                                                                <option value="">Select State</option>
+                                                                                <option value="">Select State
+                                                                                </option>
                                                                                 @foreach ($state_list as $key => $value)
                                                                                     <option
                                                                                         value="{{ $key }}">
                                                                                         {{ $value }}</option>
-
                                                                                 @endforeach
                                                                             </select>
                                                                         </td>
@@ -290,7 +291,8 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                     </tr>
                                                                     <tr>
                                                                         <td>
-                                                                            <input type="text" name="City" id="City"
+                                                                            <input type="text" name="City"
+                                                                                id="City"
                                                                                 class="form-control form-control-sm reqinp"
                                                                                 placeholder="City / Village"
                                                                                 onblur="return convertCase(this)">
@@ -307,7 +309,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                             </td>
                                                         </tr>
 
-                                                      
+
                                                         <tr>
                                                             <td valign="middle">Aadhaar No.<font color="#FF0000">*
                                                                 </font>
@@ -340,7 +342,6 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                                             {{ $value }}
                                                                                         </option>
                                                                                     @endif
-
                                                                                 @endforeach
                                                                             </select>
                                                                         </td>
@@ -352,7 +353,8 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                             <select name="Specialization"
                                                                                 id="Specialization"
                                                                                 class="form-select form-select-sm reqinp">
-                                                                                <option value="">Select Specialization
+                                                                                <option value="">Select
+                                                                                    Specialization
                                                                                 </option>
                                                                             </select>
                                                                         </td>
@@ -443,7 +445,8 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                         <td>Present Company<font color="#FF0000">*
                                                                             </font>
                                                                         </td>
-                                                                        <td><input type="text" name="PresentCompany"
+                                                                        <td><input type="text"
+                                                                                name="PresentCompany"
                                                                                 id="PresentCompany"
                                                                                 class="form-control-sm form-control"
                                                                                 onblur="return convertCase(this)">
@@ -473,7 +476,8 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                         <td>
                                                                             <div class="row">
                                                                                 <div>
-                                                                                    <input type="date" name="JobEndDate"
+                                                                                    <input type="date"
+                                                                                        name="JobEndDate"
                                                                                         id="JobEndDate"
                                                                                         class="form-control form-control-sm">
                                                                                 </div>
@@ -506,7 +510,8 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                         <td>CTC(Annual)<font color="#FF0000">* </font>
                                                                         </td>
                                                                         <td>
-                                                                            <input type="text" name="CTC" id="CTC"
+                                                                            <input type="text" name="CTC"
+                                                                                id="CTC"
                                                                                 class="form-control form-control-sm"
                                                                                 onkeypress="return isNumberKey(event)">
                                                                         </td>
@@ -534,23 +539,26 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
 
                                                         </tr>
                                                         <tr>
-                                                            <td valign="middle">Reference<font color="#FF0000">* </font>
+                                                            <td valign="middle">Reference<font color="#FF0000">*
+                                                                </font>
                                                             </td>
                                                             <td>
                                                                 <table style="width: 100%">
                                                                     <tr>
                                                                         <td class="form-check form-check-inline">
 
-                                                                            <input class="form-check-input" type="radio"
-                                                                                name="RefCheck" id="YesRef" value="Y"
+                                                                            <input class="form-check-input"
+                                                                                type="radio" name="RefCheck"
+                                                                                id="YesRef" value="Y"
                                                                                 onclick="showRefFormOrNot()">
                                                                             <label class="form-check-label"
                                                                                 for="YesRef">Yes</label>
 
                                                                         </td>
                                                                         <td class="form-check form-check-inline">
-                                                                            <input class="form-check-input" type="radio"
-                                                                                name="RefCheck" id="NoRef" value="N"
+                                                                            <input class="form-check-input"
+                                                                                type="radio" name="RefCheck"
+                                                                                id="NoRef" value="N"
                                                                                 onclick="showRefFormOrNot()" checked>
                                                                             <label class="form-check-label"
                                                                                 for="NoRef">No</label>
@@ -587,7 +595,8 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                         <td>Designation<font color="#FF0000">*
                                                                             </font>
                                                                         </td>
-                                                                        <td><input type="text" name="RefDesignation"
+                                                                        <td><input type="text"
+                                                                                name="RefDesignation"
                                                                                 id="RefDesignation"
                                                                                 class="form-control-sm form-control"
                                                                                 onblur="return convertCase(this)">
@@ -634,7 +643,8 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                         <span id="preview">
                                                             <center>
                                                                 <img src="{{ URL::to('/') }}/assets/images/user.png"
-                                                                    style="width: 150px; height: 150px;" id="img1" />
+                                                                    style="width: 150px; height: 150px;"
+                                                                    id="img1" />
                                                             </center>
                                                         </span>
                                                         <center>
@@ -684,7 +694,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
     <script src="{{ URL::to('/') }}/assets/js/sweetalert2.min.js"></script>
     <script src="{{ URL::to('/') }}/assets/js/toastr.min.js"></script>
 
-   
+
 
     <script>
         function isNumberKey(evt) {

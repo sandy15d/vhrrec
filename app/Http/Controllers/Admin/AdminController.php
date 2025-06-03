@@ -301,12 +301,13 @@ class AdminController extends Controller
                 }
             })
             ->editColumn('LocationIds', function ($mrf) {
-                $location = unserialize($mrf->LocationIds);
+                // $location = unserialize($mrf->LocationIds);
+                $location = DB::table('mrf_location_position')->where('MRFId', $mrf->MRFId)->get()->toArray();
                 $loc = '';
                 foreach ($location as $key => $value) {
-                    $loc .= getDistrictName($value['city']) . ' ';
-                    $loc .= getStateCode($value['state']) . ' - ';
-                    $loc .= $value['nop'];
+                    $loc .= getDistrictName($value->City) . ' ';
+                    $loc .= getStateCode($value->State) . ' - ';
+                    $loc .= $value->Nop;
                     $loc . '<br>';
                 }
                 return $loc;
