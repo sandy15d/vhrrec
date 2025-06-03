@@ -21,14 +21,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
-use function App\Helpers\CheckCommControl;
-use function App\Helpers\getFullName;
-use function App\Helpers\getStateCode;
-use function App\Helpers\getDistrictName;
-
-use function App\Helpers\getDepartmentCode;
-use function App\Helpers\getDesignationCode;
-use function App\Helpers\getEmailID;
 
 class AdminController extends Controller
 {

@@ -39,12 +39,7 @@
     </style>
 </head>
 @php
-use function App\Helpers\getDepartment;
-use function App\Helpers\getEducationById;
-use function App\Helpers\getSpecializationbyId;
-use function App\Helpers\getDistrictName;
-use function App\Helpers\getStateName;
-use function App\Helpers\getCollegeById;
+
 $jpid = $_REQUEST['jpid'];
 $jpid = base64_decode($jpid);
 $query = DB::table('jobpost')

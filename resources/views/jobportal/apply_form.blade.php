@@ -1,12 +1,4 @@
-@php
-use function App\Helpers\getDepartment;
-use function App\Helpers\getEducationById;
-use function App\Helpers\getSpecializationbyId;
-use function App\Helpers\getDistrictName;
-use function App\Helpers\getStateName;
 
-
-@endphp
 <!doctype html>
 <html lang="en">
 

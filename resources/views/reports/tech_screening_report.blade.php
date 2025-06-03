@@ -1,8 +1,4 @@
-@php
-use function App\Helpers\getDepartmentCode;
-use function App\Helpers\getDesignationCode;
-use function App\Helpers\getFullName;
-@endphp
+
 @extends('layouts.master')
 @section('title', 'Technical Screening Report')
 @section('PageContent')

@@ -1,6 +1,4 @@
-@php
-use function App\Helpers\getDepartment;
-@endphp
+
 @extends('layouts.master')
 @section('title', 'HR Screening Report')
 @section('PageContent')

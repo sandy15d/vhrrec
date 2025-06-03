@@ -22,12 +22,7 @@
     <title>Campus Placement Registration</title>
 </head>
 @php
-use function App\Helpers\getDepartment;
-use function App\Helpers\getEducationById;
-use function App\Helpers\getSpecializationbyId;
-use function App\Helpers\getDistrictName;
-use function App\Helpers\getStateName;
-use function App\Helpers\CheckJobPostExpiry;
+
 $jpid = $_REQUEST['job'];
 $jpid = base64_decode($jpid);
 $query = DB::table('jobpost')

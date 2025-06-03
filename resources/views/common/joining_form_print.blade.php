@@ -1,10 +1,6 @@
 @php
 use Illuminate\Support\Carbon;
-use function App\Helpers\getDistrictName;
-use function App\Helpers\getStateName;
-use function App\Helpers\getEducationCodeById;
-use function App\Helpers\getSpecializationbyId;
-use function App\Helpers\getCollegeById;
+
 $sendingId = request()->query('jaid');
 $JAId = base64_decode($sendingId);
 $Rec = DB::table('jobapply')

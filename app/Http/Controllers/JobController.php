@@ -16,11 +16,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
-use function App\Helpers\CheckCommControl;
-use function App\Helpers\getcompany_code;
-use function App\Helpers\getDesignation;
-use function App\Helpers\SendOTP;
-
 class JobController extends Controller
 {
     function jobs()

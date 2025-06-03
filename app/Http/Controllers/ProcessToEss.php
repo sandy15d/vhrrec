@@ -12,12 +12,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
-use function App\Helpers\getCollegeById;
-use function App\Helpers\getDistrictName;
-use function App\Helpers\getEducationById;
-use function App\Helpers\getSpecializationbyId;
-use function App\Helpers\getStateName;
-
 class ProcessToEss extends Controller
 {
 

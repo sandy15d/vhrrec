@@ -6,7 +6,6 @@ use App\Imports\UserImport;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
-use function App\Helpers\getDepartmentCode;
 
 class ImportController extends Controller
 {

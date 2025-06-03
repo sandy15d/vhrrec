@@ -11,8 +11,7 @@ $query = DB::table('screening')
     ->select('jobcandidates.ReferenceNo', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobpost.Title', 'screening.IntervDt', 'screening.IntervTime', 'screening.IntervPanel', 'screening.ScrDpt', 'screening.IntervLoc')
     ->get();
  $sql = DB::getQueryLog();
- //dd($sql);
-use function App\Helpers\getDepartmentCode;
+
 @endphp
 @extends('layouts.master')
 @section('title', 'Upcoming Interviews')

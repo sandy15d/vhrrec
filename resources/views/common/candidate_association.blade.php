@@ -1,11 +1,7 @@
 @extends('layouts.master')
 @section('title', 'Candidate List')
 @section('PageContent')
-@php
-use function App\Helpers\getEducationCodeById;
-use function App\Helpers\getResumeSourceById;
-use function App\Helpers\getFullName;
-@endphp
+
     <style>
         .ribbon-corner.ribbon-fold {
             --tor-ribbon-polygon: polygon(0% 100%, 50% calc(100% - (var(--tor-ribbon-size) + 1em)), 100% 100%, 100% calc(100% + 0.5em), 0% calc(100% + 0.5em));

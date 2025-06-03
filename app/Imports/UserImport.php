@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-use function App\Helpers\getStateIdByName;
-
 class UserImport implements ToCollection, WithHeadingRow
 {
     /**

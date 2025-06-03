@@ -13,14 +13,7 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use function App\Helpers\CheckJobPostCreated;
-use function App\Helpers\convertData;
-use function App\Helpers\getDepartment;
-use function App\Helpers\getDistrictName;
-use function App\Helpers\getEducationById;
-use function App\Helpers\getFullName;
-use function App\Helpers\getSpecializationbyId;
-use function App\Helpers\getStateCode;
+
 
 class TraineeController extends Controller
 {

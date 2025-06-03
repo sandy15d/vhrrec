@@ -17,7 +17,6 @@ use App\Models\Admin\master_user_permission;
 use DataTables;
 use Illuminate\Support\Facades\Mail;
 
-use function App\Helpers\getFullName;
 
 class UserController extends Controller
 {

@@ -1,6 +1,4 @@
-@php
-use function App\Helpers\getFullName;
-@endphp
+
 @extends('layouts.master')
 @section('title', 'FIRO B Report')
 @section('PageContent')

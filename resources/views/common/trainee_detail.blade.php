@@ -9,9 +9,7 @@ $Rec = DB::table('jobcandidates')
     ->where('jobcandidates.JCId', $JCId)
     ->first();
 
-use function App\Helpers\getEducationCodeById;
-use function App\Helpers\getSpecializationbyId;
-use function App\Helpers\getCollegeById;
+
 @endphp
 @extends('layouts.master')
 @section('title', 'Trainee Detail')

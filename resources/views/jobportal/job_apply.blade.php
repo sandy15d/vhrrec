@@ -1,9 +1,5 @@
 @php
-use function App\Helpers\getDepartment;
-use function App\Helpers\getEducationById;
-use function App\Helpers\getSpecializationbyId;
-use function App\Helpers\getDistrictName;
-use function App\Helpers\getStateName;
+
 $jpid = request()->query('jpid');
 $jpid = base64_decode($jpid);
 $query = DB::table('jobpost')

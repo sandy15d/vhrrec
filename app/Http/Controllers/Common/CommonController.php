@@ -14,12 +14,6 @@ use App\Models\jobcandidate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
-use function App\Helpers\convertData;
-use function App\Helpers\getcompany_code;
-use function App\Helpers\getDepartmentCode;
-
-use function App\Helpers\getDesignationCode;
-use function App\Helpers\getFullName;
 use Citco\Carbon;
 class CommonController extends Controller
 {
