@@ -11,15 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-use function App\Helpers\CheckJobPostCreated;
-use function App\Helpers\convertData;
-use function App\Helpers\getDepartment;
-use function App\Helpers\getDesignation;
-use function App\Helpers\getDesignationCode;
-use function App\Helpers\getStateCode;
-use function App\Helpers\getDistrictName;
-use function App\Helpers\getFullName;
-use function App\Helpers\GetJobPostId;
+
 use Illuminate\Support\Facades\Validator;
 
 class MrfAllocatedController extends Controller
