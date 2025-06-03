@@ -512,25 +512,26 @@
             $.post('<?= route('getMRFDetails') ?>', {
                 MRFId: MRFId
             }, function(data) {
-                if (data.MRFDetails.Status == 'New') {
-                    $('#edit_mrf_btn').removeClass('d-none');
-                } else {
-                    $('#edit_mrf_btn').addClass('d-none');
-                }
+
                 $('#editMRFModal').find('input[name="MRFId"]').val(data.MRFDetails.MRFId);
+                if (data.on_behalf != '') {
+                    $("#onbehalf_tr").removeClass('d-none');
+                } else {
+                    $("#onbehalf_tr").addClass('d-none');
+                }
+                $("#OnBehalf").val(data.MRFDetails.OnBehalf);
                 $('#MRF_Type').val(data.MRFDetails.Type);
                 $('#Reason').val(data.MRFDetails.Reason);
                 $('#Company').val(data.MRFDetails.CompanyId);
                 $('#Department').val(data.MRFDetails.DepartmentId);
                 $('#Designation').val(data.MRFDetails.DesigId);
+                $('#WorkExp').val(data.MRFDetails.WorkExp);
                 $('#MinCTC').val(data.MRFDetails.MinCTC);
                 $('#MaxCTC').val(data.MRFDetails.MaxCTC);
                 $('#MaxCTC').val(data.MRFDetails.MaxCTC);
                 $('#Stipend').val(data.MRFDetails.Stipend);
-                $('#WorkExp').val(data.MRFDetails.WorkExp);
                 CKEDITOR.instances['JobInfo'].setData(data.MRFDetails.Info);
                 $('#Remark').val(data.MRFDetails.Remarks);
-                $('#OnBehalf').val(data.MRFDetails.OnBehalf);
                 var UniversityValue = data.UniversityDetails;
                 var selectedOptions = UniversityValue.toString().split(",");
 
@@ -573,7 +574,6 @@
 
                 if (data.MRFDetails.Type == 'SIP' || data.MRFDetails.Type == 'SIP_HrManual') {
                     $('#deisgnation_tr').addClass('d-none');
-                    $('#work_exp_tr').addClass('d-none');
                     $('#stipend_tr').removeClass('d-none');
                     $('#duration_tr').removeClass('d-none');
                     $('#ctc_tr').addClass('d-none');
@@ -596,7 +596,6 @@
                     }
                 } else {
                     $('#deisgnation_tr').removeClass('d-none');
-                    $('#work_exp_tr').removeClass('d-none');
                     $('#stipend_tr').addClass('d-none');
                     $('#duration_tr').addClass('d-none');
                     $('#ctc_tr').removeClass('d-none');
