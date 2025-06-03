@@ -259,6 +259,11 @@
 @section('scriptsection')
 
     <script>
+        $("select").select2({
+            placeholder: "Select",
+            allowClear: true,
+            width: '100%',
+        });
         $(document).on('click', '#Cancle', function() {
             location.reload();
         });

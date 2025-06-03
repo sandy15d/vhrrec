@@ -213,6 +213,11 @@
 @section('scriptsection')
 
     <script>
+         $("select").select2({
+            placeholder: "Select",
+            allowClear: true,
+           
+        });
         $(document).on('click', '#Cancle', function() {
             location.reload();
         });
