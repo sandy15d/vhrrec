@@ -5,14 +5,13 @@
         .table>:not(caption)>*>* {
             padding: 2px 1px;
         }
-
     </style>
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb  align-items-center mb-3">
             <div class="row mb-1">
                 <div class="col-3 breadcrumb-title ">
-                   Active  MRF Details
+                    Active MRF Details
                 </div>
                 <div class="col-2">
                     <select name="Fill_Company" id="Fill_Company" class="form-select form-select-sm"
@@ -48,7 +47,8 @@
                     </select>
                 </div>
                 <div class="col-1">
-                    <button type="reset" class="btn btn-danger btn-sm" id="reset"><i class="bx bx-refresh"></i></button>
+                    <button type="reset" class="btn btn-danger btn-sm" id="reset"><i
+                            class="bx bx-refresh"></i></button>
                 </div>
             </div>
 
@@ -58,8 +58,8 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table  table-hover table-condensed table-striped table-bordered text-center" id="MRFTable"
-                        style="width: 100%">
+                    <table class="table  table-hover table-condensed table-striped table-bordered text-center"
+                        id="MRFTable" style="width: 100%">
                         <thead class="bg-primary text-light">
                             <tr class="text-center">
                                 <td></td>
@@ -106,8 +106,7 @@
                                         </font>
                                     </th>
                                     <td>
-                                        <textarea class="form-control" rows="1" name="Reason" id="Reason" tabindex="1"
-                                            autofocus></textarea>
+                                        <textarea class="form-control" rows="1" name="Reason" id="Reason" tabindex="1" autofocus></textarea>
                                         <span class="text-danger error-text Reason_error"></span>
 
                                     </td>
@@ -115,7 +114,8 @@
                                 <tr>
                                     <th>Company<font class="text-danger">*</font>
                                     </th>
-                                    <td><select id="Company" name="Company" class="form-control form-select form-select-sm">
+                                    <td><select id="Company" name="Company"
+                                            class="form-control form-select form-select-sm">
                                             <option value="" selected disabled>Select Company</option>
                                             @foreach ($company_list as $key => $value)
                                                 <option value="{{ $key }}">{{ $value }}</option>
@@ -128,8 +128,8 @@
                                     <th>Deartment<font class="text-danger">*</font>
                                     </th>
                                     <td>
-                                        <div class="spinner-border text-primary d-none" role="status" id="DeptLoader"> <span
-                                                class="visually-hidden">Loading...</span>
+                                        <div class="spinner-border text-primary d-none" role="status" id="DeptLoader">
+                                            <span class="visually-hidden">Loading...</span>
                                         </div>
                                         <select id="Department" name="Department" id="Department"
                                             class="form-control form-select form-select-sm">
@@ -187,7 +187,8 @@
                                     <th>Desired Stipend (in Rs. Per Month) <font class="text-danger">*</font>
                                     </th>
                                     <td>
-                                        <input type="text" name="Stipend" id="Stipend" class="form-control form-control-sm">
+                                        <input type="text" name="Stipend" id="Stipend"
+                                            class="form-control form-control-sm">
                                     </td>
                                 </tr>
                                 <tr id="other_benifit_tr">
@@ -216,7 +217,8 @@
                                                 <tr>
                                                     <td>
                                                         <div class="form-check form-check-inline" style="width: 200px;">
-                                                            <input class="form-check-input " type="checkbox" id="da_check">
+                                                            <input class="form-check-input " type="checkbox"
+                                                                id="da_check">
                                                             <label class="form-check-label" for="da_check">DA
                                                             </label>
                                                         </div>
@@ -264,7 +266,8 @@
                                     <th>Work Experience <font class="text-danger">*</font>
                                     </th>
                                     <td>
-                                        <input type="text" name="WorkExp" id="WorkExp" class="form-control form-control-sm">
+                                        <input type="text" name="WorkExp" id="WorkExp"
+                                            class="form-control form-control-sm">
                                     </td>
                                 </tr>
                                 <tr>
@@ -333,14 +336,14 @@
         });
 
         var KPCount;
-        
+
         $(document).ready(function() {
             $('#MRFTable').DataTable({
                 processing: true,
-                serverSide:true,
-                ordering:false,
-                searching:false,
-                lengthChange:false,
+                serverSide: true,
+                ordering: false,
+                searching: false,
+                lengthChange: false,
                 info: true,
                 ajax: {
                     url: "{{ route('getActiveMrf') }}",
@@ -623,16 +626,16 @@
         }
 
 
-          $(document).on('click', '#viewMRF', function() {
+        $(document).on('click', '#viewMRF', function() {
             var MRFId = $(this).data('id');
             $.post('<?= route('getMRFDetails') ?>', {
                 MRFId: MRFId
             }, function(data) {
 
                 $('#editMRFModal').find('input[name="MRFId"]').val(data.MRFDetails.MRFId);
-                if(data.on_behalf != ''){
+                if (data.on_behalf != '') {
                     $("#onbehalf_tr").removeClass('d-none');
-                }else{
+                } else {
                     $("#onbehalf_tr").addClass('d-none');
                 }
                 $("#OnBehalf").val(data.MRFDetails.OnBehalf);
@@ -922,7 +925,7 @@
                 '<div class="spinner-border text-primary d-none" role="status" id="LocLoader' + number +
                 '"> <span class="visually-hidden">Loading...</span></div>' +
                 '       <select  id="City' + number + '" name="City[]" class="form-control form-select form-select-sm">' +
-                    '    <option value="0" selected>Select City</option>'  + CityList +
+                '    <option value="0" selected>Select City</option>' + CityList +
                 '</select>' +
                 '<span class="text-danger error-text City' + number + '_error"></span>' +
                 '</td>';

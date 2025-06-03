@@ -2,15 +2,14 @@
 @section('title', 'MRF Allocated')
 @section('PageContent')
     <style>
-        .table>:not(caption)>*>* {
+        .table> :not(caption)>*>* {
             padding: 2px 1px;
         }
-
     </style>
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb align-items-center mb-3">
-           
+
 
             <div class="row">
                 <div class="breadcrumb-title pe-3 download_label col-3">Allocated MRF Details</div>
@@ -48,7 +47,8 @@
                     </select>
                 </div>
                 <div class="col">
-                    <button type="reset" class="btn btn-danger btn-sm" id="reset"><i class="bx bx-refresh"></i></button>
+                    <button type="reset" class="btn btn-danger btn-sm" id="reset"><i
+                            class="bx bx-refresh"></i></button>
                 </div>
             </div>
 
@@ -59,10 +59,11 @@
             <div class="card-body">
                 <div class="row mb-1">
                     <div class="col-6">
-                        <button type="button" class="btn btn-primary btn-sm" id="openMrf" data-status='Open'>Open MRF <span
-                                class="badge bg-warning text-dark" style="font-size: 10px;">{{ $OpenMRF }}</span>
+                        <button type="button" class="btn btn-primary btn-sm" id="openMrf" data-status='Open'>Open MRF
+                            <span class="badge bg-warning text-dark" style="font-size: 10px;">{{ $OpenMRF }}</span>
                         </button>
-                        <button class="btn btn-outline-primary btn-sm pull-right" data-status='Close' id="closedMrf">Closed
+                        <button class="btn btn-outline-primary btn-sm pull-right" data-status='Close' id="closedMrf">
+                            Closed
                             MRF <span class="badge bg-warning text-dark"
                                 style="font-size: 10px;">{{ $CloseMRF }}</span></button>
                     </div>
@@ -77,14 +78,17 @@
                             <tr class="text-center">
                                 <td></td>
                                 <td class="th-sm">S.No</td>
+                                <td>MRF Date</td>
                                 <td>Type</td>
                                 <td>JobCode</td>
+                                <th>Job Post Title</th>
                                 <td>Department</td>
                                 <td>Designation</td>
                                 <td>Position</td>
                                 <td>Location</td>
                                 <td>Job Posting</td>
                                 <td>View on Site</td>
+                                <td>Position Filled</td>
                                 <td>Action</td>
                             </tr>
                         </thead>
@@ -95,6 +99,79 @@
             </div>
         </div>
     </div>
+
+    <!-- ======================UPdate Modal======================= -->
+ {{--    <div class="modal fade" id="updatepostmodal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-info bg-gradient">
+                    <h5 class="modal-title text-white">Create Job Post</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('updateJobPost') }}" method="POST" id="updateJobPostForm">
+                    @csrf
+                    <div class="modal-body">
+                        <table class="table borderless">
+                            <tbody>
+                                <tr>
+                                    <th>Job Post Title <span class="text-danger">*</span></th>
+                                    <td>
+                                        <input type="text" name="jobTitle" id="jobTitle"
+                                            class="form-control form-control-sm" required>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="width:250px;">Designation<span class="text-danger">*
+                                        </span>
+                                    </th>
+                                    <td>
+                                        <input type="hidden" name="MRFId" id="MRFId">
+                                        <input type="text" name="Designation" id="Designation"
+                                            class="form-control form-control-sm" readonly>
+                                        <span class="text-danger error-text Designation_error"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Job Code <span class="text-danger">*</span>
+                                    </th>
+                                    <td>
+                                        <input type="text" name="JobCode" id="JobCode"
+                                            class="form-control form-control-sm" readonly>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Job Description</th>
+                                    <td>
+                                        <textarea name="JobInfo" id="JobInfo" class="JobInfo"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Mandatory Requirements</th>
+                                    <td>
+                                        <table class="table borderless" style="margin-bottom: 0px;">
+                                            <tbody id="MulKP">
+                                            </tbody>
+                                        </table>
+                                        <button type="button" name="add" id="addKP"
+                                            class="btn btn-warning btn-sm mb-2 mt-2"><i class="bx bx-plus"></i></button>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="updateJobPost">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div> --}}
+    <!-- ============================================= -->
+
+
     <div class="modal fade" id="createpostmodal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
         data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -109,23 +186,29 @@
                         <table class="table borderless">
                             <tbody>
                                 <tr>
-                                    <th style="width:250px;">Designation<font class="text-danger">*
-                                        </font>
+                                    <th>Job Post Title <span class="text-danger">*</span></th>
+                                    <td>
+                                        <input type="text" name="jobTitle" id="jobTitle"
+                                            class="form-control form-control-sm" required>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="width:250px;">Designation<span class="text-danger">*
+                                        </span>
                                     </th>
                                     <td>
                                         <input type="hidden" name="MRFId" id="MRFId">
                                         <input type="text" name="Designation" id="Designation"
                                             class="form-control form-control-sm" readonly>
                                         <span class="text-danger error-text Designation_error"></span>
-
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Job Code <font class="text-danger">*</font>
+                                    <th>Job Code <span class="text-danger">*</span>
                                     </th>
                                     <td>
-                                        <input type="text" name="JobCode" id="JobCode" class="form-control form-control-sm"
-                                            readonly>
+                                        <input type="text" name="JobCode" id="JobCode"
+                                            class="form-control form-control-sm" readonly>
                                     </td>
                                 </tr>
                                 <tr>
@@ -174,8 +257,8 @@
                                 <tr>
                                     <input type="hidden" name="MRFId" id="MRFId">
                                     <input type="hidden" name="MRF_Type" id="MRF_Type">
-                                    <th style="width:250px;">Reason for Creating New Position<font class="text-danger">*
-                                        </font>
+                                    <th style="width:250px;">Reason for Creating New Position<span class="text-danger">*
+                                        </span>
                                     </th>
                                     <td>
                                         <textarea class="form-control" rows="1" name="Reason" id="Reason" tabindex="1" autofocus></textarea>
@@ -184,9 +267,10 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Company<font class="text-danger">*</font>
+                                    <th>Company<span class="text-danger">*</span>
                                     </th>
-                                    <td><select id="Company" name="Company" class="form-control form-select form-select-sm">
+                                    <td><select id="Company" name="Company"
+                                            class="form-control form-select form-select-sm">
                                             <option value="" selected disabled>Select Company</option>
                                             @foreach ($company_list as $key => $value)
                                                 <option value="{{ $key }}">{{ $value }}</option>
@@ -196,11 +280,11 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Deartment<font class="text-danger">*</font>
+                                    <th>Department<span class="text-danger">*</span>
                                     </th>
                                     <td>
-                                        <div class="spinner-border text-primary d-none" role="status" id="DeptLoader"> <span
-                                                class="visually-hidden">Loading...</span>
+                                        <div class="spinner-border text-primary d-none" role="status" id="DeptLoader">
+                                            <span class="visually-hidden">Loading...</span>
                                         </div>
                                         <select id="Department" name="Department" id="Department"
                                             class="form-control form-select form-select-sm">
@@ -213,7 +297,7 @@
                                     </td>
                                 </tr>
                                 <tr id="deisgnation_tr" class="d-none">
-                                    <th>Designation<font class="text-danger">*</font>
+                                    <th>Designation<span class="text-danger">*</span>
                                     </th>
                                     <td>
                                         <div class="spinner-border text-primary d-none" role="status" id="DesigLoader">
@@ -231,7 +315,7 @@
                                 </tr>
 
                                 <tr>
-                                    <th>Location & Man Power <font class="text-danger">*</font>
+                                    <th>Location & Man Power <span class="text-danger">*</span>
                                     </th>
                                     <td>
                                         <table class="table borderless" style="margin-bottom: 0px;">
@@ -241,7 +325,7 @@
                                     </td>
                                 </tr>
                                 <tr id="ctc_tr">
-                                    <th>Desired CTC (in Rs.) <font class="text-danger">*</font>
+                                    <th>Desired CTC (in Rs.) <span class="text-danger">*</span>
                                     </th>
                                     <td>
                                         <table class="table borderless" style="margin-bottom: 0px;">
@@ -249,16 +333,17 @@
                                                 <td><input type="text" name="MinCTC" id="MinCTC"
                                                         class="form-control form-control-sm" placeholder="Min"></td>
                                                 <td><input type="text" name="MaxCTC" id="MaxCTC"
-                                                        class="form-control form-control-sm" placeholder="Max"> </td>
+                                                        class="form-control form-control-sm" placeholder="Max"></td>
                                             </tr>
                                         </table>
                                     </td>
                                 </tr>
                                 <tr id="stipend_tr">
-                                    <th>Desired Stipend (in Rs. Per Month) <font class="text-danger">*</font>
+                                    <th>Desired Stipend (in Rs. Per Month) <span class="text-danger">*</span>
                                     </th>
                                     <td>
-                                        <input type="text" name="Stipend" id="Stipend" class="form-control form-control-sm">
+                                        <input type="text" name="Stipend" id="Stipend"
+                                            class="form-control form-control-sm">
                                     </td>
                                 </tr>
                                 <tr id="other_benifit_tr">
@@ -287,7 +372,8 @@
                                                 <tr>
                                                     <td>
                                                         <div class="form-check form-check-inline" style="width: 200px;">
-                                                            <input class="form-check-input " type="checkbox" id="da_check">
+                                                            <input class="form-check-input " type="checkbox"
+                                                                id="da_check">
                                                             <label class="form-check-label" for="da_check">DA
                                                             </label>
                                                         </div>
@@ -332,10 +418,11 @@
                                     </td>
                                 </tr>
                                 <tr id="work_exp_tr">
-                                    <th>Work Experience <font class="text-danger">*</font>
+                                    <th>Work Experience <span class="text-danger">*</span>
                                     </th>
                                     <td>
-                                        <input type="text" name="WorkExp" id="WorkExp" class="form-control form-control-sm">
+                                        <input type="text" name="WorkExp" id="WorkExp"
+                                            class="form-control form-control-sm">
                                     </td>
                                 </tr>
                                 <tr>
@@ -376,8 +463,7 @@
                                             </tbody>
                                         </table>
                                         <button type="button" name="editadd" id="editaddKP"
-                                            class="btn btn-warning btn-sm mb-2 mt-2"><i
-                                                class="bx bx-plus"></i></button>
+                                            class="btn btn-warning btn-sm mb-2 mt-2"><i class="bx bx-plus"></i></button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -414,7 +500,8 @@
                                 <tr>
                                     <input type="hidden" name="MrId" id="MrId">
                                     <td>No. of Candidate Hired</td>
-                                    <td><input type="text" id="hired" name="hired" class="form-control form-control-sm">
+                                    <td><input type="text" id="hired" name="hired"
+                                            class="form-control form-control-sm">
                                         <span class="text-danger error-text hired_error"></span>
                                     </td>
                                 </tr>
@@ -436,6 +523,53 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="mrf_position_modal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-info bg-gradient">
+                    <h5 class="modal-title text-white">Position Filled Against MRF : <span id="mrf_detail"
+                            style="color: black"></span>
+                    </h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <table class="table table-bordered" style="width: 100%">
+                        <thead class="bg-light">
+                            <tr class="text-center">
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>Position Filled</th>
+                                <th>Remark</th>
+                            </tr>
+                        </thead>
+                        <tbody id="myTableBody"></tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <input type="hidden" id="position_filled_mrf">
+                            <input type="text" class="form-control form-control-sm" id="position_filled"
+                                name="position_filled" placeholder="Position Filled">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control form-control-sm" id="position_filled_remark"
+                                name="position_filled_remark" placeholder="Remark">
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-sm btn-primary" id="save_position_filled">Save</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
 @endsection
 @section('scriptsection')
     <script>
@@ -449,79 +583,10 @@
             serverSide: true,
             info: true,
             searching: false,
-            //    dom: 'Bfrtip',
+
             lengthChange: false,
             ordering: false,
-            buttons: [
 
-                {
-                    extend: 'copyHtml5',
-                    text: '<i class="fa fa-files-o"></i>',
-                    titleAttr: 'Copy',
-                    title: $('.download_label').html(),
-                    exportOptions: {
-                        columns: ':visible'
-                    }
-                },
-
-                {
-                    extend: 'excelHtml5',
-                    text: '<i class="fa fa-file-excel-o"></i>',
-                    titleAttr: 'Excel',
-                    title: $('.download_label').html(),
-                    exportOptions: {
-                        columns: ':visible'
-
-                    }
-                },
-
-                {
-                    extend: 'csvHtml5',
-                    text: '<i class="fa fa-file-text-o"></i>',
-                    titleAttr: 'CSV',
-                    title: $('.download_label').html(),
-                    exportOptions: {
-                        columns: ':visible'
-                    }
-                },
-
-                {
-                    extend: 'pdfHtml5',
-                    text: '<i class="fa fa-file-pdf-o"></i>',
-                    titleAttr: 'PDF',
-                    title: $('.download_label').html(),
-                    exportOptions: {
-                        columns: ':visible'
-
-                    }
-                },
-
-                {
-                    extend: 'print',
-                    text: '<i class="fa fa-print"></i>',
-                    titleAttr: 'Print',
-                    title: $('.download_label').html(),
-                    customize: function(win) {
-                        $(win.document.body)
-                            .css('font-size', '10pt');
-
-                        $(win.document.body).find('table')
-                            .addClass('compact')
-                            .css('font-size', 'inherit');
-                    },
-                    exportOptions: {
-                        columns: ':visible'
-                    }
-                },
-
-                {
-                    extend: 'colvis',
-                    text: '<i class="fa fa-columns"></i>',
-                    titleAttr: 'Columns',
-                    title: $('.download_label').html(),
-                    postfixButtons: ['colvisRestore']
-                },
-            ],
             ajax: {
                 url: "{{ route('getAllAllocatedMRF') }}",
                 headers: {
@@ -548,6 +613,10 @@
                     name: 'DT_RowIndex'
                 },
                 {
+                    data: 'MRFDate',
+                    name: 'MRFDate'
+                },
+                {
                     data: 'Type',
                     name: 'Type'
                 },
@@ -556,12 +625,16 @@
                     name: 'JobCode'
                 },
                 {
-                    data: 'DepartmentCode',
-                    name: 'DepartmentCode'
+                    data: 'Title',
+                    name: 'Title'
                 },
                 {
-                    data: 'DesigCode',
-                    name: 'DesigCode'
+                    data: 'department_name',
+                    name: 'department_name'
+                },
+                {
+                    data: 'designation_name',
+                    name: 'designation_name'
                 },
                 {
                     data: 'Positions',
@@ -579,6 +652,10 @@
                 {
                     data: 'JobShow',
                     name: 'JobShow'
+                },
+                {
+                    data: 'position_filled',
+                    name: 'position_filled'
                 },
 
                 {
@@ -653,7 +730,6 @@
         });
 
 
-
         mulKP();
 
         function mulKP(n) {
@@ -672,6 +748,7 @@
                 $('#MulKP').html(x);
             }
         }
+
         $(document).on('click', '#addKP', function() {
             KPCount++;
             mulKP(KPCount);
@@ -687,8 +764,8 @@
             $.post('<?= route('getDetailForJobPost') ?>', {
                 MRFId: MRFId
             }, function(data) {
-
                 $('#MRFId').val(data.MRFDetails.MRFId);
+                $('#jobTitle').val(data.jobTitle);
                 $('#Designation').val(data.Designation);
                 $('#JobCode').val(data.MRFDetails.JobCode);
 
@@ -703,7 +780,42 @@
 
             }, 'json');
         }
+        //  =========================update modal ajex===============================
 
+        $('#updateJobPostForm').on('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            for (instance in CKEDITOR.instances) {
+                CKEDITOR.instances[instance].updateElement();
+            }
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                beforeSend: function() {
+                    $(form).find('span.error-text').text('');
+                    $("#loader").modal('show');
+                },
+
+                success: function(data) {
+                    if (data.status == 400) {
+                        $.each(data.error, function(prefix, val) {
+                            $(form).find('span.' + prefix + '_error').text(val[0]);
+                        });
+                    } else {
+                        $(form)[0].reset();
+                        $('#loader').modal('hide');
+                        $('#updatepostmodal').modal('hide');
+                        $('#MRFTable').DataTable().ajax.reload(null, false);
+                        toastr.success(data.msg);
+                    }
+                }
+            });
+        });
+        //  ========================================================
         $('#createJobPostForm').on('submit', function(e) {
             e.preventDefault();
             var form = this;
@@ -738,6 +850,7 @@
             });
         });
 
+
         function editmrf(id) {
             $('#postStatus' + id).prop("disabled", false);
         }
@@ -768,7 +881,6 @@
         }
 
 
-
         $(document).on('click', '.select_all', function() {
             if ($(this).prop("checked") == true) {
                 $(this).closest("tr").addClass("bg-secondary bg-gradient");
@@ -784,6 +896,7 @@
                 $("#two_wheeler_div").removeClass("d-none");
             }
         });
+
         $("#da_check").change(function() {
             if (!this.checked) {
                 $("#da_div").addClass("d-none");
@@ -792,27 +905,31 @@
             }
         });
 
-        $(document).on('click', '#viewMRF', function() {
+      $(document).on('click', '#viewMRF', function() {
             var MRFId = $(this).data('id');
             $.post('<?= route('getMRFDetails') ?>', {
                 MRFId: MRFId
             }, function(data) {
-                if (data.MRFDetails.status != 'New') {
-                    $('#edit_mrf_btn').addClass('d-none');
-                }
+
                 $('#editMRFModal').find('input[name="MRFId"]').val(data.MRFDetails.MRFId);
+                if (data.on_behalf != '') {
+                    $("#onbehalf_tr").removeClass('d-none');
+                } else {
+                    $("#onbehalf_tr").addClass('d-none');
+                }
+                $("#OnBehalf").val(data.MRFDetails.OnBehalf);
                 $('#MRF_Type').val(data.MRFDetails.Type);
                 $('#Reason').val(data.MRFDetails.Reason);
                 $('#Company').val(data.MRFDetails.CompanyId);
                 $('#Department').val(data.MRFDetails.DepartmentId);
-                $('#editDesignation').val(data.MRFDetails.DesigId);
+                $('#Designation').val(data.MRFDetails.DesigId);
+                $('#WorkExp').val(data.MRFDetails.WorkExp);
                 $('#MinCTC').val(data.MRFDetails.MinCTC);
                 $('#MaxCTC').val(data.MRFDetails.MaxCTC);
                 $('#MaxCTC').val(data.MRFDetails.MaxCTC);
                 $('#Stipend').val(data.MRFDetails.Stipend);
-                CKEDITOR.instances['editJobInfo'].setData(data.MRFDetails.Info);
+                CKEDITOR.instances['JobInfo'].setData(data.MRFDetails.Info);
                 $('#Remark').val(data.MRFDetails.Remarks);
-                $('#WorkExp').val(data.MRFDetails.WorkExp);
                 var UniversityValue = data.UniversityDetails;
                 var selectedOptions = UniversityValue.toString().split(",");
 
@@ -821,20 +938,20 @@
                 });
                 $('#University').val(selectedOptions).trigger('change');
 
-                editKPCount = (data.KPDetails).length;
-                var editKPValue = data.KPDetails.toString().split(",");
-                for (i = 1; i <= editKPCount; i++) {
-                    editmulKP(i);
-                    $('#editKeyPosition' + i).val(editKPValue[i - 1]);
+                KPCount = (data.KPDetails).length;
+                var KPValue = data.KPDetails.toString().split(",");
+                for (i = 1; i <= KPCount; i++) {
+                    mulKP(i);
+                    $('#KeyPosition' + i).val(KPValue[i - 1]);
                 }
 
 
                 LocCount = (data.LocationDetails).length;
                 for (j = 1; j <= LocCount; j++) {
                     mulLocation(j);
-                    $('#State' + j).val(data.LocationDetails[j - 1].state);
-                    $('#City' + j).val(data.LocationDetails[j - 1].city);
-                    $('#ManPower' + j).val(data.LocationDetails[j - 1].nop);
+                    $('#State' + j).val(data.LocationDetails[j - 1].State);
+                    $('#City' + j).val(data.LocationDetails[j - 1].City);
+                    $('#ManPower' + j).val(data.LocationDetails[j - 1].Nop);
 
                 }
 
@@ -851,11 +968,10 @@
                 for (var i = 0, len = elements.length; i < len; ++i) {
                     elements[i].disabled = true;
                 }
-                CKEDITOR.instances['editJobInfo'].setReadOnly(true);
+                CKEDITOR.instances['JobInfo'].setReadOnly(true);
 
                 if (data.MRFDetails.Type == 'SIP' || data.MRFDetails.Type == 'SIP_HrManual') {
                     $('#deisgnation_tr').addClass('d-none');
-                    $('#work_exp_tr').addClass('d-none');
                     $('#stipend_tr').removeClass('d-none');
                     $('#duration_tr').removeClass('d-none');
                     $('#ctc_tr').addClass('d-none');
@@ -878,7 +994,6 @@
                     }
                 } else {
                     $('#deisgnation_tr').removeClass('d-none');
-                    $('#work_exp_tr').removeClass('d-none');
                     $('#stipend_tr').addClass('d-none');
                     $('#duration_tr').addClass('d-none');
                     $('#ctc_tr').removeClass('d-none');
@@ -923,6 +1038,7 @@
                 }
             });
         }
+
         getCity();
 
         function getCity() {
@@ -940,6 +1056,7 @@
                 }
             });
         }
+
         getEducation();
         getAllSP();
 
@@ -1047,6 +1164,7 @@
                 $('#MulLocation').html(x);
             }
         }
+
         $(document).on('click', '#addLocation', function() {
             LocCount++;
             mulLocation(LocCount);
@@ -1157,6 +1275,7 @@
                 $('#editMulKP').html(x);
             }
         }
+
         $(document).on('click', '#editaddKP', function() {
             editKPCount++;
             editmulKP(editKPCount);
@@ -1198,6 +1317,53 @@
                     }
                 }
             });
+        });
+
+        function getPositionFilled(MRFId, JobCode) {
+            $("#mrf_detail").html(JobCode);
+            $("#position_filled_mrf").val(MRFId);
+            $.ajax({
+                type: "GET",
+                url: "{{ route('get_mrf_position_filled_detail') }}?MRFId=" + MRFId,
+                async: false,
+                beforeSend: function() {
+
+                },
+                success: function(res) {
+                    $("#myTableBody").html(res.html);
+                }
+            });
+        }
+
+        $(document).on('click', "#save_position_filled", function() {
+            const MRFId = $("#position_filled_mrf").val();
+            const Filled = $("#position_filled").val();
+            const Remark = $("#position_filled_remark").val();
+            if (Filled === '' || Remark === '') {
+                alert('Please fill the position and remark...');
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('save_mrf_position_filled') }}",
+                    data: {
+                        MRFId: MRFId,
+                        Filled: Filled,
+                        Remark: Remark
+                    },
+                    async: false,
+                    beforeSend: function() {
+
+                    },
+                    success: function(res) {
+                        if (res.status === 400) {
+                            toastr.error(res.msg);
+                        } else {
+                            window.location.reload();
+                        }
+
+                    }
+                });
+            }
         });
     </script>
 @endsection

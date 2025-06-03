@@ -55,20 +55,20 @@ class MrfAllocatedController extends Controller
     }
 
 
-    function getAllAllocatedMRF(Request $request)
+     function getAllAllocatedMRF(Request $request)
     {
 
         $usersQuery = master_mrf::query();
-        $Company = $request->Company;
+        $Company = $request->Company; 
         $Department = $request->Department;
         $Year = $request->Year;
-        $Month = $request->Month;
+        $Month = $request->Month; 
 
         if ($Company != '') {
 
             $usersQuery->where("manpowerrequisition.CompanyId", $Company);
         }
-        if ($Department != '') {
+        if ($Department != '') { 
             $usersQuery->where("manpowerrequisition.DepartmentId", $Department);
         }
         if ($Year != '') {
@@ -88,14 +88,15 @@ class MrfAllocatedController extends Controller
             $usersQuery->where('manpowerrequisition.Status', 'Close');
         }
 
-        $mrf = $usersQuery->select('*')->Join('master_designation', 'manpowerrequisition.DesigId', '=', 'master_designation.DesigId', 'left')
-            ->Join('master_department', 'manpowerrequisition.DepartmentId', '=', 'master_department.DepartmentId')
+        $mrf = $usersQuery->select('manpowerrequisition.*', 'core_department.department_name', 'core_designation.designation_name', 'jobpost.Title')
+            ->Join('core_designation', 'manpowerrequisition.DesigId', '=', 'core_designation.id', 'left')
+            ->Join('core_department', 'manpowerrequisition.DepartmentId', '=', 'core_department.id')
+            ->leftJoin('jobpost', 'manpowerrequisition.MRFId', '=', 'jobpost.MRFId')
+           
             ->where('Allocated', Auth::user()->id)
-            /*   ->where('Type', '!=', 'Campus')
-            ->where('Type', '!=', 'Campus_HrManual') */
-            /*  ->where('Type', '!=', 'SIP')
-            ->where('Type', '!=', 'SIP_HrManual') */
-            ->where('CountryId', session('Set_Country'));
+            ->where('CountryId', session('Set_Country'))
+            ->groupBy('manpowerrequisition.MRFId');
+
 
         return datatables()->of($mrf)
             ->addIndexColumn()
@@ -114,34 +115,25 @@ class MrfAllocatedController extends Controller
                 }
             })
             ->editColumn('LocationIds', function ($mrf) {
-                if ($mrf->LocationIds != '') {
-
-                    $location = unserialize($mrf->LocationIds);
-                    $loc = '';
-                    foreach ($location as $key => $value) {
-                        if ($value['city'] != '') {
-                            $city = $value['city'];
-                        } else {
-                            $city = 0;
-                        }
-                        $loc .= getDistrictName($city) . ', ';
-                        $loc .= '(' . getStateCode($value['state']) . ') - ';
-                        $loc .= $value['nop'] . ',<br>';
-                        $loc . '<br>';
-                    }
-                    return $loc;
-                } else {
-                    return '';
+                $location = DB::table('mrf_location_position')->where('MRFId', $mrf->MRFId)->get()->toArray();
+                $loc = '';
+                foreach ($location as $key => $value) {
+                    $loc .= getDistrictName($value->City) . ' ';
+                    $loc .= getStateCode($value->State) . ' - ';
+                    $loc .= $value->Nop;
+                    $loc . '<br>';
                 }
-            })
+                return $loc;
 
+            })
             ->addColumn('JobPost', function ($mrf) {
                 if ($mrf->Type == 'Campus' || $mrf->Type == 'Campus_HrManual' || $mrf->Type == 'SIP' || $mrf->Type == 'SIP_HrManual') {
                     return '-';
                 } else {
                     $check = CheckJobPostCreated($mrf->MRFId);
                     if ($check == 1) {
-                        return 'Created';
+                        return 'Created  <a  href="javascript:void(0);" data-bs-toggle="modal"
+                    data-bs-target="#updatepostmodal" onclick="getDetailForJobPost(' . $mrf->MRFId . ')"><i class="fa fa-pencil-square-o text-primary d-inline" style="font-size: 16px;cursor: pointer;"></i></a>';
                     } else {
                         return '<a  href="javascript:void(0);" data-bs-toggle="modal"
                     data-bs-target="#createpostmodal" onclick="getDetailForJobPost(' . $mrf->MRFId . ')"><i class="fa fa-plus-square-o"></i>Create</a>';
@@ -152,7 +144,7 @@ class MrfAllocatedController extends Controller
                 $check = CheckJobPostCreated($mrf->MRFId);
                 if ($check == 1) {
                     $sql = Db::table('jobpost')->select('PostingView', 'JPId')->where('MRFId', $mrf->MRFId)->first();
-                    $PostView = $sql->PostingView;
+                    $PostView = $sql->PostingView; 
 
                     $x = '<select name="PostingView" id="postStatus' . $mrf->MRFId . '" class="form-control form-select form-select-sm  d-inline" disabled style="width: 100px;" onchange="ChngPostingView(' . $sql->JPId . ',this.value)">';
 
@@ -168,6 +160,13 @@ class MrfAllocatedController extends Controller
                     return '';
                 }
             })
+            ->addColumn('position_filled', function ($mrf) {
+
+                return "<a href='javascript:void(0);' data-bs-toggle='modal'
+            data-bs-target='#mrf_position_modal' style='font-size: 16px;'
+            onclick='getPositionFilled(\"$mrf->MRFId\",\"$mrf->JobCode\");'>$mrf->total_filled</a>";
+
+            })
             ->addColumn('Action', function ($mrf) {
                 $x = '';
                 $x .= '<i  class="fadeIn animated lni lni-eye  text-primary view" aria-hidden="true" data-id="' . $mrf->MRFId . '" id="viewMRF" title="View MRF" style="font-size: 18px;cursor: pointer;"></i> ';
@@ -176,9 +175,10 @@ class MrfAllocatedController extends Controller
                 }
                 return $x;
             })
-
-
-            ->rawColumns(['chk', 'Action', 'JobShow', 'JobPost', 'LocationIds'])
+            ->addColumn('MRFDate', function ($mrf) {
+              return date('d-m-Y', strtotime($mrf->CreatedTime));
+            })
+            ->rawColumns(['chk', 'Action', 'JobShow', 'JobPost', 'LocationIds', 'position_filled'])
             ->make(true);
     }
 
