@@ -623,13 +623,19 @@
         }
 
 
-        $(document).on('click', '#viewMRF', function() {
+          $(document).on('click', '#viewMRF', function() {
             var MRFId = $(this).data('id');
             $.post('<?= route('getMRFDetails') ?>', {
                 MRFId: MRFId
             }, function(data) {
-             
+
                 $('#editMRFModal').find('input[name="MRFId"]').val(data.MRFDetails.MRFId);
+                if(data.on_behalf != ''){
+                    $("#onbehalf_tr").removeClass('d-none');
+                }else{
+                    $("#onbehalf_tr").addClass('d-none');
+                }
+                $("#OnBehalf").val(data.MRFDetails.OnBehalf);
                 $('#MRF_Type').val(data.MRFDetails.Type);
                 $('#Reason').val(data.MRFDetails.Reason);
                 $('#Company').val(data.MRFDetails.CompanyId);
@@ -661,9 +667,9 @@
                 LocCount = (data.LocationDetails).length;
                 for (j = 1; j <= LocCount; j++) {
                     mulLocation(j);
-                    $('#State' + j).val(data.LocationDetails[j - 1].state);
-                    $('#City' + j).val(data.LocationDetails[j - 1].city);
-                    $('#ManPower' + j).val(data.LocationDetails[j - 1].nop);
+                    $('#State' + j).val(data.LocationDetails[j - 1].State);
+                    $('#City' + j).val(data.LocationDetails[j - 1].City);
+                    $('#ManPower' + j).val(data.LocationDetails[j - 1].Nop);
 
                 }
 
