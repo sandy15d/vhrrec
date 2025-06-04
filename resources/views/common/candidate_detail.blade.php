@@ -1,8 +1,8 @@
 @php
-use Illuminate\Support\Carbon;
+    use Illuminate\Support\Carbon;
 
-$sendingId = request()->query('jaid');
-$JAId = base64_decode($sendingId);
+    $sendingId = request()->query('jaid');
+    $JAId = base64_decode($sendingId);
     $Rec = DB::table('jobapply')
         ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
         ->leftJoin('screening', 'screening.JAId', '=', 'jobapply.JAId')
@@ -59,75 +59,60 @@ $JAId = base64_decode($sendingId);
         )
         ->first();
 
-$JCId = $Rec->JCId;
-$firobid = base64_encode($Rec->JCId);
+    $JCId = $Rec->JCId;
+    $firobid = base64_encode($Rec->JCId);
 
-$OfBasic = DB::table('offerletterbasic')
-    ->leftJoin('candjoining', 'candjoining.JAId', '=', 'offerletterbasic.JAId')
-    ->leftJoin('appointing', 'appointing.JAId', '=', 'offerletterbasic.JAId')
-    ->select('offerletterbasic.*', 'candjoining.JoinOnDt', 'appointing.A_Date', 'appointing.Agr_Date', 'appointing.B_Date', 'appointing.ConfLtrDate', 'candjoining.EmpCode', 'candjoining.Verification', 'candjoining.Joined', 'candjoining.PositionCode', 'candjoining.ForwardToESS', 'candjoining.NoJoiningRemark')
-    ->where('offerletterbasic.JAId', $JAId)
-    ->first();
+    $OfBasic = DB::table('offerletterbasic')
+        ->leftJoin('candjoining', 'candjoining.JAId', '=', 'offerletterbasic.JAId')
+        ->leftJoin('appointing', 'appointing.JAId', '=', 'offerletterbasic.JAId')
+        ->select(
+            'offerletterbasic.*',
+            'candjoining.JoinOnDt',
+            'appointing.A_Date',
+            'appointing.Agr_Date',
+            'appointing.B_Date',
+            'appointing.ConfLtrDate',
+            'candjoining.EmpCode',
+            'candjoining.Verification',
+            'candjoining.Joined',
+            'candjoining.PositionCode',
+            'candjoining.ForwardToESS',
+            'candjoining.NoJoiningRemark',
+        )
+        ->where('offerletterbasic.JAId', $JAId)
+        ->first();
 
-$FamilyInfo = DB::table('jf_family_det')
-    ->where('JCId', $JCId)
-    ->get();
-$Education = DB::table('candidateeducation')
-    ->where('JCId', $JCId)
-    ->get();
-$Experience = DB::table('jf_work_exp')
-    ->where('JCId', $JCId)
-    ->get();
+    $FamilyInfo = DB::table('jf_family_det')->where('JCId', $JCId)->get();
+    $Education = DB::table('candidateeducation')->where('JCId', $JCId)->get();
+    $Experience = DB::table('jf_work_exp')->where('JCId', $JCId)->get();
 
-$Training = DB::table('jf_tranprac')
-    ->where('JCId', $JCId)
-    ->get();
+    $Training = DB::table('jf_tranprac')->where('JCId', $JCId)->get();
 
-$PreRef = DB::table('jf_reference')
-    ->where('JCId', $JCId)
-    ->where('from', 'Previous Organization')
-    ->get();
+    $PreRef = DB::table('jf_reference')->where('JCId', $JCId)->where('from', 'Previous Organization')->get();
 
-$VnrRef = DB::table('jf_reference')
-    ->where('JCId', $JCId)
-    ->where('from', 'VNR')
-    ->get();
-$Year = Carbon::now()->year;
-$sql = DB::table('offerletterbasic_history')
-    ->where('JAId', $JAId)
-    ->get();
-$lang = DB::table('jf_language')
-    ->where('JCId', $JCId)
-    ->get();
-$count = count($sql);
-$OtherSeed = DB::table('relation_other_seed_cmp')
-    ->where('JCId', $JCId)
-    ->get();
-$VnrBusinessRef = DB::table('vnr_business_ref')
-    ->where('JCId', $JCId)
-    ->get();
-$AboutAns = DB::table('about_answer')
-    ->where('JCId', $JCId)
-    ->first();
-$Docs = DB::table('jf_docs')
-    ->where('JCId', $JCId)
-    ->first();
+    $VnrRef = DB::table('jf_reference')->where('JCId', $JCId)->where('from', 'VNR')->get();
+    $Year = Carbon::now()->year;
+    $sql = DB::table('offerletterbasic_history')->where('JAId', $JAId)->get();
+    $lang = DB::table('jf_language')->where('JCId', $JCId)->get();
+    $count = count($sql);
+    $OtherSeed = DB::table('relation_other_seed_cmp')->where('JCId', $JCId)->get();
+    $VnrBusinessRef = DB::table('vnr_business_ref')->where('JCId', $JCId)->get();
+    $AboutAns = DB::table('about_answer')->where('JCId', $JCId)->first();
+    $Docs = DB::table('jf_docs')->where('JCId', $JCId)->first();
 
-$country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
-$candidate_log = DB::table('candidate_log')
-    ->where('JCId', $JCId)
-    ->get();
+    $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
+    $candidate_log = DB::table('candidate_log')->where('JCId', $JCId)->get();
 
-if ($OfBasic != null && $OfBasic->Grade != null) {
-    $position_code_list = DB::table('position_codes')
-        ->where('company_id', $OfBasic->Company)
-        ->where('department_id', $OfBasic->Department)
-        ->where('grade_id', $OfBasic->Grade)
-        ->where('is_available', 'Yes')
-        ->pluck('position_code');
-} else {
-    $position_code_list = [];
-}
+    if ($OfBasic != null && $OfBasic->Grade != null) {
+        $position_code_list = DB::table('position_codes')
+            ->where('company_id', $OfBasic->Company)
+            ->where('department_id', $OfBasic->Department)
+            ->where('grade_id', $OfBasic->Grade)
+            ->where('is_available', 'Yes')
+            ->pluck('position_code');
+    } else {
+        $position_code_list = [];
+    }
 
 @endphp
 @extends('layouts.master')
@@ -168,7 +153,6 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
             width: 100%;
             height: 100%;
         }
-
     </style>
     <div class="page-content">
         <input type="hidden" name="JAId" id="JAId" value="{{ $JAId }}">
@@ -252,8 +236,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
 
                                                 @if ($OfBasic != null && $OfBasic->OfferLtrGen == 1)
                                                     <div class="title">
-                                                        <a href="{{ route('offer_ltr_print') }}?jaid={{ $Rec->JAId }}" class="text-danger"
-                                                            >Offer
+                                                        <a href="{{ route('offer_ltr_print') }}?jaid={{ $Rec->JAId }}"
+                                                            class="text-danger">Offer
                                                             Letter</a>
                                                     </div>
                                                 @endif
@@ -263,9 +247,9 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                 </div>
                             </div>
 
-                            <div class="pro-edit"><a data-bs-target="#profile_info" data-bs-toggle="modal"
-                                    class="edit-icon" onclick="GetProfileData();" href="javascript:void(0);"><i
-                                        class="fa fa-pencil"></i></a></div>
+                            <div class="pro-edit"><a data-bs-target="#profile_info" data-bs-toggle="modal" class="edit-icon"
+                                    onclick="GetProfileData();" href="javascript:void(0);"><i class="fa fa-pencil"></i></a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -279,26 +263,24 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         <li class="nav-item"><a href="#cand_profile" data-bs-toggle="tab"
                                 class="nav-link active">Profile</a></li>
 
-                        <li class="nav-item"><a href="#cand_contact" data-bs-toggle="tab"
-                                class="nav-link">Contact</a></li>
+                        <li class="nav-item"><a href="#cand_contact" data-bs-toggle="tab" class="nav-link">Contact</a></li>
 
-                        <li class="nav-item"><a href="#cand_education" data-bs-toggle="tab"
-                                class="nav-link">Education</a></li>
+                        <li class="nav-item"><a href="#cand_education" data-bs-toggle="tab" class="nav-link">Education</a>
+                        </li>
 
                         <li class="nav-item"><a href="#cand_experience" data-bs-toggle="tab"
                                 class="nav-link">Employement</a></li>
 
-                        <li class="nav-item"><a href="#cand_reference" data-bs-toggle="tab"
-                                class="nav-link">Reference</a></li>
+                        <li class="nav-item"><a href="#cand_reference" data-bs-toggle="tab" class="nav-link">Reference</a>
+                        </li>
 
                         <li class="nav-item"><a href="#cand_other" data-bs-toggle="tab" class="nav-link"> Other
                             </a></li>
 
-                        <li class="nav-item"><a href="#cand_document" data-bs-toggle="tab"
-                                class="nav-link">Documents</a></li>
+                        <li class="nav-item"><a href="#cand_document" data-bs-toggle="tab" class="nav-link">Documents</a>
+                        </li>
 
-                        <li class="nav-item"><a href="#cand_history" data-bs-toggle="tab"
-                                class="nav-link">History</a></li>
+                        <li class="nav-item"><a href="#cand_history" data-bs-toggle="tab" class="nav-link">History</a></li>
 
                         <li class="nav-item"><a href="#job_offer" data-bs-toggle="tab" class="nav-link">Job
                                 Offer</a></li>
@@ -428,8 +410,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Bank Informations & Other<a href="#" class="edit-icon"
-                                        data-bs-toggle="modal" data-bs-target="#bank_info_modal" onclick="GetBankInfo();"><i
-                                            class="fa fa-pencil"></i></a></h6>
+                                        data-bs-toggle="modal" data-bs-target="#bank_info_modal"
+                                        onclick="GetBankInfo();"><i class="fa fa-pencil"></i></a></h6>
                                 <ul class="personal-info">
                                     <li>
                                         <div class="title">Bank Name<span style="float: right">:</span></div>
@@ -477,8 +459,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         <div class="card profile-box flex-fill">
                             <div class="card-body">
                                 <h6 class="card-title">Family Informations <a href="#" class="edit-icon"
-                                        data-bs-toggle="modal" data-bs-target="#family_info_modal" onclick="GetFamily();"><i
-                                            class="fa fa-pencil"></i></a></h6>
+                                        data-bs-toggle="modal" data-bs-target="#family_info_modal"
+                                        onclick="GetFamily();"><i class="fa fa-pencil"></i></a></h6>
                                 <div class="table-responsive">
                                     <table class="table table-nowrap">
                                         <thead>
@@ -772,8 +754,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                     <div class="card flex-fill">
                         <div class="card-body">
                             <h6 class="card-title">Previous Employement Records <small>(except the present)</small>
-                                <a href="#" class="edit-icon" data-bs-toggle="modal" data-bs-target="#work_exp_modal"
-                                    onclick="getWorkExp();">
+                                <a href="#" class="edit-icon" data-bs-toggle="modal"
+                                    data-bs-target="#work_exp_modal" onclick="getWorkExp();">
                                     <i class="fa fa-pencil"></i>
                                 </a>
                             </h6>
@@ -823,8 +805,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         <div class="card-body">
                             <h6 class="card-title">Training & Practical Experience <small>(Other than regular
                                     jobs)</small>
-                                <a href="#" class="edit-icon" data-bs-toggle="modal" data-bs-target="#training_modal"
-                                    onclick="getTraining();">
+                                <a href="#" class="edit-icon" data-bs-toggle="modal"
+                                    data-bs-target="#training_modal" onclick="getTraining();">
                                     <i class="fa fa-pencil"></i>
                                 </a>
                             </h6>
@@ -1540,11 +1522,11 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             <div class="card-body">
                                 <h6 class="card-title">Offer Letter Basic Details
                                     {{-- @if ($OfBasic != null && ($OfBasic->Answer == '' || $OfBasic->Answer == 'Rejected')) --}}
-                                        <a href="#" class="edit-icon" data-bs-toggle="modal"
-                                            data-bs-target="#OfferLtrModal" id="offerltredit"
-                                            data-id="{{ $Rec->JAId }}">
-                                            <i class="fa fa-pencil"></i>
-                                        </a>
+                                    <a href="#" class="edit-icon" data-bs-toggle="modal"
+                                        data-bs-target="#OfferLtrModal" id="offerltredit"
+                                        data-id="{{ $Rec->JAId }}">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
                                     {{-- @endif --}}
                                 </h6>
                                 <ul class="personal-info">
@@ -1554,7 +1536,6 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                         <div class="text">
                                             @if ($OfBasic != null)
                                                 {{ getDepartment($OfBasic->Department) ?? '-' }}
-                                                
                                             @else
                                                 -
                                             @endif
@@ -1606,8 +1587,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                         </div>
                                     </li>
                                     <li>
-                                        <div class="title" style="width: 150px;">CTC<span
-                                                style="float: right">:</span></div>
+                                        <div class="title" style="width: 150px;">CTC<span style="float: right">:</span>
+                                        </div>
                                         <div class="text">
                                             @if ($OfBasic != null)
                                                 @if ($OfBasic->CTC == '' || $OfBasic->CTC == null)
@@ -1663,10 +1644,10 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             <div class="card-body">
                                 <h6 class="card-title">Offer Letter Generation & Review
                                     {{-- @if ($OfBasic != null && ($OfBasic->Answer == '' || $OfBasic->Answer == 'Rejected')) --}}
-                                        <a href="javascript:void(0);" class="edit-icon" id="offerltrgen"
-                                            data-id="{{ $Rec->JAId }}">
-                                            <i class="fa fa-pencil"></i>
-                                        </a>
+                                    <a href="javascript:void(0);" class="edit-icon" id="offerltrgen"
+                                        data-id="{{ $Rec->JAId }}">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
                                     {{-- @endif --}}
                                 </h6>
 
@@ -1751,8 +1732,9 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                         <div class="title" style="width: 300px;">Date of Joining<span
                                                 style="float: right">:</span></div>
                                         <div class="text">
-                                            <input type="date" class="form-control frminp form-control-sm d-inline-block"
-                                                id="dateofJoin" name="" readonly="" style="width: 130px;"
+                                            <input type="date"
+                                                class="form-control frminp form-control-sm d-inline-block" id="dateofJoin"
+                                                name="" readonly="" style="width: 130px;"
                                                 value="{{ $OfBasic->JoinOnDt ?? '' }}">
                                             <i class="fa fa-pencil text-primary" aria-hidden="true" id="joindtenable"
                                                 onclick="joinDateEnbl()"
@@ -1790,8 +1772,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                     target="_blank">View</a>)
                                             @else
                                                 <span class="text-danger">No</span>( <a href="javascript:void(0);"
-                                                    class="" data-bs-toggle="modal"
-                                                    data-bs-target="#ref_modal">
+                                                    class="" data-bs-toggle="modal" data-bs-target="#ref_modal">
                                                     Send Now</a>)
                                             @endif
                                         </div>
@@ -1821,8 +1802,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                         onclick="appointmentGen({{ $Rec->JAId }})"
                                                         style="font-size: 16px;cursor: pointer; display: ">Generate </i>
                                                 @else
-                                                <a href="{{ route('appointment_ltr_print') }}?jaid={{ $Rec->JAId }}"
-                                                    target="_blank">View</a>
+                                                    <a href="{{ route('appointment_ltr_print') }}?jaid={{ $Rec->JAId }}"
+                                                        target="_blank">View</a>
                                                 @endif
 
                                             </div>
@@ -1837,12 +1818,14 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                         style="font-size: 16px;cursor: pointer; display: ">Generate </i>
                                                 @else
                                                     <a href="{{ route('service_agreement') }}?jaid={{ base64_encode($JAId) }}"
-                                                        target="_blank"> View</a> | ( <a href="{{ route('service_agreement_print_e_first') }}?jaid={{ base64_encode($Rec->JAId) }}"
-                                                            target="_blank">First Page</a> |
-                                                         <a href="{{ route('service_agreement_print') }}?jaid={{ base64_encode($Rec->JAId) }}"
-                                                            target="_blank">Rest All</a> ) | <a href="{{ route('service_agreement_print_old_stamp') }}?jaid={{ base64_encode($Rec->JAId) }}"
-                                                            target="_blank">
-                                                             Old Stamp</a>
+                                                        target="_blank"> View</a> | ( <a
+                                                        href="{{ route('service_agreement_print_e_first') }}?jaid={{ base64_encode($Rec->JAId) }}"
+                                                        target="_blank">First Page</a> |
+                                                    <a href="{{ route('service_agreement_print') }}?jaid={{ base64_encode($Rec->JAId) }}"
+                                                        target="_blank">Rest All</a> ) | <a
+                                                        href="{{ route('service_agreement_print_old_stamp') }}?jaid={{ base64_encode($Rec->JAId) }}"
+                                                        target="_blank">
+                                                        Old Stamp</a>
                                                 @endif
 
                                             </div>
@@ -1855,20 +1838,29 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                     @if ($Rec->BLtrGen == 'No' || $Rec->BLtrGen == null)
                                                         <i class="fa fa-pencil text-primary" aria-hidden="true"
                                                             onclick="ServiceBondGen({{ $Rec->JAId }})"
-                                                            style="font-size: 16px;cursor: pointer; display: ">Generate </i>
+                                                            style="font-size: 16px;cursor: pointer; display: ">Generate
+                                                        </i>
                                                     @else
                                                         <a href="{{ route('service_bond') }}?jaid={{ base64_encode($JAId) }}"
-                                                            target="_blank"> View</a> | (<a href="{{ route('service_bond_print_e_first') }}?jaid={{ base64_encode($Rec->JAId) }}"
-                                                                target="_blank">First Page</a> |
-                                                             <a href="{{ route('service_bond_print') }}?jaid={{ base64_encode($Rec->JAId) }}"
-                                                                target="_blank">Rest All</a>) | <a href="{{ route('service_bond_print_old_stamp') }}?jaid={{ base64_encode($Rec->JAId) }}"
-                                                                target="_blank">
-                                                                 Old Stamp</a>
+                                                            target="_blank"> View</a> | (<a
+                                                            href="{{ route('service_bond_print_e_first') }}?jaid={{ base64_encode($Rec->JAId) }}"
+                                                            target="_blank">First Page</a> |
+                                                        <a href="{{ route('service_bond_print') }}?jaid={{ base64_encode($Rec->JAId) }}"
+                                                            target="_blank">Rest All</a>) | <a
+                                                            href="{{ route('service_bond_print_old_stamp') }}?jaid={{ base64_encode($Rec->JAId) }}"
+                                                            target="_blank">
+                                                            Old Stamp</a>
                                                     @endif
                                                 </div>
                                             </li>
                                         @endif
-                                        @if ($OfBasic->Department == 1002 || $OfBasic->Department == 1003 || $OfBasic->Department == 1004 || $OfBasic->Department == 1025 || $OfBasic->Department == 1027 || $OfBasic->Department == 1040)
+                                        @if (
+                                            $OfBasic->Department == 1002 ||
+                                                $OfBasic->Department == 1003 ||
+                                                $OfBasic->Department == 1004 ||
+                                                $OfBasic->Department == 1025 ||
+                                                $OfBasic->Department == 1027 ||
+                                                $OfBasic->Department == 1040)
                                             <li>
                                                 <div class="title" style="width: 150px;"> Conf. Agreement <span
                                                         style="float: right">:</span> </div>
@@ -1876,17 +1868,20 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                     @if ($Rec->ConfLtrGen == 'No' || $Rec->ConfLtrGen == null)
                                                         <i class="fa fa-pencil text-primary" aria-hidden="true"
                                                             onclick="ConfidentialityAgrGen({{ $Rec->JAId }})"
-                                                            style="font-size: 16px;cursor: pointer; display: ">Generate </i>
+                                                            style="font-size: 16px;cursor: pointer; display: ">Generate
+                                                        </i>
                                                     @else
                                                         <a href="{{ route('conf_agreement') }}?jaid={{ base64_encode($JAId) }}"
-                                                            target="_blank"> View</a> | ( <a href="{{ route('conf_agreement_print_e_first') }}?jaid={{ base64_encode($Rec->JAId) }}"
-                                                                target="_blank">
-                                                                 First Page</a> |
-                                                             <a href="{{ route('conf_agreement_print') }}?jaid={{ base64_encode($Rec->JAId) }}"
-                                                                target="_blank">
-                                                                 Rest All</a> ) | <a href="{{ route('conf_agreement_print_old_stamp') }}?jaid={{ base64_encode($Rec->JAId) }}"
-                                                                    target="_blank">
-                                                                     Old Stamp</a>
+                                                            target="_blank"> View</a> | ( <a
+                                                            href="{{ route('conf_agreement_print_e_first') }}?jaid={{ base64_encode($Rec->JAId) }}"
+                                                            target="_blank">
+                                                            First Page</a> |
+                                                        <a href="{{ route('conf_agreement_print') }}?jaid={{ base64_encode($Rec->JAId) }}"
+                                                            target="_blank">
+                                                            Rest All</a> ) | <a
+                                                            href="{{ route('conf_agreement_print_old_stamp') }}?jaid={{ base64_encode($Rec->JAId) }}"
+                                                            target="_blank">
+                                                            Old Stamp</a>
                                                     @endif
 
                                                 </div>
@@ -1926,7 +1921,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                     class="form-select form-select-sm frminp d-inline" disabled
                                                     style="width: 100px;">
                                                     <option value=""></option>
-                                                    <option value="No" {{ $OfBasic->Joined == 'No' ? 'selected' : '' }}>
+                                                    <option value="No"
+                                                        {{ $OfBasic->Joined == 'No' ? 'selected' : '' }}>
                                                         No</option>
                                                     <option value="Yes"
                                                         {{ $OfBasic->Joined == 'Yes' ? 'selected' : '' }}>Yes
@@ -1959,8 +1955,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                 <div class="text">
                                                     <input type="number"
                                                         class="form-control frminp form-control-sm d-inline-block"
-                                                        id="empCode" name="" readonly="" style="width: 100px;"
-                                                        value="{{ $OfBasic->EmpCode ?? '' }}">
+                                                        id="empCode" name="" readonly=""
+                                                        style="width: 100px;" value="{{ $OfBasic->EmpCode ?? '' }}">
                                                     <i class="fa fa-pencil text-primary" aria-hidden="true"
                                                         id="empCodeEnable" onclick="empCodeEnable()"
                                                         style="font-size: 16px;cursor: pointer; display: "></i>
@@ -2047,9 +2043,9 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                 <button class="frmbtn btn btn-sm btn-secondary"
                                                     onclick="copyJFrmLink();">Copy
                                                     Link</button>
-                                                      @if($Rec->FinalSubmit == 1)
+                                                @if ($Rec->FinalSubmit == 1)
                                                     <button class="frmbtn btn btn-primary btn-sm"
-                                                            id="open_joining_form">Open Joining Form
+                                                        id="open_joining_form">Open Joining Form
                                                     </button>
                                                 @endif
                                             </div>
@@ -2062,7 +2058,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
 
                                             <input type="text" name="" id="firoblink" class="frminp d-inline"
                                                 value="{{ route('firo_b') }}?jcid={{ $firobid }}">
-                                            <button class="frmbtn btn btn-sm btn-secondary" onclick="copyFiroBlink();">Copy
+                                            <button class="frmbtn btn btn-sm btn-secondary"
+                                                onclick="copyFiroBlink();">Copy
                                                 Link</button>
 
 
@@ -2112,8 +2109,9 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                         </div>
                                         <div class="text">
 
-                                            <input type="date" class="form-control frminp form-control-sm d-inline-block"
-                                                id="off_date" name="" readonly="" style="width: 130px;"
+                                            <input type="date"
+                                                class="form-control frminp form-control-sm d-inline-block" id="off_date"
+                                                name="" readonly="" style="width: 130px;"
                                                 value="{{ $OfBasic->LtrDate ?? '' }}">
                                             <i class="fa fa-pencil text-primary" aria-hidden="true" id="off_date_enable"
                                                 onclick="off_date_enable()"
@@ -2129,7 +2127,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                     <li>
                                         <div class="title">App. Ltr. Date<span style="float: right">:</span></div>
                                         <div class="text">
-                                            <input type="date" class="form-control frminp form-control-sm d-inline-block"
+                                            <input type="date"
+                                                class="form-control frminp form-control-sm d-inline-block"
                                                 id="a_date" name="" readonly="" style="width: 130px;"
                                                 value="{{ $OfBasic->A_Date ?? '' }}">
                                             <i class="fa fa-pencil text-primary" aria-hidden="true" id="a_date_enable"
@@ -2146,11 +2145,12 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                         <div class="title">Service Agr. Date<span style="float: right">:</span>
                                         </div>
                                         <div class="text">
-                                            <input type="date" class="form-control frminp form-control-sm d-inline-block"
+                                            <input type="date"
+                                                class="form-control frminp form-control-sm d-inline-block"
                                                 id="agr_date" name="" readonly="" style="width: 130px;"
                                                 value="{{ $OfBasic->Agr_Date ?? '' }}">
-                                            <i class="fa fa-pencil text-primary" aria-hidden="true" id="agr_date_enable"
-                                                onclick="agr_date_enable()"
+                                            <i class="fa fa-pencil text-primary" aria-hidden="true"
+                                                id="agr_date_enable" onclick="agr_date_enable()"
                                                 style="font-size: 16px;cursor: pointer; display: "></i>
                                             <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
                                                 id="save_agr_date" onclick="save_agr_date()">Save</button>
@@ -2163,7 +2163,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                         <div class="title">Service Bond Date<span style="float: right">:</span>
                                         </div>
                                         <div class="text">
-                                            <input type="date" class="form-control frminp form-control-sm d-inline-block"
+                                            <input type="date"
+                                                class="form-control frminp form-control-sm d-inline-block"
                                                 id="b_date" name="" readonly="" style="width: 130px;"
                                                 value="{{ $OfBasic->B_Date ?? '' }}">
                                             <i class="fa fa-pencil text-primary" aria-hidden="true" id="b_date_enable"
@@ -2176,15 +2177,21 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                         </div>
                                     </li>
                                     @if ($OfBasic != null)
-                                        @if ($OfBasic->Department == 1002 || $OfBasic->Department == 1003 || $OfBasic->Department ==1004 || $OfBasic->Department == 1025 || $OfBasic->Department == 1027 || $OfBasic->Department == 1040)
+                                        @if (
+                                            $OfBasic->Department == 1002 ||
+                                                $OfBasic->Department == 1003 ||
+                                                $OfBasic->Department == 1004 ||
+                                                $OfBasic->Department == 1025 ||
+                                                $OfBasic->Department == 1027 ||
+                                                $OfBasic->Department == 1040)
                                             <li>
-                                                <div class="title">Conf. Agr. Date<span
-                                                        style="float: right">:</span>
+                                                <div class="title">Conf. Agr. Date<span style="float: right">:</span>
                                                 </div>
                                                 <div class="text">
                                                     <input type="date"
                                                         class="form-control frminp form-control-sm d-inline-block"
-                                                        id="conf_date" name="" readonly="" style="width: 130px;"
+                                                        id="conf_date" name="" readonly=""
+                                                        style="width: 130px;"
                                                         value="{{ $OfBasic->ConfLtrDate ?? '' }}">
                                                     <i class="fa fa-pencil text-primary" aria-hidden="true"
                                                         id="conf_date_enable" onclick="conf_date_enable()"
@@ -2223,14 +2230,16 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         <div class="mb-3">
                             <input type="hidden" name="CandidateName" id="CandidateName"
                                 value="{{ $Rec->FName }} {{ $Rec->LName }}">
-                            <input type="text" class="form-control" value="{{ $Rec->Email }}" readonly name="eMailId"
-                                id="eMailId">
+                            <input type="text" class="form-control" value="{{ $Rec->Email }}" readonly
+                                name="eMailId" id="eMailId">
                         </div>
                         <div class="mb-3">
-                            <input type="text" class="form-control" placeholder="Subject" name="Subject" id="Subject">
+                            <input type="text" class="form-control" placeholder="Subject" name="Subject"
+                                id="Subject">
                         </div>
                         <div class="mb-3">
-                            <textarea class="form-control" placeholder="Message" rows="10" cols="10" name="eMailMsg" id="eMailMsg"></textarea>
+                            <textarea class="form-control" placeholder="Message" rows="10" cols="10" name="eMailMsg"
+                                id="eMailMsg"></textarea>
                         </div>
                         <div class="mb-0">
                             <div style="float: right">
@@ -2255,36 +2264,43 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="CandidateProfileForm" action="{{ route('Candidate_ProfileData_Save') }}" method="POST">
+                    <form id="CandidateProfileForm" action="{{ route('Candidate_ProfileData_Save') }}"
+                        method="POST">
                         <input type="hidden" name="Pro_JCId" id="Pro_JCId">
                         <div class="form-group">
                             <label>First Name</label>
-                            <input type="text" name="FName" id="FName" class="form-control form-control-sm">
+                            <input type="text" name="FName" id="FName"
+                                class="form-control form-control-sm">
                         </div>
 
                         <div class="form-group">
                             <label>Middle Name</label>
-                            <input class="form-control form-control-sm" type="text" id="MName" name="MName">
+                            <input class="form-control form-control-sm" type="text" id="MName"
+                                name="MName">
                         </div>
 
                         <div class="form-group">
                             <label>Last Name</label>
-                            <input type="text" name="LName" id="LName" class="form-control form-control-sm">
+                            <input type="text" name="LName" id="LName"
+                                class="form-control form-control-sm">
                         </div>
 
                         <div class="form-group">
                             <label>Date of Birth</label>
-                            <input class="form-control form-control-sm" type="date" id="DOB" name="DOB">
+                            <input class="form-control form-control-sm" type="date" id="DOB"
+                                name="DOB">
                         </div>
 
                         <div class="form-group">
                             <label>Mobile</label>
-                            <input type="text" name="Mobile" id="Mobile" class="form-control form-control-sm">
+                            <input type="text" name="Mobile" id="Mobile"
+                                class="form-control form-control-sm">
                         </div>
 
                         <div class="form-group">
                             <label>Email ID</label>
-                            <input type="text" name="EMail" id="EMail" class="form-control form-control-sm">
+                            <input type="text" name="EMail" id="EMail"
+                                class="form-control form-control-sm">
                         </div>
 
                         <div class="form-group">
@@ -2314,7 +2330,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="CandidatePersonalForm" action="{{ route('Candidate_PersonalData_Save') }}" method="POST">
+                    <form id="CandidatePersonalForm" action="{{ route('Candidate_PersonalData_Save') }}"
+                        method="POST">
 
                         <input type="hidden" name="P_JCId" id="P_JCId">
 
@@ -2325,7 +2342,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                 <option value="Mr.">Mr.</option>
                                 <option value="Late">Late</option>
                             </select>
-                            <input type="text" name="FatherName" id="FatherName" class="form-control form-control-sm d-inline" style="width: 333px;">
+                            <input type="text" name="FatherName" id="FatherName"
+                                class="form-control form-control-sm d-inline" style="width: 333px;">
                         </div>
                         <div class="form-group">
                             <label>Gender</label>
@@ -2338,7 +2356,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         </div>
                         <div class="form-group">
                             <label>Aadhaar No</label>
-                            <input class="form-control form-control-sm" type="text" id="Aadhaar" name="Aadhaar">
+                            <input class="form-control form-control-sm" type="text" id="Aadhaar"
+                                name="Aadhaar">
                         </div>
                         <div class="form-group">
                             <label>Nationality</label>
@@ -2376,11 +2395,13 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         </div>
                         <div class="form-group d-none" id="MDate">
                             <label>Marriage Date</label>
-                            <input type="date" name="MarriageDate" id="MarriageDate" class="form-select form-select-sm">
+                            <input type="date" name="MarriageDate" id="MarriageDate"
+                                class="form-select form-select-sm">
                         </div>
                         <div class="form-group d-none" id="Spouse">
                             <label>spouse Name</label>
-                            <input class="form-control form-control-sm" type="text" id="SpouseName" name="SpouseName">
+                            <input class="form-control form-control-sm" type="text" id="SpouseName"
+                                name="SpouseName">
                         </div>
                         <div class="form-group">
                             <label>Category</label>
@@ -2493,7 +2514,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="BankName">Bank Name</label>
-                                    <input type="text" name="BankName" id="BankName" class="form-control form-control-sm">
+                                    <input type="text" name="BankName" id="BankName"
+                                        class="form-control form-control-sm">
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -2506,7 +2528,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="IFSCCode">IFSC Code</label>
-                                    <input type="text" name="IFSCCode" id="IFSCCode" class="form-control form-control-sm">
+                                    <input type="text" name="IFSCCode" id="IFSCCode"
+                                        class="form-control form-control-sm">
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -2521,19 +2544,22 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="PAN">PAN Number</label>
-                                    <input type="text" name="PAN" id="PAN" class="form-control form-control-sm">
+                                    <input type="text" name="PAN" id="PAN"
+                                        class="form-control form-control-sm">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="UAN">UAN Number</label>
-                                    <input type="text" name="UAN" id="UAN" class="form-control form-control-sm">
+                                    <input type="text" name="UAN" id="UAN"
+                                        class="form-control form-control-sm">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="PFNumber">PF Number</label>
-                                    <input type="text" name="PFNumber" id="PFNumber" class="form-control form-control-sm">
+                                    <input type="text" name="PFNumber" id="PFNumber"
+                                        class="form-control form-control-sm">
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -2546,7 +2572,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="Passport">Passport</label>
-                                    <input type="text" name="Passport" id="Passport" class="form-control form-control-sm">
+                                    <input type="text" name="Passport" id="Passport"
+                                        class="form-control form-control-sm">
                                 </div>
                             </div>
                         </div>
@@ -2608,7 +2635,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="CurrentAddressForm" action="{{ route('Candidate_CurrentAddress_Save') }}" method="POST">
+                    <form id="CurrentAddressForm" action="{{ route('Candidate_CurrentAddress_Save') }}"
+                        method="POST">
                         <input type="hidden" name="Current_JCId" id="Current_JCId">
                         <div class="row">
                             <div class="col-md-6">
@@ -2621,7 +2649,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="PreCity">City</label>
-                                    <input type="text" name="PreCity" id="PreCity" class="form-control form-control-sm">
+                                    <input type="text" name="PreCity" id="PreCity"
+                                        class="form-control form-control-sm">
                                 </div>
                             </div>
 
@@ -2641,8 +2670,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="spinner-border text-primary d-none" role="status" id="PreDistLoader"><span
-                                        class="visually-hidden">Loading...</span></div>
+                                <div class="spinner-border text-primary d-none" role="status" id="PreDistLoader">
+                                    <span class="visually-hidden">Loading...</span></div>
                                 <div class="form-group">
                                     <label for="PreDistrict">District</label>
                                     <select name="PreDistrict" id="PreDistrict" class="form-select form-select-sm">
@@ -2695,7 +2724,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="PermCity">City</label>
-                                    <input type="text" name="PermCity" id="PermCity" class="form-control form-control-sm">
+                                    <input type="text" name="PermCity" id="PermCity"
+                                        class="form-control form-control-sm">
                                 </div>
                             </div>
 
@@ -2715,8 +2745,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="spinner-border text-primary d-none" role="status" id="PermDistLoader"><span
-                                        class="visually-hidden">Loading...</span></div>
+                                <div class="spinner-border text-primary d-none" role="status" id="PermDistLoader">
+                                    <span class="visually-hidden">Loading...</span></div>
                                 <div class="form-group">
                                     <label for="PermDistrict">District</label>
                                     <select name="PermDistrict" id="PermDistrict" class="form-select form-select-sm">
@@ -3131,7 +3161,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             </table>
                         </div>
 
-                        <input type="button" value="Add Qualification" id="addEducation" class="btn btn-primary btn-sm">
+                        <input type="button" value="Add Qualification" id="addEducation"
+                            class="btn btn-primary btn-sm">
                         <div class="submit-section">
                             <button class="btn btn-primary submit-btn">Submit</button>
                         </div>
@@ -3187,7 +3218,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                 class="form-control form-control-sm">
                                         </td>
                                         <td>
-                                            <input type="date" name="WorkExpJobStartDate[]" id="WorkExpJobStartDate1"
+                                            <input type="date" name="WorkExpJobStartDate[]"
+                                                id="WorkExpJobStartDate1"
                                                 class="form-control form-control-sm datepicker">
                                         </td>
                                         <td>
@@ -3204,7 +3236,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             </table>
                         </div>
 
-                        <input type="button" value="Add Experience" id="addExperience" class="btn btn-primary btn-sm">
+                        <input type="button" value="Add Experience" id="addExperience"
+                            class="btn btn-primary btn-sm">
                         <div class="submit-section">
                             <button class="btn btn-primary submit-btn">Submit</button>
                         </div>
@@ -3225,7 +3258,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="CurrentEmpForm" action="{{ route('Candidate_CurrentEmployement_Save') }}" method="POST">
+                    <form id="CurrentEmpForm" action="{{ route('Candidate_CurrentEmployement_Save') }}"
+                        method="POST">
                         <input type="hidden" name="Curr_JCId" id="Curr_JCId">
                         <div class="form-group">
                             <label>Name of Company</label>
@@ -3251,7 +3285,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         </div>
                         <div class="form-group">
                             <label for="">Reporting Manager Designation</label>
-                            <input type="text" name="CurrRepDesig" id="CurrRepDesig" class="form-control form-control-sm">
+                            <input type="text" name="CurrRepDesig" id="CurrRepDesig"
+                                class="form-control form-control-sm">
                         </div>
                         <div class="form-group">
                             <label for="">Job Responsibility</label>
@@ -3287,36 +3322,44 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="CurrentSalaryForm" action="{{ route('Candidate_CurrentSalary_Save') }}" method="POST">
+                    <form id="CurrentSalaryForm" action="{{ route('Candidate_CurrentSalary_Save') }}"
+                        method="POST">
                         <input type="hidden" name="Sal_JCId" id="Sal_JCId">
                         <div class="form-group">
                             <label>Salary (Per Month)</label>
-                            <input type="text" name="CurrSalary" id="CurrSalary" class="form-control form-control-sm">
+                            <input type="text" name="CurrSalary" id="CurrSalary"
+                                class="form-control form-control-sm">
                         </div>
                         <div class="form-group">
                             <label for="">Annual Package (CTC)</label>
-                            <input type="text" name="CurrCTC" id="CurrCTC" class="form-control form-control-sm">
+                            <input type="text" name="CurrCTC" id="CurrCTC"
+                                class="form-control form-control-sm">
                         </div>
 
                         <div class="form-group">
                             <label for="">DA @ headquarter</label>
-                            <input type="text" name="CurrDA" id="CurrDA" class="form-control form-control-sm">
+                            <input type="text" name="CurrDA" id="CurrDA"
+                                class="form-control form-control-sm">
                         </div>
                         <div class="form-group">
                             <label for="">DA Outside Headquarter</label>
-                            <input type="text" name="DAOutHq" id="DAOutHq" class="form-control form-control-sm">
+                            <input type="text" name="DAOutHq" id="DAOutHq"
+                                class="form-control form-control-sm">
                         </div>
                         <div class="form-group">
                             <label for="">Petrol Allowances</label>
-                            <input type="text" name="PetrolAlw" id="PetrolAlw" class="form-control form-control-sm">
+                            <input type="text" name="PetrolAlw" id="PetrolAlw"
+                                class="form-control form-control-sm">
                         </div>
                         <div class="form-group">
                             <label for="">Phone Allowances</label>
-                            <input type="text" name="PhoneAlw" id="PhoneAlw" class="form-control form-control-sm">
+                            <input type="text" name="PhoneAlw" id="PhoneAlw"
+                                class="form-control form-control-sm">
                         </div>
                         <div class="form-group">
                             <label for="">Hotel Eligibility</label>
-                            <input type="text" name="HotelElg" id="HotelElg" class="form-control form-control-sm">
+                            <input type="text" name="HotelElg" id="HotelElg"
+                                class="form-control form-control-sm">
                         </div>
                         <div class="submit-section">
                             <button class="btn btn-primary submit-btn">Submit</button>
@@ -3358,8 +3401,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                 class="form-control form-control-sm">
                                         </td>
                                         <td>
-                                            <input type="text" name="TrainingOrganization[]" id="TrainingOrganization1"
-                                                class="form-control form-control-sm">
+                                            <input type="text" name="TrainingOrganization[]"
+                                                id="TrainingOrganization1" class="form-control form-control-sm">
                                         </td>
                                         <td>
                                             <input type="date" name="TrainingFromDate[]" id="TrainingFromDate1"
@@ -3375,7 +3418,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             </table>
                         </div>
 
-                        <input type="button" value="Add Experience" id="addTraining" class="btn btn-primary btn-sm">
+                        <input type="button" value="Add Experience" id="addTraining"
+                            class="btn btn-primary btn-sm">
                         <div class="submit-section">
                             <button class="btn btn-primary submit-btn">Submit</button>
                         </div>
@@ -3438,7 +3482,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             </table>
                         </div>
 
-                        <input type="button" value="Add Reference" id="addPreOrgRef" class="btn btn-primary btn-sm">
+                        <input type="button" value="Add Reference" id="addPreOrgRef"
+                            class="btn btn-primary btn-sm">
                         <div class="submit-section">
                             <button class="btn btn-primary submit-btn">Submit</button>
                         </div>
@@ -3515,13 +3560,12 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                 class="form-control form-control-sm">
                                         </td>
                                         <td>
-                                            <input type="text" name="VnrRefRelWithPerson[]" id="VnrRefRelWithPerson1"
-                                                class="form-control form-control-sm">
+                                            <input type="text" name="VnrRefRelWithPerson[]"
+                                                id="VnrRefRelWithPerson1" class="form-control form-control-sm">
                                         </td>
                                         <td>
-                                            <div class="d-flex order-actions"><a href="javascript:;"
-                                                    class="ms-3" id="removeVnrRef"><i
-                                                        class="bx bxs-trash text-danger"></i></a>
+                                            <div class="d-flex order-actions"><a href="javascript:;" class="ms-3"
+                                                    id="removeVnrRef"><i class="bx bxs-trash text-danger"></i></a>
                                             </div>
                                         </td>
                                     </tr>
@@ -3571,17 +3615,17 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                 <tbody id="VNR_Business_AcqData">
                                     <tr>
                                         <td>
-                                            <input type="text" name="VnrRefBusiness_Name[]" id="VnrRefBusiness_Name1"
-                                                class="form-control form-control-sm">
+                                            <input type="text" name="VnrRefBusiness_Name[]"
+                                                id="VnrRefBusiness_Name1" class="form-control form-control-sm">
                                         </td>
                                         <td>
-                                            <input type="text" name="VnrRefBusiness_Contact[]" id="VnrRefBusiness_Contact1"
-                                                class="form-control form-control-sm">
+                                            <input type="text" name="VnrRefBusiness_Contact[]"
+                                                id="VnrRefBusiness_Contact1" class="form-control form-control-sm">
                                         </td>
 
                                         <td>
-                                            <input type="text" name="VnrRefBusiness_Email[]" id="VnrRefBusiness_Email1"
-                                                class="form-control form-control-sm">
+                                            <input type="text" name="VnrRefBusiness_Email[]"
+                                                id="VnrRefBusiness_Email1" class="form-control form-control-sm">
                                         </td>
                                         <td>
                                             <select name="VnrRefBusinessRelation[]" id="VnrRefBusinessRelation1"
@@ -3610,8 +3654,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
 
 
                                         <td>
-                                            <div class="d-flex order-actions"><a href="javascript:;"
-                                                    class="ms-3" id="removeVnrRef_Business"><i
+                                            <div class="d-flex order-actions"><a href="javascript:;" class="ms-3"
+                                                    id="removeVnrRef_Business"><i
                                                         class="bx bxs-trash text-danger"></i></a>
                                             </div>
                                         </td>
@@ -3620,7 +3664,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             </table>
                         </div>
 
-                        <input type="button" value="Add Reference" id="addVnrRef_Business" class="btn btn-primary btn-sm">
+                        <input type="button" value="Add Reference" id="addVnrRef_Business"
+                            class="btn btn-primary btn-sm">
                         <div class="submit-section">
                             <button class="btn btn-primary submit-btn">Submit</button>
                         </div>
@@ -3642,7 +3687,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="OtherSeedForm" action="{{ route('Candidate_Other_Seed_Relation_Save') }}" method="POST">
+                    <form id="OtherSeedForm" action="{{ route('Candidate_Other_Seed_Relation_Save') }}"
+                        method="POST">
                         <input type="hidden" name="OtherSeed_JCId" id="OtherSeed_JCId">
                         <div class="table-responsive">
                             <table class="table table-bordered">
@@ -3673,8 +3719,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                         <td><input type="text" name="OtherSeedCompany[]" id="OtherSeedCompany1"
                                                 class="form-control form-control-sm">
                                         </td>
-                                        <td><input type="text" name="OtherSeedDesignation[]" id="OtherSeedDesignation1"
-                                                class="form-control form-control-sm">
+                                        <td><input type="text" name="OtherSeedDesignation[]"
+                                                id="OtherSeedDesignation1" class="form-control form-control-sm">
                                         </td>
                                         <td><input type="text" name="OtherSeedLocation[]" id="OtherSeedLocation1"
                                                 class="form-control form-control-sm">
@@ -3683,9 +3729,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                 class="form-control form-control-sm">
                                         </td>
                                         <td>
-                                            <div class="d-flex order-actions"><a href="javascript:;"
-                                                    class="ms-3" id="removeOtherSeed"><i
-                                                        class="bx bxs-trash text-danger"></i></a>
+                                            <div class="d-flex order-actions"><a href="javascript:;" class="ms-3"
+                                                    id="removeOtherSeed"><i class="bx bxs-trash text-danger"></i></a>
                                             </div>
                                         </td>
                                     </tr>
@@ -3693,7 +3738,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             </table>
                         </div>
 
-                        <input type="button" value="Add Reference" id="addOtherSeed" class="btn btn-primary btn-sm">
+                        <input type="button" value="Add Reference" id="addOtherSeed"
+                            class="btn btn-primary btn-sm">
                         <div class="submit-section">
                             <button class="btn btn-primary submit-btn">Submit</button>
                         </div>
@@ -3719,7 +3765,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $ext = substr($resume, strrpos($resume, '.') + 1);
                     @endphp
                     @if ($ext == 'pdf' || $ext == 'PDF')
-                        <object width="760" height="500" data="{{ URL::to('/') }}/uploads/Resume/{{ $Rec->Resume }}"
+                        <object width="760" height="500"
+                            data="{{ URL::to('/') }}/uploads/Resume/{{ $Rec->Resume }}"
                             id="{{ $Rec->JCId }}"></object>
                     @else
                         @php
@@ -3814,7 +3861,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                 <div class="modal-content">
                     <div class="modal-header bg-primary">
                         <h6 class="modal-title text-light" id="exampleModalLabel">Offer Letter Basic Details</h6>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <table class="table table-bordered" style="vertical-align: middle;">
@@ -3838,7 +3886,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                     <td style="width:150px;">Department</td>
                                     <td>
 
-                                        <input type="text" name="SelectedDepartment" id="SelectedDepartment" disabled
+                                        <input type="text" name="SelectedDepartment" id="SelectedDepartment"
+                                            disabled
                                             style="background-color: white;border:aliceblue; width: 160px; color:black">
                                     </td>
                                 </tr>
@@ -3871,8 +3920,10 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                     <td>
                                                         <div class="form-check form-check-inline">
                                                             <input class="form-check-input " type="checkbox"
-                                                                id="permanent_chk" name="permanent_chk" value="1">
-                                                            <label class="form-check-label" for="permanent_chk">Permanent
+                                                                id="permanent_chk" name="permanent_chk"
+                                                                value="1">
+                                                            <label class="form-check-label"
+                                                                for="permanent_chk">Permanent
                                                             </label>
                                                         </div>
                                                         <div class="form-check form-check-inline d-none"
@@ -3897,8 +3948,10 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                     <td>
                                                         <div class="form-check form-check-inline">
                                                             <input class="form-check-input " type="checkbox"
-                                                                id="temporary_chk" name="temporary_chk" value="1">
-                                                            <label class="form-check-label" for="temporary_chk">Temporary
+                                                                id="temporary_chk" name="temporary_chk"
+                                                                value="1">
+                                                            <label class="form-check-label"
+                                                                for="temporary_chk">Temporary
                                                             </label>
                                                         </div>
                                                         <div class="form-check form-check-inline d-none"
@@ -3955,7 +4008,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                     <td>
                                                         <div class="form-check form-check-inline">
                                                             <input class="form-check-input " type="checkbox"
-                                                                id="administrative_chk" name="administrative_chk" value="1">
+                                                                id="administrative_chk" name="administrative_chk"
+                                                                value="1">
                                                             <label class="form-check-label"
                                                                 for="administrative_chk">Administrative
                                                             </label>
@@ -3982,14 +4036,16 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                                     <td>
                                                         <div class="form-check form-check-inline">
                                                             <input class="form-check-input " type="checkbox"
-                                                                id="functional_chk" name="functional_chk" value="1">
+                                                                id="functional_chk" name="functional_chk"
+                                                                value="1">
                                                             <label class="form-check-label"
                                                                 for="functional_chk">Functional
                                                             </label>
                                                         </div>
                                                         <div class="form-check form-check-inline d-none"
                                                             style="padding-left: 43px;" id="functional_div">
-                                                            <select name="FunctionalDepartment" id="FunctionalDepartment"
+                                                            <select name="FunctionalDepartment"
+                                                                id="FunctionalDepartment"
                                                                 class="form-select form-select-sm d-inline"
                                                                 style="width: 160px;">
                                                                 <option value="">Select Department</option>
@@ -4015,23 +4071,26 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                     <td>CTC:Rs. <input type="text" name="CTC" id="CTC"
                                             class="form-control form-control-sm d-inline" style="width: 200px;"></td>
                                 </tr>
-                       
+
                                 <tr>
                                     <td>Service Condition</td>
                                     <td>
                                         <div class="form-check form-check-inline scon">
-                                            <input class="form-check-input" type="radio" id="Training" value="Training"
-                                                name="ServiceCond" onclick="$('#training_tr').removeClass('d-none');">
+                                            <input class="form-check-input" type="radio" id="Training"
+                                                value="Training" name="ServiceCond"
+                                                onclick="$('#training_tr').removeClass('d-none');">
                                             <label class="form-check-label" for="Training">Training</label>
                                         </div>
                                         <div class="form-check form-check-inline scon">
-                                            <input class="form-check-input" type="radio" id="Probation" value="Probation"
-                                                name="ServiceCond" onclick="$('#training_tr').addClass('d-none');">
+                                            <input class="form-check-input" type="radio" id="Probation"
+                                                value="Probation" name="ServiceCond"
+                                                onclick="$('#training_tr').addClass('d-none');">
                                             <label class="form-check-label" for="Probation">Probation</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" id="nopnot" value="nopnot"
-                                                name="ServiceCond" onclick="$('#training_tr').addClass('d-none');">
+                                            <input class="form-check-input" type="radio" id="nopnot"
+                                                value="nopnot" name="ServiceCond"
+                                                onclick="$('#training_tr').addClass('d-none');">
                                             <label class="form-check-label" for="nopnot">No Probation / No
                                                 Training</label>
                                         </div>
@@ -4225,7 +4284,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                 <tr>
                                     <td>Remarks / Reason for Rivision</td>
                                     <td>
-                                        <input type="text" name="Remark" id="Remark" class="form-control form-control-sm">
+                                        <input type="text" name="Remark" id="Remark"
+                                            class="form-control form-control-sm">
                                     </td>
                                 </tr>
                             </tbody>
@@ -4294,8 +4354,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                 class="visually-hidden">Loading...</span></div>
                         <div class="form-group">
                             <label>Select Employee</label>
-                            <select name="review_to[]" id="review_to" class="form-select form-select-sm multiple-select"
-                                multiple>
+                            <select name="review_to[]" id="review_to"
+                                class="form-select form-select-sm multiple-select" multiple>
 
                             </select>
                         </div>
@@ -4422,25 +4482,25 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                 separately. </h6>
                             <div style="text-align: left">
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input crime" type="radio" name="CriminalChk" id="YesCriminal"
-                                        value="Y" data-value="Y" @php
-                                            if ($AboutAns != null) {
+                                    <input class="form-check-input crime" type="radio" name="CriminalChk"
+                                        id="YesCriminal" value="Y" data-value="Y"
+                                        @php
+if ($AboutAns != null) {
                                                 if ($AboutAns->CriminalChk == 'Y') {
                                                     echo 'checked';
                                                 }
-                                            }
-                                        @endphp>
+                                            } @endphp>
                                     <label class="form-check-label" for="YesCriminal">Yes</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input crime" type="radio" name="CriminalChk" id="NoCriminal"
-                                        value="N" data-value="N" @php
-                                            if ($AboutAns != null) {
+                                    <input class="form-check-input crime" type="radio" name="CriminalChk"
+                                        id="NoCriminal" value="N" data-value="N"
+                                        @php
+if ($AboutAns != null) {
                                                 if ($AboutAns->CriminalChk == 'N') {
                                                     echo 'checked';
                                                 }
-                                            }
-                                        @endphp>
+                                            } @endphp>
                                     <label class="form-check-label" for="NoCriminal">
                                         No</label>
                                 </div>
@@ -4448,14 +4508,13 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             <div class="form-group row mb-2
 
                                     @php
-                                        if($AboutAns != null){
+if($AboutAns != null){
                                             if($AboutAns->CriminalChk == 'Y'){
                                                 echo '';
                                             }else{
                                                 echo 'd-none';
                                             }
-                                        }
-                                    @endphp "
+                                        } @endphp "
                                 id="crime_div">
                                 <div class="col-md-12">
                                     <input type="text" name="AboutCriminal" id="AboutCriminal"
@@ -4467,25 +4526,25 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                             <h6>Q9. Do You have a valid driving licence? </h6>
                             <div style="text-align: left">
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input dlchk" type="radio" name="LicenseChk" id="YesLicense"
-                                        value="Y" data-value="Y" @php
-                                            if ($AboutAns != null) {
+                                    <input class="form-check-input dlchk" type="radio" name="LicenseChk"
+                                        id="YesLicense" value="Y" data-value="Y"
+                                        @php
+if ($AboutAns != null) {
                                                 if ($AboutAns->LicenseChk == 'Y') {
                                                     echo 'checked';
                                                 }
-                                            }
-                                        @endphp>
+                                            } @endphp>
                                     <label class="form-check-label" for="YesLicense">Yes</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input dlchk" type="radio" name="LicenseChk" id="NoLicense"
-                                        value="N" data-value="N" @php
-                                            if ($AboutAns != null) {
+                                    <input class="form-check-input dlchk" type="radio" name="LicenseChk"
+                                        id="NoLicense" value="N" data-value="N"
+                                        @php
+if ($AboutAns != null) {
                                                 if ($AboutAns->LicenseChk == 'N') {
                                                     echo 'checked';
                                                 }
-                                            }
-                                        @endphp>
+                                            } @endphp>
                                     <label class="form-check-label" for="NoLicense">
                                         No</label>
                                 </div>
@@ -4494,20 +4553,19 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                 <div class="form-group row
 
                                     @php
-                                        if($AboutAns != null){
+if($AboutAns != null){
                                             if($AboutAns->LicenseChk == 'Y'){
                                                 echo '';
                                             }else{
                                                 echo 'd-none';
                                             }
-                                        }
-                                    @endphp "
+                                        } @endphp "
                                     id="dl_div">
                                     <label class="col-form-label col-md-1">License
                                         No:</label>
                                     <div class="col-md-2 col-sm-12">
-                                        <input type="text" class="form-control form-control-sm" id="DLNo" name="DLNo"
-                                            value="{{ $AboutAns->DLNo ?? '' }}">
+                                        <input type="text" class="form-control form-control-sm" id="DLNo"
+                                            name="DLNo" value="{{ $AboutAns->DLNo ?? '' }}">
                                     </div>
                                     <label class="col-form-label col-md-1">Validity:</label>
                                     <div class="col-md-2 col-sm-12">
@@ -4744,7 +4802,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                     <input type="file" name="ESIC_Family" id="ESIC_Family"
                                         class="form-control form-control-sm d-inline" style="width: 80%"
                                         accept="application/pdf">
-                                    <button class="btn btn-warning btn-sm d-inline" id="ESIC_FamilyUpload">Upload</button>
+                                    <button class="btn btn-warning btn-sm d-inline"
+                                        id="ESIC_FamilyUpload">Upload</button>
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->ESIC_Family != null)
@@ -4797,7 +4856,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                                     <input type="file" name="BloodGroup" id="BloodGroup"
                                         class="form-control form-control-sm d-inline" style="width: 80%"
                                         accept="application/pdf">
-                                    <button class="btn btn-warning btn-sm d-inline" id="BloodGroupUpload">Upload</button>
+                                    <button class="btn btn-warning btn-sm d-inline"
+                                        id="BloodGroupUpload">Upload</button>
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->BloodGroup != null)
@@ -4813,7 +4873,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
         </div>
     </div>
 
-    <div id="ref_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div id="ref_modal" class="modal custom-modal fade" role="dialog" data-bs-backdrop="static"
+        data-bs-keyboard="false">
         <div class="modal-dialog " role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -4828,7 +4889,8 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         <div class="form-group mb-2">
                             <input type="hidden" name="ReferenceChkJAId" value="{{ $JAId }}">
                             <label for="RefChkMail">Ref. Person Mail ID <i class="text-danger">*</i></label>
-                            <input type="text" name="RefChkMail" id="RefChkMail" class="form-control form-control-sm">
+                            <input type="text" name="RefChkMail" id="RefChkMail"
+                                class="form-control form-control-sm">
                         </div>
                         <div class="submit-section">
                             <button class="btn btn-primary submit-btn">Send Mail</button>
@@ -6417,7 +6479,10 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
             }
         });
 
-         $(document).on('change', '#Grade', function() {
+        $(document).on('change', '#Grade', function () {
+            var Grade = $(this).val();
+  
+
             $.ajax({
                 type: "GET",
                 url: "{{ route('get_designation_by_grade_department') }}?GradeId=" + Grade +
@@ -6437,14 +6502,14 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                     }
                 }
             });
-        }); 
+        });
 
-        $(document).on('click', '#offerltredit', function () {
+        $(document).on('click', '#offerltredit', function() {
             var JAId = $(this).data('id');
             $.ajax({
                 type: "GET",
                 url: "{{ route('get_offerltr_basic_detail') }}?JAId=" + JAId,
-                success: function (res) {
+                success: function(res) {
                     if (res.status == 200) {
                         $('#Of_JAId').val(JAId);
                         $('#JCId').val(res.candidate_detail.JCId);
@@ -6453,7 +6518,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#Grade").empty();
                         $("#Grade").append(
                             '<option value="">Select Grade</option>');
-                        $.each(res.grade_list, function (key, value) {
+                        $.each(res.grade_list, function(key, value) {
                             $("#Grade").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
@@ -6470,7 +6535,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#SubDepartment").empty();
                         $("#SubDepartment").append(
                             '<option value="">Select Sub Department</option>');
-                        $.each(res.sub_department_list, function (key, value) {
+                        $.each(res.sub_department_list, function(key, value) {
                             $("#SubDepartment").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
@@ -6480,7 +6545,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#Section").empty();
                         $("#Section").append(
                             '<option value="">Select Section</option>');
-                        $.each(res.section_list, function (key, value) {
+                        $.each(res.section_list, function(key, value) {
                             $("#Section").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
@@ -6490,7 +6555,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#Designation").empty();
                         $("#Designation").append(
                             '<option value="">Select Designation</option>');
-                        $.each(res.grade_designation_list, function (key, value) {
+                        $.each(res.grade_designation_list, function(key, value) {
                             $("#Designation").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
@@ -6501,7 +6566,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#DesignationRep").empty();
                         $("#DesignationRep").append(
                             '<option value="">Select Reporting Designation</option>');
-                        $.each(res.designation_list, function (key, value) {
+                        $.each(res.designation_list, function(key, value) {
                             $("#DesignationRep").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
@@ -6512,11 +6577,11 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#Vertical").empty();
                         $("#Vertical").append(
                             '<option value="">Select Vertical</option>');
-                        $.each(res.vertical_list, function (key, value) {
+                        $.each(res.vertical_list, function(key, value) {
                             $("#Vertical").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
-                        
+
 
                         $('#Vertical').val(res.candidate_detail.VerticalId);
                         $("#RepLineVisibility").val(res.candidate_detail.RepLineVisibility);
@@ -6524,7 +6589,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#AdministrativeDepartment").empty();
                         $("#AdministrativeDepartment").append(
                             '<option value="">Select Department</option>');
-                        $.each(res.department_list, function (key, value) {
+                        $.each(res.department_list, function(key, value) {
                             $("#AdministrativeDepartment").append('<option value="' + value +
                                 '">' + key +
                                 '</option>');
@@ -6534,7 +6599,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#FunctionalDepartment").empty();
                         $("#FunctionalDepartment").append(
                             '<option value="">Select Department</option>');
-                        $.each(res.department_list, function (key, value) {
+                        $.each(res.department_list, function(key, value) {
                             $("#FunctionalDepartment").append('<option value="' + value + '">' +
                                 key +
                                 '</option>');
@@ -6543,7 +6608,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#AdministrativeEmployee").empty();
                         $("#AdministrativeEmployee").append(
                             '<option value="">Select Employee</option>');
-                        $.each(res.employee_list, function (key, value) {
+                        $.each(res.employee_list, function(key, value) {
                             $("#AdministrativeEmployee").append('<option value="' + key + '">' +
                                 value +
                                 '</option>');
@@ -6552,7 +6617,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#FunctionalEmployee").empty();
                         $("#FunctionalEmployee").append(
                             '<option value="">Select Employee</option>');
-                        $.each(res.employee_list, function (key, value) {
+                        $.each(res.employee_list, function(key, value) {
                             $("#FunctionalEmployee").append('<option value="' + key + '">' +
                                 value +
                                 '</option>');
@@ -6561,7 +6626,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#AftDesignation").empty();
                         $("#AftDesignation").append(
                             '<option value="0">Select Designation</option>');
-                        $.each(res.designation_list, function (key, value) {
+                        $.each(res.designation_list, function(key, value) {
                             $("#AftDesignation").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
@@ -6569,7 +6634,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#AftGrade").empty();
                         $("#AftGrade").append(
                             '<option value="">Select Grade</option>');
-                        $.each(res.grade_list, function (key, value) {
+                        $.each(res.grade_list, function(key, value) {
                             $("#AftGrade").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
@@ -6577,7 +6642,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#Of_PermState").empty();
                         $("#Of_PermState").append(
                             '<option value="">Select State</option>');
-                        $.each(res.state_list, function (key, value) {
+                        $.each(res.state_list, function(key, value) {
                             $("#Of_PermState").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
@@ -6585,7 +6650,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#PermHQ").empty();
                         $("#PermHQ").append(
                             '<option value="">Select HQ</option>');
-                        $.each(res.perm_headquarter_list, function (key, value) {
+                        $.each(res.perm_headquarter_list, function(key, value) {
                             $("#PermHQ").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
@@ -6593,7 +6658,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#TempState").empty();
                         $("#TempState").append(
                             '<option value="">Select State</option>');
-                        $.each(res.state_list, function (key, value) {
+                        $.each(res.state_list, function(key, value) {
                             $("#TempState").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
@@ -6601,7 +6666,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#TempState1").empty();
                         $("#TempState1").append(
                             '<option value="">Select State</option>');
-                        $.each(res.state_list, function (key, value) {
+                        $.each(res.state_list, function(key, value) {
                             $("#TempState1").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
@@ -6609,7 +6674,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#TempHQ").empty();
                         $("#TempHQ").append(
                             '<option value="">Select HQ</option>');
-                        $.each(res.temp_headquarter_list, function (key, value) {
+                        $.each(res.temp_headquarter_list, function(key, value) {
                             $("#TempHQ").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
@@ -6617,7 +6682,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#TempHQ1").empty();
                         $("#TempHQ1").append(
                             '<option value="">Select HQ</option>');
-                        $.each(res.temp1_headquarter_list, function (key, value) {
+                        $.each(res.temp1_headquarter_list, function(key, value) {
                             $("#TempHQ1").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
@@ -6625,7 +6690,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         $("#vehicle_policy").empty();
                         $("#vehicle_policy").append('<option value="">Select Policy</option>');
                         $("#vehicle_policy").append('<option value="NA">NA</option>');
-                        $.each(res.vehicle_policy_list, function (key, value) {
+                        $.each(res.vehicle_policy_list, function(key, value) {
                             $("#vehicle_policy").append('<option value="' + value + '">' + key +
                                 '</option>');
                         });
@@ -6683,7 +6748,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         } else {
                             $("#administrative_div").addClass("d-none");
                         }
-  $('#CTC').val(res.candidate_detail.CTC);
+                        $('#CTC').val(res.candidate_detail.CTC);
                         if (res.candidate_detail.repchk != '') {
                             $("input[name=repchk][value=" + res.candidate_detail.repchk +
                                 "]").prop('checked', true);
@@ -6737,7 +6802,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
 
                         if (res.candidate_detail.PreMedicalCheckUp != '') {
                             $("input[name=MedicalCheckup][value=" + res.candidate_detail
-                                    .PreMedicalCheckUp +
+                                .PreMedicalCheckUp +
                                 "]").prop('checked', true);
                         }
 
@@ -6923,6 +6988,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                 .attr("src", url) // point the iframe to the page you want to print
                 .appendTo("body");
         }
+
         function PrintServiceAgreementLetter_OldStamp(url) {
             $("<iframe>") // create a new iframe element
                 .hide() // make it invisible
@@ -6943,6 +7009,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                 .attr("src", url) // point the iframe to the page you want to print
                 .appendTo("body");
         }
+
         function PrintConfidentialityAgreementLetter(url) {
             $("<iframe>") // create a new iframe element
                 .hide() // make it invisible
@@ -8274,17 +8341,17 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
             });
         });
 
-         function PrintConfidentialityAgreementLetter_OldStamp(url) {
+        function PrintConfidentialityAgreementLetter_OldStamp(url) {
             $("<iframe>") // create a new iframe element
                 .hide() // make it invisible
                 .attr("src", url) // point the iframe to the page you want to print
                 .appendTo("body");
         }
 
-        $(document).on("click","#open_joining_form",function(){
+        $(document).on("click", "#open_joining_form", function() {
             var JCId = $('#JCId').val();
 
-            if(confirm("Are you sure you want to open joining form?")){
+            if (confirm("Are you sure you want to open joining form?")) {
                 $.ajax({
                     url: '<?= route('open_joining_form') ?>',
                     method: 'POST',
@@ -8292,7 +8359,7 @@ if ($OfBasic != null && $OfBasic->Grade != null) {
                         JCId: JCId,
                     },
                     dataType: 'json',
-                    success: function (data) {
+                    success: function(data) {
                         if (data.status == 400) {
                             toastr.error(data.msg);
                         } else {
