@@ -1037,13 +1037,13 @@ class OfferLtrController extends Controller
     }
 
 
-    public function get_designation_by_grade_department(Request $request)
+   public function get_designation_by_grade_department(Request $request)
     {
         $DepartmentId = $request->DepartmentId;
         $GradeId = $request->GradeId;
         $grade_designation_list = DB::table('master_grade_designation')
-            ->select('master_designation.DesigId', 'master_designation.DesigName')
-            ->join('master_designation', 'master_designation.DesigId', '=', 'master_grade_designation.designation_id')
+            ->select('core_designation.id', 'core_designation.designation_name')
+            ->join('core_designation', 'core_designation.id', '=', 'master_grade_designation.designation_id')
             ->where('department_id', $DepartmentId)
             ->where(function ($query) use ($GradeId) {
                 $query->where('grade_1', $GradeId)
@@ -1052,7 +1052,7 @@ class OfferLtrController extends Controller
                     ->orWhere('grade_4', $GradeId)
                     ->orWhere('grade_5', $GradeId);
             })
-            ->pluck("DesigId", "DesigName");
+            ->pluck("id", "designation_name");
         return response(array('grade_designation_list' => $grade_designation_list, 'status' => 200));
     }
 }
