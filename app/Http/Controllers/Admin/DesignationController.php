@@ -32,30 +32,8 @@ class DesignationController extends Controller
     public function syncDesignation()
     {
 
+     
 
-
-
-        $response = Http::get('https://vnress.in/RcdDetails.php?action=Details&val=Designation')->json();
-        $data = array();
-        foreach ($response['Designation_list'] as $key => $value) {
-
-            $temp = array();
-            $temp['DesigId'] = $value['DesigId'];
-            $temp['DesigName'] = $value['DesigName'];
-            $temp['DesigCode'] = $value['DesigCode'];
-            $temp['Desig_ShortCode'] = $value['Desig_ShortCode'];
-            $temp['CompanyId'] = $value['CompanyId'];
-            $temp['DesigStatus'] = $value['DesigStatus'];
-            array_push($data, $temp);
-        }
-        $query = master_designation::insert($data);
-        $response3 = Http::get('https://vnress.in/RcdDetails.php?action=Details&val=DeptDesig')->json();
-
-        foreach ($response3['Department_Designation_list'] as $key => $value) {
-            $data1 = DB::table('master_designation')
-                ->where('DesigId', $value['DesigId'])
-                ->update(['DepartmentId' => $value['DepartmentId']]);
-        }
         $query2 = DB::table('master_grade_designation')->truncate();
         $response2 = Http::get('https://vnress.in/RcdDetails.php?action=Details&val=grade_desig')->json();
         $data2 = array();
@@ -71,10 +49,11 @@ class DesignationController extends Controller
             $temp2['grade_4'] = $value['GradeId_4'];
             $temp2['grade_5'] = $value['GradeId_5'];
             $temp2['status'] = $value['DGDStatus'];
+            $temp2['mw'] = $value['MW'];
             array_push($data2, $temp2);
         }
         $query2 = DB::table('master_grade_designation')->insert($data2);
-        if ($query) {
+        if ($query2) {
             return response()->json(['status' => 200, 'msg' => 'Designation data has been Synchronized.']);
         } else {
             return response()->json(['status' => 500, 'msg' => 'Something went wrong..!!']);
