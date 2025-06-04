@@ -49,7 +49,7 @@ class DesignationController extends Controller
             $temp2['grade_4'] = $value['GradeId_4'];
             $temp2['grade_5'] = $value['GradeId_5'];
             $temp2['status'] = $value['DGDStatus'];
-            $temp2['mw'] = $value['MW'];
+        
             array_push($data2, $temp2);
         }
         $query2 = DB::table('master_grade_designation')->insert($data2);
