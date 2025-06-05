@@ -118,29 +118,53 @@
 </head>
 @php
 
+    $JAId = base64_decode($_REQUEST['jaid']);
 
-$JAId = base64_decode($_REQUEST['jaid']);
+    $sql = DB::table('jobapply')
+        ->leftJoin('appointing', 'appointing.JAId', '=', 'jobapply.JAId')
+        ->leftJoin('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
+        ->leftJoin('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
+        ->leftJoin('candjoining', 'jobapply.JAId', '=', 'candjoining.JAId')
+        ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
+        ->leftJoin('jf_family_det', 'jobcandidates.JCId', '=', 'jf_family_det.JCId')
+        ->select(
+            'appointing.*',
+            'offerletterbasic.*',
+            'candjoining.JoinOnDt',
+            'jobcandidates.Title',
+            'jobcandidates.FName',
+            'jobcandidates.MName',
+            'jobcandidates.LName',
+            'jobcandidates.FatherTitle',
+            'jobcandidates.FatherName',
+            'jobcandidates.Gender',
+            'jobcandidates.MaritalStatus',
+            'jobcandidates.SpouseName',
+            'jf_contact_det.perm_address',
+            'jf_contact_det.perm_city',
+            'jf_contact_det.perm_dist',
+            'jf_contact_det.perm_state',
+            'jf_contact_det.perm_pin',
+        )
+        ->where('jobapply.JAId', $JAId)
+        ->first();
+    $ctc = DB::table('candidate_ctc')->select('*')->where('JAId', $JAId)->first();
 
-$sql = DB::table('jobapply')
-    ->leftJoin('appointing', 'appointing.JAId', '=', 'jobapply.JAId')
-    ->leftJoin('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
-    ->leftJoin('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
-    ->leftJoin('candjoining', 'jobapply.JAId', '=', 'candjoining.JAId')
-    ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
-    ->leftJoin('jf_family_det', 'jobcandidates.JCId', '=', 'jf_family_det.JCId')
-    ->select('appointing.*', 'offerletterbasic.*', 'candjoining.JoinOnDt', 'jobcandidates.Title', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName', 'jobcandidates.FatherTitle', 'jobcandidates.FatherName', 'jobcandidates.Gender', 'jobcandidates.MaritalStatus', 'jobcandidates.SpouseName', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_dist', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin')
-    ->where('jobapply.JAId', $JAId)
-    ->first();
-$ctc = DB::table('candidate_ctc')
-    ->select('*')
-    ->where('JAId', $JAId)
-    ->first();
-
-$elg = DB::table('candidate_entitlement')
-    ->select('*')
-    ->where('JAId', $JAId)
-    ->first();
-$months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 'Four' => '4 (Four)', 'Five' => '5 (Five)', 'Six' => '6 (Six)', 'Seven' => '7 (Seven)', 'Eight' => '8 (Eight)', 'Nine' => '9 (Nine)', 'Ten' => '10 (Ten)', 'Eleven' => '11 (Eleven)', 'Twelve' => '12 (Twelve)'];
+    $elg = DB::table('candidate_entitlement')->select('*')->where('JAId', $JAId)->first();
+    $months_word = [
+        'One' => '1 (One)',
+        'Two' => '2 (Two)',
+        'Three' => '3 (Three)',
+        'Four' => '4 (Four)',
+        'Five' => '5 (Five)',
+        'Six' => '6 (Six)',
+        'Seven' => '7 (Seven)',
+        'Eight' => '8 (Eight)',
+        'Nine' => '9 (Nine)',
+        'Ten' => '10 (Ten)',
+        'Eleven' => '11 (Eleven)',
+        'Twelve' => '12 (Twelve)',
+    ];
 @endphp
 
 <body>
@@ -291,13 +315,15 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                         @endif
                         @if ($sql->ServiceCondition == 'Probation' || $sql->ServiceCondition == 'Training')
                             <li>
-                                <strong>{{$sql->ServiceCondition == 'Probation' ? 'Probation':'Training Period' }}: </strong>
+                                <strong>{{ $sql->ServiceCondition == 'Probation' ? 'Probation' : 'Training Period' }}:
+                                </strong>
                                 <ol type="a">
                                     <li>
                                         You will be on {{ $sql->ServiceCondition }} for a period of
                                         {{ $sql->ServiceCondition == 'Probation' ? '6 (Six)' : '12 (Twelve)' }}
                                         months
-                                        from the Appointment Date (<strong>“ {{ $sql->ServiceCondition}} Date”</strong>) which maybe either
+                                        from the Appointment Date (<strong>“ {{ $sql->ServiceCondition }}
+                                            Date”</strong>) which maybe either
                                         extended or may
                                         be
                                         dispensed, at the sole discretion of the Company. Unless confirmed in writing,
@@ -393,7 +419,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                     effect and without any compensation thereof.</li>
 
                                 @php
-                                    if ( $sql->Department == 1040 || $sql->Department==1002) {
+                                    if ($sql->Department == 14 || $sql->Department == 2 || $sql->Department == 3) {
                                         $noticePeriod = '3 (three)';
                                     } else {
                                         $noticePeriod = '1 (one)';
@@ -580,106 +606,106 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                         <br>
                         <p class="text-center"><b>ANNEXURE A – COMPENSATION STRUCTURE</b></p>
                         <br>
-                     <center>
-                        <table class="table" style="width: 90%">
-                            <tr>
-                                <th class="text-center">Emolument Head</th>
-                                <th class="text-center">Amount (in Rs.)</th>
-                            </tr>
-                            <tr>
-                                <td colspan="2" class="text-center">(A) Monthly Components</td>
-                            </tr>
-                            <tr>
-                                <td>Basic + D.A.</td>
-                                <td class="text-center">{{ $ctc->basic ?? '' }}</td>
-                            </tr>
-                            @if ($ctc->hra != null || $ctc->hra != '' || $ctc->hra != 0)
-                            <tr>
-                                <td>HRA</td>
-                                <td class="text-center">{{ $ctc->hra ?? '' }}</td>
-                            </tr>
-                            @endif
-                            <tr>
-                                <td>*Bonus</td>
-                                <td class="text-center">{{ $ctc->bonus ?? '' }} </td>
-                            </tr>
-                            @if ($ctc->special_alw != null || $ctc->special_alw != '')
+                        <center>
+                            <table class="table" style="width: 90%">
                                 <tr>
-                                    <td>Special Allowance</td>
-                                    <td class="text-center">{{ $ctc->special_alw ?? '' }}</td>
+                                    <th class="text-center">Emolument Head</th>
+                                    <th class="text-center">Amount (in Rs.)</th>
                                 </tr>
-                            @endif
-                            <tr>
-                                <th>Gross Monthly Salary</th>
-                                <td class="text-center">{{ $ctc->grsM_salary ?? '' }}</td>
-                            </tr>
-                            <tr>
-                                <td>Employee's PF Contribution</td>
-                                <td class="text-center">{{ $ctc->emplyPF ?? '' }}</td>
-                            </tr>
-                            <tr class="{{ $ctc->grsM_salary > 21000 ? 'd-none' : '' }}">
-                                <td>Employee’s ESIC Contribution </td>
-                                <td class="text-center">{{ $ctc->emplyESIC ?? '' }}</td>
-                            </tr>
-                            <tr>
-                                <th>Net Monthly Salary</th>
-                                <td class="text-center">{{ $ctc->netMonth ?? '' }} </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center" colspan="2">(B) Annual Components (Tax saving
-                                    components
-                                    which shall
-                                    be
-                                    reimbursed on production of documents at the end of financial year)</td>
-                            </tr>
-                            <tr class="d-none">
-                                <td>Leave Travel Allowance</td>
-                                <td class="text-center">{{ $ctc->lta }} </td>
-                            </tr>
-                            <tr class="d-none">
-                                <td>Child Education Allowance</td>
-                                <td class="text-center">{{ $ctc->childedu }}</td>
-                            </tr>
-                            <tr>
-                                <th>Annual Gross Salary</th>
-                                <td class="text-center">{{ $ctc->anualgrs ?? '' }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" class="text-center">(C) Other Annual Components ( Statutory
-                                    Components)</td>
-                            </tr>
-                            <tr>
-                                <td>**Estimated Gratuity</td>
-                                <td class="text-center">{{ $ctc->gratuity ?? '' }}</td>
-                            </tr>
-                            <tr>
-                                <td>Employer’s PF contribution</td>
-                                <td class="text-center">{{ $ctc->emplyerPF ?? '' }}</td>
-                            </tr>
-                            <tr class="{{ $ctc->grsM_salary > 21000 ? 'd-none' : '' }}">
-                                <td>Employer’s ESIC contribution</td>
-                                <td class="text-center">{{ $ctc->emplyerESIC ?? '' }} </td>
-                            </tr>
-                           <tr class="{{ $ctc->medical <= 0 ? 'd-none' : '' }}">
-                                <td>Insurance Policy Premium </td>
-                                <td class="text-center">{{ $ctc->medical ?? '' }}</td>
-                            </tr>
-                            <tr>
-                                <th>Total Cost to Company</th>
-                                <td class="text-center">{{ $ctc->total_ctc ?? '' }} </td>
-                            </tr>
+                                <tr>
+                                    <td colspan="2" class="text-center">(A) Monthly Components</td>
+                                </tr>
+                                <tr>
+                                    <td>Basic + D.A.</td>
+                                    <td class="text-center">{{ $ctc->basic ?? '' }}</td>
+                                </tr>
+                                @if ($ctc->hra != null || $ctc->hra != '' || $ctc->hra != 0)
+                                    <tr>
+                                        <td>HRA</td>
+                                        <td class="text-center">{{ $ctc->hra ?? '' }}</td>
+                                    </tr>
+                                @endif
+                                <tr>
+                                    <td>*Bonus</td>
+                                    <td class="text-center">{{ $ctc->bonus ?? '' }} </td>
+                                </tr>
+                                @if ($ctc->special_alw != null || $ctc->special_alw != '')
+                                    <tr>
+                                        <td>Special Allowance</td>
+                                        <td class="text-center">{{ $ctc->special_alw ?? '' }}</td>
+                                    </tr>
+                                @endif
+                                <tr>
+                                    <th>Gross Monthly Salary</th>
+                                    <td class="text-center">{{ $ctc->grsM_salary ?? '' }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Employee's PF Contribution</td>
+                                    <td class="text-center">{{ $ctc->emplyPF ?? '' }}</td>
+                                </tr>
+                                <tr class="{{ $ctc->grsM_salary > 21000 ? 'd-none' : '' }}">
+                                    <td>Employee’s ESIC Contribution </td>
+                                    <td class="text-center">{{ $ctc->emplyESIC ?? '' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Net Monthly Salary</th>
+                                    <td class="text-center">{{ $ctc->netMonth ?? '' }} </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center" colspan="2">(B) Annual Components (Tax saving
+                                        components
+                                        which shall
+                                        be
+                                        reimbursed on production of documents at the end of financial year)</td>
+                                </tr>
+                                <tr class="d-none">
+                                    <td>Leave Travel Allowance</td>
+                                    <td class="text-center">{{ $ctc->lta }} </td>
+                                </tr>
+                                <tr class="d-none">
+                                    <td>Child Education Allowance</td>
+                                    <td class="text-center">{{ $ctc->childedu }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Annual Gross Salary</th>
+                                    <td class="text-center">{{ $ctc->anualgrs ?? '' }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="text-center">(C) Other Annual Components ( Statutory
+                                        Components)</td>
+                                </tr>
+                                <tr>
+                                    <td>**Estimated Gratuity</td>
+                                    <td class="text-center">{{ $ctc->gratuity ?? '' }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Employer’s PF contribution</td>
+                                    <td class="text-center">{{ $ctc->emplyerPF ?? '' }}</td>
+                                </tr>
+                                <tr class="{{ $ctc->grsM_salary > 21000 ? 'd-none' : '' }}">
+                                    <td>Employer’s ESIC contribution</td>
+                                    <td class="text-center">{{ $ctc->emplyerESIC ?? '' }} </td>
+                                </tr>
+                                <tr class="{{ $ctc->medical <= 0 ? 'd-none' : '' }}">
+                                    <td>Insurance Policy Premium </td>
+                                    <td class="text-center">{{ $ctc->medical ?? '' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Total Cost to Company</th>
+                                    <td class="text-center">{{ $ctc->total_ctc ?? '' }} </td>
+                                </tr>
                                 @if ($ctc->communication_allowance_amount != null || $ctc->communication_allowance_amount != '')
-                                        <tr>
-                                            <td>Communication Allowance</td>
-                                            <td class="text-center">{{ $ctc->communication_allowance_amount ?? '' }}</td>
-                                        </tr>
-                                        <tr>
+                                    <tr>
+                                        <td>Communication Allowance</td>
+                                        <td class="text-center">{{ $ctc->communication_allowance_amount ?? '' }}</td>
+                                    </tr>
+                                    <tr>
                                         <th>Total Gross CTC</th>
                                         <td class="text-center">{{ $ctc->total_gross_ctc ?? '' }} </td>
                                     </tr>
-                                    @endif
-                        </table>
-                    </center>
+                                @endif
+                            </table>
+                        </center>
                         <p><b>Notes:</b></p>
                         <ol type="1">
                             <li>Bonus shall be paid as per The Code of Wages Act, 2019</li>
@@ -729,183 +755,185 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                         <p class="text-center"><b>ANNEXURE B – ENTITLEMENTS</b></p>
                         <br>
                         <center>
-                        <table class="table" style="width: 90%">
-                            @php
-                                $rowCount = 0;
-                            @endphp
-                            <tr>
-                                <th class="text-center" style="width:60px;">SN</th>
-                                <th colspan="2" class="text-center">Entitlements</th>
-                            </tr>
-                               @if($sql->Grade == '1011')
-                            <tr>
-                              <td class="text-center"><?= ++$rowCount ?></td>
-                              <td><b>Lodging :</b> Actual with upper limits per day as mentioned
-                                  below
-                              </td>
-                              <td>Amount(in Rs.)</td>
-                             
-                          </tr>
-                            <tr>
-                              <td></td>
-                              <td>Lodging for City in Category A</td>
-                              <td>{{ $elg->LoadCityA ?? '' }}
-                              </td>
-                             
-                          </tr>
-                            <tr>
-                              <td></td>
-                              <td>Lodging for City in Category B</td>
-                              <td>{{ $elg->LoadCityB ?? '' }}
-                              </td>
-                             
-                          </tr>
-                            <tr>
-                              <td></td>
-                              <td>Lodging for City in Category C</td>
-                              <td>{{ $elg->LoadCityC ?? '' }}
-                              </td>
-                             
-                          </tr>
-                            @else
-                            <tr>
-                                <td class="text-center"><?= ++$rowCount ?></td>
-                                <td style="width:402px;"><b>Lodging </b> (Actual with upper limits per day)
-                                </td>
-                                <td>{{ $elg->LoadCityA ?? '' }}
-                                </td>
-                            </tr>
-                            @endif
-
-                            @if ($elg->DAOut != '')
+                            <table class="table" style="width: 90%">
+                                @php
+                                    $rowCount = 0;
+                                @endphp
                                 <tr>
-                                    <td class="text-center"><?= ++$rowCount ?></td>
-                                    <td><b>D.A Outside H.Q</b> (To be claimed only on night halt)</td>
-                                    <td class="text-center">{{ $elg->DAOut }}</td>
+                                    <th class="text-center" style="width:60px;">SN</th>
+                                    <th colspan="2" class="text-center">Entitlements</th>
                                 </tr>
-                            @endif
+                                @if ($sql->Grade == '82')
+                                    <tr>
+                                        <td class="text-center"><?= ++$rowCount ?></td>
+                                        <td><b>Lodging :</b> Actual with upper limits per day as mentioned
+                                            below
+                                        </td>
+                                        <td>Amount(in Rs.)</td>
 
-                            @if ($sql->Department == 1004 || $sql->Department == 1025 || $sql->Department == 1024)
-                                <tr>
-                                    <td class="text-center"><?= ++$rowCount ?></td>
-                                    <td>
-                                        @if ($sql->Department == 1004)
-                                            <b>D.A @ H.Q</b>(Applicable only during *season)
-                                        @else
-                                            <b>D.A @ H.Q</b>(In case of touring more than 6 hours travel per day )
-                                        @endif
-                                    </td>
-                                    <td class="text-center">{{ $elg->DAHq }}</td>
-                                </tr>
-                            @endif
-                            @if ($elg->TwoWheel != '' || $elg->TwoWheel != null)
-                                <tr>
-                                    <td class="text-center"><?= ++$rowCount ?></td>
-                                    <td colspan="2"><b>Travel Eligibility (For Official Purpose Only)</b></b></td>
-
-                                </tr>
-
-                                @if ($elg->TwoWheel != '' || $sql->Department != 1002 || $sql->Department != 1040 )
-                                            <tr>
-                                                <td></td>
-                                                <td style="width:502px;">**Two Wheeler
-                                                   @if ($sql->Department == 1003)
-                                                         ( Max 1500km/month)
-                                                 @elseif($sql->Department == 1006)
-
-                                                         ( Max 75Kms/day and 1800km/month)
-                                                 @endif
-                                                </td>
-                                                  <td class="text-center">Rs. {{ $elg->TwoWheel }} /KM</td>
-                                            </tr>
-                                        @endif
-                                @if ($elg->FourWheel != '')
+                                    </tr>
                                     <tr>
                                         <td></td>
-                                        <td style="width:502px;">*Four Wheeler
+                                        <td>Lodging for City in Category A</td>
+                                        <td>{{ $elg->LoadCityA ?? '' }}
                                         </td>
-                                        <td class="text-center">{{ $elg->FourWheel }}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>Lodging for City in Category B</td>
+                                        <td>{{ $elg->LoadCityB ?? '' }}
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>Lodging for City in Category C</td>
+                                        <td>{{ $elg->LoadCityC ?? '' }}
+                                        </td>
+
+                                    </tr>
+                                @else
+                                    <tr>
+                                        <td class="text-center"><?= ++$rowCount ?></td>
+                                        <td style="width:402px;"><b>Lodging </b> (Actual with upper limits per day)
+                                        </td>
+                                        <td>{{ $elg->LoadCityA ?? '' }}
+                                        </td>
                                     </tr>
                                 @endif
 
-                            @endif
-                            @if ($elg->Train_Class != '')
-                            <tr>
-                                <td class="text-center"><?= ++$rowCount ?></td>
-                                <td colspan="2"><b>Mode of Travel outside HQ</b></b></td>
+                                @if ($elg->DAOut != '')
+                                    <tr>
+                                        <td class="text-center"><?= ++$rowCount ?></td>
+                                        <td><b>D.A Outside H.Q</b> (To be claimed only on night halt)</td>
+                                        <td class="text-center">{{ $elg->DAOut }}</td>
+                                    </tr>
+                                @endif
 
-                            </tr>
+                                @if ($sql->Department == 13 || $sql->Department == 11 || $sql->Department == 14)
+                                    <tr>
+                                        <td class="text-center"><?= ++$rowCount ?></td>
+                                        <td>
+                                            @if ($sql->Department == 1004)
+                                                <b>D.A @ H.Q</b>(Applicable only during *season)
+                                            @else
+                                                <b>D.A @ H.Q</b>(In case of touring more than 6 hours travel per day )
+                                            @endif
+                                        </td>
+                                        <td class="text-center">{{ $elg->DAHq }}</td>
+                                    </tr>
+                                @endif
+                                @if ($elg->TwoWheel != '' || $elg->TwoWheel != null)
+                                    <tr>
+                                        <td class="text-center"><?= ++$rowCount ?></td>
+                                        <td colspan="2"><b>Travel Eligibility (For Official Purpose Only)</b></b>
+                                        </td>
 
-                            <tr>
-                                <td></td>
-                                <td>Bus/Train</td>
-                                <td class="text-center"> {{ $elg->Train_Class }}</td>
-                                </td>
-                            </tr>
-                            @endif
-                            @if ($elg->Flight == 'Y')
+                                    </tr>
+
+                                    @if ($elg->TwoWheel != '' || $sql->Department != 2 || $sql->Department != 3 || $sql->Department != 14)
+                                        <tr>
+                                            <td></td>
+                                            <td style="width:502px;">**Two Wheeler
+                                                @if ($sql->Department == 14)
+                                                    ( Max 1500km/month)
+                                                @elseif($sql->Department == 15)
+                                                    ( Max 75Kms/day and 1800km/month)
+                                                @endif
+                                            </td>
+                                            <td class="text-center">Rs. {{ $elg->TwoWheel }} /KM</td>
+                                        </tr>
+                                    @endif
+                                    @if ($elg->FourWheel != '')
+                                        <tr>
+                                            <td></td>
+                                            <td style="width:502px;">*Four Wheeler
+                                            </td>
+                                            <td class="text-center">{{ $elg->FourWheel }}</td>
+                                        </tr>
+                                    @endif
+
+                                @endif
+                                @if ($elg->Train_Class != '')
+                                    <tr>
+                                        <td class="text-center"><?= ++$rowCount ?></td>
+                                        <td colspan="2"><b>Mode of Travel outside HQ</b></b></td>
+
+                                    </tr>
+
+                                    <tr>
+                                        <td></td>
+                                        <td>Bus/Train</td>
+                                        <td class="text-center"> {{ $elg->Train_Class }}</td>
+                                        </td>
+                                    </tr>
+                                @endif
+                                @if ($elg->Flight == 'Y')
+                                    <tr>
+                                        <td></td>
+                                        <td>Flight</td>
+                                        <td class="text-center"> {{ $elg->Flight_Class }}
+                                            ({{ $elg->Flight_Remark }})
+
+                                        </td>
+                                    </tr>
+                                @endif
+
+
+
+                                @if ($elg->Mobile != '')
+                                    <tr>
+                                        <td class="text-center"><?= ++$rowCount ?></td>
+                                        <td><b>Mobile Handset Eligibility</b>
+                                            @if ($elg->GPRS == 1)
+                                                (Once in 2 Years)
+                                            @else
+                                                (Once in 3 Years)
+                                            @endif
+                                        </td>
+                                        <td class="text-center">Rs. {{ $elg->Mobile }}</td>
+                                    </tr>
+
+                                @endif
+
+
+                                @if ($elg->MExpense != '')
+                                    <tr>
+                                        <td class="text-center"><?= ++$rowCount ?></td>
+                                        <td><b>Mobile Expense Reimbursement</b></b></td>
+                                        <td class="text-center">Rs. {{ $elg->MExpense }} / {{ $elg->MTerm }}</td>
+                                    </tr>
+                                @endif
+
+                                @if ($elg->Laptop != '')
+                                    <tr>
+                                        <td class="text-center"><?= ++$rowCount ?></td>
+                                        <td><b>Laptop Purchase Eligibility (if applicable)</b></b></td>
+                                        <td class="text-center">Rs. {{ $elg->Laptop }} </td>
+                                    </tr>
+                                @endif
+
+                                <!--@if ($elg->HealthIns != '')
+-->
+                                <!--    <tr>-->
+                                <!--        <td class="text-center"><?= ++$rowCount ?></td>-->
+                                <!--        <td><b>Health Insuarance</b></b></td>-->
+                                <!--        <td class="text-center"> Rs. {{ $elg->HealthIns }}</td>-->
+                                <!--    </tr>-->
+                                <!--
+@endif-->
                                 <tr>
-                                    <td></td>
-                                    <td>Flight</td>
-                                    <td class="text-center"> {{ $elg->Flight_Class }}
-                                        ({{ $elg->Flight_Remark }})
-
+                                    <td class="text-center"><?= ++$rowCount ?></td>
+                                    <td><b>Group Term Insurance</b></b></td>
+                                    <td class="text-center">
+                                        5 Lakh
                                     </td>
                                 </tr>
-                            @endif
 
 
-
-                            @if ($elg->Mobile != '')
-                                <tr>
-                                    <td class="text-center"><?= ++$rowCount ?></td>
-                                    <td><b>Mobile Handset Eligibility</b>
-                                        @if ($elg->GPRS == 1)
-                                            (Once in 2 Years)
-                                        @else
-                                            (Once in 3 Years)
-                                        @endif
-                                    </td>
-                                    <td class="text-center">Rs. {{ $elg->Mobile }}</td>
-                                </tr>
-
-                            @endif
-
-
-                            @if ($elg->MExpense != '')
-                                <tr>
-                                    <td class="text-center"><?= ++$rowCount ?></td>
-                                    <td><b>Mobile Expense Reimbursement</b></b></td>
-                                    <td class="text-center">Rs. {{ $elg->MExpense }} / {{ $elg->MTerm }}</td>
-                                </tr>
-                            @endif
-
-                            @if ($elg->Laptop != '')
-                                <tr>
-                                    <td class="text-center"><?= ++$rowCount ?></td>
-                                    <td><b>Laptop Purchase Eligibility (if applicable)</b></b></td>
-                                    <td class="text-center">Rs. {{ $elg->Laptop }} </td>
-                                </tr>
-                            @endif
-
-                            <!--@if ($elg->HealthIns != '')-->
-                            <!--    <tr>-->
-                            <!--        <td class="text-center"><?= ++$rowCount ?></td>-->
-                            <!--        <td><b>Health Insuarance</b></b></td>-->
-                            <!--        <td class="text-center"> Rs. {{ $elg->HealthIns }}</td>-->
-                            <!--    </tr>-->
-                            <!--@endif-->
-                            <tr>
-                                <td class="text-center"><?= ++$rowCount ?></td>
-                                <td><b>Group Term Insurance</b></b></td>
-                                <td class="text-center">
-                                    5 Lakh
-                                </td>
-                            </tr>
-
-
-                        </table>
-                    </center>
+                            </table>
+                        </center>
 
                         @if ($elg->TwoWheelLine == 1)
                             <p style="padding-left: 20px;margin-bottom:5px;"> *2 Wheeler vehicle eligibility as per
@@ -955,8 +983,8 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                         <br><br><br><br>
                         <p style="margin-bottom:2px;">----------------------------<span
                                 style="float: right">----------------------------</span></p>
-                        <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b><span
-                                style="float: right"> {{ $sql->FName }} {{ $sql->MName }}
+                        <p style="margin-bottom: 0px;"><b>Authorized Signatory,</b><span style="float: right">
+                                {{ $sql->FName }} {{ $sql->MName }}
                                 {{ $sql->LName }}</span>
                         </p>
                         <p><b> {{ $sql->SigningAuth }}</b>
@@ -977,8 +1005,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                             class="fa fa-file"></i> Generate Letter</button>
                 @endif
 
-                <a href="{{ route('appointment_ltr_print') }}?jaid={{ $JAId }}"
-                    target="_blank">Print</a>
+                <a href="{{ route('appointment_ltr_print') }}?jaid={{ $JAId }}" target="_blank">Print</a>
             </center>
         </div>
     </div>

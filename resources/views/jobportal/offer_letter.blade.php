@@ -347,7 +347,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
 
 
 
-                                @if ($sql->Department == 1002 || $sql->Department == 1040)
+                                @if ($sql->Department == 2||$sql->Department == 3|| $sql->Department == 14)
                                     <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
                                         terminate
                                         this
@@ -593,7 +593,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                         <th class="text-center" style="width:60px;">SN</th>
                                         <th colspan="2" class="text-center">Entitlements</th>
                                     </tr>
-                                    @if($sql->Grade == '1011')
+                                    @if($sql->Grade == '82')
                             <tr>
                               <td class="text-center"><?= ++$rowCount ?></td>
                               <td><b>Lodging :</b> Actual with upper limits per day as mentioned
@@ -641,11 +641,11 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                         </tr>
                                     @endif
 
-                                    @if ($sql->Department == 1004 || $sql->Department == 1025 || $sql->Department == 1024)
+                                    @if ($sql->Department == 13 || $sql->Department == 11 || $sql->Department == 14)
                                         <tr>
                                             <td class="text-center"><?= ++$rowCount ?></td>
                                             <td>
-                                                @if ($sql->Department == 1004)
+                                                @if ($sql->Department == 13)
                                                     <b>D.A @ H.Q</b>(Applicable only during *season)
                                                 @else
                                                     <b>D.A @ H.Q</b>(In case of touring more than 6 hours travel per day
@@ -663,13 +663,13 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
 
                                         </tr>
 
-                                        @if ($elg->TwoWheel != '' || $sql->Department != 1002 || $sql->Department != 1040 )
+                                        @if ($elg->TwoWheel != '' || $sql->Department != 3 || $sql->Department != 2 || $sql->Department != 14 )
                                             <tr>
                                                 <td></td>
                                                 <td style="width:502px;">**Two Wheeler 
-                                                   @if ($sql->Department == 1003)
+                                                   @if ($sql->Department == 14)
                                                          ( Max 1500km/month)
-                                                 @elseif($sql->Department == 1006)
+                                                 @elseif($sql->Department == 15)
                                                          
                                                          ( Max 75Kms/day and 1800km/month)
                                                  @endif 
@@ -789,7 +789,7 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                     km/month.</p>
                             @endif
 
-                            @if ($sql->Department == 1004)
+                            @if ($sql->Department == 13)
                                 <p>*season- a) Rabi (Oct to Jun), b) Kharif (Jul- Sep) (Applicable only for production)
                                 </p>
                             @endif

@@ -637,7 +637,7 @@
                     <th class="text-center" style="width:60px;">SN</th>
                     <th colspan="2" class="text-center">Entitlements</th>
                 </tr>
-                   @if($sql->Grade == '1011')
+                   @if($sql->Grade == '82')
                             <tr>
                               <td class="text-center"><?= ++$rowCount ?></td>
                               <td><b>Lodging :</b> Actual with upper limits per day as mentioned
@@ -685,7 +685,7 @@
                     </tr>
                 @endif
 
-                @if ($sql->Department == 1004 || $sql->Department == 1025 || $sql->Department == 1024)
+                @if ($sql->Department == 13|| $sql->Department == 11|| $sql->Department == 14)
                     <tr>
                         <td class="text-center"><?= ++$rowCount ?></td>
                         <td>
@@ -710,9 +710,9 @@
                         <tr>
                             <td></td>
                             <td style="width:502px;">**Two Wheeler
-                                @if ($sql->Department == 1003)
+                                @if ($sql->Department == 14)
                                     ( Max 1500km/month)
-                                @elseif($sql->Department == 1006)
+                                @elseif($sql->Department == 15)
                                     ( Max 75Kms/day and 1800km/month)
                                 @endif
                             </td>
