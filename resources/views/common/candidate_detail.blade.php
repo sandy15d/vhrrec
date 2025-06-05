@@ -8373,5 +8373,71 @@ if($AboutAns != null){
 
 
         });
+                $(document).on('change', '#Of_PermState', function () {
+            var state_id = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getCityVillageByState') }}?state_id=" + state_id,
+                success: function (res) {
+                    if (res) {
+                        $("#PermHQ").empty();
+                        $("#PermHQ").append(
+                            '<option value="">Select Headquarter</option>');
+                        $.each(res, function (key, value) {
+                            $("#PermHQ").append('<option value="' + value + '">' +
+                                key +
+                                '</option>');
+                        });
+                        $('#PermHQ').val();
+                    } else {
+                        $("#PermHQ").empty();
+                    }
+                }
+            });
+        });
+        $(document).on('change', '#TempState', function () {
+            var state_id = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getCityVillageByState') }}?state_id=" + state_id,
+                success: function (res) {
+                    if (res) {
+                        $("#TempHQ").empty();
+                        $("#TempHQ").append(
+                            '<option value="">Select Headquarter</option>');
+                        $.each(res, function (key, value) {
+                            $("#TempHQ").append('<option value="' + value + '">' +
+                                key +
+                                '</option>');
+                        });
+                        $('#TempHQ').val();
+                    } else {
+                        $("#TempHQ").empty();
+                    }
+                }
+            });
+        });
+        $(document).on('change', '#TempState1', function () {
+            var state_id = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getCityVillageByState') }}?state_id=" + state_id,
+                success: function (res) {
+                    if (res) {
+                        $("#TempHQ1").empty();
+                        $("#TempHQ1").append(
+                            '<option value="">Select Headquarter</option>');
+                        $.each(res, function (key, value) {
+                            $("#TempHQ1").append('<option value="' + value + '">' +
+                                key +
+                                '</option>');
+                        });
+                        $('#TempHQ1').val();
+                    } else {
+                        $("#TempHQ1").empty();
+                    }
+                }
+            });
+        });
     </script>
 @endsection

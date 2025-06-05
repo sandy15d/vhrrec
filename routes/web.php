@@ -734,6 +734,7 @@ Route::post('sldpt_process', [CommonController::class, 'sldpt_process'])->name('
 Route::post('sldpt_process_from_databank', [CommonController::class, 'sldpt_process_from_databank'])->name('sldpt_process_from_databank');
 Route::post('getMRFTAT', [CommonController::class, 'getMRFTAT'])->name('getMRFTAT');
 Route::get('download_candidate_data_mrf_wise/{mrfid}', [CommonController::class, 'download_candidate_data_mrf_wise'])->name('download_candidate_data_mrf_wise');
+Route::get('getCityVillageByState', [CommonController::class, 'getCityVillageByState'])->name('getCityVillageByState');
 Route::resource('test', \App\Http\Controllers\Master\TestController::class);
 
 

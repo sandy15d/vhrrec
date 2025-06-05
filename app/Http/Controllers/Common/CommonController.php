@@ -912,4 +912,11 @@ class CommonController extends Controller
         return response()->json(['count' => $count]);
     }
 
+        public function getCityVillageByState(Request $request)
+    {
+        $list = DB::table('core_city_village')->where('state_id',$request->state_id)->orderBy('city_village_name', 'asc')
+            ->pluck("id", "city_village_name");
+        return response()->json($list);
+    }
+
 }
