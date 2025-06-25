@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0",
+        "aws/aws-sdk-php": "^3.347",
         "carlos-meneses/laravel-mpdf": "^2.1",
         "citco/carbon": "^2.0",
         "dcblogdev/laravel-sent-emails": "^2.0",
@@ -15,6 +16,7 @@
         "laravel/sanctum": "^2.14",
         "laravel/tinker": "^2.7",
         "laravel/ui": "^3.3",
+        "league/flysystem-aws-s3-v3": "^3.29",
         "maatwebsite/excel": "^3.1",
         "psr/simple-cache": "^1.0",
         "symfony/mailer": "^6.0",

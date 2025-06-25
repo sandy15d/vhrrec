@@ -367,7 +367,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                                 id="old_image"
                                                                                 value="{{ $Rec->CandidateImage }}">
                                                                             @if ($Rec->CandidateImage != null)
-                                                                                <img src="{{ URL::to('/') }}/uploads/Picture/<?= $Rec->CandidateImage ?>"
+                                                                                <img src="{{ Storage::disk('s3')->url('VVNR_Recruitment/Picture/' . $Rec->CandidateImage) }}"
                                                                                     style="width: 150px; height: 150px;"
                                                                                     id="img1" />
                                                                             @else
@@ -2923,7 +2923,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                 </td>
                                                                 <td style="width: 10%; text-align:center">
                                                                     @if ($Docs != null && $Docs->BankDoc != null)
-                                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->BankDoc }}"
+                                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->BankDoc) }}"
                                                                             target="_blank"
                                                                             class="btn btn-primary btn-sm">View</a>
                                                                     @endif
@@ -2958,7 +2958,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                 </td>
                                                                 <td style="width: 10%; text-align:center">
                                                                     @if ($Docs != null && $Docs->PanCard != null)
-                                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->PanCard }}"
+                                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->PanCard) }}"
                                                                             target="_blank"
                                                                             class="btn btn-primary btn-sm">View</a>
                                                                     @endif
@@ -2980,7 +2980,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                 </td>
                                                                 <td style="width: 10%; text-align:center">
                                                                     @if ($Docs != null && $Docs->Passport != null)
-                                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->Passport }}"
+                                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->Passport) }}"
                                                                             target="_blank"
                                                                             class="btn btn-primary btn-sm">View</a>
                                                                     @endif
@@ -3014,7 +3014,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                     </td>
                                                                     <td style="width: 10%; text-align:center">
                                                                         @if ($Docs != null && $Docs->Aadhar != null)
-                                                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->Aadhar }}"
+                                                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->Aadhar) }}"
                                                                                 target="_blank"
                                                                                 class="btn btn-primary btn-sm">View</a>
                                                                         @endif
@@ -3033,7 +3033,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                     </td>
                                                                     <td style="width: 10%; text-align:center">
                                                                         @if ($Docs != null && $Docs->DL != null)
-                                                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->DL }}"
+                                                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->DL) }}"
                                                                                 target="_blank"
                                                                                 class="btn btn-primary btn-sm">View</a>
                                                                         @endif
@@ -3052,7 +3052,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                     </td>
                                                                     <td style="width: 10%; text-align:center">
                                                                         @if ($Docs != null && $Docs->PF_Form2 != null)
-                                                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->PF_Form2 }}"
+                                                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->PF_Form2) }}"
                                                                                 target="_blank"
                                                                                 class="btn btn-primary btn-sm">View</a>
                                                                         @endif
@@ -3072,7 +3072,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                     </td>
                                                                     <td style="width: 10%; text-align:center">
                                                                         @if ($Docs != null && $Docs->PF_Form11 != null)
-                                                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->PF_Form11 }}"
+                                                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->PF_Form11) }}"
                                                                                 target="_blank"
                                                                                 class="btn btn-primary btn-sm">View</a>
                                                                         @endif
@@ -3092,7 +3092,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                     </td>
                                                                     <td style="width: 10%; text-align:center">
                                                                         @if ($Docs != null && $Docs->Gratutity != null)
-                                                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->Gratutity }}"
+                                                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->Gratutity) }}"
                                                                                 target="_blank"
                                                                                 class="btn btn-primary btn-sm">View</a>
                                                                         @endif
@@ -3111,7 +3111,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                     </td>
                                                                     <td style="width: 10%; text-align:center">
                                                                         @if ($Docs != null && $Docs->ESIC != null)
-                                                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->ESIC }}"
+                                                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->ESIC) }}"
                                                                                 target="_blank"
                                                                                 class="btn btn-primary btn-sm">View</a>
                                                                         @endif
@@ -3131,7 +3131,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                     </td>
                                                                     <td style="width: 10%; text-align:center">
                                                                         @if ($Docs != null && $Docs->ESIC_Family != null)
-                                                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->ESIC_Family }}"
+                                                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->ESIC_Family) }}"
                                                                                 target="_blank"
                                                                                 class="btn btn-primary btn-sm">View</a>
                                                                         @endif
@@ -3151,7 +3151,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                     </td>
                                                                     <td style="width: 10%; text-align:center">
                                                                         @if ($Docs != null && $Docs->Health != null)
-                                                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->Health }}"
+                                                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->Health) }}"
                                                                                 target="_blank"
                                                                                 class="btn btn-primary btn-sm">View</a>
                                                                         @endif
@@ -3171,7 +3171,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                     </td>
                                                                     <td style="width: 10%; text-align:center">
                                                                         @if ($Docs != null && $Docs->Ethical != null)
-                                                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->Ethical }}"
+                                                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->Ethical) }}"
                                                                                 target="_blank"
                                                                                 class="btn btn-primary btn-sm">View</a>
                                                                         @endif
@@ -3191,7 +3191,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                     </td>
                                                                     <td style="width: 10%; text-align:center">
                                                                         @if ($Docs != null && $Docs->BloodGroup != null)
-                                                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->BloodGroup }}"
+                                                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->BloodGroup) }}"
                                                                                 target="_blank"
                                                                                 class="btn btn-primary btn-sm">View</a>
                                                                         @endif

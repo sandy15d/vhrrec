@@ -437,7 +437,7 @@
                                                      style="width: 100px; height: 100px;" class=img-fluid rounded"
                                                 alt="..." />
                                             @else
-                                                <img src="{{ URL::to('/') }}/uploads/Picture/{{ $candidate->CandidateImage }}"
+                                                <img src="{{ Storage::disk('s3')->url('VVNR_Recruitment/Picture/' . $Rec->CandidateImage) }}"
                                                      class="img-fluid rounded"
                                                      style="text-align: center;width: 100px;height: 100px;margin-top: 20px;margin-left: 20px;margin-bottom: 12px;"
                                                      alt="..."/>

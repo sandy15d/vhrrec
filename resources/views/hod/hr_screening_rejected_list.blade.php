@@ -96,7 +96,7 @@
                                              style="width: 100px; height: 100px;" class="card-img-top" alt="..."/>
                                     @else
                                         <a href="#" class="pop">
-                                            <img src="{{ URL::to('/') }}/uploads/Picture/{{ $candidate->CandidateImage }}"
+                                            <img src="{{ Storage::disk('s3')->url('VVNR_Recruitment/Picture/' . $Rec->CandidateImage) }}"
                                                  style="text-align: center;width: 100px;height: 100px;margin-top: 20px;margin-left: 20px;margin-bottom: 12px;"
                                                  alt="..."/>
                                         </a>

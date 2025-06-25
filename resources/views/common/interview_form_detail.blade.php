@@ -296,7 +296,7 @@ $Year = Carbon::now()->year;
                         @if ($Rec->CandidateImage == null)
                             <img src="{{ URL::to('/') }}/assets/images/user1.png" width="100" height="140" />
                         @else
-                            <img src="{{ URL::to('/') }}/uploads/Picture/{{ $Rec->CandidateImage }}" width="100"
+                            <img src="{{ Storage::disk('s3')->url('VVNR_Recruitment/Picture/' . $Rec->CandidateImage) }}" width="100"
                                 height="140" />
                         @endif
                     </div>

@@ -83,7 +83,7 @@ $chk = DB::table('jobcandidates')
                                                         class="fa fa-user fa-4x"></i></td>
                                             @else
                                             <td style="border: 2px solid #f09a3e; "> <img
-                                                src="{{ URL::to('/') }}/uploads/Picture/{{ $chk->CandidateImage }}" style="width: 80px;" height="80px;"/></td>
+                                                src="{{ Storage::disk('s3')->url('VVNR_Recruitment/Picture/' . $chk->CandidateImage) }}" style="width: 80px;" height="80px;"/></td>
                                                
                                             @endif
                                                 <td>

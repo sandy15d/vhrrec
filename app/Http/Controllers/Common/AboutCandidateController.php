@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Models\jobcandidate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Mpdf\Mpdf;
 
@@ -146,10 +147,13 @@ class AboutCandidateController extends Controller
                 ]
             );
 
-            if (\File::exists(public_path('uploads/Picture/' . $filename))) {
-                \File::delete(public_path('uploads/Picture/' . $filename));
+           // Delete existing image from S3 if it exists
+            if (Storage::disk('s3')->exists('VVNR_Recruitment/Picture/' . $filename)) {
+                Storage::disk('s3')->delete('VVNR_Recruitment/Picture/' . $filename);
             }
-            $request->CandidateImage->move(public_path('uploads/Picture'), $filename);
+            
+            // Upload new image to S3 bucket
+            $request->file('CandidateImage')->storeAs('VVNR_Recruitment/Picture', $filename, 's3');
         }
 
         $query = DB::table('jobcandidates')

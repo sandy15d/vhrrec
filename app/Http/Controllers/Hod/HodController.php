@@ -153,8 +153,20 @@ class HodController extends Controller
 
         //==========================END  TAT for MRF=======================================
 
-        return view('hod.index', compact('rejectedCandidateCount', 'events', 'months', 'company_list',
-            'department_list', 'state_list', 'institute_list', 'designation_list', 'employee_list', 'recruiter_list', 'active_mrf', 'dataPoints'));
+        return view('hod.index', compact(
+            'rejectedCandidateCount',
+            'events',
+            'months',
+            'company_list',
+            'department_list',
+            'state_list',
+            'institute_list',
+            'designation_list',
+            'employee_list',
+            'recruiter_list',
+            'active_mrf',
+            'dataPoints'
+        ));
     }
 
     public function mrfbyme()
@@ -163,10 +175,15 @@ class HodController extends Controller
             ->Join('master_designation', 'manpowerrequisition.DesigId', '=', 'master_designation.DesigId')
             ->where('manpowerrequisition.CreatedBy', Auth::user()->id)
             ->orWhere('manpowerrequisition.OnBehalf', Auth::user()->id)
-            ->select('manpowerrequisition.MRFId', 'manpowerrequisition.Type',
-                'manpowerrequisition.JobCode', 'manpowerrequisition.CreatedBy',
-                'master_designation.DesigName', 'manpowerrequisition.Status',
-                'manpowerrequisition.CreatedTime')
+            ->select(
+                'manpowerrequisition.MRFId',
+                'manpowerrequisition.Type',
+                'manpowerrequisition.JobCode',
+                'manpowerrequisition.CreatedBy',
+                'master_designation.DesigName',
+                'manpowerrequisition.Status',
+                'manpowerrequisition.CreatedTime'
+            )
             ->orderBy('manpowerrequisition.MRFId', 'desc');
 
         return datatables()::of($mrf)
@@ -218,17 +235,33 @@ class HodController extends Controller
         $JCId = $request->JCId;
         $sql = jobcandidate::where('JCId', $JCId)->first();
         $resume = $sql->Resume;
-        $url = URL::to('/');
-        $google_url = html_entity_decode('https://docs.google.com/viewer?embedded=true&url=');
+
+        // Get file from S3
+        $s3Path = 'Recruitment/Resume/' . $resume;
+        $s3Client = Storage::disk('s3')->getClient();
+        $bucket = config('filesystems.disks.s3.bucket');
+
+        // Generate temporary signed URL valid for 5 minutes
+        $command = $s3Client->getCommand('GetObject', [
+            'Bucket' => $bucket,
+            'Key' => $s3Path
+        ]);
+
+        $request = $s3Client->createPresignedRequest($command, '+5 minutes');
+        $presignedUrl = (string)$request->getUri();
+
         $ext = substr($resume, strrpos($resume, '.') + 1);
         $x = '';
-        if ($ext == 'pdf' || $ext == 'PDF') {
-            $x = '<object width="760" height="500" data="' . $url . '/uploads/Resume/' . $resume . '"></object>';
+
+        if (strtolower($ext) == 'pdf') {
+            $x = '<object width="760" height="500" data="' . $presignedUrl . '"></object>';
         } else {
-            $x = '<iframe src="' . $google_url . $url . '/uploads/Resume/' . $resume . '" width="100%" height="500" style="border: none;"></iframe>';
+            $google_url = html_entity_decode('https://docs.google.com/viewer?embedded=true&url=');
+            $x = '<iframe src="' . $google_url . urlencode($presignedUrl) . '" width="100%" height="500" style="border: none;"></iframe>';
         }
 
-        $x = $x . '<div class="modal-footer"><a href="' . $url . '/Uploads/Resume/' . $resume . '" class="btn btn-primary" download>Download Resume</a> </div>';
+        $x .= '<div class="modal-footer"><a href="' . $presignedUrl . '" class="btn btn-primary" download>Download Resume</a></div>';
+
         return $x;
     }
 
@@ -292,7 +325,6 @@ class HodController extends Controller
 
         if ($Department == 'All' || $Department == '') {
             $usersQuery->whereIn('jobapply.Department', $departments);
-
         } else {
             $usersQuery->where('Department', $Department);
         }
@@ -305,12 +337,28 @@ class HodController extends Controller
         if ($Recruiter != '') {
             $usersQuery->where('jobapply.SelectedBy', $Recruiter);
         }
-        $candidate_list = $usersQuery->select('jobcandidates.ReferenceNo AS ReferenceNo', 'jobpost.Title',
-            'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName',
-            'jobapply.ApplyDate', 'jobcandidates.Resume', 'jobcandidates.CandidateImage',
-            'jobcandidates.Email', 'jobcandidates.Phone', 'jobcandidates.JCId', 'jobapply.Type',
-            'jobapply.ResumeSource', 'jobapply.OtherResumeSource', 'jobapply.RejectRemark',
-            'jobapply.HrScreeningDate', 'jobapply.Status', 'jobapply.SelectedBy', 'master_department.DepartmentCode', 'jobapply.JAId')
+        $candidate_list = $usersQuery->select(
+            'jobcandidates.ReferenceNo AS ReferenceNo',
+            'jobpost.Title',
+            'jobcandidates.FName',
+            'jobcandidates.MName',
+            'jobcandidates.LName',
+            'jobapply.ApplyDate',
+            'jobcandidates.Resume',
+            'jobcandidates.CandidateImage',
+            'jobcandidates.Email',
+            'jobcandidates.Phone',
+            'jobcandidates.JCId',
+            'jobapply.Type',
+            'jobapply.ResumeSource',
+            'jobapply.OtherResumeSource',
+            'jobapply.RejectRemark',
+            'jobapply.HrScreeningDate',
+            'jobapply.Status',
+            'jobapply.SelectedBy',
+            'master_department.DepartmentCode',
+            'jobapply.JAId'
+        )
             ->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')
             ->join('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
             ->join('master_department', 'master_department.DepartmentId', '=', 'jobapply.Department')
@@ -441,18 +489,48 @@ class HodController extends Controller
 
         // Fetch the candidates list
         $candidate_list = $usersQuery->select(
-            'jobapply.JAId', 'jobapply.ResumeSource', 'jobapply.Type', 'jobapply.ApplyDate',
-            'jobapply.Status', 'jobapply.RejectRemark', 'jobapply.FwdTechScr', 'jobcandidates.JCId',
-            'jobcandidates.ReferenceNo', 'jobcandidates.FName', 'jobcandidates.MName', 'jobcandidates.LName',
-            'jobcandidates.FatherName', 'jobcandidates.Email', 'jobcandidates.Phone', 'jobcandidates.City',
-            'jobcandidates.Education', 'jobcandidates.TotalYear', 'jobcandidates.TotalMonth', 'jobcandidates.Specialization',
-            'jobcandidates.Professional', 'jobcandidates.JobStartDate', 'jobcandidates.JobEndDate',
-            'jobcandidates.PresentCompany', 'jobcandidates.Designation', 'jobcandidates.Verified',
-            'jobcandidates.CandidateImage', 'jobcandidates.BlackList', 'jobcandidates.BlackListRemark',
-            'jobcandidates.UnBlockRemark', 'jobapply.JPId', 'jobpost.DesigId', 'jobcandidates.ProfileViewed',
-            'jobcandidates.manual_entry_by', 'jobcandidates.manual_entry_by_name', 'jobapply.Status as hr_screening_status',
-            'jobapply.RejectRemark as hr_screening_remark', 'jobapply.Type', 'jobapply.SelectedBy as hr_screening_by',
-            'jobapply.FwdTechScr', 'screening.IntervStatus', 'jobapply.SLDPT'
+            'jobapply.JAId',
+            'jobapply.ResumeSource',
+            'jobapply.Type',
+            'jobapply.ApplyDate',
+            'jobapply.Status',
+            'jobapply.RejectRemark',
+            'jobapply.FwdTechScr',
+            'jobcandidates.JCId',
+            'jobcandidates.ReferenceNo',
+            'jobcandidates.FName',
+            'jobcandidates.MName',
+            'jobcandidates.LName',
+            'jobcandidates.FatherName',
+            'jobcandidates.Email',
+            'jobcandidates.Phone',
+            'jobcandidates.City',
+            'jobcandidates.Education',
+            'jobcandidates.TotalYear',
+            'jobcandidates.TotalMonth',
+            'jobcandidates.Specialization',
+            'jobcandidates.Professional',
+            'jobcandidates.JobStartDate',
+            'jobcandidates.JobEndDate',
+            'jobcandidates.PresentCompany',
+            'jobcandidates.Designation',
+            'jobcandidates.Verified',
+            'jobcandidates.CandidateImage',
+            'jobcandidates.BlackList',
+            'jobcandidates.BlackListRemark',
+            'jobcandidates.UnBlockRemark',
+            'jobapply.JPId',
+            'jobpost.DesigId',
+            'jobcandidates.ProfileViewed',
+            'jobcandidates.manual_entry_by',
+            'jobcandidates.manual_entry_by_name',
+            'jobapply.Status as hr_screening_status',
+            'jobapply.RejectRemark as hr_screening_remark',
+            'jobapply.Type',
+            'jobapply.SelectedBy as hr_screening_by',
+            'jobapply.FwdTechScr',
+            'screening.IntervStatus',
+            'jobapply.SLDPT'
         )
             ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
             ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
@@ -469,7 +547,13 @@ class HodController extends Controller
 
         // Return the view with the data
         return view('common.candidate_list_for_databank', compact(
-            'candidate_list', 'education_list', 'resume_list', 'state_list', 'source_list', 'department_list', 'months'
+            'candidate_list',
+            'education_list',
+            'resume_list',
+            'state_list',
+            'source_list',
+            'department_list',
+            'months'
         ));
     }
 
@@ -477,5 +561,4 @@ class HodController extends Controller
     {
         return view('common.shared_profile');
     }
-
 }

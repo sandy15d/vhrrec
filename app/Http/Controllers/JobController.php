@@ -114,11 +114,11 @@ class JobController extends Controller
         $JCId = $query->JCId;
 
         $Resume = 'resume_' . $JCId . '.' . $request->Resume->extension();
-        $request->Resume->move(public_path('uploads/Resume'), $Resume);
+       $request->Resume->storeAs('VVNR_Recruitment/Resume', $Resume, 's3');
         $CandidateImage = '';
         if ($request->CandidateImage != '' || $request->CandidateImage != null) {
             $CandidateImage = $JCId . '.' . $request->CandidateImage->extension();
-            $request->CandidateImage->move(public_path('uploads/Picture'), $CandidateImage);
+            $request->CandidateImage->storeAs('VVNR_Recruitment/Picture', $CandidateImage, 's3');
         }
 
         $ReferenceNo = rand(1000, 9999) . date('Y') . $JCId;
@@ -230,11 +230,11 @@ class JobController extends Controller
         $JCId = $query->JCId;
 
         $Resume = 'resume_' . $JCId . '.' . $request->Resume->extension();
-        $request->Resume->move(public_path('uploads/Resume'), $Resume);
+         $request->Resume->storeAs('VVNR_Recruitment/Resume', $Resume, 's3');
         $CandidateImage = '';
         if ($request->CandidateImage != '' || $request->CandidateImage != null) {
             $CandidateImage = $JCId . '.' . $request->CandidateImage->extension();
-            $request->CandidateImage->move(public_path('uploads/Picture'), $CandidateImage);
+             $request->CandidateImage->storeAs('VVNR_Recruitment/Picture', $CandidateImage, 's3');
         }
 
         $ReferenceNo = rand(1000, 9999) . date('Y') . $JCId;
@@ -368,7 +368,7 @@ class JobController extends Controller
 
         if ($request->CandidateImage != '' || $request->CandidateImage != null) {
             $CandidateImage = $JCId . '.' . $request->CandidateImage->extension();
-            $request->CandidateImage->move(public_path('uploads/Picture'), $CandidateImage);
+             $request->CandidateImage->storeAs('VVNR_Recruitment/Picture', $CandidateImage, 's3');
         }
         $query->CandidateImage = $CandidateImage;
         $query->save();
@@ -514,11 +514,11 @@ class JobController extends Controller
         $JCId = $query->JCId;
 
         $Resume = 'resume_' . $JCId . '.' . $request->Resume->extension();
-        $request->Resume->move(public_path('uploads/Resume'), $Resume);
+         $request->Resume->storeAs('VVNR_Recruitment/Resume', $Resume, 's3');
         $CandidateImage = '';
         if ($request->CandidateImage != '' || $request->CandidateImage != null) {
             $CandidateImage = $JCId . '.' . $request->CandidateImage->extension();
-            $request->CandidateImage->move(public_path('uploads/Picture'), $CandidateImage);
+             $request->CandidateImage->storeAs('VVNR_Recruitment/Picture', $CandidateImage, 's3');
         }
 
         $ReferenceNo = rand(1000, 9999) . date('Y') . $JCId;

@@ -4,7 +4,7 @@ $jcid = request()->query('jcid');
 $jcid = base64_decode($jcid);
 $query = DB::table('jobcandidates')
     ->Where('JCId', $jcid)
-    ->get();
+    ->first();
 
 @endphp
 <!doctype html>
@@ -84,16 +84,16 @@ $query = DB::table('jobcandidates')
                                                             </td>
                                                             <td style="width:800px !important">
                                                                 <label><input type="radio" name="Title" value="Mr."
-                                                                        {{ $query[0]->Title == 'Mr.' ? 'checked' : '' }}>
+                                                                        {{ $query->Title == 'Mr.' ? 'checked' : '' }}>
                                                                     Mr.</label>&emsp;
                                                                 <label><input type="radio" name="Title" value="Ms."
-                                                                        {{ $query[0]->Title == 'Ms.' ? 'checked' : '' }}>
+                                                                        {{ $query->Title == 'Ms.' ? 'checked' : '' }}>
                                                                     Ms.</label>&emsp;
                                                                 <label><input type="radio" name="Title" value="Mrs."
-                                                                        {{ $query[0]->Title == 'Mrs.' ? 'checked' : '' }}>
+                                                                        {{ $query->Title == 'Mrs.' ? 'checked' : '' }}>
                                                                     Mrs.</label>&emsp;
                                                                 <label><input type="radio" name="Title" value="Dr."
-                                                                        {{ $query[0]->Title == 'Dr.' ? 'checked' : '' }}>
+                                                                        {{ $query->Title == 'Dr.' ? 'checked' : '' }}>
                                                                     Dr.</label>
                                                             </td>
                                                         </tr>
@@ -105,7 +105,7 @@ $query = DB::table('jobcandidates')
                                                                 <input type="text"
                                                                     class="form-control form-control-sm reqinp"
                                                                     name="FName" id="FName"
-                                                                    value="{{ $query[0]->FName }}" readonly
+                                                                    value="{{ $query->FName }}" readonly
                                                                     onblur="return convertCase(this)">
                                                             </td>
                                                         </tr>
@@ -113,7 +113,7 @@ $query = DB::table('jobcandidates')
                                                             <td valign="middle">Middle Name</td>
                                                             <td>
                                                                 <input type="text" class="form-control form-control-sm"
-                                                                    name="MName" value="{{ $query[0]->MName }}"
+                                                                    name="MName" value="{{ $query->MName }}"
                                                                     onblur="return convertCase(this)">
                                                             </td>
                                                         </tr>
@@ -123,7 +123,7 @@ $query = DB::table('jobcandidates')
                                                             <td>
                                                                 <input type="text"
                                                                     class="form-control form-control-sm reqinp"
-                                                                    name="LName" value="{{ $query[0]->LName }}"
+                                                                    name="LName" value="{{ $query->LName }}"
                                                                     readonly onblur="return convertCase(this)">
                                                             </td>
                                                         </tr>
@@ -135,7 +135,7 @@ $query = DB::table('jobcandidates')
                                                                 <input type="date"
                                                                     class="form-control form-control-sm reqinp"
                                                                     name="DOB" id="DOB"
-                                                                    value="{{ $query[0]->DOB ?? '' }}">
+                                                                    value="{{ $query->DOB ?? '' }}">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -151,7 +151,7 @@ $query = DB::table('jobcandidates')
                                                                     <option value="O">Other</option>
                                                                 </select>
                                                                 <script>
-                                                                    $('#Gender').val('{{ $query[0]->Gender }}');
+                                                                    $('#Gender').val('{{ $query->Gender }}');
                                                                 </script>
                                                             </td>
                                                         </tr>
@@ -170,7 +170,7 @@ $query = DB::table('jobcandidates')
                                                                                 <option value="Late">Late</option>
                                                                             </select>
                                                                             <script>
-                                                                                $('#FatherTitle').val('{{ $query[0]->FatherTitle }}');
+                                                                                $('#FatherTitle').val('{{ $query->FatherTitle }}');
                                                                             </script>
                                                                         </td>
                                                                         <td>
@@ -178,7 +178,7 @@ $query = DB::table('jobcandidates')
                                                                                 class="form-control form-control-sm reqinp"
                                                                                 name="FatherName" id="FatherName"
                                                                                 onblur="return convertCase(this)"
-                                                                                value="{{ $query[0]->FatherName }}">
+                                                                                value="{{ $query->FatherName }}">
                                                                         </td>
                                                                     </tr>
                                                                 </table>
@@ -192,7 +192,7 @@ $query = DB::table('jobcandidates')
                                                                 <input type="text"
                                                                     class="form-control form-control-sm reqinp"
                                                                     name="Email" id="Email"
-                                                                    value="{{ $query[0]->Email }}">
+                                                                    value="{{ $query->Email }}">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -204,7 +204,7 @@ $query = DB::table('jobcandidates')
                                                                     class="form-control form-control-sm reqinp"
                                                                     name="Phone" id="Phone"
                                                                     onkeypress="return isNumberKey(event)"
-                                                                    value="{{ $query[0]->Phone }}">
+                                                                    value="{{ $query->Phone }}">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -220,7 +220,7 @@ $query = DB::table('jobcandidates')
                                                                                 class="form-control form-control-sm reqinp"
                                                                                 placeholder="Address Line 1"
                                                                                 onblur="return convertCase(this)"
-                                                                                value="{{ $query[0]->AddressLine1 ?? '' }}">
+                                                                                value="{{ $query->AddressLine1 ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -230,7 +230,7 @@ $query = DB::table('jobcandidates')
                                                                                 class="form-control form-control-sm"
                                                                                 placeholder="Address Line 2"
                                                                                 onblur="return convertCase(this)"
-                                                                                value="{{ $query[0]->AddressLine2 ?? '' }}">
+                                                                                value="{{ $query->AddressLine2 ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -240,7 +240,7 @@ $query = DB::table('jobcandidates')
                                                                                 class="form-control form-control-sm"
                                                                                 placeholder="Address Line 3"
                                                                                 onblur="return convertCase(this)"
-                                                                                value="{{ $query[0]->AddressLine3 ?? '' }}">
+                                                                                value="{{ $query->AddressLine3 ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -257,7 +257,7 @@ $query = DB::table('jobcandidates')
                                                                                 @endforeach
                                                                             </select>
                                                                             <script>
-                                                                                $('#State').val('{{ $query[0]->State }}');
+                                                                                $('#State').val('{{ $query->State }}');
                                                                             </script>
                                                                         </td>
                                                                         <td>
@@ -277,7 +277,7 @@ $query = DB::table('jobcandidates')
                                                                                 @endforeach
                                                                             </select>
                                                                             <script>
-                                                                                $('#District').val('{{ $query[0]->District }}');
+                                                                                $('#District').val('{{ $query->District }}');
                                                                             </script>
                                                                         </td>
 
@@ -288,7 +288,7 @@ $query = DB::table('jobcandidates')
                                                                                 class="form-control form-control-sm reqinp"
                                                                                 placeholder="City / Village"
                                                                                 onblur="return convertCase(this)"
-                                                                                value="{{ $query[0]->City ?? '' }}">
+                                                                                value="{{ $query->City ?? '' }}">
                                                                         </td>
                                                                         <td colspan="2">
                                                                             <input type="text" name="PinCode"
@@ -296,7 +296,7 @@ $query = DB::table('jobcandidates')
                                                                                 class="form-control form-control-sm reqinp"
                                                                                 placeholder="Pin Code" maxlength="6"
                                                                                 onkeypress="return isNumberKey(event)"
-                                                                                value="{{ $query[0]->PinCode ?? '' }}">
+                                                                                value="{{ $query->PinCode ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                 </table>
@@ -311,7 +311,7 @@ $query = DB::table('jobcandidates')
                                                                     maxlength="12"
                                                                     onkeypress="return isNumberKey(event)"
                                                                     class="form-control form-control-sm reqinp"
-                                                                    value="{{ $query[0]->Aadhaar }}">
+                                                                    value="{{ $query->Aadhaar }}">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -335,7 +335,7 @@ $query = DB::table('jobcandidates')
                                                                                 @endforeach
                                                                             </select>
                                                                             <script>
-                                                                                $('#Education').val('{{ $query[0]->Education }}');
+                                                                                $('#Education').val('{{ $query->Education }}');
                                                                             </script>
                                                                         </td>
                                                                         <td>
@@ -356,7 +356,7 @@ $query = DB::table('jobcandidates')
                                                                                 @endforeach
                                                                             </select>
                                                                             <script>
-                                                                                $('#Specialization').val('{{ $query[0]->Specialization }}');
+                                                                                $('#Specialization').val('{{ $query->Specialization }}');
                                                                             </script>
                                                                         </td>
                                                                     </tr>
@@ -370,7 +370,7 @@ $query = DB::table('jobcandidates')
                                                             <td>
                                                                 <input type="text" name="CGPA" id="CGPA"
                                                                     class="form-control form-control-sm"
-                                                                    value="{{ $query[0]->CGPA ?? '' }}">
+                                                                    value="{{ $query->CGPA ?? '' }}">
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -387,7 +387,7 @@ $query = DB::table('jobcandidates')
                                                                     @endfor
                                                                 </select>
                                                                 <script>
-                                                                    $('#PassingYear').val('{{ $query[0]->PassingYear }}');
+                                                                    $('#PassingYear').val('{{ $query->PassingYear }}');
                                                                 </script>
                                                             </td>
                                                         </tr>
@@ -406,7 +406,7 @@ $query = DB::table('jobcandidates')
                                                                     @endforeach
                                                                 </select>
                                                                 <script>
-                                                                    $('#College').val('{{ $query[0]->College }}');
+                                                                    $('#College').val('{{ $query->College }}');
                                                                 </script>
                                                             </td>
                                                         </tr>
@@ -424,7 +424,7 @@ $query = DB::table('jobcandidates')
                                                                                 id="Professional" value="P"
                                                                                 onclick="showProFromOrNot()"
                                                                                 @php
-                                                                                    if ($query != null && $query[0]->Professional == 'P') {
+                                                                                    if ($query != null && $query->Professional == 'P') {
                                                                                         echo 'checked';
                                                                                     }
                                                                                 @endphp>
@@ -439,7 +439,7 @@ $query = DB::table('jobcandidates')
                                                                                 id="Fresher" value="F"
                                                                                 onclick="showProFromOrNot()"
                                                                                 @php
-                                                                                    if ($query != null && $query[0]->Professional == 'F') {
+                                                                                    if ($query != null && $query->Professional == 'F') {
                                                                                         echo 'checked';
                                                                                     }
                                                                                 @endphp>
@@ -453,7 +453,7 @@ $query = DB::table('jobcandidates')
                                                             </td>
                                                         </tr>
                                                         <tr id="work_exp"
-                                                            class="{{ $query != null && $query[0]->Professional == 'P' ? '' : 'd-none' }}">
+                                                            class="{{ $query != null && $query->Professional == 'P' ? '' : 'd-none' }}">
                                                             <td></td>
                                                             <td>
                                                                 <table>
@@ -465,7 +465,7 @@ $query = DB::table('jobcandidates')
                                                                                 id="PresentCompany"
                                                                                 class="form-control-sm form-control"
                                                                                 onblur="return convertCase(this)"
-                                                                                value="{{ $query[0]->PresentCompany ?? '' }}">
+                                                                                value="{{ $query->PresentCompany ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -476,7 +476,7 @@ $query = DB::table('jobcandidates')
                                                                                 id="Designation"
                                                                                 class="form-control-sm form-control"
                                                                                 onblur="return convertCase(this)"
-                                                                                value="{{ $query[0]->Designation ?? '' }}">
+                                                                                value="{{ $query->Designation ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -486,7 +486,7 @@ $query = DB::table('jobcandidates')
                                                                         <td><input type="date" name="JobStartDate"
                                                                                 id="JobStartDate"
                                                                                 class="form-control-sm form-control"
-                                                                                value="{{ $query[0]->JobStartDate ?? null }}">
+                                                                                value="{{ $query->JobStartDate ?? null }}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -497,7 +497,7 @@ $query = DB::table('jobcandidates')
                                                                                     <input type="date" name="JobEndDate"
                                                                                         id="JobEndDate"
                                                                                         class="form-control form-control-sm"
-                                                                                        value="{{ $query[0]->JobEndDate ?? null }}">
+                                                                                        value="{{ $query->JobEndDate ?? null }}">
                                                                                 </div>
                                                                                 <div
                                                                                     class="form-check form-check-inline">
@@ -505,7 +505,7 @@ $query = DB::table('jobcandidates')
                                                                                         type="checkbox" id="StillEmp"
                                                                                         name="StillEmp" value="Y"
                                                                                         style="margin-left:0px;"
-                                                                                        {{ $query[0]->StillEmp == 'Y' ? 'checked' : '' }}>
+                                                                                        {{ $query->StillEmp == 'Y' ? 'checked' : '' }}>
                                                                                     <label class="form-check-label"
                                                                                         for="StillEmp">If still
                                                                                         employed,
@@ -523,7 +523,7 @@ $query = DB::table('jobcandidates')
                                                                                 id="GrossSalary"
                                                                                 class="form-control form-control-sm"
                                                                                 onkeypress="return isNumberKey(event)"
-                                                                                value="{{ $query[0]->GrossSalary ?? '' }}">
+                                                                                value="{{ $query->GrossSalary ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -533,7 +533,7 @@ $query = DB::table('jobcandidates')
                                                                             <input type="text" name="CTC" id="CTC"
                                                                                 class="form-control form-control-sm"
                                                                                 onkeypress="return isNumberKey(event)"
-                                                                                value="{{ $query[0]->CTC ?? '' }}">
+                                                                                value="{{ $query->CTC ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -543,7 +543,7 @@ $query = DB::table('jobcandidates')
                                                                                 id="NoticePeriod"
                                                                                 class="form-control form-control-sm"
                                                                                 onblur="return convertCase(this)"
-                                                                                value="{{ $query[0]->NoticePeriod ?? '' }}">
+                                                                                value="{{ $query->NoticePeriod ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -553,7 +553,7 @@ $query = DB::table('jobcandidates')
                                                                                 id="ResignReason"
                                                                                 class="form-control form-control-sm"
                                                                                 onblur="return convertCase(this)"
-                                                                                value="{{ $query[0]->ResignReason ?? '' }}">
+                                                                                value="{{ $query->ResignReason ?? '' }}">
                                                                         </td>
                                                                     </tr>
                                                                 </table>
@@ -572,7 +572,7 @@ $query = DB::table('jobcandidates')
                                                                                 name="RefCheck" id="YesRef" value="Y"
                                                                                 onclick="showRefFormOrNot()"
                                                                                 @php
-                                                                                    if ($query != null && $query[0]->Reference == 'Y') {
+                                                                                    if ($query != null && $query->Reference == 'Y') {
                                                                                         echo 'checked';
                                                                                     }
                                                                                     
@@ -586,7 +586,7 @@ $query = DB::table('jobcandidates')
                                                                                 name="RefCheck" id="NoRef" value="N"
                                                                                 onclick="showRefFormOrNot()"
                                                                                 @php
-                                                                                    if ($query != null && $query[0]->Reference == 'N') {
+                                                                                    if ($query != null && $query->Reference == 'N') {
                                                                                         echo 'checked';
                                                                                     }
                                                                                 @endphp>
@@ -598,7 +598,7 @@ $query = DB::table('jobcandidates')
                                                             </td>
                                                         </tr>
                                                         <tr id="reference_tr"
-                                                            class="{{ $query != null && $query[0]->Reference == 'Y' ? '' : 'd-none' }}">
+                                                            class="{{ $query != null && $query->Reference == 'Y' ? '' : 'd-none' }}">
                                                             <td></td>
                                                             <td>
                                                                 <table>
@@ -609,7 +609,7 @@ $query = DB::table('jobcandidates')
                                                                         <td><input type="text" name="RefPerson"
                                                                                 id="RefPerson"
                                                                                 class="form-control-sm form-control"
-                                                                                onblur="return convertCase(this)" value="{{$query[0]->RefPerson ?? ''}}">
+                                                                                onblur="return convertCase(this)" value="{{$query->RefPerson ?? ''}}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -619,7 +619,7 @@ $query = DB::table('jobcandidates')
                                                                         <td><input type="text" name="RefCompany"
                                                                                 id="RefCompany"
                                                                                 class="form-control-sm form-control"
-                                                                                onblur="return convertCase(this)" value="{{$query[0]->RefCompany ?? ''}}">
+                                                                                onblur="return convertCase(this)" value="{{$query->RefCompany ?? ''}}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -629,7 +629,7 @@ $query = DB::table('jobcandidates')
                                                                         <td><input type="text" name="RefDesignation"
                                                                                 id="RefDesignation"
                                                                                 class="form-control-sm form-control"
-                                                                                onblur="return convertCase(this)" value="{{$query[0]->RefDesignation ?? ''}}">
+                                                                                onblur="return convertCase(this)" value="{{$query->RefDesignation ?? ''}}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -638,7 +638,7 @@ $query = DB::table('jobcandidates')
                                                                             <input type="text" name="RefContact"
                                                                                 id="RefContact" maxlength="13"
                                                                                 class="form-control form-control-sm"
-                                                                                onkeypress="return isNumberKey(event)" value="{{$query[0]->RefContact ?? ''}}">
+                                                                                onkeypress="return isNumberKey(event)" value="{{$query->RefContact ?? ''}}">
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -648,7 +648,7 @@ $query = DB::table('jobcandidates')
                                                                         <td>
                                                                             <input type="email" name="RefMail"
                                                                                 id="RefMail"
-                                                                                class="form-control form-control-sm" value="{{$query[0]->RefMail ?? ''}}">
+                                                                                class="form-control form-control-sm" value="{{$query->RefMail ?? ''}}">
                                                                         </td>
                                                                     </tr>
                                                                 </table>
@@ -661,19 +661,18 @@ $query = DB::table('jobcandidates')
                                                             <td>
 
 
-                                                                @if ($query[0]->Resume != null)
+                                                                @if ($query->Resume != null)
                                                                     @php
-                                                                        $file = public_path('/uploads/Resume/' . $query[0]->Resume);
-                                                                        $file1 = URL::to('/') . '/uploads/Resume/' . $query[0]->Resume;
-                                                                        if (file_exists($file)) {
-                                                                            echo "<a class='link-primary' style='font-size:14px;' href='$file1' target='_blank'>Resume</a>  <small class='text-secondary'>  Click to view uploaded resume.</small>";
+                                                                        if ($query->Resume) {
+                                                                            $resumeUrl = Storage::disk('s3')->url('VVNR_Recruitment/Resume/' . $query->Resume);
+                                                                            echo "<a class='link-primary' style='font-size:14px;' href='$resumeUrl' target='_blank'>Resume</a>  <small class='text-secondary'>  Click to view uploaded resume.</small>";
                                                                         }
                                                                     @endphp
                                                                 @else
                                                                     <input type="file" name="Resume" id="Resume"
                                                                         class="form-control form-control-sm"
                                                                         accept=".pdf,.docx">
-                                                                    <p class="text-primary">Plese upload PDF/Word
+                                                                    <p class="text-primary">Please upload PDF/Word
                                                                         Document
                                                                         Only.</p>
                                                                 @endif
@@ -687,8 +686,8 @@ $query = DB::table('jobcandidates')
                                                         class=" mt-3 d-inline-block" style="width: 150; height: 150;">
                                                         <span id="preview">
                                                             <center>
-                                                                @if ($query[0]->CandidateImage != null)
-                                                                    <img src="{{ URL::to('/') }}/uploads/Picture/<?= $query[0]->CandidateImage ?>"
+                                                                @if ($query->CandidateImage != null)
+                                                                    <img src="{{ Storage::disk('s3')->url('VVNR_Recruitment/Picture/' . $query->CandidateImage) }}"
                                                                         style="width: 150px; height: 150px;"
                                                                         id="img1" />
                                                                 @else

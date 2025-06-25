@@ -370,7 +370,7 @@ $institute_list = DB::table("master_institute")->join('states','states.StateId',
                                                                                 id="old_image"
                                                                                 value="{{ $Rec->CandidateImage }}">
                                                                             @if ($Rec->CandidateImage != null)
-                                                                                <img src="{{ URL::to('/') }}/uploads/Picture/<?= $Rec->CandidateImage ?>"
+                                                                                <img src="{{ Storage::disk('s3')->url('VVNR_Recruitment/Picture/' . $Rec->CandidateImage) }}"
                                                                                     style="width: 150px; height: 150px;"
                                                                                     id="img1" />
                                                                             @else
@@ -2856,7 +2856,7 @@ $institute_list = DB::table("master_institute")->join('states','states.StateId',
                                                                     </td>
                                                                     <td style="width: 10%; text-align:center">
                                                                         @if ($Docs != null && $Docs->OfferLtr != null)
-                                                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->OfferLtr }}"
+                                                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->OfferLtr) }}"
                                                                                 target="_blank"
                                                                                 class="btn btn-primary btn-sm">View</a>
                                                                         @endif
@@ -2877,7 +2877,7 @@ $institute_list = DB::table("master_institute")->join('states','states.StateId',
                                                                     </td>
                                                                     <td style="width: 10%; text-align:center">
                                                                         @if ($Docs != null && $Docs->RelievingLtr != null)
-                                                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->RelievingLtr }}"
+                                                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->RelievingLtr) }}"
                                                                                 target="_blank"
                                                                                 class="btn btn-primary btn-sm">View</a>
                                                                         @endif
@@ -2896,7 +2896,7 @@ $institute_list = DB::table("master_institute")->join('states','states.StateId',
                                                                     </td>
                                                                     <td style="width: 10%; text-align:center">
                                                                         @if ($Docs != null && $Docs->SalarySlip != null)
-                                                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->SalarySlip }}"
+                                                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->SalarySlip) }}"
                                                                                 target="_blank"
                                                                                 class="btn btn-primary btn-sm">View</a>
                                                                         @endif
@@ -2916,7 +2916,7 @@ $institute_list = DB::table("master_institute")->join('states','states.StateId',
                                                                     </td>
                                                                     <td style="width: 10%; text-align:center">
                                                                         @if ($Docs != null && $Docs->AppraisalLtr != null)
-                                                                            <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->AppraisalLtr }}"
+                                                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->AppraisalLtr) }}"
                                                                                 target="_blank"
                                                                                 class="btn btn-primary btn-sm">View</a>
                                                                         @endif
@@ -2937,7 +2937,7 @@ $institute_list = DB::table("master_institute")->join('states','states.StateId',
                                                                 </td>
                                                                 <td style="width: 10%; text-align:center">
                                                                     @if ($Docs != null && $Docs->VaccinationCert != null)
-                                                                        <a href="{{ URL::to('/') }}/uploads/Documents/{{ $Docs->VaccinationCert }}"
+                                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->VaccinationCert) }}"
                                                                             target="_blank"
                                                                             class="btn btn-primary btn-sm">View</a>
                                                                     @endif

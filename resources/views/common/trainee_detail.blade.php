@@ -25,7 +25,7 @@ $Rec = DB::table('jobcandidates')
                                     @if ($Rec->CandidateImage == null)
                                         <img src="{{ URL::to('/') }}/assets/images/user1.png" />
                                     @else
-                                        <img src="{{ URL::to('/') }}/uploads/Picture/{{ $Rec->CandidateImage }}" />
+                                        <img src="{{ Storage::disk('s3')->url('VVNR_Recruitment/Picture/' . $Rec->CandidateImage) }}" />
                                     @endif
                                 </div>
                             </div>
@@ -199,13 +199,13 @@ $Rec = DB::table('jobcandidates')
                         $ext = substr($resume, strrpos($resume, '.') + 1);
                     @endphp
                     @if ($ext == 'pdf' || $ext == 'PDF')
-                        <object width="760" height="500" data="{{ URL::to('/') }}/uploads/Resume/{{ $Rec->Resume }}"
+                        <object width="760" height="500" data="{{ Storage::disk('s3')->url('VVNR_Recruitment/Resume/' . $Rec->Resume) }}"
                             id="{{ $Rec->JCId }}"></object>
                     @else
                         @php
                             $url = html_entity_decode('https://docs.google.com/viewer?embedded=true&url=');
                         @endphp
-                        <iframe src="{{ $url }}{{ URL::to('/') }}/uploads/Resume/{{ $Rec->Resume }}"
+                        <iframe src="{{ $url }}{{ Storage::disk('s3')->url('VVNR_Recruitment/Resume/' . $Rec->Resume) }}"
                             width="100%" height="500" style="border: none;"></iframe>
                     @endif
 
