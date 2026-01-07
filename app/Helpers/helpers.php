@@ -560,15 +560,15 @@ function CheckCommControl($Id)
 }
 
 
-function has_permission($resultArray, $pageName)
-{
-    foreach ($resultArray as $key => $value) {
-        if ($value['PageName'] == $pageName) {
-            return true;
-        }
-    }
-    return false;
-}
+// function has_permission($resultArray, $pageName)
+// {
+//     foreach ($resultArray as $key => $value) {
+//         if ($value['PageName'] == $pageName) {
+//             return true;
+//         }
+//     }
+//     return false;
+// }
 
 function CheckDuplicate($firstName, $phone, $email, $dob, $fatherName)
 {

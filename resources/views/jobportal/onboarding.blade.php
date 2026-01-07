@@ -1128,6 +1128,19 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                             aria-labelledby="step-3"
                                             style="position: static; left: auto; width: 1017px; display: none;">
                                             <h5>Family Information</h5>
+                                             <p style="font-weight:bold;margin-bottom:0px;">Note/नोट:</p>
+											<p style="margin-bottom:0px;">Providing accurate family details is <strong>mandatory</strong> for availing company-provided medical benefits. These details are required to enroll your dependents under the medical insurance coverage.</p>
+											<p>कंपनी द्वारा प्रदान किए जाने वाले चिकित्सकीय लाभ प्राप्त करने हेतु सही और पूर्ण पारिवारिक जानकारी देना अनिवार्य है। यह जानकारी आपके आश्रितों को मेडिकल बीमा कवरेज में शामिल करने के लिए आवश्यक है।</p>
+											<p style="margin-bottom:0px;"><b>Why this matters / यह क्यों ज़रूरी है:</b></p>
+											<ul>
+												<li style="margin-top:4px;">Your dependents will be covered under the medical insurance policy.</li>
+												आपके आश्रित मेडिकल बीमा पॉलिसी के अंतर्गत कवर हो पाएंगे।
+<li style="margin-top:4px;">You and your family members will be able to claim medical reimbursements without any difficulty.</li>
+												आप और आपके परिवारजन बिना किसी कठिनाई के चिकित्सा प्रतिपूर्ति (reimbursement) का लाभ उठा पाएंगे।
+<li style="margin-top:4px;">Timely submission ensures that your benefits are activated without delay, as mid-term family additions are not permitted under the Group Health Insurance Policy.</li>
+												समय पर जानकारी देने से आपके लाभ तुरंत सक्रिय हो जाएंगे, क्योंकि ग्रुप हेल्थ इंश्योरेंस पॉलिसी में बीच अवधि में परिवार के सदस्यों को जोड़ने की अनुमति नहीं होती।
+											</ul>
+											
                                             <div class="row">
                                                 <div class="col-lg-12">
                                                     <form id="FamilyInfoForm" action="{{ route('SaveFamily') }}"
@@ -2970,7 +2983,9 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                 <td><input type="text" name="PassportNumber"
                                                                         id="PassportNumber"
                                                                         class="form-control form-control-sm"
-                                                                        value="{{ $Rec->Passport ?? '' }}"></td>
+                                                                        value="{{ $Rec->Passport ?? '' }}">
+                                                                        
+                                                                        </td>
                                                                 <td>
                                                                     <input type="file" name="Passport" id="Passport"
                                                                         class="form-control form-control-sm d-inline"
@@ -2981,6 +2996,49 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                 <td style="width: 10%; text-align:center">
                                                                     @if ($Docs != null && $Docs->Passport != null)
                                                                         <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->Passport) }}"
+                                                                            target="_blank"
+                                                                            class="btn btn-primary btn-sm">View</a>
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+                                                             <tr>
+                                                           <td colspan="4" style="text-align:left">
+                                                               <p><b>Note:</b></p>
+                                                               <ol>
+                                                                   <li>If you already have a UAN, kindly fill and upload UAN Card</li>
+                                                                </ol>
+                                                                <ul>
+                                                                    <li><b>👉 Click Here:</b><a href="https://s3.ap-south-1.amazonaws.com/developerinvnr.bkt/Recruitment/uan/uan_card_download_english.pdf" target="_blank"> UAN Card Download Procedure (English)</a></li>
+                                                                    <li><b>👉 Click Here:</b><a href="https://s3.ap-south-1.amazonaws.com/developerinvnr.bkt/Recruitment/uan/uan_card_download_hindi.pdf" target="_blank"> UAN Card Download Procedure (Hindi)</a></li>
+                                                                </ul>
+                                                                <ol start="2">
+                                                                   <li>If you do not have a UAN, please create one using the <u>UMANG Application and Aadhaar Face RD Application.</u> </li>
+                                                               </ol>
+                                                                 <ul>
+                                                                    <li><b>👉 Click Here:</b><a href="https://s3.ap-south-1.amazonaws.com/developerinvnr.bkt/Recruitment/uan/uan_generation_umang.pdf" target="_blank"> UAN Generation through PDF Guide</a></li>
+                                                                    <li><b>👉 Click Here:</b><a href="https://www.youtube.com/watch?v=vw3k-w_3g1I" target="_blank">  UAN Generation through Youtube Tutorial</a></li>
+                                                                </ul>
+                                                           </td>
+                                                       </tr>
+                                                             <tr>
+
+                                                                <td>UAN <span class="text-danger">*</span></td>
+                                                                <td><input type="text" name="UAN_Number"
+                                                                        id="UAN_Number"
+                                                                        class="form-control form-control-sm"
+                                                                        value="{{ $Rec->UAN ?? '' }}">
+                                                                       
+                                                                        </td>
+                                                                <td>
+                                                                    <input type="file" name="UAN" id="UAN"
+                                                                        class="form-control form-control-sm d-inline"
+                                                                        style="width: 85%" accept="application/pdf">
+                                                                    <button class="btn btn-warning btn-sm d-inline"
+                                                                        id="UANUpload">Upload</button>
+                                                                </td>
+                                                                <td style="width: 10%; text-align:center">
+                                                                    @if ($Docs != null && $Docs->UAN != null)
+                                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->UAN) }}"
                                                                             target="_blank"
                                                                             class="btn btn-primary btn-sm">View</a>
                                                                     @endif
@@ -4921,6 +4979,52 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
             formData.append('JCId', JCId);
             formData.append('Passport', Passport[0]);
             formData.append('PassportNumber', PassportNumber);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                beforeSend: function() {
+                    $('#smartwizard').smartWizard("loader", "show");
+                },
+                success: function(data) {
+                    if (data.status == 200) {
+                        $('#smartwizard').smartWizard("loader", "hide");
+                        toastr.success(data.msg);
+                        window.location.reload();
+                    } else {
+                        toastr.error(data.msg);
+                        $('#smartwizard').smartWizard("loader", "hide");
+                    }
+
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    var errorsHtml = '';
+                    $.each(errors.errors, function(key, value) {
+                        errorsHtml += value[0] + '<br>';
+                    });
+                    toastr.error(errorsHtml);
+                    $('#smartwizard').smartWizard("loader", "hide");
+                }
+            });
+        });
+        
+        $(document).on('click', '#UANUpload', function() {
+            var JCId = $('#JCId').val();
+            var url = '<?= route('UANUpload') ?>';
+            var UAN = $('#UAN')[0].files;
+            var UAN_Number = $('#UAN_Number').val();
+            var formData = new FormData();
+            formData.append('JCId', JCId);
+            formData.append('UAN', UAN[0]);
+            formData.append('UAN_Number', UAN_Number);
+            if(UAN == ''){
+                toastr.error('Please Enter UAN Number');
+                return false;
+            }
             $.ajax({
                 url: url,
                 method: 'POST',

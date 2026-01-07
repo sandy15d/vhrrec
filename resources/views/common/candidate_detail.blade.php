@@ -168,7 +168,7 @@
                                     @if ($Rec->CandidateImage == null)
                                         <img src="{{ URL::to('/') }}/assets/images/user1.png" />
                                     @else
-                                        <img src="{{ Storage::disk('s3')->url('VVNR_Recruitment/Picture/' . $Rec->CandidateImage) }}" />
+                                        <img src="{{url('file-view/Picture/' . $Rec->CandidateImage) }}" />
                                     @endif
                                 </div>
                             </div>
@@ -1216,7 +1216,7 @@
                                                 <td>Aadhaar Card</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->Aadhar != null)
-                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->Aadhar) }}"
+                                                        <a href="{{ url('file-view/Documents/'  . $Docs->Aadhar) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1225,7 +1225,7 @@
                                                 <td>Ethical</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->Ethical != null)
-                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->Ethical) }}"
+                                                        <a href="{{ url('file-view/Documents/'  . $Docs->Ethical) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1235,7 +1235,7 @@
                                                 <td>PAN Card</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->PanCard != null)
-                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->PanCard) }}"
+                                                        <a href="{{ url('file-view/Documents/'  . $Docs->PanCard) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1244,7 +1244,7 @@
                                                 <td>DL</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->DL != null)
-                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->DL) }}"
+                                                        <a href="{{ url('file-view/Documents/'  . $Docs->DL) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1254,7 +1254,7 @@
                                                 <td>Passport</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->Passport != null)
-                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->Passport) }}"
+                                                        <a href="{{ url('file-view/Documents/'  . $Docs->Passport) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1263,7 +1263,7 @@
                                                 <td>BloodGroup</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->BloodGroup != null)
-                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->BloodGroup) }}"
+                                                        <a href="{{ url('file-view/Documents/'  . $Docs->BloodGroup) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1273,7 +1273,7 @@
                                                 <td>PF Form2</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->PF_Form2 != null)
-                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->PF_Form2) }}"
+                                                        <a href="{{ url('file-view/Documents/'  . $Docs->PF_Form2) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1282,7 +1282,7 @@
                                                 <td>OfferLtr</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->OfferLtr != null)
-                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->OfferLtr) }}"
+                                                        <a href="{{ url('file-view/Documents/'  . $Docs->OfferLtr) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1292,7 +1292,7 @@
                                                 <td>PF Form11</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->PF_Form11 != null)
-                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->PF_Form11) }}"
+                                                        <a href="{{ url('file-view/Documents/'  . $Docs->PF_Form11) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1301,7 +1301,7 @@
                                                 <td>RelievingLtr</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->RelievingLtr != null)
-                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->RelievingLtr) }}"
+                                                        <a href="{{ url('file-view/Documents/'  . $Docs->RelievingLtr) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1311,7 +1311,7 @@
                                                 <td>Gratutity</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->Gratutity != null)
-                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->Gratutity) }}"
+                                                        <a href="{{ url('file-view/Documents/'  . $Docs->Gratutity) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1320,7 +1320,7 @@
                                                 <td>SalarySlip</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->SalarySlip != null)
-                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->SalarySlip) }}"
+                                                        <a href="{{ url('file-view/Documents/'  . $Docs->SalarySlip) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1330,7 +1330,7 @@
                                                 <td>ESIC</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->ESIC != null)
-                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->ESIC) }}"
+                                                        <a href="{{ url('file-view/Documents/'  . $Docs->ESIC) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1339,7 +1339,7 @@
                                                 <td>AppraisalLtr</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->AppraisalLtr != null)
-                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->AppraisalLtr) }}"
+                                                        <a href="{{ url('file-view/Documents/'  . $Docs->AppraisalLtr) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1349,7 +1349,7 @@
                                                 <td>ESIC_Family</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->ESIC_Family != null)
-                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->ESIC_Family) }}"
+                                                        <a href="{{ url('file-view/Documents/'  . $Docs->ESIC_Family) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1358,7 +1358,7 @@
                                                 <td>VaccinationCert</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->VaccinationCert != null)
-                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->VaccinationCert) }}"
+                                                        <a href="{{ url('file-view/Documents/'  . $Docs->VaccinationCert) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1368,7 +1368,7 @@
                                                 <td>Health</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->Health != null)
-                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->Health) }}"
+                                                        <a href="{{ url('file-view/Documents/'  . $Docs->Health) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1377,10 +1377,22 @@
                                                 <td>BankDoc</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->BankDoc != null)
-                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->BankDoc) }}"
+                                                        <a href="{{ url('file-view/Documents/'  . $Docs->BankDoc) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
+                                            </tr>
+                                            <tr>
+                                                <td class=" text-center">19</td>
+                                                <td>UAN</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->UAN != null)
+                                                        <a href="{{ url('file-view/Documents/'  . $Docs->UAN) }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
+
+                                               
                                             </tr>
                                         </tbody>
                                     </table>
@@ -1855,12 +1867,10 @@
                                             </li>
                                         @endif
                                         @if (
-                                            $OfBasic->Department == 1002 ||
-                                                $OfBasic->Department == 1003 ||
-                                                $OfBasic->Department == 1004 ||
-                                                $OfBasic->Department == 1025 ||
-                                                $OfBasic->Department == 1027 ||
-                                                $OfBasic->Department == 1040)
+                                            $OfBasic->Department == 2 ||
+                                                $OfBasic->Department == 3 ||
+                                                $OfBasic->Department == 17 ||
+                                                $OfBasic->Department == 13 ||  $OfBasic->Department == 11 ||  $OfBasic->Department == 12 ||  $OfBasic->Department == 14 )
                                             <li>
                                                 <div class="title" style="width: 150px;"> Conf. Agreement <span
                                                         style="float: right">:</span> </div>
@@ -2177,13 +2187,11 @@
                                         </div>
                                     </li>
                                     @if ($OfBasic != null)
-                                        @if (
-                                            $OfBasic->Department == 1002 ||
-                                                $OfBasic->Department == 1003 ||
-                                                $OfBasic->Department == 1004 ||
-                                                $OfBasic->Department == 1025 ||
-                                                $OfBasic->Department == 1027 ||
-                                                $OfBasic->Department == 1040)
+                                                           @if (
+                                            $OfBasic->Department == 2 ||
+                                                $OfBasic->Department == 3 ||
+                                                $OfBasic->Department == 17 ||
+                                                $OfBasic->Department == 13 ||  $OfBasic->Department == 11 ||  $OfBasic->Department == 12 ||  $OfBasic->Department == 14 )
                                             <li>
                                                 <div class="title">Conf. Agr. Date<span style="float: right">:</span>
                                                 </div>
@@ -4615,7 +4623,7 @@ if($AboutAns != null){
                                     </td>
                                     <td style="width: 10%; text-align:center">
                                         @if ($Docs != null && $Docs->OfferLtr != null)
-                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->OfferLtr) }}"
+                                            <a href="{{ url('file-view/Documents/'  . $Docs->OfferLtr) }}"
                                                 target="_blank" class="btn btn-primary btn-sm">View</a>
                                         @endif
                                     </td>
@@ -4634,7 +4642,7 @@ if($AboutAns != null){
                                     </td>
                                     <td style="width: 10%; text-align:center">
                                         @if ($Docs != null && $Docs->RelievingLtr != null)
-                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->RelievingLtr) }}"
+                                            <a href="{{ url('file-view/Documents/'  . $Docs->RelievingLtr) }}"
                                                 target="_blank" class="btn btn-primary btn-sm">View</a>
                                         @endif
                                     </td>
@@ -4651,7 +4659,7 @@ if($AboutAns != null){
                                     </td>
                                     <td style="width: 10%; text-align:center">
                                         @if ($Docs != null && $Docs->SalarySlip != null)
-                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->SalarySlip) }}"
+                                            <a href="{{ url('file-view/Documents/'  . $Docs->SalarySlip) }}"
                                                 target="_blank" class="btn btn-primary btn-sm">View</a>
                                         @endif
                                     </td>
@@ -4669,7 +4677,7 @@ if($AboutAns != null){
                                     </td>
                                     <td style="width: 10%; text-align:center">
                                         @if ($Docs != null && $Docs->AppraisalLtr != null)
-                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->AppraisalLtr) }}"
+                                            <a href="{{ url('file-view/Documents/'  . $Docs->AppraisalLtr) }}"
                                                 target="_blank" class="btn btn-primary btn-sm">View</a>
                                         @endif
                                     </td>
@@ -4688,7 +4696,7 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->VaccinationCert != null)
-                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->VaccinationCert) }}"
+                                        <a href="{{ url('file-view/Documents/'  . $Docs->VaccinationCert) }}"
                                             target="_blank" class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
@@ -4704,7 +4712,7 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->Aadhar != null)
-                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->Aadhar) }}"
+                                        <a href="{{ url('file-view/Documents/'  . $Docs->Aadhar) }}"
                                             target="_blank" class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
@@ -4721,7 +4729,7 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->DL != null)
-                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->DL) }}"
+                                        <a href="{{ url('file-view/Documents/'  . $Docs->DL) }}"
                                             target="_blank" class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
@@ -4738,7 +4746,7 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->PF_Form2 != null)
-                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->PF_Form2) }}"
+                                        <a href="{{ url('file-view/Documents/'  . $Docs->PF_Form2) }}"
                                             target="_blank" class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
@@ -4755,7 +4763,7 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->PF_Form2 != null)
-                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->PF_Form11) }}"
+                                        <a href="{{ url('file-view/Documents/'  . $Docs->PF_Form11) }}"
                                             target="_blank" class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
@@ -4772,7 +4780,7 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->Gratutity != null)
-                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->Gratutity) }}"
+                                        <a href="{{ url('file-view/Documents/'  . $Docs->Gratutity) }}"
                                             target="_blank" class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
@@ -4789,7 +4797,7 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->ESIC != null)
-                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->ESIC) }}"
+                                        <a href="{{ url('file-view/Documents/'  . $Docs->ESIC) }}"
                                             target="_blank" class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
@@ -4807,7 +4815,7 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->ESIC_Family != null)
-                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->ESIC_Family) }}"
+                                        <a href="{{ url('file-view/Documents/'  . $Docs->ESIC_Family) }}"
                                             target="_blank" class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
@@ -4825,7 +4833,7 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->Health != null)
-                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->Health) }}"
+                                        <a href="{{ url('file-view/Documents/'  . $Docs->Health) }}"
                                             target="_blank" class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
@@ -4843,7 +4851,7 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->Ethical != null)
-                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->Ethical) }}"
+                                        <a href="{{ url('file-view/Documents/'  . $Docs->Ethical) }}"
                                             target="_blank" class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
@@ -4861,7 +4869,25 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->BloodGroup != null)
-                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->BloodGroup) }}"
+                                        <a href="{{ url('file-view/Documents/'  . $Docs->BloodGroup) }}"
+                                            target="_blank" class="btn btn-primary btn-sm">View</a>
+                                    @endif
+                                </td>
+                            </tr>
+							<tr>
+
+                                <td>UAN
+                                </td>
+                                <td>
+                                    <input type="file" name="UAN_File" id="UAN_File"
+                                        class="form-control form-control-sm d-inline" style="width: 80%"
+                                        accept="application/pdf">
+                                    <button class="btn btn-warning btn-sm d-inline"
+                                        id="UANUpload">Upload</button>
+                                </td>
+                                <td style="width: 10%; text-align:center">
+                                    @if ($Docs != null && $Docs->UAN != null)
+                                        <a href="{{ url('file-view/Documents/'  . $Docs->UAN) }}"
                                             target="_blank" class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
@@ -8126,6 +8152,43 @@ if($AboutAns != null){
             });
         });
 
+		   $(document).on('click', '#UANUpload', function() {
+            var JCId = $('#JCId').val();
+            var url = '<?= route('UANUploadFile') ?>';
+            var UAN = $('#UAN_File')[0].files;
+            var formData = new FormData();
+            formData.append('JCId', JCId);
+            formData.append('UAN', UAN[0]);
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 400) {
+                        toastr.error(data.msg);
+
+                    } else {
+
+                        toastr.success(data.msg);
+                        window.location.reload();
+
+                    }
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    var errorsHtml = '';
+                    $.each(errors.errors, function(key, value) {
+                        errorsHtml += value[0] + '<br>';
+                    });
+                    toastr.error(errorsHtml);
+
+                }
+            });
+        });
+		
         $(document).on('click', '#BankPassBookUpload', function() {
             var JCId = $('#JCId').val();
             var url = '<?= route('BankUpload') ?>';

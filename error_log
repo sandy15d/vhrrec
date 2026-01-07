@@ -5,3 +5,19 @@
 [27-Oct-2021 14:32:33 Asia/Calcutta] PHP Parse error:  syntax error, unexpected '|', expecting variable (T_VARIABLE) in /home/vnressuser/public_html/hrrec/vendor/psr/log/src/LoggerInterface.php on line 30
 [27-Oct-2021 14:32:33 Asia/Calcutta] PHP Fatal error:  Exception thrown without a stack frame in Unknown on line 0
 [17-Dec-2023 09:31:46 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.2.0". You are running 8.0.30. in /home/vnressuser/public_html/vhrrec/vendor/composer/platform_check.php on line 28
+[25-Jun-2025 07:54:17 UTC] PHP Warning:  require(/home/vnrseeds/public_html/vhrrec/vendor/composer/../../app/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/vnrseeds/public_html/vhrrec/vendor/composer/autoload_real.php on line 41
+[25-Jun-2025 07:54:17 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/vnrseeds/public_html/vhrrec/vendor/composer/../../app/Helpers/helpers.php' (include_path='.:/opt/cpanel/ea-php82/root/usr/share/pear') in /home/vnrseeds/public_html/vhrrec/vendor/composer/autoload_real.php:41
+Stack trace:
+#0 /home/vnrseeds/public_html/vhrrec/vendor/composer/autoload_real.php(45): {closure}('d21d43db5f6e840...', '/home/vnrseeds/...')
+#1 /home/vnrseeds/public_html/vhrrec/vendor/autoload.php(25): ComposerAutoloaderInit2b3e39d847d8b1c4ce691276d74615b7::getLoader()
+#2 /home/vnrseeds/public_html/vhrrec/artisan(18): require('/home/vnrseeds/...')
+#3 {main}
+  thrown in /home/vnrseeds/public_html/vhrrec/vendor/composer/autoload_real.php on line 41
+[25-Jun-2025 07:54:25 UTC] PHP Warning:  require(/home/vnrseeds/public_html/vhrrec/vendor/composer/../../app/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/vnrseeds/public_html/vhrrec/vendor/composer/autoload_real.php on line 41
+[25-Jun-2025 07:54:25 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/vnrseeds/public_html/vhrrec/vendor/composer/../../app/Helpers/helpers.php' (include_path='.:/opt/cpanel/ea-php82/root/usr/share/pear') in /home/vnrseeds/public_html/vhrrec/vendor/composer/autoload_real.php:41
+Stack trace:
+#0 /home/vnrseeds/public_html/vhrrec/vendor/composer/autoload_real.php(45): {closure}('d21d43db5f6e840...', '/home/vnrseeds/...')
+#1 /home/vnrseeds/public_html/vhrrec/vendor/autoload.php(25): ComposerAutoloaderInit2b3e39d847d8b1c4ce691276d74615b7::getLoader()
+#2 /home/vnrseeds/public_html/vhrrec/artisan(18): require('/home/vnrseeds/...')
+#3 {main}
+  thrown in /home/vnrseeds/public_html/vhrrec/vendor/composer/autoload_real.php on line 41

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQFUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
@@ -590,7 +590,11 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                     <td class="text-center"><?= ++$rowCount ?></td>
                                     <td>
                                        @if ($sql->Department == 13)
-                                            <b>D.A @ H.Q</b>(Applicable only during *season)
+                                            @if($sql->A_ReportingManager == 279)
+                                            <b>D.A @ H.Q</b>(On minimum travel of 40 kms/day)
+										@else
+										 <b>D.A @ H.Q</b>(Applicable only during *season)
+										@endif
                                         @else
                                             <b>D.A @ H.Q</b>(In case of touring more than 6 hours travel per day )
                                         @endif
@@ -613,7 +617,12 @@ $months_word = ['One' => '1 (One)', 'Two' => '2 (Two)', 'Three' => '3 (Three)', 
                                                          ( Max 1500km/month)
                                                  @elseif($sql->Department == 15)
                                                          
-                                                         ( Max 75Kms/day and 1800km/month)
+                                                         
+@if($sql->Grade==82)
+(2400km/month)
+@else
+                                        ( Max 75Kms/day and 1800km/month)
+@endif
                                                  @endif 
                                                 </td>
                                                 <td class="text-center">{{ $sql->TwoWheel }}</td>

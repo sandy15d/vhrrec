@@ -286,7 +286,7 @@ class OfferLtrController extends Controller
                 'LoadCityC' =>  $get_elg->CategoryC,
                 'DAOut' => $get_elg->DA_OutSiteHQ,
                 'DAHq' => $get_elg->DA_InSiteHQ,
-                'TwoWheel' => $get_elg->TW_Km . ' /Per KM',
+                'TwoWheel' => $get_elg->TW_Km,
                 'Train' => $get_elg->Train_YN,
                 'Train_Class' => ($get_elg->Train_Class == 'AC' || $get_elg->Train_Class == 'AC-I') ? 'AC-I' : $get_elg->Train_Class,
                 'Flight' => $get_elg->Flight_YN,

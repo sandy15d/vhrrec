@@ -12,13 +12,13 @@ class ElgController extends Controller
 {
     public function lodging()
     {
-        $department_list = DB::table("master_department")->where('DeptStatus', 'A')->where('CompanyId', session('Set_Company'))->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
+        $department_list = DB::table("core_department")->where('is_active', '1')->orderBy('department_name', 'asc')->pluck("department_name", "id");
         return view('admin.lodging', compact('department_list'));
     }
 
     public function travel()
     {
-        $department_list = DB::table("master_department")->where('DeptStatus', 'A')->where('CompanyId', session('Set_Company'))->orderBy('DepartmentName', 'asc')->pluck("DepartmentName", "DepartmentId");
+        $department_list = DB::table("core_department")->where('is_active', '1')->orderBy('department_name', 'asc')->pluck("department_name", "id");
         return view('admin.travel', compact('department_list'));
     }
 
@@ -50,11 +50,11 @@ class ElgController extends Controller
         if ($Department != '') {
             $usersQuery->where("master_eligibility.DepartmentId", $Department);
         }
-        $elg = $usersQuery->select(['master_eligibility.*', 'master_company.CompanyCode', 'master_department.DepartmentCode', 'master_vertical.VerticalName'])
-            ->leftjoin('master_company', 'master_eligibility.CompanyId', '=', 'master_company.CompanyId')
-            ->leftjoin('master_department', 'master_eligibility.DepartmentId', '=', 'master_department.DepartmentId')
-            ->leftjoin('master_vertical', 'master_eligibility.VerticalId', '=', 'master_vertical.VerticalId')
-            ->orderBy('master_department.DepartmentId', 'ASC')
+        $elg = $usersQuery->select(['master_eligibility.*', 'core_company.company_code', 'core_department.department_code', 'core_vertical.vertical_name'])
+            ->leftjoin('core_company', 'master_eligibility.CompanyId', '=', 'core_company.id')
+            ->leftjoin('core_department', 'master_eligibility.DepartmentId', '=', 'core_department.id')
+            ->leftjoin('core_vertical', 'master_eligibility.VerticalId', '=', 'core_vertical.id')
+            ->orderBy('core_department.id', 'ASC')
             ->orderBy('master_eligibility.GradeId', 'ASC');
 
 
@@ -67,7 +67,7 @@ class ElgController extends Controller
     {
 
         $query =  master_elg::truncate();
-        $response = Http::get('https://www.vnress.in/RcdDetails.php?action=Details&val=elg')->json();
+        $response = Http::get('https://vnress.in/RcdDetails.php?action=Details&val=elg')->json();
         $data = array();
 
         $query = master_elg::insert($response['eligibility_list']);

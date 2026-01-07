@@ -120,6 +120,7 @@ class ProcessToEss extends Controller
             'Laptop' => $elg_query->Laptop ?? '',
             'HealthIns' => $elg_query->HealthIns ?? '',
             'Helth_CheckUp' => $elg_query->Helth_CheckUp ?? '',
+            'Term_Insurance'=>500000,
         ]);
 
 
@@ -243,7 +244,17 @@ class ProcessToEss extends Controller
                 $SendVNRRef = $connection->table('employee_vnrref')->insert($vnr_array);
             }
         }
-
+  			$ConfirmationDate = '';
+            $JoinOnDt = $jobcandidate->JoinOnDt;
+            if ($jobcandidate->ServiceCondition == 'Probation') {
+                //add 6months to join date
+                $ConfirmationDate = date('Y-m-d', strtotime($JoinOnDt . ' + 6 months'));
+            } elseif ($jobcandidate->ServiceCondition == 'Training') {
+                //Add 12 months to join date
+                $ConfirmationDate = date('Y-m-d', strtotime($JoinOnDt . ' + 12 months'));
+            } elseif ($jobcandidate->ServiceCondition == 'nopnot') {
+                $ConfirmationDate = $jobcandidate->JoinOnDt;
+            }
         $SendGeneral = $connection->table('employee_general')->insert([
             'EmpCode' => $EmpCode,
             'CandidateId' => $JCId,
@@ -301,6 +312,7 @@ class ProcessToEss extends Controller
             'ServiceBondYears' => $jobcandidate->ServiceBondYears ?? '',
             'ServiceBondRefund' => $jobcandidate->ServiceBondRefund ?? '',
             'JoinOnDt' => $jobcandidate->JoinOnDt ?? '',
+			'ConfirmationDate' => $ConfirmationDate ?? '',
             'PositionId' => '',
             'CreatedBy' => Auth::user()->id,
             'CreatedDate' => now(),

@@ -1,0 +1,15 @@
+[25-Jun-2025 07:54:49 UTC] PHP Warning:  require(/home/vnrseeds/public_html/vhrrec/vendor/composer/../../app/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/vnrseeds/public_html/vhrrec/vendor/composer/autoload_real.php on line 41
+[25-Jun-2025 07:54:49 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/vnrseeds/public_html/vhrrec/vendor/composer/../../app/Helpers/helpers.php' (include_path='.:/opt/cpanel/ea-php82/root/usr/share/pear') in /home/vnrseeds/public_html/vhrrec/vendor/composer/autoload_real.php:41
+Stack trace:
+#0 /home/vnrseeds/public_html/vhrrec/vendor/composer/autoload_real.php(45): {closure}('d21d43db5f6e840...', '/home/vnrseeds/...')
+#1 /home/vnrseeds/public_html/vhrrec/vendor/autoload.php(25): ComposerAutoloaderInit2b3e39d847d8b1c4ce691276d74615b7::getLoader()
+#2 /home/vnrseeds/public_html/vhrrec/public/index.php(34): require('/home/vnrseeds/...')
+#3 {main}
+  thrown in /home/vnrseeds/public_html/vhrrec/vendor/composer/autoload_real.php on line 41
+[25-Jun-2025 13:40:35 Asia/Calcutta] PHP Fatal error:  Cannot redeclare has_permission() (previously declared in /home/vnrseeds/public_html/vhrrec/app/Helpers/helpers.php:563) in /home/vnrseeds/public_html/vhrrec/storage/framework/views/24260613aed89e138d40c74901a20ac9c21d0626.php on line 25
+[25-Jun-2025 13:41:41 Asia/Calcutta] PHP Fatal error:  Allowed memory size of 33554432 bytes exhausted (tried to allocate 32768 bytes) in /home/vnrseeds/public_html/vhrrec/vendor/aws/aws-sdk-php/src/data/endpoints.json.php on line 3
+[25-Jun-2025 13:41:48 Asia/Calcutta] PHP Fatal error:  Allowed memory size of 33554432 bytes exhausted (tried to allocate 4096 bytes) in /home/vnrseeds/public_html/vhrrec/vendor/aws/aws-sdk-php/src/data/endpoints.json.php on line 3
+[25-Jun-2025 13:43:31 Asia/Calcutta] PHP Fatal error:  Allowed memory size of 33554432 bytes exhausted (tried to allocate 835584 bytes) in /home/vnrseeds/public_html/vhrrec/vendor/aws/aws-sdk-php/src/functions.php on line 150
+[25-Jun-2025 13:43:34 Asia/Calcutta] PHP Fatal error:  Allowed memory size of 33554432 bytes exhausted (tried to allocate 32768 bytes) in /home/vnrseeds/public_html/vhrrec/vendor/aws/aws-sdk-php/src/data/endpoints.json.php on line 3
+[25-Jun-2025 13:43:35 Asia/Calcutta] PHP Fatal error:  Allowed memory size of 33554432 bytes exhausted (tried to allocate 32768 bytes) in /home/vnrseeds/public_html/vhrrec/vendor/aws/aws-sdk-php/src/data/endpoints.json.php on line 3
+[25-Jun-2025 13:43:35 Asia/Calcutta] PHP Fatal error:  Allowed memory size of 33554432 bytes exhausted (tried to allocate 32768 bytes) in /home/vnrseeds/public_html/vhrrec/vendor/aws/aws-sdk-php/src/data/endpoints.json.php on line 3

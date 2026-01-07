@@ -635,7 +635,11 @@
                                     <td class="text-center"><?= ++$rowCount ?></td>
                                     <td>
                                         @if ($sql->Department == 13)
-                                            <b>D.A @ H.Q</b>(Applicable only during *season)
+										 @if($sql->A_ReportingManager == 279)
+                                            <b>D.A @ H.Q</b>(On minimum travel of 40 kms/day)
+										@else
+										 <b>D.A @ H.Q</b>(Applicable only during *season)
+										@endif
                                         @else
                                             <b>D.A @ H.Q</b>(In case of touring more than 6 hours travel per day )
                                         @endif
@@ -657,7 +661,11 @@
                                      @if ($sql->Department == 14)
                                         ( Max 1500km/month)
                                     @elseif($sql->Department == 15)
+@if($sql->Grade==82)
+(2400km/month)
+@else
                                         ( Max 75Kms/day and 1800km/month)
+@endif
                                     @endif
                                 </td>
                                 <td><input type="text" class="form-control text-center" id="TwoWheel"
@@ -991,7 +999,7 @@ checked
             $('#grsM_salary').val(grsM_salary);
 
             if (basic >= 15000) {
-                emplyPF = Math.round(parseFloat(basic * 12 / 100));
+                emplyPF = 1800;
             } else {
                 if ( (parseFloat(basic) + parseFloat(special_alw)) >= 15000) {
                 emplyPF = Math.round(parseFloat(15000 * 12 / 100));
@@ -1000,6 +1008,8 @@ checked
                     emplyPF = Math.round(parseFloat(totalBasicSpecial * 12 / 100));
                 }
             }
+			
+			
             
 
 

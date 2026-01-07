@@ -65,8 +65,8 @@ function has_permission($resultArray, $pageName)
         rel="stylesheet">
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
     <link href="{{ URL::to('/') }}/assets/plugins/datatable/css/dataTablesButtons.css" rel="stylesheet" />
-    <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>
-    <!--<script src="https://kit.fontawesome.com/ffb012e977.js" crossorigin="anonymous"></script>-->
+    <!-- <script src="https://kit.fontawesome.com/b0b5b1cf9f.js" crossorigin="anonymous"></script>-->
+   <script src="https://kit.fontawesome.com/ffb012e977.js" crossorigin="anonymous"></script>
     <script src="{{ URL::to('/') }}/assets/ckeditor/ckeditor.js"></script>
 
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
@@ -229,6 +229,8 @@ function has_permission($resultArray, $pageName)
                          {{--    <li> <a href="/position_code"><i class="bx bx-right-arrow-alt"></i>Position Code</a></li> --}}
                             <li> <a href="/admin/department_vertical"><i class="bx bx-right-arrow-alt"></i>Department
                                     Vertical</a></li>
+							<li><a title="Department Vertical" href="/admin/minimum_wage"><i
+                                    class="bx bx-right-arrow-alt"></i>Minimum Wage</a></li>
                             <li>
                                 <a class="has-arrow" href="javascript:;">
                                     <i class="bx bx-right-arrow-alt"></i>Eligibility </a>
@@ -475,6 +477,13 @@ function has_permission($resultArray, $pageName)
                             <div class="parent-icon"><i class='fadeIn animated bx bx-mail-send text-primary'></i>
                             </div>
                             <div class="menu-title">Sent Mails</div>
+                        </a>
+                    </li>
+				    <li>
+                        <a title="CTC Calculator" href="/ctc_calculator" target="_blank">
+                            <div class="parent-icon"><i class='fadeIn animated bx bx-calculator text-primary'></i>
+                            </div>
+                            <div class="menu-title">CTC Calculator</div>
                         </a>
                     </li>
                      <li>

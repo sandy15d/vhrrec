@@ -1426,7 +1426,94 @@ class JobApplicationController extends Controller
             return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
         }
     }
+    
+        public function UANUpload(Request $request)
+    {
+        $request->validate(['UAN' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = 'UAN_' . $JCId . '.' . $request->UAN->extension();
 
+       if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
+            Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+        }
+        $request->UAN->storeAs('VVNR_Recruitment/Documents', $filename, 's3');
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $query = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'UAN' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'UAN' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+        $chk1 = DB::table('jf_pf_esic')->where('JCId', $JCId)->first();
+        if ($chk1 == null) {
+            $query1 = DB::table('jf_pf_esic')->insert(
+                [
+                    'JCId' => $JCId,
+                    'UAN' => $request->UAN_Number,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query1 = DB::table('jf_pf_esic')->where('JCId', $JCId)->update(
+                [
+                    'UAN' => $request->UAN_Number,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+
+	public function UANUploadFile(Request $request)
+    {
+        $request->validate(['UAN' => 'required|mimes:pdf|max:2048']);
+        $JCId = $request->JCId;
+        $filename = 'UAN_' . $JCId . '.' . $request->UAN->extension();
+
+       if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
+            Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+        }
+        $request->UAN->storeAs('VVNR_Recruitment/Documents', $filename, 's3');
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $query = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'UAN' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'UAN' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
+
+        if (!$query) {
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
+
+	
     public function DlUpload(Request $request)
     {
         $request->validate(['DLCard' => 'required|mimes:pdf|max:2048']);
@@ -1806,7 +1893,7 @@ class JobApplicationController extends Controller
         $JCId = $request->JCId;
         $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
         if($chk){
-        if ($chk->Aadhar == null || $chk->BankDoc == null || $chk->PF_Form2 == null || $chk->PF_Form11 == null || $chk->Gratutity == null || $chk->Health == null || $chk->BloodGroup == null || $chk->Ethical == null) {
+        if ($chk->UAN == null ||$chk->Aadhar == null || $chk->BankDoc == null || $chk->PF_Form2 == null || $chk->PF_Form11 == null || $chk->Gratutity == null || $chk->Health == null || $chk->BloodGroup == null || $chk->Ethical == null) {
             return response()->json(['status' => 400, 'msg' => 'Please upload all documents']);
         } else {
             return response()->json(['status' => 200, 'msg' => 'All documents uploaded successfully']);

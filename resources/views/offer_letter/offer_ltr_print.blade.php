@@ -428,7 +428,11 @@
                     <td class="text-center"><?= ++$rowCount ?></td>
                     <td>
                         @if ($sql->Department == 13)
-                            <b>D.A @ H.Q</b>(Applicable only during *season)
+                            @if($sql->A_ReportingManager == 279)
+                                            <b>D.A @ H.Q</b>(On minimum travel of 40 kms/day)
+										@else
+										 <b>D.A @ H.Q</b>(Applicable only during *season)
+										@endif
                         @else
                             <b>D.A @ H.Q</b>(In case of touring more than 6 hours travel per day )
                         @endif
@@ -450,7 +454,14 @@
                             @if ($sql->Department == 14)
                                 ( Max 1500km/month)
                             @elseif($sql->Department == 15)
-                                ( Max 75Kms/day and 1800km/month)
+                                
+
+@if($sql->Grade==82)
+(2400km/month)
+@else
+                                        ( Max 75Kms/day and 1800km/month)
+@endif
+
                             @endif
                         </td>
                         <td class="text-center">Rs. {{ $elg->TwoWheel }} /KM</td>

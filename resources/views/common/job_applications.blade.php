@@ -306,7 +306,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                     style="width: 100px; height: 100px;" class="img-fluid rounded" />
                                             @else
                                                 <a href="#" class="pop">
-                                                    <img src="{{ Storage::disk('s3')->url('VVNR_Recruitment/Picture/' . $row->CandidateImage) }}"
+                                                    <img src="{{ url('file-view/Picture/' . $row->CandidateImage) }}"
                                                         style="width: 100px; height: 100px;" class="img-fluid rounded" />
                                                 </a>
                                             @endif

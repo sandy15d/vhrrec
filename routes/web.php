@@ -23,6 +23,7 @@ use App\Http\Controllers\Common\TraineeController;
 use App\Http\Controllers\Admin\EducationController;
 use App\Http\Controllers\Admin\InstituteController;
 use App\Http\Controllers\Common\OfferLtrController;
+use App\Http\Controllers\Common\CTCCalculatorController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\EduSpecialController;
 use App\Http\Controllers\Admin\DesignationController;
@@ -280,6 +281,8 @@ Route::post('FinalSubmitInterviewApplicationForm', [JobApplicationController::cl
 Route::post('AadhaarUpload', [JobApplicationController::class, 'AadhaarUpload'])->name('AadhaarUpload');
 Route::post('PanCardUpload', [JobApplicationController::class, 'PanCardUpload'])->name('PanCardUpload');
 Route::post('PassportUpload', [JobApplicationController::class, 'PassportUpload'])->name('PassportUpload');
+Route::post('UANUpload', [JobApplicationController::class, 'UANUpload'])->name('UANUpload');
+Route::post('UANUploadFile', [JobApplicationController::class, 'UANUploadFile'])->name('UANUploadFile');
 Route::post('DlUpload', [JobApplicationController::class, 'DlUpload'])->name('DlUpload');
 Route::post('PF_Form2Upload', [JobApplicationController::class, 'PF_Form2Upload'])->name('PF_Form2Upload');
 Route::post('PF_Form11Upload', [JobApplicationController::class, 'PF_Form11Upload'])->name('PF_Form11Upload');
@@ -339,6 +342,9 @@ Route::get('get_designation_by_grade_department', [OfferLtrController::class, 'g
 Route::get('candidate_joining', [OfferLtrController::class, 'candidate_joining'])->name('candidate_joining');
 Route::post('update_two_wheel', [OfferLtrController::class, 'update_two_wheel'])->name('update_two_wheel');
 Route::post('update_four_wheel', [OfferLtrController::class, 'update_four_wheel'])->name('update_four_wheel');
+Route::get('ctc_calculator', [CTCCalculatorController::class, 'ctc_calculator'])->name('ctc_calculator');
+Route::post('calculate_ctc', [CTCCalculatorController::class, 'calculate_ctc'])->name('calculate_ctc');
+
 
 Route::get('recruiter_mrf_entry', [ManualEntryController::class, 'recruiter_mrf_entry'])->name('recruiter_mrf_entry');
 Route::post('get_all_manual_mrf_created_by_me', [ManualEntryController::class, 'get_all_manual_mrf_created_by_me'])->name('get_all_manual_mrf_created_by_me');
@@ -758,3 +764,22 @@ Route::post('mapCoreDepartment', [TestController::class, 'mapCoreDepartment'])->
 Route::post('mapCoreDesignation', [TestController::class, 'mapCoreDesignation'])->name('mapCoreDesignation');
 Route::post('mapCoreJobPost', [TestController::class, 'mapCoreJobPost'])->name('mapCoreJobPost');
 Route::get('sync_data', [TestController::class, 'sync_data'])->name('sync_data');
+
+Route::get('/file-view/{path}', function ($path) {
+    $cleanPath = str_replace('..', '', urldecode($path)); // Prevent traversal and decode URL
+    $s3Path = "VVNR_Recruitment/{$cleanPath}";
+    $s3 = Storage::disk('s3');
+
+    if (!$s3->exists($s3Path)) {
+       \Log::warning("File not found on S3: {$s3Path}");
+        abort(404, 'File not found.');
+    }
+
+    $file = $s3->get($s3Path);
+    $mime = $s3->mimeType($s3Path);
+
+    return Response::make($file, 200, [
+        'Content-Type' => $mime,
+        'Content-Disposition' => 'inline; filename="' . basename($s3Path) . '"'
+    ]);
+})->where('path', '.*');

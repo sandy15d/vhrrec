@@ -45,53 +45,91 @@ class EmployeeController extends Controller
             ->make(true);
     }
 
-    public function syncEmployee()
-    {
-        ini_set('memory_limit', '-1');
 
-        $query =  master_employee::truncate();
-        $response = Http::get('https://www.vnress.in/RcdDetails.php?action=Details&val=Employee')->json();
-        $data = array();
-        foreach ($response['employee_list'] as $key => $value) {
-            if ($value['DateJoining'] == '0000-00-00' or $value['DateJoining'] == '') {
-                $value['DateJoining'] = NULL;
-            }
-            if ($value['DateOfSepration'] == '0000-00-00' or $value['DateOfSepration'] == '') {
-                $value['DateOfSepration'] = NULL;
-            }
-            $temp = array();
-            $temp['EmployeeID'] = $value['EmployeeID'];
-            $temp['VCode'] = $value['VCode'];
-            $temp['EmpCode'] = $value['EmpCode'];
-            $temp['EmpStatus'] = $value['EmpStatus'];
-            $temp['Fname'] = $value['Fname'];
-            $temp['Sname'] = $value['Sname'];
-            $temp['Lname'] = $value['Lname'];
-            $temp['CompanyId'] = $value['CompanyId'];
-            $temp['GradeId'] = $value['GradeId'];
-            $temp['DepartmentId'] = $value['DepartmentId'];
-            $temp['DesigId'] = $value['DesigId'];
-            $temp['RepEmployeeID'] = $value['RepEmployeeID'];
-            $temp['DOJ'] = $value['DateJoining'];
-            $temp['DateOfSepration'] = $value['DateOfSepration'];
-            $temp['Contact'] = $value['Contact'];
-            $temp['Email'] = $value['Email'];
-            $temp['Gender'] = $value['Gender'];
-            $temp['Married'] = $value['Married'];
-            $temp['DR'] = $value['DR'];
-            $temp['Location'] = $value['HqId'];
-            $temp['CTC'] = $value['Tot_CTC'];
-            $temp['Title'] = $value['Title'];
-            $temp['CountryId'] = 11;
-            array_push($data, $temp);
+public function syncEmployee()
+{
+    ini_set('memory_limit', '-1');
+
+    master_employee::truncate();
+
+    $response = Http::get('https://vnress.in/RcdDetails.php?action=Details&val=Employee')->json();
+
+    $data = [];
+    $employeeIds = [];
+
+    foreach ($response['employee_list'] as $rowNo => $value) {
+
+        if (empty($value['DateJoining']) || $value['DateJoining'] == '0000-00-00') {
+            $value['DateJoining'] = null;
         }
-        $query = master_employee::insert($data);
 
+        if (empty($value['DateOfSepration']) || $value['DateOfSepration'] == '0000-00-00') {
+            $value['DateOfSepration'] = null;
+        }
 
-        if ($query) {
-            return response()->json(['status' => 200, 'msg' => 'Employee data has been Synchronized.']);
+        $empId = $value['EmployeeID'];
+
+        // Log duplicates coming from API
+        if (isset($employeeIds[$empId])) {
+            \Log::info('Duplicate EmployeeID found in API', [
+                'EmployeeID' => $empId,
+                'first_row'  => $employeeIds[$empId],
+                'duplicate_row' => $value,
+                'row_no' => $rowNo
+            ]);
         } else {
-            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+            $employeeIds[$empId] = $value;
         }
+
+        $data[] = [
+            'EmployeeID'      => $empId,
+            'VCode'           => $value['VCode'],
+            'EmpCode'         => $value['EmpCode'],
+            'EmpStatus'       => $value['EmpStatus'],
+            'Fname'           => $value['Fname'],
+            'Sname'           => $value['Sname'],
+            'Lname'           => $value['Lname'],
+            'CompanyId'       => $value['CompanyId'],
+            'GradeId'         => $value['GradeId'],
+            'DepartmentId'    => $value['DepartmentId'],
+            'DesigId'         => $value['DesigId'],
+            'RepEmployeeID'   => $value['RepEmployeeID'],
+            'DOJ'             => $value['DateJoining'],
+            'DateOfSepration' => $value['DateOfSepration'],
+            'Contact'         => $value['Contact'],
+            'Email'           => $value['Email'],
+            'Gender'          => $value['Gender'],
+            'Married'         => $value['Married'],
+            'DR'              => $value['DR'],
+            'Location'        => $value['HqId'],
+            'CTC'             => $value['Tot_CTC'],
+            'Title'           => $value['Title'],
+            'CountryId'       => 11,
+        ];
     }
+
+    try {
+        master_employee::insert($data);
+
+        return response()->json([
+            'status' => 200,
+            'msg' => 'Employee data has been Synchronized.'
+        ]);
+
+    } catch (\Illuminate\Database\QueryException $e) {
+
+        // Log MySQL duplicate key error
+        \Log::info('Employee insert failed', [
+            'error' => $e->getMessage(),
+            'sql' => $e->getSql(),
+            'bindings' => $e->getBindings()
+        ]);
+
+        return response()->json([
+            'status' => 500,
+            'msg' => 'Duplicate key error. Check laravel.log for details.'
+        ]);
+    }
+}
+
 }
