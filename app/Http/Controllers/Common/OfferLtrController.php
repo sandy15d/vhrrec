@@ -16,6 +16,7 @@ use App\Models\Admin\master_employee;
 use App\Models\CandidateJoining;
 use App\Models\jobapply;
 use App\Models\jobpost;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 use Illuminate\Support\Facades\View;
@@ -274,6 +275,12 @@ class OfferLtrController extends Controller
                     'UpdatedBy' => Auth::user()->id
                 ]
             );
+      
+          
+          
+          
+
+
         $check_ctc = DB::table('candidate_ctc')->where('JAId', $JAId)->first();
         $bonus = 0;
         $bonusM = 0;
@@ -291,133 +298,94 @@ class OfferLtrController extends Controller
         $emplyerESIC = 0;
         $variable_pay = 0;
         $final_ctc = 0;
+
+        // Log the initial values
+        Log::info('CTC Calculation started', [
+            'JAId' => $JAId,
+            'grsM_salary' => $grsM_salary,
+            'Company' => $Company,
+            'Communication_Allowance' => $Communication_Allowance,
+        ]);
+
         // Condition-based CTC calculation
         if ($grsM_salary <= 18000) {
-
-            // Condition 1: Gross Monthly Salary <= 18000
-
-            // Bonus = 20% of Basic
-            // Since Basic = Gross - Bonus and Bonus = 20% of Basic
-            // Basic = Gross / 1.20
             $basic = round($grsM_salary / 1.20);
-            $bonusM = round($basic * 0.20);
+            $bonusM = $grsM_salary - $basic;
             $hra = 0;
             $special = 0;
-
-            // Employee PF = (basic + special) * 12%
             $pf = round(($basic + $special) * 0.12);
-
-            // Employer PF = (basic + special) * 12% * 12
             $employer_pf = round(($basic + $special) * 0.12 * 12);
-
-            // Employee ESIC
             $emplyESIC = round(($basic + $special) * 0.75 / 100);
-
-            // Employer ESIC
             $emplyerESIC = round(($basic + $special) * 3.25 / 100 * 12);
 
-            // Medical
             if (($basic + $special) > 21000) {
-               
-                    $medical = 15000;
-               
+                $medical = 15000;
             } else {
                 $medical = 3000;
             }
+            Log::info('CTC calculation condition: Gross Monthly Salary <= 18000', [
+                'basic' => $basic, 'bonusM' => $bonusM, 'hra' => $hra, 'special' => $special, 'pf' => $pf,
+                'employer_pf' => $employer_pf, 'emplyESIC' => $emplyESIC, 'emplyerESIC' => $emplyerESIC, 'medical' => $medical
+            ]);
         } elseif ($grsM_salary > 18000 && $grsM_salary < 21000) {
-
-            // Condition 2: Gross Monthly Salary > 18000 and < 21000
-
-            // Basic is fixed at 15000
             $basic = 15000;
-
-            // Bonus = 20% of Basic
             $bonusM = round($basic * 0.20);
-
-            // HRA: Maximum up to 40% of basic, but ensure basic + bonus + hra <= gross
             $maxHra = round($basic * 0.40);
             $remainingAfterBasicBonus = $grsM_salary - $basic - $bonusM;
             $hra = min($maxHra, max(0, $remainingAfterBasicBonus));
-
-            // Special: Remaining amount
-            $special = round(max(0, $grsM_salary - ($basic + $bonusM + $hra)));
-
-            // Fixed PF
+            $special = max(0, $grsM_salary - ($basic + $bonusM + $hra));
             $pf = 1800;
             $employer_pf = 21600;
-
-            // Employee ESIC
             $emplyESIC = round(($basic + $special) * 0.75 / 100);
-
-            // Employer ESIC
             $emplyerESIC = round(($basic + $special) * 3.25 / 100 * 12);
 
-            // Medical
             if (($basic + $special) > 21000) {
-               
-                    $medical = 15000;
-                
+                $medical = 15000;
             } else {
                 $medical = 3000;
             }
+            Log::info('CTC calculation condition: Gross Monthly Salary > 18000 and < 21000', [
+                'basic' => $basic, 'bonusM' => $bonusM, 'hra' => $hra, 'special' => $special, 'pf' => $pf,
+                'employer_pf' => $employer_pf, 'emplyESIC' => $emplyESIC, 'emplyerESIC' => $emplyerESIC, 'medical' => $medical
+            ]);
         } elseif ($grsM_salary >= 21000 && $grsM_salary <= 42000) {
-
-            // Condition 3: Gross Monthly Salary >= 21000 and <= 42000
-
-            // Basic should not exceed gross monthly salary
             if ($grsM_salary < 21050) {
                 $basic = $grsM_salary;
             } else {
                 $basic = 21050;
             }
             $bonusM = 0;
-
-            // HRA: Maximum up to 40% of basic, but ensure basic + bonus + hra <= gross
             $maxHra = round($basic * 0.40);
             $remainingAfterBasicBonus = $grsM_salary - $basic - $bonusM;
             $hra = min($maxHra, max(0, $remainingAfterBasicBonus));
-
-            // Special: Remaining amount
-            $special = round(max(0, $grsM_salary - ($basic + $bonusM + $hra)));
-
-            // Fixed PF
+            $special = max(0, $grsM_salary - ($basic + $bonusM + $hra));
             $pf = 1800;
             $employer_pf = 21600;
-
-            // No ESIC for salary >= 21000
             $emplyESIC = 0;
             $emplyerESIC = 0;
+            $medical = 15000;
 
-            // Medical
-        
-                $medical = 15000;
-            
+            Log::info('CTC calculation condition: Gross Monthly Salary >= 21000 and <= 42000', [
+                'basic' => $basic, 'bonusM' => $bonusM, 'hra' => $hra, 'special' => $special, 'pf' => $pf,
+                'employer_pf' => $employer_pf, 'emplyESIC' => $emplyESIC, 'emplyerESIC' => $emplyerESIC, 'medical' => $medical
+            ]);
         } else {
-            // Condition 4: Gross Monthly Salary > 42000
-
-            $basic = round($grsM_salary * 0.5); // 50% of gross
+            // Gross > 42000
+            $basic = round($grsM_salary * 0.5);
             $bonusM = 0;
-
-            // HRA: Maximum up to 40% of basic, but ensure basic + bonus + hra <= gross
             $maxHra = round($basic * 0.40);
             $remainingAfterBasicBonus = $grsM_salary - $basic - $bonusM;
             $hra = min($maxHra, max(0, $remainingAfterBasicBonus));
-
-            // Special: Remaining amount
-            $special = round(max(0, $grsM_salary - ($basic + $bonusM + $hra)));
-
-            // Fixed PF
+            $special = max(0, $grsM_salary - ($basic + $bonusM + $hra));
             $pf = 1800;
             $employer_pf = 21600;
-
-            // No ESIC for salary > 21000
             $emplyESIC = 0;
             $emplyerESIC = 0;
-
-            // Medical
-           
-                $medical = 15000;
-           
+            $medical = 15000;
+            Log::info('CTC calculation condition: Gross Monthly Salary > 42000', [
+                'basic' => $basic, 'bonusM' => $bonusM, 'hra' => $hra, 'special' => $special, 'pf' => $pf,
+                'employer_pf' => $employer_pf, 'emplyESIC' => $emplyESIC, 'emplyerESIC' => $emplyerESIC, 'medical' => $medical
+            ]);
         }
 
         // Common calculations for all conditions
@@ -425,7 +393,7 @@ class OfferLtrController extends Controller
         $net_monthly = round($grsM_salary - ($pf + $emplyESIC));
         $gratuity = round((($basic + $special) * 15) / 26);
         $fixed_ctc = round($anualgrs + $gratuity + $employer_pf + $emplyerESIC + $medical);
-        // Variable pay
+
         if ($Company == 1) {
             $variable_pay = round($anualgrs * 5 / 100);
         }
@@ -436,6 +404,20 @@ class OfferLtrController extends Controller
             $Communication_Allowance_Amount = 4800;
         }
         $total_gross_ctc = $total_ctc +  $Communication_Allowance_Amount;
+
+        // Log final results
+        Log::info('CTC Calculation completed', [
+            'anualgrs' => $anualgrs,
+            'net_monthly' => $net_monthly,
+            'gratuity' => $gratuity,
+            'fixed_ctc' => $fixed_ctc,
+            'variable_pay' => $variable_pay,
+            'total_ctc' => $total_ctc,
+            'Communication_Allowance_Amount' => $Communication_Allowance_Amount,
+            'total_gross_ctc' => $total_gross_ctc,
+        ]);
+    
+    
         if ($check_ctc === null) {
 
             $query1 = DB::table('candidate_ctc')->insert(
