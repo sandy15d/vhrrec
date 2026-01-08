@@ -919,4 +919,36 @@ class CommonController extends Controller
         return response()->json($list);
     }
 
+    public function getBUByVertical(Request $request){
+        $list = DB::table('core_business_unit')->where('vertical_id',$request->vertical_id)->where('business_type',1)
+        ->where('is_active',1)->orderBy('business_unit_name', 'asc')->pluck("id", "business_unit_name");
+        return response()->json($list);
+    }
+    public function getZoneByBU(Request $request){
+        $list = DB::table('core_bu_zone_mapping')
+        ->join('core_zone','core_zone.id','=','core_bu_zone_mapping.zone_id')
+        ->whereNull('core_bu_zone_mapping.effective_to')
+        ->where('business_unit_id',$request->bu_id)->orderBy('zone_name', 'asc')
+            ->pluck("core_zone.id", "zone_name");
+            return response()->json($list);
+    }
+
+    public function getRegionByZone(Request $request){
+        $list  = DB::table('core_zone_region_mapping')
+        ->join('core_region','core_region.id','=','core_zone_region_mapping.region_id')
+        ->whereNull('core_zone_region_mapping.effective_to')
+        ->where('zone_id',$request->zone_id)->orderBy('region_name', 'asc')
+            ->pluck("core_region.id", "region_name");
+            return response()->json($list);
+    }
+
+    public function getTerritoryByRegion(Request $request){
+        $list = DB::table('core_region_territory_mapping')
+        ->join('core_territory','core_territory.id','=','core_region_territory_mapping.territory_id')
+        ->whereNull('core_region_territory_mapping.effective_to')
+        ->where('region_id',$request->region_id)->orderBy('territory_name', 'asc')
+        ->pluck("core_territory.id", "territory_name");
+        return response()->json($list);
+    }
+
 }

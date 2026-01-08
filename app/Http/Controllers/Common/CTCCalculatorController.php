@@ -136,19 +136,10 @@ class CTCCalculatorController extends Controller
         if ($grsM_salary <= 18000) {
             // Condition 1: Gross Monthly Salary <= 18000
 
-            // Calculate bonus from minimum wage table
-            if (in_array(date("m"), ['01', '02', '03', '10', '11', '12'])) {
-                $bonus = $get_bonus->PerMonthOct;
-            } else {
-                $bonus = $get_bonus->PerMonthApr;
-            }
-
-            if ($bonus > 0) {
-                $bonusTable = [
-                    11 => 0.20
-                ];
-                $bonusM = round($bonus * ($bonusTable[$Company] ?? 0));
-            }
+            // Calculate bonus as 20% of basic salary
+            // Since basic = gross - bonus and bonus = 0.20 * basic
+            // Solving: bonus = gross / 6
+            $bonusM = round($grsM_salary / 6);
 
             // Basic = Gross Monthly - Bonus
             $basic = round($grsM_salary - $bonusM);
@@ -178,21 +169,10 @@ class CTCCalculatorController extends Controller
         } elseif ($grsM_salary > 18000 && $grsM_salary < 21000) {
             // Condition 2: Gross Monthly Salary > 18000 and < 21000
 
-            // Calculate bonus from minimum wage table (same as Condition 1)
-            if (in_array(date("m"), ['01', '02', '03', '10', '11', '12'])) {
-                $bonus = $get_bonus->PerMonthOct;
-            } else {
-                $bonus = $get_bonus->PerMonthApr;
-            }
-
-            if ($bonus > 0) {
-                $bonusTable = [
-                    11 => 0.20
-                ];
-                $bonusM = round($bonus * ($bonusTable[$Company] ?? 0));
-            }
-
             $basic = 15000;
+
+            // Calculate bonus as 20% of basic salary
+            $bonusM = round($basic * 0.20);
 
             // HRA: Maximum up to 40% of basic, but ensure basic + bonus + hra <= gross
             $maxHra = round($basic * 0.40);
@@ -222,9 +202,14 @@ class CTCCalculatorController extends Controller
             }
 
         } elseif ($grsM_salary >= 21000 && $grsM_salary <= 42000) {
-            // Condition 3: Gross Monthly Salary >= 21000 and <= 42000
+           // Condition 3: Gross Monthly Salary >= 21000 and <= 42000
 
-            $basic = 21050;
+            // Basic should not exceed gross monthly salary
+            if ($grsM_salary < 21050) {
+                $basic = $grsM_salary;
+            } else {
+                $basic = 21050;
+            }
             $bonusM = 0;
 
             // HRA: Maximum up to 40% of basic, but ensure basic + bonus + hra <= gross

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Common;
 
+use App\Helpers\CandidateActivityLog;
 use App\Models\jobpost;
 use App\Models\jobapply;
 use App\Models\screening;

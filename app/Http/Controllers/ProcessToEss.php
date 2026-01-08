@@ -39,7 +39,7 @@ class ProcessToEss extends Controller
         $training_query = DB::table('jf_tranprac')->select('*')->where('JCId', $JCId)->get();
         $pre_ref = DB::table('jf_reference')->where('JCId', $JCId)->where('from', 'Previous Organization')->get();
         $vnr_ref = DB::table('jf_reference')->where('JCId', $JCId)->where('from', 'VNR')->get();
-
+        $offer_basic = OfferLetter::where('JAId', $JAId)->first();
 
 
 
@@ -279,7 +279,10 @@ class ProcessToEss extends Controller
             'marriage_dt' => $jobcandidate->MarriageDate ?? '',
             'DrivingLicense' => $jobcandidate->DLNo ?? '',
             'LValidity' => $jobcandidate->LValidity ?? '',
-
+            'BU' => $offer_basic->BU,
+            'Zone' => $offer_basic->Zone,
+            'Region' => $offer_basic->Region,
+            'Territory' => $offer_basic->Territory,
             'EmgContName_One' => $address_query->cont_one_name,
             'EmgContRelation_One' => $address_query->cont_one_relation,
             'EmgContPhone_One' => $address_query->cont_one_number,

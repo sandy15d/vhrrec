@@ -168,7 +168,7 @@
                                     @if ($Rec->CandidateImage == null)
                                         <img src="{{ URL::to('/') }}/assets/images/user1.png" />
                                     @else
-                                        <img src="{{url('file-view/Picture/' . $Rec->CandidateImage) }}" />
+                                        <img src="{{ url('file-view/Picture/' . $Rec->CandidateImage) }}" />
                                     @endif
                                 </div>
                             </div>
@@ -1216,7 +1216,7 @@
                                                 <td>Aadhaar Card</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->Aadhar != null)
-                                                        <a href="{{ url('file-view/Documents/'  . $Docs->Aadhar) }}"
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->Aadhar) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1225,7 +1225,7 @@
                                                 <td>Ethical</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->Ethical != null)
-                                                        <a href="{{ url('file-view/Documents/'  . $Docs->Ethical) }}"
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->Ethical) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1235,7 +1235,7 @@
                                                 <td>PAN Card</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->PanCard != null)
-                                                        <a href="{{ url('file-view/Documents/'  . $Docs->PanCard) }}"
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->PanCard) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1244,7 +1244,7 @@
                                                 <td>DL</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->DL != null)
-                                                        <a href="{{ url('file-view/Documents/'  . $Docs->DL) }}"
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->DL) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1254,7 +1254,7 @@
                                                 <td>Passport</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->Passport != null)
-                                                        <a href="{{ url('file-view/Documents/'  . $Docs->Passport) }}"
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->Passport) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1263,7 +1263,7 @@
                                                 <td>BloodGroup</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->BloodGroup != null)
-                                                        <a href="{{ url('file-view/Documents/'  . $Docs->BloodGroup) }}"
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->BloodGroup) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1273,7 +1273,7 @@
                                                 <td>PF Form2</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->PF_Form2 != null)
-                                                        <a href="{{ url('file-view/Documents/'  . $Docs->PF_Form2) }}"
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->PF_Form2) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1282,7 +1282,7 @@
                                                 <td>OfferLtr</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->OfferLtr != null)
-                                                        <a href="{{ url('file-view/Documents/'  . $Docs->OfferLtr) }}"
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->OfferLtr) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1292,7 +1292,7 @@
                                                 <td>PF Form11</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->PF_Form11 != null)
-                                                        <a href="{{ url('file-view/Documents/'  . $Docs->PF_Form11) }}"
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->PF_Form11) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1301,7 +1301,7 @@
                                                 <td>RelievingLtr</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->RelievingLtr != null)
-                                                        <a href="{{ url('file-view/Documents/'  . $Docs->RelievingLtr) }}"
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->RelievingLtr) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1311,7 +1311,7 @@
                                                 <td>Gratutity</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->Gratutity != null)
-                                                        <a href="{{ url('file-view/Documents/'  . $Docs->Gratutity) }}"
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->Gratutity) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1320,7 +1320,7 @@
                                                 <td>SalarySlip</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->SalarySlip != null)
-                                                        <a href="{{ url('file-view/Documents/'  . $Docs->SalarySlip) }}"
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->SalarySlip) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1330,7 +1330,7 @@
                                                 <td>ESIC</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->ESIC != null)
-                                                        <a href="{{ url('file-view/Documents/'  . $Docs->ESIC) }}"
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->ESIC) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1339,7 +1339,7 @@
                                                 <td>AppraisalLtr</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->AppraisalLtr != null)
-                                                        <a href="{{ url('file-view/Documents/'  . $Docs->AppraisalLtr) }}"
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->AppraisalLtr) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1349,7 +1349,7 @@
                                                 <td>ESIC_Family</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->ESIC_Family != null)
-                                                        <a href="{{ url('file-view/Documents/'  . $Docs->ESIC_Family) }}"
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->ESIC_Family) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1358,7 +1358,7 @@
                                                 <td>VaccinationCert</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->VaccinationCert != null)
-                                                        <a href="{{ url('file-view/Documents/'  . $Docs->VaccinationCert) }}"
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->VaccinationCert) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1368,7 +1368,7 @@
                                                 <td>Health</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->Health != null)
-                                                        <a href="{{ url('file-view/Documents/'  . $Docs->Health) }}"
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->Health) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1377,7 +1377,7 @@
                                                 <td>BankDoc</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->BankDoc != null)
-                                                        <a href="{{ url('file-view/Documents/'  . $Docs->BankDoc) }}"
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->BankDoc) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
@@ -1387,12 +1387,12 @@
                                                 <td>UAN</td>
                                                 <td style="width: 10%; text-align:center">
                                                     @if ($Docs != null && $Docs->UAN != null)
-                                                        <a href="{{ url('file-view/Documents/'  . $Docs->UAN) }}"
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->UAN) }}"
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
 
-                                               
+
                                             </tr>
                                         </tbody>
                                     </table>
@@ -1553,6 +1553,7 @@
                                             @endif
                                         </div>
                                     </li>
+                                    
                                     <li>
                                         <div class="title" style="width: 150px;">Designation<span
                                                 style="float: right">:</span></div>
@@ -1870,7 +1871,10 @@
                                             $OfBasic->Department == 2 ||
                                                 $OfBasic->Department == 3 ||
                                                 $OfBasic->Department == 17 ||
-                                                $OfBasic->Department == 13 ||  $OfBasic->Department == 11 ||  $OfBasic->Department == 12 ||  $OfBasic->Department == 14 )
+                                                $OfBasic->Department == 13 ||
+                                                $OfBasic->Department == 11 ||
+                                                $OfBasic->Department == 12 ||
+                                                $OfBasic->Department == 14)
                                             <li>
                                                 <div class="title" style="width: 150px;"> Conf. Agreement <span
                                                         style="float: right">:</span> </div>
@@ -2187,11 +2191,14 @@
                                         </div>
                                     </li>
                                     @if ($OfBasic != null)
-                                                           @if (
+                                        @if (
                                             $OfBasic->Department == 2 ||
                                                 $OfBasic->Department == 3 ||
                                                 $OfBasic->Department == 17 ||
-                                                $OfBasic->Department == 13 ||  $OfBasic->Department == 11 ||  $OfBasic->Department == 12 ||  $OfBasic->Department == 14 )
+                                                $OfBasic->Department == 13 ||
+                                                $OfBasic->Department == 11 ||
+                                                $OfBasic->Department == 12 ||
+                                                $OfBasic->Department == 14)
                                             <li>
                                                 <div class="title">Conf. Agr. Date<span style="float: right">:</span>
                                                 </div>
@@ -2679,7 +2686,8 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="spinner-border text-primary d-none" role="status" id="PreDistLoader">
-                                    <span class="visually-hidden">Loading...</span></div>
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
                                 <div class="form-group">
                                     <label for="PreDistrict">District</label>
                                     <select name="PreDistrict" id="PreDistrict" class="form-select form-select-sm">
@@ -2754,7 +2762,8 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="spinner-border text-primary d-none" role="status" id="PermDistLoader">
-                                    <span class="visually-hidden">Loading...</span></div>
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
                                 <div class="form-group">
                                     <label for="PermDistrict">District</label>
                                     <select name="PermDistrict" id="PermDistrict" class="form-select form-select-sm">
@@ -3780,7 +3789,8 @@
                         @php
                             $url = html_entity_decode('https://docs.google.com/viewer?embedded=true&url=');
                         @endphp
-                        <iframe src="{{ $url }}{{ Storage::disk('s3')->url('VVNR_Recruitment/Resume/' . $Rec->Resume) }}"
+                        <iframe
+                            src="{{ $url }}{{ Storage::disk('s3')->url('VVNR_Recruitment/Resume/' . $Rec->Resume) }}"
                             width="100%" height="500" style="border: none;"></iframe>
                     @endif
 
@@ -3880,16 +3890,6 @@
                                     <input type="hidden" name="SelectedForC" id="SelectedForC">
                                     <input type="hidden" name="SelectedForD" id="SelectedForD">
                                 </tr>
-
-                                <tr>
-                                    <td style="width:150px;">Grade</td>
-                                    <td>
-                                        <select name="Grade" id="Grade" class="form-select form-select-sm"
-                                            style="width: 200px;">
-                                            <option value="">Select</option>
-                                        </select>
-                                    </td>
-                                </tr>
                                 <tr>
                                     <td style="width:150px;">Department</td>
                                     <td>
@@ -3899,6 +3899,25 @@
                                             style="background-color: white;border:aliceblue; width: 160px; color:black">
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td>Sub Department</td>
+                                    <td>
+                                        <select name="SubDepartment" id="SubDepartment"
+                                            class="form-select form-select-sm" style="width: 200px;">
+                                            <option value="">Select</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:150px;">Grade</td>
+                                    <td>
+                                        <select name="Grade" id="Grade" class="form-select form-select-sm"
+                                            style="width: 200px;">
+                                            <option value="">Select</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                               
                                 <tr>
                                     <td style="width:150px;">Designation</td>
                                     <td>
@@ -4073,13 +4092,67 @@
 
                                     </td>
                                 </tr>
+                                <tr id="bu_tr" class="d-none">
+                                    <td style="width:150px;">BU</td>
+                                    <td>
+                                        <select name="BU" id="BU" class="form-select form-select-sm"
+                                            style="width: 200px;">
+                                            <option value="">Select</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr id="zone_tr" class="d-none">
+                                    <td style="width:150px;">Zone</td>
+                                    <td>
+                                        <select name="Zone" id="Zone" class="form-select form-select-sm"
+                                            style="width: 200px;">
+                                            <option value="">Select</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr id="region_tr" class="d-none">
+                                    <td style="width:150px;">Region</td>
+                                    <td>
+                                        <select name="Region" id="Region" class="form-select form-select-sm"
+                                            style="width: 200px;">
+                                            <option value="">Select</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr id="territory_tr" class="d-none">
+                                    <td style="width:150px;">Territory</td>
+                                    <td>
 
-                                <tr>
+                                        <select name="Territory" id="Territory" class="form-select form-select-sm"
+                                            style="width: 200px;">
+                                            <option value="">Select</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                {{--  <tr>
                                     <td>CTC</td>
                                     <td>CTC:Rs. <input type="text" name="CTC" id="CTC"
                                             class="form-control form-control-sm d-inline" style="width: 200px;"></td>
                                 </tr>
-
+ --}}
+                                <tr>
+                                    <td>Gross Monthly Salary</td>
+                                    <td><input type="number" name="grsM_salary" id="grsM_salary"
+                                            class="form-control form-control-sm d-inline" style="width: 200px;">
+                                        
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td> Communication Allowance</td>
+                                    <td>
+                                        <select name="Communication_Allowance" id="Communication_Allowance"
+                                            class="form-select form-select-sm" style="width: 200px" required>
+                                            <option value="">Select</option>
+                                            <option value="N">No</option>
+                                            <option value="Y">Yes</option>
+                                        </select>
+                                    </td>
+                                </tr>
                                 <tr>
                                     <td>Service Condition</td>
                                     <td>
@@ -4623,7 +4696,7 @@ if($AboutAns != null){
                                     </td>
                                     <td style="width: 10%; text-align:center">
                                         @if ($Docs != null && $Docs->OfferLtr != null)
-                                            <a href="{{ url('file-view/Documents/'  . $Docs->OfferLtr) }}"
+                                            <a href="{{ url('file-view/Documents/' . $Docs->OfferLtr) }}"
                                                 target="_blank" class="btn btn-primary btn-sm">View</a>
                                         @endif
                                     </td>
@@ -4642,7 +4715,7 @@ if($AboutAns != null){
                                     </td>
                                     <td style="width: 10%; text-align:center">
                                         @if ($Docs != null && $Docs->RelievingLtr != null)
-                                            <a href="{{ url('file-view/Documents/'  . $Docs->RelievingLtr) }}"
+                                            <a href="{{ url('file-view/Documents/' . $Docs->RelievingLtr) }}"
                                                 target="_blank" class="btn btn-primary btn-sm">View</a>
                                         @endif
                                     </td>
@@ -4659,7 +4732,7 @@ if($AboutAns != null){
                                     </td>
                                     <td style="width: 10%; text-align:center">
                                         @if ($Docs != null && $Docs->SalarySlip != null)
-                                            <a href="{{ url('file-view/Documents/'  . $Docs->SalarySlip) }}"
+                                            <a href="{{ url('file-view/Documents/' . $Docs->SalarySlip) }}"
                                                 target="_blank" class="btn btn-primary btn-sm">View</a>
                                         @endif
                                     </td>
@@ -4677,7 +4750,7 @@ if($AboutAns != null){
                                     </td>
                                     <td style="width: 10%; text-align:center">
                                         @if ($Docs != null && $Docs->AppraisalLtr != null)
-                                            <a href="{{ url('file-view/Documents/'  . $Docs->AppraisalLtr) }}"
+                                            <a href="{{ url('file-view/Documents/' . $Docs->AppraisalLtr) }}"
                                                 target="_blank" class="btn btn-primary btn-sm">View</a>
                                         @endif
                                     </td>
@@ -4696,7 +4769,7 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->VaccinationCert != null)
-                                        <a href="{{ url('file-view/Documents/'  . $Docs->VaccinationCert) }}"
+                                        <a href="{{ url('file-view/Documents/' . $Docs->VaccinationCert) }}"
                                             target="_blank" class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
@@ -4712,8 +4785,8 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->Aadhar != null)
-                                        <a href="{{ url('file-view/Documents/'  . $Docs->Aadhar) }}"
-                                            target="_blank" class="btn btn-primary btn-sm">View</a>
+                                        <a href="{{ url('file-view/Documents/' . $Docs->Aadhar) }}" target="_blank"
+                                            class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
                             </tr>
@@ -4729,8 +4802,8 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->DL != null)
-                                        <a href="{{ url('file-view/Documents/'  . $Docs->DL) }}"
-                                            target="_blank" class="btn btn-primary btn-sm">View</a>
+                                        <a href="{{ url('file-view/Documents/' . $Docs->DL) }}" target="_blank"
+                                            class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
                             </tr>
@@ -4746,8 +4819,8 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->PF_Form2 != null)
-                                        <a href="{{ url('file-view/Documents/'  . $Docs->PF_Form2) }}"
-                                            target="_blank" class="btn btn-primary btn-sm">View</a>
+                                        <a href="{{ url('file-view/Documents/' . $Docs->PF_Form2) }}" target="_blank"
+                                            class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
                             </tr>
@@ -4763,7 +4836,7 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->PF_Form2 != null)
-                                        <a href="{{ url('file-view/Documents/'  . $Docs->PF_Form11) }}"
+                                        <a href="{{ url('file-view/Documents/' . $Docs->PF_Form11) }}"
                                             target="_blank" class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
@@ -4780,7 +4853,7 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->Gratutity != null)
-                                        <a href="{{ url('file-view/Documents/'  . $Docs->Gratutity) }}"
+                                        <a href="{{ url('file-view/Documents/' . $Docs->Gratutity) }}"
                                             target="_blank" class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
@@ -4797,8 +4870,8 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->ESIC != null)
-                                        <a href="{{ url('file-view/Documents/'  . $Docs->ESIC) }}"
-                                            target="_blank" class="btn btn-primary btn-sm">View</a>
+                                        <a href="{{ url('file-view/Documents/' . $Docs->ESIC) }}" target="_blank"
+                                            class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
                             </tr>
@@ -4815,7 +4888,7 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->ESIC_Family != null)
-                                        <a href="{{ url('file-view/Documents/'  . $Docs->ESIC_Family) }}"
+                                        <a href="{{ url('file-view/Documents/' . $Docs->ESIC_Family) }}"
                                             target="_blank" class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
@@ -4833,8 +4906,8 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->Health != null)
-                                        <a href="{{ url('file-view/Documents/'  . $Docs->Health) }}"
-                                            target="_blank" class="btn btn-primary btn-sm">View</a>
+                                        <a href="{{ url('file-view/Documents/' . $Docs->Health) }}" target="_blank"
+                                            class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
                             </tr>
@@ -4851,8 +4924,8 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->Ethical != null)
-                                        <a href="{{ url('file-view/Documents/'  . $Docs->Ethical) }}"
-                                            target="_blank" class="btn btn-primary btn-sm">View</a>
+                                        <a href="{{ url('file-view/Documents/' . $Docs->Ethical) }}" target="_blank"
+                                            class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
                             </tr>
@@ -4869,12 +4942,12 @@ if($AboutAns != null){
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->BloodGroup != null)
-                                        <a href="{{ url('file-view/Documents/'  . $Docs->BloodGroup) }}"
+                                        <a href="{{ url('file-view/Documents/' . $Docs->BloodGroup) }}"
                                             target="_blank" class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
                             </tr>
-							<tr>
+                            <tr>
 
                                 <td>UAN
                                 </td>
@@ -4882,13 +4955,12 @@ if($AboutAns != null){
                                     <input type="file" name="UAN_File" id="UAN_File"
                                         class="form-control form-control-sm d-inline" style="width: 80%"
                                         accept="application/pdf">
-                                    <button class="btn btn-warning btn-sm d-inline"
-                                        id="UANUpload">Upload</button>
+                                    <button class="btn btn-warning btn-sm d-inline" id="UANUpload">Upload</button>
                                 </td>
                                 <td style="width: 10%; text-align:center">
                                     @if ($Docs != null && $Docs->UAN != null)
-                                        <a href="{{ url('file-view/Documents/'  . $Docs->UAN) }}"
-                                            target="_blank" class="btn btn-primary btn-sm">View</a>
+                                        <a href="{{ url('file-view/Documents/' . $Docs->UAN) }}" target="_blank"
+                                            class="btn btn-primary btn-sm">View</a>
                                     @endif
                                 </td>
                             </tr>
@@ -6505,20 +6577,20 @@ if($AboutAns != null){
             }
         });
 
-        $(document).on('change', '#Grade', function () {
+        $(document).on('change', '#Grade', function() {
             var Grade = $(this).val();
-  
+
 
             $.ajax({
                 type: "GET",
                 url: "{{ route('get_designation_by_grade_department') }}?GradeId=" + Grade +
                     "&DepartmentId=" + $('#SelectedForD').val(),
-                success: function (res) {
+                success: function(res) {
                     if (res.status == 200) {
                         $("#Designation").empty();
                         $("#Designation").append(
                             '<option value="" selected>Select Designation</option>');
-                        $.each(res.grade_designation_list, function (key, value) {
+                        $.each(res.grade_designation_list, function(key, value) {
                             $("#Designation").append('<option value="' + value + '">' +
                                 key +
                                 '</option>');
@@ -6538,6 +6610,9 @@ if($AboutAns != null){
                 success: function(res) {
                     if (res.status == 200) {
                         $('#Of_JAId').val(JAId);
+                        var department_id = res.candidate_detail.SelectedForD;
+                        var grade_id = res.candidate_detail.Grade;
+                       // var vertical_id = res.candidate_detail.VerticalId;
                         $('#JCId').val(res.candidate_detail.JCId);
                         $('#SelectedForC').val(res.candidate_detail.SelectedForC);
                         $('#SelectedForD').val(res.candidate_detail.SelectedForD);
@@ -6834,7 +6909,35 @@ if($AboutAns != null){
 
                         $('#SignAuth').val(res.candidate_detail.SigningAuth);
                         $('#Remark').val(res.candidate_detail.Remarks);
+                        
+                        if (res.candidate_detail.Department == 15) {
+                            $("#bu_tr").removeClass('d-none');
+                            $("#zone_tr").removeClass('d-none');
+                            $("#region_tr").removeClass('d-none');
+                            $("#territory_tr").removeClass('d-none');
+                            $.each(res.bu_list, function(key, value) {
+                                $("#BU").append('<option value="' + value + '">' + key +
+                                    '</option>');
+                            });
+                            $("#BU").val(res.candidate_detail.BU);
+                            $.each(res.zone_list, function(key, value) {
+                                $("#Zone").append('<option value="' + value + '">' + key +
+                                    '</option>');
+                            });
+                            $("#Zone").val(res.candidate_detail.Zone);
 
+                            $.each(res.region_list, function(key, value) {
+                                $("#Region").append('<option value="' + value + '">' + key +
+                                    '</option>');
+                            });
+                            $("#Region").val(res.candidate_detail.Region);
+
+                            $.each(res.territory_list, function(key, value) {
+                                $("#Territory").append('<option value="' + value + '">' + key +
+                                    '</option>');
+                            });
+                            $("#Territory").val(res.candidate_detail.Territory);
+                        }
                     } else {
                         alert('something went wrong..!!');
                     }
@@ -7565,6 +7668,122 @@ if($AboutAns != null){
                 return false;
             });
         })
+
+        $(document).on('change', '#Vertical', function() {
+            var Vertical = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getBUByVertical') }}",
+                data: {
+                    vertical_id: Vertical
+                },
+                success: function(res) {
+                    if (res) {
+                        $("#BU").empty();
+                        $("#BU").append(
+                            '<option value="">Select BU</option>');
+                        $.each(res, function(key, value) {
+                            $("#BU").append('<option value="' + value +
+                                '">' +
+                                key +
+                                '</option>');
+                        });
+                        $('#BU').val();
+                    } else {
+                        $("#BU").empty();
+                    }
+                }
+            });
+
+            var department_id = $('#SelectedForD').val();
+            var grade_id = $('#Grade').val();
+            if ((department_id == 2 || department_id == 3) && (grade_id >= 67 && grade_id <= 69) && Vertical == 1) {
+                $('#vehicle_alw_tr').removeClass('d-none');
+                $('#vehicle_alw_remark_tr').removeClass('d-none');
+            } else {
+                $('#vehicle_alw_tr').addClass('d-none');
+                $('#vehicle_alw_remark_tr').addClass('d-none');
+            }
+        });
+        $(document).on('change', '#BU', function() {
+            var BU = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getZoneByBU') }}",
+                data: {
+                    bu_id: BU
+                },
+                success: function(res) {
+                    if (res) {
+                        $("#Zone").empty();
+                        $("#Zone").append(
+                            '<option value="">Select Zone</option>');
+                        $.each(res, function(key, value) {
+                            $("#Zone").append('<option value="' + value +
+                                '">' +
+                                key +
+                                '</option>');
+                        });
+                        $('#Zone').val();
+                    } else {
+                        $("#Zone").empty();
+                    }
+                }
+            });
+        });
+
+        $(document).on('change', '#Zone', function() {
+            var Zone = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getRegionByZone') }}",
+                data: {
+                    zone_id: Zone
+                },
+                success: function(res) {
+                    if (res) {
+                        $("#Region").empty();
+                        $("#Region").append(
+                            '<option value="">Select Region</option>');
+                        $.each(res, function(key, value) {
+                            $("#Region").append('<option value="' + value +
+                                '">' +
+                                key +
+                                '</option>');
+                        });
+                        $('#Region').val();
+                    } else {
+                        $("#Region").empty();
+                    }
+                }
+            });
+        });
+        $(document).on('change', '#Region', function() {
+            var Region = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "{{ route('getTerritoryByRegion') }}",
+                data: {
+                    region_id: Region
+                },
+                success: function(res) {
+                    if (res) {
+                        $("#Territory").empty();
+                        $("#Territory").append(
+                            '<option value="">Select Territory</option>');
+                        $.each(res, function(key, value) {
+                            $("#Territory").append('<option value="' + value +
+                                '">' +
+                                key +
+                                '</option>');
+                        });
+                        $('#Territory').val();
+                    } else {
+                        $("#Territory").empty();
+                    }
+                }
+            });
+        });
     </script>
 
     <script>
@@ -8152,7 +8371,7 @@ if($AboutAns != null){
             });
         });
 
-		   $(document).on('click', '#UANUpload', function() {
+        $(document).on('click', '#UANUpload', function() {
             var JCId = $('#JCId').val();
             var url = '<?= route('UANUploadFile') ?>';
             var UAN = $('#UAN_File')[0].files;
@@ -8188,7 +8407,7 @@ if($AboutAns != null){
                 }
             });
         });
-		
+
         $(document).on('click', '#BankPassBookUpload', function() {
             var JCId = $('#JCId').val();
             var url = '<?= route('BankUpload') ?>';
@@ -8436,17 +8655,17 @@ if($AboutAns != null){
 
 
         });
-                $(document).on('change', '#Of_PermState', function () {
+        $(document).on('change', '#Of_PermState', function() {
             var state_id = $(this).val();
             $.ajax({
                 type: "GET",
                 url: "{{ route('getCityVillageByState') }}?state_id=" + state_id,
-                success: function (res) {
+                success: function(res) {
                     if (res) {
                         $("#PermHQ").empty();
                         $("#PermHQ").append(
                             '<option value="">Select Headquarter</option>');
-                        $.each(res, function (key, value) {
+                        $.each(res, function(key, value) {
                             $("#PermHQ").append('<option value="' + value + '">' +
                                 key +
                                 '</option>');
@@ -8458,17 +8677,17 @@ if($AboutAns != null){
                 }
             });
         });
-        $(document).on('change', '#TempState', function () {
+        $(document).on('change', '#TempState', function() {
             var state_id = $(this).val();
             $.ajax({
                 type: "GET",
                 url: "{{ route('getCityVillageByState') }}?state_id=" + state_id,
-                success: function (res) {
+                success: function(res) {
                     if (res) {
                         $("#TempHQ").empty();
                         $("#TempHQ").append(
                             '<option value="">Select Headquarter</option>');
-                        $.each(res, function (key, value) {
+                        $.each(res, function(key, value) {
                             $("#TempHQ").append('<option value="' + value + '">' +
                                 key +
                                 '</option>');
@@ -8480,17 +8699,17 @@ if($AboutAns != null){
                 }
             });
         });
-        $(document).on('change', '#TempState1', function () {
+        $(document).on('change', '#TempState1', function() {
             var state_id = $(this).val();
             $.ajax({
                 type: "GET",
                 url: "{{ route('getCityVillageByState') }}?state_id=" + state_id,
-                success: function (res) {
+                success: function(res) {
                     if (res) {
                         $("#TempHQ1").empty();
                         $("#TempHQ1").append(
                             '<option value="">Select Headquarter</option>');
-                        $.each(res, function (key, value) {
+                        $.each(res, function(key, value) {
                             $("#TempHQ1").append('<option value="' + value + '">' +
                                 key +
                                 '</option>');

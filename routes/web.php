@@ -741,6 +741,10 @@ Route::post('sldpt_process_from_databank', [CommonController::class, 'sldpt_proc
 Route::post('getMRFTAT', [CommonController::class, 'getMRFTAT'])->name('getMRFTAT');
 Route::get('download_candidate_data_mrf_wise/{mrfid}', [CommonController::class, 'download_candidate_data_mrf_wise'])->name('download_candidate_data_mrf_wise');
 Route::get('getCityVillageByState', [CommonController::class, 'getCityVillageByState'])->name('getCityVillageByState');
+Route::get('getBUByVertical', [CommonController::class, 'getBUByVertical'])->name('getBUByVertical');
+Route::get('getZoneByBU', [CommonController::class, 'getZoneByBU'])->name('getZoneByBU');
+Route::get('getRegionByZone', [CommonController::class, 'getRegionByZone'])->name('getRegionByZone');
+Route::get('getTerritoryByRegion', [CommonController::class, 'getTerritoryByRegion'])->name('getTerritoryByRegion');
 Route::resource('test', \App\Http\Controllers\Master\TestController::class);
 
 

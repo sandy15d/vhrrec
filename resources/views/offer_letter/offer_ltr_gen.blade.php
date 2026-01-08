@@ -547,12 +547,12 @@
                     <p><b>{{ $sql->SigningAuth }} </b>
                     </p>
                 </div>
-                <div class="col text-center">
+              {{--   <div class="col text-center">
                     <button type="button" class="btn btn-primary btn-sm text-center d-none" id="save_ctc">Save
                         CTC</button>
                     <button type="button" id="edit_ctc" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i>
                         Edit</button>
-                </div>
+                </div> --}}
             </div>
         </div>
 
@@ -944,12 +944,12 @@ checked
                     <p><b> {{ $sql->SigningAuth }}</b>
                     </p>
                 </div>
-                <div class="col text-center">
+                {{-- <div class="col text-center">
                     <button type="button" class="btn btn-primary btn-sm text-center d-none" id="save_ent">Save
                         entitlement</button>
                     <button type="button" id="edit_ent" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i>
                         Edit</button>
-                </div>
+                </div> --}}
 
             </div>
         </div>
