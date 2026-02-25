@@ -1027,7 +1027,7 @@ $SQL = DB::getQueryLog();
 
                     </b>
                     @php
-                       if ( $sql->Department == 1040 || $sql->Department  == 1002) {
+                       if ($sql->Department == 14 || $sql->Department == 2 || $sql->Department == 3) {
                             $noticePeriod = '3 (three)';
                         } else {
                             $noticePeriod = '1 (one)';

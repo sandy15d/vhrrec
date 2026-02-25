@@ -175,7 +175,7 @@
             <li>During the {{ $sql->ServiceCondition }} Period, either you or the Company may
                 terminate
                 this
-                employment by giving 3 (Three) Months’ notice in writing or salary in lieu of such
+                employment by giving 1 (One) Months’ notice in writing or salary in lieu of such
                 notice period. Pursuant to your confirmation, the aforementioned notice period shall be
                 of 3 (Three) Months in writing or the salary in lieu thereof. </li>
         @else
@@ -423,7 +423,13 @@
                 </tr>
             @endif
 
-             @if ($sql->Department == 13 || $sql->Department == 11 || $sql->Department == 14)
+              @if (
+					($sql->Department == 13 
+					 || $sql->Department == 11 
+					 || $sql->Department == 14  
+					 || $sql->Department == 15)
+					&& $elg->DAHq > 0
+				)
                 <tr>
                     <td class="text-center"><?= ++$rowCount ?></td>
                     <td>
@@ -433,6 +439,8 @@
 										@else
 										 <b>D.A @ H.Q</b>(Applicable only during *season)
 										@endif
+						 @elseif($sql->Department == 15)
+										<b>D.A @ H.Q</b>(Subject to a minimum travel of 50 km or more per day)
                         @else
                             <b>D.A @ H.Q</b>(In case of touring more than 6 hours travel per day )
                         @endif

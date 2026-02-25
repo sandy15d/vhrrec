@@ -49,26 +49,24 @@ class EmployeeController extends Controller
 public function syncEmployee()
 {
     ini_set('memory_limit', '-1');
-
     master_employee::truncate();
-
     $response = Http::get('https://vnress.in/RcdDetails.php?action=Details&val=Employee')->json();
-
+    
     $data = [];
     $employeeIds = [];
-
+    $chunkSize = 500; // Insert 500 records at a time
+    $totalInserted = 0;
+    
     foreach ($response['employee_list'] as $rowNo => $value) {
-
         if (empty($value['DateJoining']) || $value['DateJoining'] == '0000-00-00') {
             $value['DateJoining'] = null;
         }
-
         if (empty($value['DateOfSepration']) || $value['DateOfSepration'] == '0000-00-00') {
             $value['DateOfSepration'] = null;
         }
-
+        
         $empId = $value['EmployeeID'];
-
+        
         // Log duplicates coming from API
         if (isset($employeeIds[$empId])) {
             \Log::info('Duplicate EmployeeID found in API', [
@@ -77,10 +75,11 @@ public function syncEmployee()
                 'duplicate_row' => $value,
                 'row_no' => $rowNo
             ]);
-        } else {
-            $employeeIds[$empId] = $value;
+            continue; // Skip duplicate
         }
-
+        
+        $employeeIds[$empId] = $value;
+        
         $data[] = [
             'EmployeeID'      => $empId,
             'VCode'           => $value['VCode'],
@@ -106,30 +105,47 @@ public function syncEmployee()
             'Title'           => $value['Title'],
             'CountryId'       => 11,
         ];
+        
+        // Insert in chunks
+        if (count($data) >= $chunkSize) {
+            try {
+                master_employee::insert($data);
+                $totalInserted += count($data);
+                $data = []; // Reset array
+            } catch (\Illuminate\Database\QueryException $e) {
+                \Log::error('Employee insert failed during chunking', [
+                    'error' => $e->getMessage(),
+                    'chunk_size' => count($data)
+                ]);
+                return response()->json([
+                    'status' => 500,
+                    'msg' => 'Database error during sync. Check laravel.log'
+                ]);
+            }
+        }
     }
-
-    try {
-        master_employee::insert($data);
-
-        return response()->json([
-            'status' => 200,
-            'msg' => 'Employee data has been Synchronized.'
-        ]);
-
-    } catch (\Illuminate\Database\QueryException $e) {
-
-        // Log MySQL duplicate key error
-        \Log::info('Employee insert failed', [
-            'error' => $e->getMessage(),
-            'sql' => $e->getSql(),
-            'bindings' => $e->getBindings()
-        ]);
-
-        return response()->json([
-            'status' => 500,
-            'msg' => 'Duplicate key error. Check laravel.log for details.'
-        ]);
+    
+    // Insert remaining records
+    if (!empty($data)) {
+        try {
+            master_employee::insert($data);
+            $totalInserted += count($data);
+        } catch (\Illuminate\Database\QueryException $e) {
+            \Log::error('Employee insert failed on final chunk', [
+                'error' => $e->getMessage(),
+                'chunk_size' => count($data)
+            ]);
+            return response()->json([
+                'status' => 500,
+                'msg' => 'Database error during final sync. Check laravel.log'
+            ]);
+        }
     }
+    
+    return response()->json([
+        'status' => 200,
+        'msg' => "Employee data synchronized. Total: {$totalInserted} employees."
+    ]);
 }
 
 }

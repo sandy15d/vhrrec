@@ -315,7 +315,7 @@
                         effect and without any compensation thereof.</li>
 
                     @php
-                        if ($sql->Department == 1040 || $sql->Department == 1002) {
+                          if ($sql->Department == 14 || $sql->Department == 2 || $sql->Department == 3) {
                             $noticePeriod = '3 (three)';
                         } else {
                             $noticePeriod = '1 (one)';
@@ -685,7 +685,13 @@
                     </tr>
                 @endif
 
-                @if ($sql->Department == 13|| $sql->Department == 11|| $sql->Department == 14)
+                @if (
+					($sql->Department == 13 
+					 || $sql->Department == 11 
+					 || $sql->Department == 14  
+					 || $sql->Department == 15)
+					&& $elg->DAHq > 0
+				)
                     <tr>
                         <td class="text-center"><?= ++$rowCount ?></td>
                         <td>
@@ -695,6 +701,8 @@
 										@else
 										 <b>D.A @ H.Q</b>(Applicable only during *season)
 										@endif
+							 @elseif($sql->Department == 15)
+										<b>D.A @ H.Q</b>(Subject to a minimum travel of 50 km or more per day)
                             @else
                                 <b>D.A @ H.Q</b>(In case of touring more than 6 hours travel per day )
                             @endif
