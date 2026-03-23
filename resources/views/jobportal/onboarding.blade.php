@@ -3015,7 +3015,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                            class="form-control form-control-sm d-inline"
                                                                            style="width: 85%" accept="application/pdf">
                                                                     <button class="btn btn-warning btn-sm d-inline"
-                                                                            id="AadhaarUpload">Upload <span class="text-danger">*</span>
+                                                                            id="AadhaarUpload">Upload 
                                                                     </button>
                                                                 </td>
                                                                 <td style="width: 10%; text-align:center">
@@ -3028,7 +3028,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                 </td>
                                                             </tr>
                                                             <tr>
-                                                                <td>Blood Group</td>
+                                                                <td>Blood Group <span class="text-danger">*</span></td>
                                                                 <td>
                                                                     <select name="Blood" id="Blood"
                                                                                 class="form-select form-select-sm">
@@ -3306,7 +3306,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                 @if ($Rec->emplyESIC >0)
                                                                 <tr>
         
-                                                                    <td>Family Photo
+                                                                    <td>Family Photo <span class="text-danger">*</span>
                                                                     </td>
                                                                     <td>
                                                                         <input type="file" name="Family_Photo"
