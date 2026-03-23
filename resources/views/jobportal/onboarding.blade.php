@@ -3283,26 +3283,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                         @endif
                                                                     </td>
                                                                 </tr>
-                                                                <tr>
-
-                                                                    <td>Blood Group Certificate <span class="text-danger">*</span>
-                                                                    </td>
-                                                                    <td>
-                                                                        <input type="file" name="BloodGroup"
-                                                                            id="BloodGroup"
-                                                                            class="form-control form-control-sm d-inline"
-                                                                            style="width: 80%" accept="application/pdf">
-                                                                        <button class="btn btn-warning btn-sm d-inline"
-                                                                            id="BloodGroupUpload">Upload</button>
-                                                                    </td>
-                                                                    <td style="width: 10%; text-align:center">
-                                                                        @if ($Docs != null && $Docs->BloodGroup != null)
-                                                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->BloodGroup) }}"
-                                                                                target="_blank"
-                                                                                class="btn btn-primary btn-sm">View</a>
-                                                                        @endif
-                                                                    </td>
-                                                                </tr>
+                                                            
                                                                 @if ($Rec->emplyESIC >0)
                                                                 <tr>
         
