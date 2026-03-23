@@ -451,7 +451,7 @@ class ProcessToEss extends Controller
             $empEducation = $essConnection->table('employee_education')->where('EmpCode', $EmpCode)->where('CompanyId', $CompanyId)->get();
             $empWorkExp = $essConnection->table('employee_workexp')->where('EmpCode', $EmpCode)->where('CompanyId', $CompanyId)->get();
             $empFamily = $essConnection->table('employee_family')->where('EmpCode', $EmpCode)->where('CompanyId', $CompanyId)->get();
-            $empVehicle = $essConnection->table('employee_vehicle')->where('EmpCode', $EmpCode)->where('CompanyId', $CompanyId)->get();
+            
 
             // Get reporting manager details from HRIMS
             $reportingManager = null;
@@ -1408,8 +1408,7 @@ class ProcessToEss extends Controller
                 ->where('jobcandidates.JCId', $JCId)
                 ->first();
 
-            // vehicle_information table
-            $vehicleInfo = DB::table('vehicle_information')->where('JCId', $JCId)->first();
+           
 
 
             // ================================================================
