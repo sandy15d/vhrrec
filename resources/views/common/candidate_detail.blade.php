@@ -1391,7 +1391,14 @@
                                                             class="view-pdf">View</a>
                                                     @endif
                                                 </td>
-
+                                                <td class=" text-center">20</td>
+                                                <td>Family Photo</td>
+                                                <td style="width: 10%; text-align:center">
+                                                    @if ($Docs != null && $Docs->Family_Photo != null)
+                                                        <a href="{{ url('file-view/Documents/' . $Docs->Family_Photo) }}"
+                                                            class="view-pdf">View</a>
+                                                    @endif
+                                                </td>
 
                                             </tr>
                                         </tbody>
@@ -3887,6 +3894,7 @@
                             <tbody>
                                 <tr>
                                     <input type="hidden" name="JCId" id="JCId">
+                                    <input type="hidden" name="SelectedForF" id="SelectedForF">
                                     <input type="hidden" name="SelectedForC" id="SelectedForC">
                                     <input type="hidden" name="SelectedForD" id="SelectedForD">
                                 </tr>
@@ -6612,8 +6620,9 @@ if($AboutAns != null){
                         $('#Of_JAId').val(JAId);
                         var department_id = res.candidate_detail.SelectedForD;
                         var grade_id = res.candidate_detail.Grade;
-                       // var vertical_id = res.candidate_detail.VerticalId;
+                        var vertical_id = res.candidate_detail.VerticalId;
                         $('#JCId').val(res.candidate_detail.JCId);
+                        $('#SelectedForF').val(res.candidate_detail.SelectedForF);
                         $('#SelectedForC').val(res.candidate_detail.SelectedForC);
                         $('#SelectedForD').val(res.candidate_detail.SelectedForD);
                         $("#Grade").empty();
@@ -8595,32 +8604,10 @@ if($AboutAns != null){
         });
 
         $(document).on('click', '#ProcessToEss', function() {
-
+            
             var JAId = $('#JAId').val();
-            $.ajax({
-                url: '<?= route('processDataToEss') ?>',
-                method: 'POST',
-                data: {
-                    JAId: JAId
-                },
-                dataType: 'json',
-                beforeSend: function() {
-                    $("#loader").modal('show');
-                },
-                success: function(data) {
-                    if (data.status == 400) {
-                        $("#loader").modal('hide');
-                        toastr.error(data.msg);
-                    } else {
-
-                        $("#loader").modal('hide');
-                        toastr.success(data.msg);
-
-                        window.location.reload();
-                    }
-                },
-
-            });
+            // Navigate to preview page instead of directly processing
+            window.location.href = '{{ url('previewDataToEss') }}/' + JAId;
         });
 
         function PrintConfidentialityAgreementLetter_OldStamp(url) {

@@ -229,9 +229,16 @@ Route::post('disable_offer_letter', [AboutCandidateController::class, 'disable_o
 Route::post('enable_offer_letter', [AboutCandidateController::class, 'enable_offer_letter'])->name('enable_offer_letter');
 Route::get('get_mw_by_designation', [AboutCandidateController::class, 'get_mw_by_designation'])->name('get_mw_by_designation');
 Route::post('ol_action_on_behalf_candidate', [AboutCandidateController::class, 'ol_action_on_behalf_candidate'])->name('ol_action_on_behalf_candidate');
+Route::get('previewDataToEss/{JAId}', [ProcessToEss::class, 'previewDataToEss'])->name('previewDataToEss');
 Route::post('processDataToEss', [ProcessToEss::class, 'processDataToEss'])->name('processDataToEss');
+Route::post('transferToHrims', [ProcessToEss::class, 'transferToHrims'])->name('transferToHrims');
 Route::get('ImportFromOld', [ProcessToEss::class, 'ImportFromOld'])->name('ImportFromOld');
 
+// File Copy Logs Admin Routes
+Route::get('admin/file-copy-logs', [ProcessToEss::class, 'fileCopyLogs'])->name('admin.fileCopyLogs');
+Route::post('admin/file-copy-retry/{logId}', [ProcessToEss::class, 'retryFileCopy'])->name('admin.retryFileCopy');
+Route::post('admin/file-copy-retry-all/{empCode}', [ProcessToEss::class, 'retryAllFailedForEmployee'])->name('admin.retryAllFailedForEmployee');
+Route::delete('admin/file-copy-delete/{logId}', [ProcessToEss::class, 'deleteFileCopyLog'])->name('admin.deleteFileCopyLog');
 
 Route::get('job_response', [JobApplicationController::class, 'job_response'])->name('job_response');
 Route::get('job_applications', [JobApplicationController::class, 'job_applications'])->name('job_applications');
@@ -275,6 +282,7 @@ Route::post('ResignationFileUpload', [JobApplicationController::class, 'Resignat
 Route::post('ResignationAcceptFileUpload', [JobApplicationController::class, 'ResignationAcceptFileUpload'])->name('ResignationAcceptFileUpload');
 Route::post('Epfo_JointFileUpload', [JobApplicationController::class, 'Epfo_JointFileUpload'])->name('Epfo_JointFileUpload');
 Route::post('Form16FileUpload', [JobApplicationController::class, 'Form16FileUpload'])->name('Form16FileUpload');
+Route::post('FamilyPhotoFileUpload', [JobApplicationController::class, 'FamilyPhotoFileUpload'])->name('FamilyPhotoFileUpload');
 Route::post('CheckDocumentUpload', [JobApplicationController::class, 'CheckDocumentUpload'])->name('CheckDocumentUpload');
 Route::post('FinalSubmitInterviewApplicationForm', [JobApplicationController::class, 'FinalSubmitInterviewApplicationForm'])->name('FinalSubmitInterviewApplicationForm');
 

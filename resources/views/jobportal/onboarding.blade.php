@@ -8,8 +8,9 @@ $Rec = DB::table('jobapply')
     ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
     ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
     ->leftJoin('jf_pf_esic', 'jobcandidates.JCId', '=', 'jf_pf_esic.JCId')
-    ->where('JAId', $JAId)
-    ->select('jobapply.*', 'jobcandidates.*', 'jobpost.Title as JobTitle', 'jobpost.JobCode', 'jf_contact_det.pre_address', 'jf_contact_det.pre_city', 'jf_contact_det.pre_state', 'jf_contact_det.pre_pin', 'jf_contact_det.pre_dist', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin', 'jf_contact_det.perm_dist', 'jf_contact_det.cont_one_name', 'jf_contact_det.cont_one_relation', 'jf_contact_det.cont_one_number', 'jf_contact_det.cont_two_name', 'jf_contact_det.cont_two_relation', 'jf_contact_det.cont_two_number', 'jf_pf_esic.UAN', 'jf_pf_esic.PFNumber', 'jf_pf_esic.ESICNumber', 'jf_pf_esic.BankName', 'jf_pf_esic.BranchName', 'jf_pf_esic.IFSCCode', 'jf_pf_esic.AccountNumber', 'jf_pf_esic.PAN', 'jf_pf_esic.Passport', 'jf_pf_esic.ESIC_Chk')
+    ->leftJoin('candidate_ctc', 'jobapply.JAId', '=', 'candidate_ctc.JAId')
+    ->where('jobapply.JAId', $JAId)
+    ->select('jobapply.*', 'jobcandidates.*', 'jobpost.Title as JobTitle', 'jobpost.JobCode', 'jf_contact_det.pre_address', 'jf_contact_det.pre_city', 'jf_contact_det.pre_state', 'jf_contact_det.pre_pin', 'jf_contact_det.pre_dist', 'jf_contact_det.perm_address', 'jf_contact_det.perm_city', 'jf_contact_det.perm_state', 'jf_contact_det.perm_pin', 'jf_contact_det.perm_dist', 'jf_contact_det.cont_one_name', 'jf_contact_det.cont_one_relation', 'jf_contact_det.cont_one_number', 'jf_contact_det.cont_two_name', 'jf_contact_det.cont_two_relation', 'jf_contact_det.cont_two_number', 'jf_pf_esic.UAN', 'jf_pf_esic.PFNumber', 'jf_pf_esic.ESICNumber', 'jf_pf_esic.BankName', 'jf_pf_esic.BranchName', 'jf_pf_esic.IFSCCode', 'jf_pf_esic.AccountNumber', 'jf_pf_esic.PAN', 'jf_pf_esic.Passport', 'jf_pf_esic.ESIC_Chk','candidate_ctc.emplyESIC')
     ->first();
 
 $JCId = $Rec->JCId;
@@ -3001,6 +3002,71 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                     @endif
                                                                 </td>
                                                             </tr>
+                                                            <tr>
+                                                                <td>Aadhaar Card <span class="text-danger">*</span></td>
+                                                                <td>
+                                                                    <input type="text" id="Aadhaar" name="Aadhaar"
+                                                                           class="form-control form-control-sm reqinp_doc"
+                                                                           value="{{ $Rec->Aadhaar ?? '' }}">
+                                                                </td>
+                                                                <td>
+                                                                    <input type="file" name="AadhaarCard"
+                                                                           id="AadhaarCard"
+                                                                           class="form-control form-control-sm d-inline"
+                                                                           style="width: 85%" accept="application/pdf">
+                                                                    <button class="btn btn-warning btn-sm d-inline"
+                                                                            id="AadhaarUpload">Upload <span class="text-danger">*</span>
+                                                                    </button>
+                                                                </td>
+                                                                <td style="width: 10%; text-align:center">
+                                                                    @if ($Docs != null && $Docs->Aadhar != null)
+                                                                        <a href="{{Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->Aadhar) }}"
+                                                                           target="_blank"
+                                                                           id="aadhaar_view_link"
+                                                                           class="btn btn-primary btn-sm">View</a>
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Blood Group</td>
+                                                                <td>
+                                                                    <select name="Blood" id="Blood"
+                                                                                class="form-select form-select-sm">
+                                                                            <option value="">Select</option>
+                                                                            <option value="A-">A-</option>
+                                                                            <option value="A+">A+</option>
+                                                                            <option value="B-">B-</option>
+                                                                            <option value="B+">B+</option>
+                                                                            <option value="AB-">AB-</option>
+                                                                            <option value="AB+">AB+</option>
+                                                                            <option value="O-">O-</option>
+                                                                            <option value="O+">O+</option>
+                                                                        </select>
+                                                                     <script>
+                                                                        $('#Blood').val('{{ $Rec->bloodgroup }}');
+                                                                    </script>
+                                                                    <!-- <input type="text" id="Blood" name="Blood"
+                                                                           class="form-control form-control-sm"
+                                                                           value="{{ $Rec->bloodgroup ?? '' }}"> -->
+                                                                </td>
+                                                                <td>
+                                                                    <input type="file" name="BloodGroup"
+                                                                           id="BloodGroup"
+                                                                           class="form-control form-control-sm d-inline"
+                                                                           style="width: 85%" accept="application/pdf"> 
+                                                                    <button class="btn btn-warning btn-sm d-inline"
+                                                                            id="BloodGroupUpload">Upload 
+                                                                    </button>
+                                                                  
+                                                                </td>
+                                                                <td style="width: 10%; text-align:center">
+                                                                    @if ($Docs != null && $Docs->BloodGroup != null)
+                                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->BloodGroup) }}"
+                                                                           target="_blank"
+                                                                           class="btn btn-primary btn-sm">View</a>
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
                                                              <tr>
                                                            <td colspan="4" style="text-align:left">
                                                                <p><b>Note:</b></p>
@@ -3025,7 +3091,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                 <td>UAN <span class="text-danger">*</span></td>
                                                                 <td><input type="text" name="UAN_Number"
                                                                         id="UAN_Number"
-                                                                        class="form-control form-control-sm"
+                                                                        class="form-control form-control-sm reqinp_doc"
                                                                         value="{{ $Rec->UAN ?? '' }}">
                                                                        
                                                                         </td>
@@ -3059,25 +3125,7 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                 <th>View</th>
                                                             </thead>
                                                             <tbody>
-                                                                <tr>
-
-                                                                    <td style="width: 25%">Aadhaar Card <span class="text-danger">*</span></td>
-                                                                    <td style="width: 60%">
-                                                                        <input type="file" name="AadhaarCard"
-                                                                            id="AadhaarCard"
-                                                                            class="form-control form-control-sm d-inline"
-                                                                            style="width: 80%" accept="application/pdf">
-                                                                        <button class="btn btn-warning btn-sm d-inline"
-                                                                            id="AadhaarUpload">Upload</button>
-                                                                    </td>
-                                                                    <td style="width: 10%; text-align:center">
-                                                                        @if ($Docs != null && $Docs->Aadhar != null)
-                                                                            <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->Aadhar) }}"
-                                                                                target="_blank"
-                                                                                class="btn btn-primary btn-sm">View</a>
-                                                                        @endif
-                                                                    </td>
-                                                                </tr>
+                                                               
 
                                                                 <tr>
 
@@ -3255,6 +3303,30 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
                                                                         @endif
                                                                     </td>
                                                                 </tr>
+                                                                @if ($Rec->emplyESIC >0)
+                                                                <tr>
+        
+                                                                    <td>Family Photo
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="file" name="Family_Photo"
+                                                                               id="Family_Photo"
+                                                                               class="form-control form-control-sm d-inline"
+                                                                               style="width: 80%" accept="application/pdf,image/*">
+                                                                        <button class="btn btn-warning btn-sm d-inline"
+                                                                                id="FamilyPhotoUpload">Upload
+                                                                        </button>
+                                                                    </td>
+                                                                    <td style="width: 10%; text-align:center">
+                                                                        @if ($Docs != null && $Docs->Family_Photo != null)
+                                                                        
+                                                                        <a href="{{ Storage::disk('s3')->url('VVNR_Recruitment/Documents/' . $Docs->Family_Photo) }}"
+                                                                            target="_blank"
+                                                                            class="btn btn-primary btn-sm">View</a>
+                                                                        @endif
+                                                                    </td>
+                                                                </tr>
+                                                                @endif
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -5485,7 +5557,45 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
             });
         });
 
+        $(document).on('click', '#FamilyPhotoUpload', function () {
+        var JCId = $('#JCId').val();
+        var url = '<?= route('FamilyPhotoFileUpload') ?>';
+        var Family_Photo = $('#Family_Photo')[0].files;
+        var formData = new FormData();
+        formData.append('JCId', JCId);
+        formData.append('Family_Photo', Family_Photo[0]);
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            beforeSend: function () {
+                $('#smartwizard').smartWizard("loader", "show");
+            },
+            success: function (data) {
+                if (data.status == 400) {
+                    toastr.error(data.msg);
+                    $('#smartwizard').smartWizard("loader", "hide");
+                } else {
+                    $('#smartwizard').smartWizard("loader", "hide");
+                    toastr.success(data.msg);
+                    window.location.reload();
 
+                }
+            },
+            error: function (data) {
+                var errors = data.responseJSON;
+                var errorsHtml = '';
+                $.each(errors.errors, function (key, value) {
+                    errorsHtml += value[0] + '<br>';
+                });
+                toastr.error(errorsHtml);
+                $('#smartwizard').smartWizard("loader", "hide");
+            }
+        });
+    });
         $(document).on('click', '#save_documents', function() {
             var url = '<?= route('CheckDocumentUpload_JoiningForm') ?>';
             $.post(url, {

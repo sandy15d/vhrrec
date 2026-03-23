@@ -246,6 +246,8 @@ function has_permission($resultArray, $pageName)
                                         class="bx bx-right-arrow-alt"></i>Communication Control</a></li>
                                           <li><a title="Communication Control" href="{{route('core_api.index')}}"><i
                                     class="bx bx-right-arrow-alt"></i>Core API</a></li>
+                                    <li><a title="File Copy Logs" href="/admin/file-copy-logs"><i
+                                        class="bx bx-right-arrow-alt"></i>File Copy Logs</a></li>
                         <li>
                             <a title="Eligibility" class="has-arrow" href="javascript:;">
                                 <i class="bx bx-right-arrow-alt"></i>Core Mapping</a>

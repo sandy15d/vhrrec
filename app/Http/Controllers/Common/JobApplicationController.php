@@ -1428,7 +1428,7 @@ class JobApplicationController extends Controller
         }
     }
     
-        public function UANUpload(Request $request)
+    public function UANUpload(Request $request)
     {
         $request->validate(['UAN' => 'required|mimes:pdf|max:2048']);
         $JCId = $request->JCId;
@@ -1888,19 +1888,117 @@ class JobApplicationController extends Controller
         }
     }
 
+    public function FamilyPhotoFileUpload(Request $request)
+    {
+        \Log::debug('FamilyPhotoFileUpload called', ['JCId' => $request->JCId, 'request' => $request->all()]);
+
+        $request->validate(['Family_Photo' => 'required|mimes:pdf,jpeg,jpg,png,bmp,gif,svg,webp|max:2048']);
+        $JCId = $request->JCId;
+        $extension = $request->Family_Photo->getClientOriginalExtension();
+        $filename = 'FamilyPhoto_' . $JCId . '.' . $extension;
+        
+        try {
+            if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
+                \Log::debug('S3 file exists, deleting', ['filename' => $filename]);
+                Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Error checking/deleting S3 file', ['error' => $e->getMessage(), 'filename' => $filename]);
+            // Continue without error
+        }
+
+        $uploaded = $request->Family_Photo->storeAs('VVNR_Recruitment/Documents', $filename, 's3');
+        \Log::debug('File upload attempted', ['uploaded' => $uploaded, 'filename' => $filename]);
+
+        if (!$uploaded) {
+            \Log::error('Failed to upload Family Photo to S3', ['JCId' => $JCId, 'filename' => $filename]);
+            return response()->json(['status' => 400, 'msg' => 'Failed to upload file to S3. Please try again.']);
+        }
+
+        $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
+        \Log::debug('Checked existing jf_docs record', ['JCId' => $JCId, 'exists' => $chk != null]);
+
+        if ($chk == null) {
+            $query = DB::table('jf_docs')->insert(
+                [
+                    'JCId' => $JCId,
+                    'Family_Photo' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+            \Log::debug('Inserted Family Photo record', ['JCId' => $JCId, 'query_result' => $query]);
+        } else {
+            $query = DB::table('jf_docs')->where('JCId', $JCId)->update(
+                [
+                    'Family_Photo' => $filename,
+                    'LastUpdated' => now()
+                ]
+            );
+            \Log::debug('Updated Family Photo record', ['JCId' => $JCId, 'query_result' => $query]);
+        }
+
+        if (!$query) {
+            \Log::error('DB query failed for Family Photo upload', ['JCId' => $JCId]);
+            return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
+        } else {
+            \Log::info('Family Photo uploaded and DB updated successfully', ['JCId' => $JCId]);
+            return response()->json(['status' => 200, 'msg' => 'File has been uploaded successfully']);
+        }
+    }
 
     public function CheckDocumentUpload_JoiningForm(Request $request)
     {
         $JCId = $request->JCId;
         $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
-        if($chk){
-        if ($chk->UAN == null ||$chk->Aadhar == null || $chk->BankDoc == null || $chk->PF_Form2 == null || $chk->PF_Form11 == null || $chk->Gratutity == null || $chk->Health == null || $chk->BloodGroup == null || $chk->Ethical == null) {
-            return response()->json(['status' => 400, 'msg' => 'Please upload all documents']);
-        } else {
-            return response()->json(['status' => 200, 'msg' => 'All documents uploaded successfully']);
+        if ($chk == null) {
+            return response()->json(['status' => 400, 'msg' => 'Please Upload Documents...!!']);
         }
-        }else{
-             return response()->json(['status' => 400, 'msg' => 'Please upload all documents']);
+        $query = jobcandidate::find($JCId);
+        $Professional = $query->Professional;
+        $emplyESIC = DB::table('jobcandidates')->join('jobapply','jobapply.JCId','=','jobcandidates.JCId')->join('candidate_ctc','candidate_ctc.JAId','=','jobapply.JAId')->where('jobapply.JCId',$JCId)->value('candidate_ctc.emplyESIC');
+
+        $documents = [
+            'Aadhar' => 'Aadhar',
+            'BankDoc' => 'Bank Passbook',
+            'PF_Form11' => 'PF Form 11',
+            'Gratutity' => 'Gratutity',
+            'Health' => 'Health',
+            'BloodGroup' => 'Blood Group',
+            'Ethical' => 'Ethical',
+            // 'Invst_Decl' => 'Investment Declaration',
+            'UAN' => 'UAN Card'
+        ];
+
+        // Add additional documents if the user is Professional
+        if ($Professional == 'P') {
+            $documents = array_merge($documents, [
+                'PFeNomination' => 'PF Nomination',
+                'Form16' => 'Form 16',
+                'Resignation' => 'Self Resignation Declaration',
+                'Resignation_Accept' => 'Resignation Acceptance by previous employer'
+
+            ]);
+        }
+
+        if($emplyESIC > 0 ){
+            $documents = array_merge($documents,[
+                'Family_Photo' =>'Family Photograph'
+            ]);
+        }
+        $missingDocs = [];
+
+        // Check each document
+        foreach ($documents as $field => $label) {
+            if (is_null($chk->$field)) {
+                $missingDocs[] = $label;
+            }
+        }
+
+        if (empty($missingDocs)) {
+            return response()->json(['status' => 200, 'msg' => 'All documents uploaded successfully...']);
+        } else {
+            $msg = implode(', ', $missingDocs) . ' documents are not uploaded';
+            return response()->json(['status' => 400, 'msg' => $msg]);
         }
     }
 

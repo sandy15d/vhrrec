@@ -374,28 +374,58 @@ class TrackerController extends Controller
 
     public function select_cmp_dpt_for_candidate(Request $request)
     {
-        $sql = screening::find($request->ScId_cmp);
-        $sql->SelectedForC = $request->SelectedForC;
-        $sql->SelectedForD = $request->SelectedForD;
-        $sql->save();
+        $functionId = DB::table('core_fun_vertical_dept_mapping as fvdm')
+            ->leftJoin('core_function_vertical_mapping as fvm', 'fvm.id', '=', 'fvdm.function_vertical_id')
+            ->where('fvdm.department_id', '=', $request->SelectedForD)
+            ->value('org_function_id');
 
-        $JAId = $sql->JAId;
+        $screening = screening::find($request->ScId_cmp);
+        $screening->SelectedForC = $request->SelectedForC;
+        $screening->SelectedForD = $request->SelectedForD;
+        $screening->SelectedForF = $functionId;
+        $screening->save();
 
-        $query = new OfferLetter;
-        $query->JAId = $JAId;
-        $query->Company = $request->SelectedForC;
-        $query->Department = $request->SelectedForD;
-        $query->CreatedTime = now();
-        $query->Year = date('Y');
-        $query->CreatedBy = Auth::user()->id;
-        $query->save();
+        $JAId = $screening->JAId;
 
-        $query = DB::table('jobapply')->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')->select('jobcandidates.JCId', 'jobcandidates.Aadhaar')->where('JAId', $JAId)->first();
+        // FIX: Ensure OfferLetter is searched/updated by correct key "JAId", not "id"
+        $offerLetter = OfferLetter::where('JAId', $JAId)->first();
+        if ($offerLetter) {
+            // Only update the found offerletter using its PK
+            OfferLetter::where('JAId', $JAId)->update([
+                'Company'      => $request->SelectedForC,
+                'Department'   => $request->SelectedForD,
+                'Function'     => $functionId,
+                'Year'         => date('Y'),
+                'UpdatedBy'    => Auth::user()->id,
+               
+            ]);
+        } else {
+            // Create new OfferLetter with correct fields
+            $offerLetter = new OfferLetter;
+            $offerLetter->JAId        = $JAId;
+            $offerLetter->Company     = $request->SelectedForC;
+            $offerLetter->Department  = $request->SelectedForD;
+            $offerLetter->Function    = $functionId;
+            $offerLetter->CreatedTime = now();
+            $offerLetter->Year        = date('Y');
+            $offerLetter->CreatedBy   = Auth::user()->id;
+            $offerLetter->save();
+        }
 
-        if (!$query) {
+        $candidate = DB::table('jobapply')
+            ->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')
+            ->select('jobcandidates.JCId', 'jobcandidates.Aadhaar')
+            ->where('jobapply.JAId', $JAId)
+            ->first();
+
+        if (!$candidate) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         } else {
-            CandidateActivityLog::addToCandLog($query->JCId, $query->Aadhaar, 'Candidate Slected For - ' . getDepartmentCode($request->SelectedForD) . ' - ' . getcompany_code($request->SelectedForC));
+            CandidateActivityLog::addToCandLog(
+                $candidate->JCId,
+                $candidate->Aadhaar,
+                'Candidate Slected For - ' . getDepartmentCode($request->SelectedForD) . ' - ' . getcompany_code($request->SelectedForC)
+            );
             return response()->json(['status' => 200, 'msg' => 'Data has been changed successfully.']);
         }
     }
