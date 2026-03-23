@@ -1822,6 +1822,23 @@ class JobApplicationController extends Controller
                 ]
             );
         }
+        $chk = DB::table('jobcandidates')->where('JCId', $JCId)->first();
+        if ($chk == null) {
+            $query = DB::table('jobcandidates')->insert(
+                [
+                    'JCId' => $JCId,
+                    'bloodgroup' => $request->Blood,
+                    'LastUpdated' => now()
+                ]
+            );
+        } else {
+            $query = DB::table('jobcandidates')->where('JCId', $JCId)->update(
+                [
+                    'bloodgroup' => $request->Blood,
+                    'LastUpdated' => now()
+                ]
+            );
+        }
 
         if (!$query) {
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
