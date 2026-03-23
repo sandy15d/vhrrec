@@ -5452,45 +5452,47 @@ $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
             });
         });
 
-        $(document).on('click', '#BloodGroupUpload', function() {
-            var JCId = $('#JCId').val();
-            var url = '<?= route('BloodGroupUpload') ?>';
-            var BloodGroup = $('#BloodGroup')[0].files;
-            var formData = new FormData();
-            formData.append('JCId', JCId);
-            formData.append('BloodGroup', BloodGroup[0]);
-            $.ajax({
-                url: url,
-                method: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                dataType: 'json',
-                beforeSend: function() {
-                    $('#smartwizard').smartWizard("loader", "show");
-                },
-                success: function(data) {
-                    if (data.status == 400) {
-                        toastr.error(data.msg);
-                        $('#smartwizard').smartWizard("loader", "hide");
-                    } else {
-                        $('#smartwizard').smartWizard("loader", "hide");
-                        toastr.success(data.msg);
-                        window.location.reload();
-
-                    }
-                },
-                error: function(data) {
-                    var errors = data.responseJSON;
-                    var errorsHtml = '';
-                    $.each(errors.errors, function(key, value) {
-                        errorsHtml += value[0] + '<br>';
-                    });
-                    toastr.error(errorsHtml);
+        $(document).on('click', '#BloodGroupUpload', function () {
+        var JCId = $('#JCId').val();
+        var url = '<?= route('BloodGroupUpload') ?>';
+        var BloodGroup = $('#BloodGroup')[0].files;
+        var Blood = $('#Blood').val();
+        var formData = new FormData();
+        formData.append('JCId', JCId);
+        formData.append('BloodGroup', BloodGroup[0]);
+        formData.append('Blood', Blood); 
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: 'json',
+            beforeSend: function () {
+                $('#smartwizard').smartWizard("loader", "show");
+            },
+            success: function (data) {
+                if (data.status == 400) {
+                    toastr.error(data.msg);
                     $('#smartwizard').smartWizard("loader", "hide");
+                } else {
+                    $('#smartwizard').smartWizard("loader", "hide");
+                    toastr.success(data.msg);
+                    window.location.reload();
+
                 }
-            });
+            },
+            error: function (data) {
+                var errors = data.responseJSON;
+                var errorsHtml = '';
+                $.each(errors.errors, function (key, value) {
+                    errorsHtml += value[0] + '<br>';
+                });
+                toastr.error(errorsHtml);
+                $('#smartwizard').smartWizard("loader", "hide");
+            }
         });
+    });
 
         $(document).on('click', '#BankPassBookUpload', function() {
             var JCId = $('#JCId').val();
