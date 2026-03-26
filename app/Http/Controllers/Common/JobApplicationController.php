@@ -1987,15 +1987,15 @@ class JobApplicationController extends Controller
         ];
 
         // Add additional documents if the user is Professional
-        if ($Professional == 'P') {
+       /*  if ($Professional == 'P') {
             $documents = array_merge($documents, [
-              /*   'PFeNomination' => 'PF Nomination', */
+                'PFeNomination' => 'PF Nomination',
                 'Form16' => 'Form 16',
                 'Resignation' => 'Self Resignation Declaration',
                 'Resignation_Accept' => 'Resignation Acceptance by previous employer'
 
             ]);
-        }
+        } */
 
         if($emplyESIC > 0 ){
             $documents = array_merge($documents,[
