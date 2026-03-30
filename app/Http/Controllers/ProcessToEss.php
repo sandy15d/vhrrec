@@ -508,9 +508,10 @@ class ProcessToEss extends Controller
             // Insert into hrm_employee
             $hrimsConnection->table('hrm_employee')->insert([
                 'EmployeeID' => $nextEmpId,
+                'VCode'=>'V',
                 'EmpCode' => $EmpCode,
-                //'ECode' => $EmpCode,
-                //'EmpCode_New' => $EmpCode,
+                'ECode' => $EmpCode,
+                'EmpCode_New' => 'V'.$EmpCode,
                 'CandidateId' => $empGeneral->CandidateId ?? '',
                 'EmpType' => $empGeneral->EmpType ?? 'E',
                 'EmpStatus' => $empGeneral->EmpStatus ?? 'A',
@@ -586,33 +587,7 @@ class ProcessToEss extends Controller
                     ->update(['AppraiserId' => $empGeneral->A_ReportingManager]);
             }
 
-            // Insert/Update hrm_sales_verhq
-            $existingVerhq = $hrimsConnection->table('hrm_sales_verhq')
-                ->where('HqId', $hq)
-                ->where('Vertical', $empGeneral->Vertical ?? 0)
-                ->where('DeptId', $empGeneral->DepartmentId ?? 0)
-                ->where('CompanyId', $CompanyId)
-                ->exists();
 
-            if ($existingVerhq) {
-                $hrimsConnection->table('hrm_sales_verhq')
-                    ->where('HqId', $hq)
-                    ->where('Vertical', $empGeneral->Vertical ?? 0)
-                    ->where('DeptId', $empGeneral->DepartmentId ?? 0)
-                    ->where('CompanyId', $CompanyId)
-                    ->update(['RegionId' => $empGeneral->Region ?? '', 'CreatedBy' => $UserId, 'CreatedDate' => now()]);
-            } else {
-                $hrimsConnection->table('hrm_sales_verhq')->insert([
-                    'Vertical' => $empGeneral->Vertical ?? 0,
-                    'HqId' => $hq,
-                    'RegionId' => $empGeneral->Region ?? '',
-                    'CompanyId' => $CompanyId,
-                    'DeptId' => $empGeneral->DepartmentId ?? 0,
-                    'Status' => 'A',
-                    'CreatedBy' => $UserId,
-                    'CreatedDate' => now(),
-                ]);
-            }
 
             // Insert into hrm_employee_personal
             $hrimsConnection->table('hrm_employee_personal')->insert([
@@ -1034,7 +1009,7 @@ class ProcessToEss extends Controller
                     ->first();
 
                 $cl = $leaveDistribution->CL ?? 0;
-                $sl = $leaveDistribution->SL ?? 0;
+              
 
                 $hrimsConnection->table('hrm_employee_monthlyleave_balance')->insert([
                     'EmployeeID' => $nextEmpId,
@@ -1042,11 +1017,7 @@ class ProcessToEss extends Controller
                     'Month' => $joinMonth,
                     'Year' => $joinYear,
                     'OpeningCL' => $cl,
-                    'OpeningSL' => $sl,
                     'TotCL' => $cl,
-                    'TotSL' => $sl,
-                    'BalanceCL' => $cl,
-                    'BalanceSL' => $sl,
                     'CreatedBy' => $UserId,
                     'CreatedDate' => now(),
                 ]);
