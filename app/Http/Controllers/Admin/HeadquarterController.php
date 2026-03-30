@@ -35,7 +35,7 @@ class HeadquarterController extends Controller
     {
 
         $query =  master_headquarter::truncate();
-        $response = Http::get('https://www.vnress.in/RcdDetails.php?action=Details&val=Headquarter')->json();
+        $response = Http::get('https://vnrseeds.co.in/VVNR_RcdDetails.php?action=Details&val=Headquarter')->json();
         $data = array();
         foreach ($response['Headquarter_list'] as $key => $value) {
 

@@ -35,7 +35,7 @@ class DesignationController extends Controller
      
 
         $query2 = DB::table('master_grade_designation')->truncate();
-        $response2 = Http::get('https://vnress.in/RcdDetails.php?action=Details&val=grade_desig')->json();
+        $response2 = Http::get('https://vnrseeds.co.in/VVNR_RcdDetails.php?action=Details&val=grade_desig')->json();
         $data2 = array();
         foreach ($response2['grade_designation_list'] as $key => $value) {
 

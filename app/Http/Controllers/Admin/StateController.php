@@ -128,7 +128,7 @@ class StateController extends Controller
     {
 
         $query =  master_state::truncate();
-        $response = Http::get('https://www.vnress.in/RcdDetails.php?action=Details&val=State')->json();
+        $response = Http::get('https://vnrseeds.co.in/VVNR_RcdDetails.php?action=Details&val=State')->json();
         $data = array();
         foreach ($response['State_list'] as $key => $value) {
             $temp = array();

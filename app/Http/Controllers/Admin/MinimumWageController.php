@@ -18,7 +18,7 @@ class MinimumWageController extends Controller
     {
 
         MW::truncate();
-        $response = Http::get('https://vnrseeds.co.in/RcdDetails.php?action=Details&val=minimum_wage')->json();
+        $response = Http::get('https://vnrseeds.co.in/VVNR_RcdDetails.php?action=Details&val=minimum_wage')->json();
         $data = array();
         foreach ($response['minimum_wage_list'] as $value) {
 

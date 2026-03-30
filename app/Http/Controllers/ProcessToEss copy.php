@@ -385,7 +385,7 @@ class ProcessToEss extends Controller
 
 
         // $json_response = json_encode($postData);
-        // $url = 'https://vnress.in/api/recruitmentToEss/get_data_from_rec.php';
+        // $url = 'https://vnrseeds.co.in/api/recruitmentToEss/get_data_from_rec.php';
         // $ch = curl_init($url);
         // curl_setopt($ch, CURLOPT_POSTFIELDS, $json_response);
         // curl_setopt($ch, CURLOPT_HTTPHEADER, array(

@@ -25,7 +25,7 @@ class PositionCodeController extends Controller
     public function SyncPositionCode()
     {
         $query =  PositionCode::truncate();
-        $response = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails?action=Details&val=getPositionCode')->json();
+        $response = Http::get('https://www.vnrseeds.co.in/hrims/VVNR_RcdDetails?action=Details&val=getPositionCode')->json();
         $data = array();
         foreach ($response['PositionCode_List'] as $key => $value) {
             $temp = array();
@@ -45,7 +45,7 @@ class PositionCodeController extends Controller
         $query = PositionCode::insert($data);
 
         $query1 =  master_employee::truncate();
-        $response = Http::get('https://www.vnrseeds.co.in/hrims/RcdDetails?action=Details&val=Employee')->json();
+        $response = Http::get('https://www.vnrseeds.co.in/hrims/VVNR_RcdDetails?action=Details&val=Employee')->json();
         $data = array();
         foreach ($response['employee_list'] as $key => $value) {
             if ($value['DateJoining'] == '0000-00-00' or $value['DateJoining'] == '') {

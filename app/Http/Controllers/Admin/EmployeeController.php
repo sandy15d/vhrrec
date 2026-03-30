@@ -50,7 +50,7 @@ public function syncEmployee()
 {
     ini_set('memory_limit', '-1');
     master_employee::truncate();
-    $response = Http::get('https://vnress.in/RcdDetails.php?action=Details&val=Employee')->json();
+    $response = Http::get('https://vnrseeds.co.in/VVNR_RcdDetails.php?action=Details&val=Employee')->json();
     
     $data = [];
     $employeeIds = [];
