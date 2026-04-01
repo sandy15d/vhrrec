@@ -170,16 +170,14 @@ class CommonController extends Controller
     public function getReportingManager(Request $request)
     {
         $Department = $request->DepartmentId;
-        $Department1 = $Department - 1000;
+
         $employee = DB::table('master_employee')
             ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname," - ",VCode,EmpCode) AS FullName'))
             ->where('EmpStatus', 'A')
-            ->where(function ($query) use ($Department, $Department1) {
-                $query->where('DepartmentId', $Department)
-                    ->orWhere('DepartmentId', $Department1);
-            })
+            ->where('DepartmentId', $Department)
             ->orderBy('FullName', 'ASC')
             ->pluck("EmployeeID", "FullName");
+
         return response()->json($employee);
     }
 
