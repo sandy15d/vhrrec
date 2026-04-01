@@ -188,7 +188,7 @@ class CommonController extends Controller
         $employee = DB::table('master_employee')->orderBy('FullName', 'ASC')
             ->where('CompanyId', $request->ComapnyId)
             ->where('EmpStatus', 'A')
-            ->select('EmployeeID', DB::raw('CONCAT(EmpCode, "-", Fname, " ", Mname, " ", Lname) AS FullName'))
+            ->select('EmployeeID', DB::raw('CONCAT(EmpCode, "-", Fname, " ", Sname, " ", Lname) AS FullName'))
             ->pluck("EmployeeID", "FullName");
         return response()->json($employee);
     }
