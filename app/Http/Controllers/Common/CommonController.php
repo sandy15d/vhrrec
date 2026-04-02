@@ -178,7 +178,7 @@ class CommonController extends Controller
             ->orderBy('FullName', 'ASC')
             ->pluck("EmployeeID", "FullName");
 
-        return response()->json($employee);
+        return response()->json($employee); 
     }
 
     public function getEmpByCompany(Request $request)
