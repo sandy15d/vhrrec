@@ -509,7 +509,7 @@ class ProcessToEss extends Controller
             $hrimsConnection->table('hrm_employee')->insert([
                 'EmployeeID' => $nextEmpId,
                 'VCode'=>'V',
-                'EmpCode' => $EmpCode,
+                'EmpCode' => 'V'.$EmpCode,
                 'ECode' => $EmpCode,
                 'EmpCode_New' => 'V'.$EmpCode,
                 'CandidateId' => $empGeneral->CandidateId ?? '',
