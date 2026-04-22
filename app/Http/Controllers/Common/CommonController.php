@@ -172,7 +172,10 @@ class CommonController extends Controller
         $Department = $request->DepartmentId;
 
         $employee = DB::table('master_employee')
-            ->select('EmployeeID', DB::raw('CONCAT(Fname, " ", Lname," - ",VCode,EmpCode) AS FullName'))
+            ->select(
+                'EmployeeID', 
+                DB::raw('CONCAT(Fname, " ", Lname, " - ", IFNULL(VCode,""), EmpCode) AS FullName')
+            )
             ->where('EmpStatus', 'A')
             ->where('DepartmentId', $Department)
             ->orderBy('FullName', 'ASC')
