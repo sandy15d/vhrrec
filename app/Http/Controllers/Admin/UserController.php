@@ -33,7 +33,8 @@ class UserController extends Controller
 
 
         $Employee = master_employee::select(
-            DB::raw("CONCAT(Fname,' ',Lname,' - ',VCode,EmpCode) AS name"),
+            DB::raw("IF(ISNULL(Lname), NULL, CONCAT(Fname,' ',Lname,' - ',VCode,EmpCode)) AS name"),
+       
             'EmployeeID'
         )
             ->where('CompanyId', $request->CompanyId)
