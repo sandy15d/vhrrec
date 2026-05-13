@@ -33,7 +33,8 @@ class UserController extends Controller
 
 
         $Employee = master_employee::select(
-            DB::raw("IF(ISNULL(Lname), NULL, CONCAT(Fname,' ',Lname,' - ',VCode,EmpCode)) AS name"),
+            DB::raw("IF(ISNULL(Lname) OR ISNULL(VCode), NULL, CONCAT(Fname,' ',Lname,' - ',VCode,EmpCode)) AS name"),
+       
        
             'EmployeeID'
         )
