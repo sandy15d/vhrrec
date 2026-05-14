@@ -689,6 +689,50 @@ class ProcessToEss extends Controller
                     'SalChangeDate' => ! empty($empGeneral->JoinOnDt) ? date('Y-m-d', strtotime($empGeneral->JoinOnDt)) : now(),
                     'SystDate' => now(),
                 ]);
+
+                $DepartmentName = '';
+                if (!empty($empGeneral->DepartmentId)) {
+                    $DepartmentName = $hrimsConnection->table('core_departments')->where('id', $empGeneral->DepartmentId)->value('department_name') ?? '';
+                }
+                $GradeName = '';
+                if (!empty($empGeneral->Grade)) {
+                    $GradeName = $hrimsConnection->table('core_grades')->where('id', $empGeneral->Grade)->value('grade_name') ?? '';
+                }
+                $DesignationName = '';
+                if (!empty($empGeneral->DesigId)) {
+                    $DesignationName = $hrimsConnection->table('core_designation')->where('id', $empGeneral->DesigId)->value('designation_name') ?? '';
+                }
+                $hrimsConnection->table('hrm_pms_appraisal_history')->insert([
+                    'CompanyId'=>$CompanyId,
+                    'EmployeeID'=>$nextEmpId,
+                    'EmpCode'=>$EmpCode,
+                    'EmpName' =>
+                        ( !empty($empGeneral->FName) ? $empGeneral->FName . ' ' : '' ) .
+                        ( !empty($empGeneral->MName) ? $empGeneral->MName . ' ' : '' ) .
+                        ( !empty($empGeneral->LName) ? $empGeneral->LName : '' ),
+                    'Current_Grade'=>$GradeName,
+                    'Proposed_Grade'=>$GradeName,
+                    'Department'=>$DepartmentName,
+                    'Current_Designation'=>$DesignationName,
+                    'Proposed_Designation'=>$DesignationName,
+                    'SalaryChange_Date'=> !empty($empGeneral->JoinOnDt) ? date('Y-m-d', strtotime($empGeneral->JoinOnDt)) : now(),
+                    'Salary_Basic'=>$empCtc->basic ?? 0,
+                    'Salary_HRA'=>$empCtc->hra ?? 0,
+                    'Bonus_Month'=>$empCtc->bonus ?? 0,
+                    'Salary_SA'=>$empCtc->special_alw ?? 0,
+                    'Previous_GrossSalaryPM'=>$empCtc->grsM_salary ?? 0,
+                    'Current_GrossSalaryPM'=>$empCtc->grsM_salary ?? 0,
+                    'Proposed_GrossSalaryPM'=>$empCtc->grsM_salary ?? 0,
+                    'TotalProp_GSPM'=>$empCtc->grsM_salary ?? 0,
+                    'Proposed_ActualCTC'=>$empCtc->fixed_ctc ?? 0,
+                    'VariablePay'=> 0,
+                    'TotCtc'=> $empCtc->total_ctc ?? 0,
+                    'comm_allow'=>$empCtc->communication_allowance_amount ?? 0,
+                    'car_allow'=> 0,
+                    'totgross_ctc'=>$empCtc->total_gross_ctc ?? 0,
+                    'SystemDate'=>now(),
+                    'CompID'=>$CompanyId
+                ]);
             }
 
           
