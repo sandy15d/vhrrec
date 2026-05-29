@@ -3,7 +3,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\RequisitionController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\Hod\HodController;
 use App\Http\Controllers\Hod\MrfController;
@@ -262,10 +262,25 @@ Route::get('candidate-interview-form', [JobApplicationController::class, 'candid
 Route::post('SaveInterviewConfirmation', [JobApplicationController::class, 'SaveInterviewConfirmation'])->name('SaveInterviewConfirmation');
 Route::post('candidate_interview', [JobApplicationController::class, 'candidate_interview'])->name('candidate_interview');
 Route::get('candidate-joining-form', [JobApplicationController::class, 'CandidateJoiningForm'])->name('candidate-joining-form');
+
+// nancy routes data
+
+Route::get('candidate-requisition-form/{JCId?}',[RequisitionController::class,'candidateRequisitionForm'])->name('candidate.requisition.form');
+Route::post('SaveRequisitionPersonalInfo', [RequisitionController::class, 'SaveRequisitionPersonalInfo'])->name('SaveRequisitionPersonalInfo');
+Route::post('SaveRequisitionContact', [RequisitionController::class, 'SaveRequisitionContact'])->name('SaveRequisitionContact');
+Route::post('RequisitionFormSubmit', [RequisitionController::class, 'RequisitionFormSubmit'])->name('RequisitionFormSubmit');
+
+Route::get('requisition-candidate-applications',[RequisitionController::class, 'requisitionCandidateApplication'])->name('requisition.candidate.application');
+
+Route::post('MapRequisitionCandidateToJob', [RequisitionController::class, 'MapRequisitionCandidateToJob'])->name('MapRequisitionCandidateToJob');
+Route::get('requisition-candidate_detail', [RequisitionController::class, 'requisition_candidate_detail'])->name('requisition_candidate_detail');
+
+
 Route::get('candidate-vehicle-form', [JobApplicationController::class, 'CandidateVehicleForm'])->name('candidate-vehicle-form');
 Route::post('SaveVehicleForm', [JobApplicationController::class, 'SaveVehicleForm'])->name('SaveVehicleForm');
 Route::get('onboarding', [JobApplicationController::class, 'onboarding'])->name('onboarding');
 Route::post('SavePersonalInfo', [JobApplicationController::class, 'SavePersonalInfo'])->name('SavePersonalInfo');
+
 Route::post('SaveContact', [JobApplicationController::class, 'SaveContact'])->name('SaveContact');
 Route::post('SaveEducation', [JobApplicationController::class, 'SaveEducation'])->name('SaveEducation');
 Route::post('SaveFamily', [JobApplicationController::class, 'SaveFamily'])->name('SaveFamily');

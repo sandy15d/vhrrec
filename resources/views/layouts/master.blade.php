@@ -364,6 +364,11 @@ function has_permission($resultArray, $pageName)
                                             (Resume Databank)</a>
                                     </li>
                                 @endif
+                                 @if (has_permission($resultArray, 'Job Applications' || Auth::user()->role == 'A'))
+                                    <li> <a href="{{ route('requisition.candidate.application') }}"><i class="bx bx-right-arrow-alt"></i>Requisition
+                                            Applications</a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif

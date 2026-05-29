@@ -1289,17 +1289,25 @@ class JobApplicationController extends Controller
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         }
     }
-
+   
     public function AadhaarUpload(Request $request)
     {
         $request->validate(['AadhaarCard' => 'required|mimes:pdf|max:2048']);
         $JCId = $request->JCId;
         $filename = 'Aadhar_' . $JCId . '.' . $request->AadhaarCard->extension();
 
-        if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
-            Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+        // if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
+        //     Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+        // }
+        $disk = 's3';
+        
+
+        $path = 'VVNR_Recruitment/Documents/' . $filename;
+
+        if (Storage::disk($disk)->exists($path)) {
+            Storage::disk($disk)->delete($path);
         }
-        $request->AadhaarCard->storeAs('VVNR_Recruitment/Documents', $filename, 's3');
+        $request->AadhaarCard->storeAs('VVNR_Recruitment/Documents', $filename,$disk);
         $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
         if ($chk == null) {
             $query = DB::table('jf_docs')->insert(
@@ -1331,10 +1339,19 @@ class JobApplicationController extends Controller
         $JCId = $request->JCId;
         $filename = 'PanCard_' . $JCId . '.' . $request->PANCard->extension();
 
-       if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
-            Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+    //    if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
+    //         Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+    //     }
+
+       $disk = 's3';
+        
+
+        $path = 'VVNR_Recruitment/Documents/' . $filename;
+
+        if (Storage::disk($disk)->exists($path)) {
+            Storage::disk($disk)->delete($path);
         }
-        $request->PANCard->storeAs('VVNR_Recruitment/Documents', $filename, 's3');
+        $request->PANCard->storeAs('VVNR_Recruitment/Documents', $filename,$disk);
         $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
         if ($chk == null) {
             $query = DB::table('jf_docs')->insert(
@@ -1383,10 +1400,16 @@ class JobApplicationController extends Controller
         $JCId = $request->JCId;
         $filename = 'Passport_' . $JCId . '.' . $request->Passport->extension();
 
-       if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
-            Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+   
+        $disk = 's3';
+        
+
+        $path = 'VVNR_Recruitment/Documents/' . $filename;
+
+        if (Storage::disk($disk)->exists($path)) {
+            Storage::disk($disk)->delete($path);
         }
-        $request->Passport->storeAs('VVNR_Recruitment/Documents', $filename, 's3');
+        $request->Passport->storeAs('VVNR_Recruitment/Documents', $filename,$disk);
         $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
         if ($chk == null) {
             $query = DB::table('jf_docs')->insert(
@@ -1434,10 +1457,16 @@ class JobApplicationController extends Controller
         $JCId = $request->JCId;
         $filename = 'UAN_' . $JCId . '.' . $request->UAN->extension();
 
-       if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
-            Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+    
+        $disk = 's3';
+        
+
+        $path = 'VVNR_Recruitment/Documents/' . $filename;
+
+        if (Storage::disk($disk)->exists($path)) {
+            Storage::disk($disk)->delete($path);
         }
-        $request->UAN->storeAs('VVNR_Recruitment/Documents', $filename, 's3');
+        $request->UAN->storeAs('VVNR_Recruitment/Documents', $filename, $disk);
         $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
         if ($chk == null) {
             $query = DB::table('jf_docs')->insert(
@@ -1485,10 +1514,16 @@ class JobApplicationController extends Controller
         $JCId = $request->JCId;
         $filename = 'UAN_' . $JCId . '.' . $request->UAN->extension();
 
-       if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
-            Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+    
+        $disk = 's3';
+        
+
+        $path = 'VVNR_Recruitment/Documents/' . $filename;
+
+        if (Storage::disk($disk)->exists($path)) {
+            Storage::disk($disk)->delete($path);
         }
-        $request->UAN->storeAs('VVNR_Recruitment/Documents', $filename, 's3');
+        $request->UAN->storeAs('VVNR_Recruitment/Documents', $filename,$disk);
         $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
         if ($chk == null) {
             $query = DB::table('jf_docs')->insert(
@@ -1556,10 +1591,16 @@ class JobApplicationController extends Controller
         $JCId = $request->JCId;
         $filename = 'PF_Form2_' . $JCId . '.' . $request->PFForm2->extension();
 
-       if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
-            Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+    
+        $disk = 's3';
+        
+
+        $path = 'VVNR_Recruitment/Documents/' . $filename;
+
+        if (Storage::disk($disk)->exists($path)) {
+            Storage::disk($disk)->delete($path);
         }
-        $request->PFForm2->storeAs('VVNR_Recruitment/Documents', $filename, 's3');
+        $request->PFForm2->storeAs('VVNR_Recruitment/Documents', $filename,$disk);
         $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
         if ($chk == null) {
             $query = DB::table('jf_docs')->insert(
@@ -1591,10 +1632,18 @@ class JobApplicationController extends Controller
         $JCId = $request->JCId;
         $filename = 'PF_Form11_' . $JCId . '.' . $request->PF_Form11->extension();
 
-       if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
-            Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+    //    if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
+    //         Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+    //     }
+    $disk = 's3';
+        
+
+        $path = 'VVNR_Recruitment/Documents/' . $filename;
+
+        if (Storage::disk($disk)->exists($path)) {
+            Storage::disk($disk)->delete($path);
         }
-        $request->PF_Form11->storeAs('VVNR_Recruitment/Documents', $filename, 's3');
+        $request->PF_Form11->storeAs('VVNR_Recruitment/Documents', $filename,$disk);
         $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
         if ($chk == null) {
             $query = DB::table('jf_docs')->insert(
@@ -1626,10 +1675,18 @@ class JobApplicationController extends Controller
         $JCId = $request->JCId;
         $filename = 'Gratuity_' . $JCId . '.' . $request->GratuityForm->extension();
 
-       if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
-            Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+    //    if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
+    //         Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+    //     }
+    $disk = 's3';
+        
+
+        $path = 'VVNR_Recruitment/Documents/' . $filename;
+
+        if (Storage::disk($disk)->exists($path)) {
+            Storage::disk($disk)->delete($path);
         }
-        $request->GratuityForm->storeAs('VVNR_Recruitment/Documents', $filename, 's3');
+        $request->GratuityForm->storeAs('VVNR_Recruitment/Documents', $filename,$disk);
         $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
         if ($chk == null) {
             $query = DB::table('jf_docs')->insert(
@@ -1661,10 +1718,18 @@ class JobApplicationController extends Controller
         $JCId = $request->JCId;
         $filename = 'ESIC_' . $JCId . '.' . $request->ESICForm->extension();
 
-       if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
-            Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+    //    if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
+    //         Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+    //     }
+    $disk = 's3';
+        
+
+        $path = 'VVNR_Recruitment/Documents/' . $filename;
+
+        if (Storage::disk($disk)->exists($path)) {
+            Storage::disk($disk)->delete($path);
         }
-        $request->ESICForm->storeAs('VVNR_Recruitment/Documents', $filename, 's3');
+        $request->ESICForm->storeAs('VVNR_Recruitment/Documents', $filename,$disk);
         $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
         if ($chk == null) {
             $query = DB::table('jf_docs')->insert(
@@ -1696,10 +1761,18 @@ class JobApplicationController extends Controller
         $JCId = $request->JCId;
         $filename = 'ESIC_Family_' . $JCId . '.' . $request->ESIC_Family->extension();
 
-       if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
-            Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+    //    if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
+    //         Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+    //     }
+    $disk = 's3';
+        
+
+        $path = 'VVNR_Recruitment/Documents/' . $filename;
+
+        if (Storage::disk($disk)->exists($path)) {
+            Storage::disk($disk)->delete($path);
         }
-        $request->ESIC_Family->storeAs('VVNR_Recruitment/Documents', $filename, 's3');
+        $request->ESIC_Family->storeAs('VVNR_Recruitment/Documents', $filename,$disk);
         $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
         if ($chk == null) {
             $query = DB::table('jf_docs')->insert(
@@ -1731,10 +1804,18 @@ class JobApplicationController extends Controller
         $JCId = $request->JCId;
         $filename = 'Health_' . $JCId . '.' . $request->Health->extension();
 
-       if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
-            Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+    //    if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
+    //         Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+    //     }
+    $disk = 's3';
+        
+
+        $path = 'VVNR_Recruitment/Documents/' . $filename;
+
+        if (Storage::disk($disk)->exists($path)) {
+            Storage::disk($disk)->delete($path);
         }
-        $request->Health->storeAs('VVNR_Recruitment/Documents', $filename, 's3');
+        $request->Health->storeAs('VVNR_Recruitment/Documents', $filename, $disk);
         $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
         if ($chk == null) {
             $query = DB::table('jf_docs')->insert(
@@ -1766,10 +1847,18 @@ class JobApplicationController extends Controller
         $JCId = $request->JCId;
         $filename = 'Ethical_' . $JCId . '.' . $request->Ethical->extension();
 
-       if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
-            Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+    //    if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
+    //         Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+    //     }
+    $disk = 's3';
+        
+
+        $path = 'VVNR_Recruitment/Documents/' . $filename;
+
+        if (Storage::disk($disk)->exists($path)) {
+            Storage::disk($disk)->delete($path);
         }
-        $request->Ethical->storeAs('VVNR_Recruitment/Documents', $filename, 's3');
+        $request->Ethical->storeAs('VVNR_Recruitment/Documents', $filename,$disk);
         $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
         if ($chk == null) {
             $query = DB::table('jf_docs')->insert(
@@ -1801,10 +1890,18 @@ class JobApplicationController extends Controller
         $JCId = $request->JCId;
         $filename = 'BloodGroup_' . $JCId . '.' . $request->BloodGroup->extension();
 
-       if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
-            Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+    //    if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
+    //         Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+    //     }
+    $disk = 's3';
+        
+
+        $path = 'VVNR_Recruitment/Documents/' . $filename;
+
+        if (Storage::disk($disk)->exists($path)) {
+            Storage::disk($disk)->delete($path);
         }
-        $request->BloodGroup->storeAs('VVNR_Recruitment/Documents', $filename, 's3');
+        $request->BloodGroup->storeAs('VVNR_Recruitment/Documents', $filename,$disk);
         $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
         if ($chk == null) {
             $query = DB::table('jf_docs')->insert(
@@ -1853,10 +1950,18 @@ class JobApplicationController extends Controller
         $JCId = $request->JCId;
         $filename = 'BankDoc_' . $JCId . '.' . $request->BankPassBook->extension();
 
-       if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
-            Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+        
+        $disk = 's3';
+        
+
+        $path = 'VVNR_Recruitment/Documents/' . $filename;
+
+        if (Storage::disk($disk)->exists($path)) {
+            Storage::disk($disk)->delete($path);
         }
-        $request->BankPassBook->storeAs('VVNR_Recruitment/Documents', $filename, 's3');
+
+    
+        $request->BankPassBook->storeAs('VVNR_Recruitment/Documents', $filename,$disk);
         $chk = DB::table('jf_docs')->where('JCId', $JCId)->first();
         if ($chk == null) {
             $query = DB::table('jf_docs')->insert(
@@ -1905,6 +2010,8 @@ class JobApplicationController extends Controller
         }
     }
 
+    
+
     public function FamilyPhotoFileUpload(Request $request)
     {
         \Log::debug('FamilyPhotoFileUpload called', ['JCId' => $request->JCId, 'request' => $request->all()]);
@@ -1914,17 +2021,26 @@ class JobApplicationController extends Controller
         $extension = $request->Family_Photo->getClientOriginalExtension();
         $filename = 'FamilyPhoto_' . $JCId . '.' . $extension;
         
-        try {
-            if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
-                \Log::debug('S3 file exists, deleting', ['filename' => $filename]);
-                Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
-            }
-        } catch (\Exception $e) {
-            \Log::error('Error checking/deleting S3 file', ['error' => $e->getMessage(), 'filename' => $filename]);
-            // Continue without error
+        // try {
+        //     if (Storage::disk('s3')->exists('VVNR_Recruitment/Documents/' . $filename)) {
+        //         \Log::debug('S3 file exists, deleting', ['filename' => $filename]);
+        //         Storage::disk('s3')->delete('VVNR_Recruitment/Documents/' . $filename);
+        //     }
+        // } catch (\Exception $e) {
+        //     \Log::error('Error checking/deleting S3 file', ['error' => $e->getMessage(), 'filename' => $filename]);
+        //     // Continue without error
+        // }
+
+        $disk = 's3';
+        
+
+        $path = 'VVNR_Recruitment/Documents/' . $filename;
+
+        if (Storage::disk($disk)->exists($path)) {
+            Storage::disk($disk)->delete($path);
         }
 
-        $uploaded = $request->Family_Photo->storeAs('VVNR_Recruitment/Documents', $filename, 's3');
+        $uploaded = $request->Family_Photo->storeAs('VVNR_Recruitment/Documents', $filename,$disk);
         \Log::debug('File upload attempted', ['uploaded' => $uploaded, 'filename' => $filename]);
 
         if (!$uploaded) {
@@ -2043,4 +2159,8 @@ class JobApplicationController extends Controller
             return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
         }
     }
+
+   
+
+   
 }

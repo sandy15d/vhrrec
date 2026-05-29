@@ -108,11 +108,14 @@ class OfferLtrController extends Controller
             'jobcandidates.FName',
             'jobcandidates.MName',
             'jobcandidates.LName',
-            'jobcandidates.FatherName'
+            'jobcandidates.FatherName',
+            'fvm.org_function_id as SelectedForF',
         )
             ->join('jobapply', 'jobapply.JAId', '=', 'screening.JAId')
             ->join('jobcandidates', 'jobcandidates.JCId', '=', 'jobapply.JCId')
             ->leftJoin('offerletterbasic', 'offerletterbasic.JAId', '=', 'jobapply.JAId')
+            ->leftJoin('core_fun_vertical_dept_mapping as fvdm', 'fvdm.department_id', '=', 'screening.SelectedForD')
+            ->leftJoin('core_function_vertical_mapping as fvm', 'fvm.id', '=', 'fvdm.function_vertical_id')
             ->leftJoin('core_department', 'core_department.id', '=', 'screening.SelectedForD')
             ->leftJoin('candidate_ctc', 'candidate_ctc.JAId', '=', 'jobapply.JAId')
             ->where('screening.JAId', $JAId)
@@ -187,6 +190,7 @@ class OfferLtrController extends Controller
         $JAId = $request->Of_JAId;
         $Company = $request->SelectedForC;
         $Department = $request->SelectedForD;
+        $Function = $request->SelectedForF;
         $SubDepartment = $request->SubDepartment;
         $Grade = $request->Grade;
         $Designation = $request->Designation;
@@ -235,6 +239,7 @@ class OfferLtrController extends Controller
             ->update(
                 [
                     'Grade' => $Grade,
+                    'Function' => $Function,
                     'VerticalId' => $Vertical,
                     'Region' => $Region ?? 0,
                     'Zone' => $Zone ?? 0,
@@ -1213,7 +1218,7 @@ class OfferLtrController extends Controller
             'screening.SelectedForD',
             'candjoining.Verification',
             'candjoining.Joined',
-            'candjoining.ForwardToESS'
+            'candjoining.ForwardToESS',
         )
             ->Join('jobapply', 'candjoining.JAId', '=', 'jobapply.JAId')
             ->Join('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')

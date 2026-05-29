@@ -1,86 +1,54 @@
 @php
     use Illuminate\Support\Carbon;
 
-    $sendingId = request()->query('jaid');
-    $JAId = base64_decode($sendingId);
-    $Rec = DB::table('jobapply')
-        ->join('jobcandidates', 'jobapply.JCId', '=', 'jobcandidates.JCId')
-        ->leftJoin('screening', 'screening.JAId', '=', 'jobapply.JAId')
-        ->leftJoin('screen2ndround', 'screen2ndround.ScId', '=', 'screening.ScId')
-        ->leftJoin('jobpost', 'jobapply.JPId', '=', 'jobpost.JPId')
-        ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
-        ->leftJoin('jf_pf_esic', 'jobcandidates.JCId', '=', 'jf_pf_esic.JCId')
-        ->leftJoin('core_country', 'jobcandidates.Nationality', '=', 'core_country.id')
-        ->leftJoin('appointing', 'appointing.JAId', '=', 'jobapply.JAId')
-        ->where('jobapply.JAId', $JAId)
-        ->select(
-            'jobapply.*',
-            'jobcandidates.*',
-            'screening.ReSentForScreen',
-            'screening.ResScreened',
-            'screening.ScreenStatus',
-            'screening.IntervStatus',
-            'screening.IntervDt',
-            'screen2ndround.IntervDt2',
-            'screen2ndround.IntervStatus2',
-            'screening.SelectedForD',
-            'jobpost.Title as JobTitle',
-            'jobpost.JobCode',
-            'jf_contact_det.pre_address',
-            'jf_contact_det.pre_city',
-            'jf_contact_det.pre_state',
-            'jf_contact_det.pre_pin',
-            'jf_contact_det.pre_dist',
-            'jf_contact_det.perm_address',
-            'jf_contact_det.perm_city',
-            'jf_contact_det.perm_state',
-            'jf_contact_det.perm_pin',
-            'jf_contact_det.perm_dist',
-            'jf_contact_det.cont_one_name',
-            'jf_contact_det.cont_one_relation',
-            'jf_contact_det.cont_one_number',
-            'jf_contact_det.cont_two_name',
-            'jf_contact_det.cont_two_relation',
-            'jf_contact_det.cont_two_number',
-            'jf_pf_esic.UAN',
-            'jf_pf_esic.PFNumber',
-            'jf_pf_esic.ESICNumber',
-            'jf_pf_esic.BankName',
-            'jf_pf_esic.BranchName',
-            'jf_pf_esic.IFSCCode',
-            'jf_pf_esic.AccountNumber',
-            'jf_pf_esic.PAN',
-            'jf_pf_esic.Passport',
-            'core_country.country_name',
-            'appointing.AppLtrGen',
-            'appointing.AgrLtrGen',
-            'appointing.BLtrGen',
-            'appointing.ConfLtrGen',
-        )
-        ->first();
+    $sendingId = request()->query('jcid');
+    $JCId = base64_decode($sendingId);
+    $Rec = DB::table('jobcandidates')
+    ->leftJoin('jf_contact_det', 'jobcandidates.JCId', '=', 'jf_contact_det.JCId')
+    ->leftJoin('jf_pf_esic', 'jobcandidates.JCId', '=', 'jf_pf_esic.JCId')
+    ->leftJoin('core_country', 'jobcandidates.Nationality', '=', 'core_country.id')
+    ->where('jobcandidates.JCId', $JCId)
+    ->select(
+        'jobcandidates.*',
+
+        'jf_contact_det.pre_address',
+        'jf_contact_det.pre_city',
+        'jf_contact_det.pre_state',
+        'jf_contact_det.pre_pin',
+        'jf_contact_det.pre_dist',
+
+        'jf_contact_det.perm_address',
+        'jf_contact_det.perm_city',
+        'jf_contact_det.perm_state',
+        'jf_contact_det.perm_pin',
+        'jf_contact_det.perm_dist',
+
+        'jf_contact_det.cont_one_name',
+        'jf_contact_det.cont_one_relation',
+        'jf_contact_det.cont_one_number',
+
+        'jf_contact_det.cont_two_name',
+        'jf_contact_det.cont_two_relation',
+        'jf_contact_det.cont_two_number',
+
+        'jf_pf_esic.UAN',
+        'jf_pf_esic.PFNumber',
+        'jf_pf_esic.ESICNumber',
+        'jf_pf_esic.BankName',
+        'jf_pf_esic.BranchName',
+        'jf_pf_esic.IFSCCode',
+        'jf_pf_esic.AccountNumber',
+        'jf_pf_esic.PAN',
+        'jf_pf_esic.Passport',
+
+        'core_country.country_name',
+    )
+    ->first();
 
     $JCId = $Rec->JCId;
     $firobid = base64_encode($Rec->JCId);
 
-    $OfBasic = DB::table('offerletterbasic')
-        ->leftJoin('candjoining', 'candjoining.JAId', '=', 'offerletterbasic.JAId')
-        ->leftJoin('appointing', 'appointing.JAId', '=', 'offerletterbasic.JAId')
-        ->select(
-            'offerletterbasic.*',
-            'candjoining.JoinOnDt',
-            'appointing.A_Date',
-            'appointing.Agr_Date',
-            'appointing.B_Date',
-            'appointing.ConfLtrDate',
-            'candjoining.EmpCode',
-            'candjoining.Verification',
-            'candjoining.Joined',
-            'candjoining.PositionCode',
-            'candjoining.ForwardToESS',
-            'candjoining.NoJoiningRemark',
-        )
-        ->where('offerletterbasic.JAId', $JAId)
-        ->first();
+   
 
     $FamilyInfo = DB::table('jf_family_det')->where('JCId', $JCId)->get();
     $Education = DB::table('candidateeducation')->where('JCId', $JCId)->get();
@@ -92,9 +60,9 @@
 
     $VnrRef = DB::table('jf_reference')->where('JCId', $JCId)->where('from', 'VNR')->get();
     $Year = Carbon::now()->year;
-    $sql = DB::table('offerletterbasic_history')->where('JAId', $JAId)->get();
+    // $sql = DB::table('offerletterbasic_history')->where('JAId', $JAId)->get();
     $lang = DB::table('jf_language')->where('JCId', $JCId)->get();
-    $count = count($sql);
+    
     $OtherSeed = DB::table('relation_other_seed_cmp')->where('JCId', $JCId)->get();
     $VnrBusinessRef = DB::table('vnr_business_ref')->where('JCId', $JCId)->get();
     $AboutAns = DB::table('about_answer')->where('JCId', $JCId)->first();
@@ -103,17 +71,7 @@
     $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
     $candidate_log = DB::table('candidate_log')->where('JCId', $JCId)->get();
 
-    if ($OfBasic != null && $OfBasic->Grade != null) {
-        $position_code_list = DB::table('position_codes')
-            ->where('company_id', $OfBasic->Company)
-            ->where('department_id', $OfBasic->Department)
-            ->where('grade_id', $OfBasic->Grade)
-            ->where('is_available', 'Yes')
-            ->pluck('position_code');
-    } else {
-        $position_code_list = [];
-    }
-
+   
 @endphp
 @extends('layouts.master')
 @section('title', 'Candidate Detail')
@@ -155,7 +113,7 @@
         }
     </style>
     <div class="page-content">
-        <input type="hidden" name="JAId" id="JAId" value="{{ $JAId }}">
+        {{-- <input type="hidden" name="JAId" id="JAId" value="{{ $JAId }}"> --}}
         <input type="hidden" name="JCId" id="JCId" value="{{ $JCId }}">
 
         <div class="card mb-0">
@@ -178,12 +136,12 @@
                                         <div class="profile-info-left">
                                             <h6 class="user-name m-t-0 mb-0"> {{ $Rec->FName }} {{ $Rec->MName }}
                                                 {{ $Rec->LName }}</h6>
-                                            <h6 class="staff-id">Applied For: {{ $Rec->JobTitle }}</h6>
-                                            <h6 class="staff-id text-primary">MRF: {{ $Rec->JobCode }}</h6>
+                                            <h6 class="staff-id">Applied For: {{ $Rec->JobTitle ?? ''}}</h6>
+                                            <h6 class="staff-id text-primary">MRF: {{ $Rec->JobCode ?? ''}}</h6>
 
-                                            <div class="staff-id">ReferenceNo : {{ $Rec->ReferenceNo }}</div>
+                                            <div class="staff-id">ReferenceNo : {{ $Rec->ReferenceNo ?? ''}}</div>
                                             <div class="staff-id">Date of Apply :
-                                                {{ date('d-M-Y', strtotime($Rec->ApplyDate)) }}</div>
+                                                {{ date('d-M-Y', strtotime($Rec->CreatedTime)) }}</div>
                                             <div class="staff-msg"><a class="btn btn-custom btn-sm"
                                                     href="javascript:void(0);" data-bs-toggle="modal"
                                                     data-bs-target="#resume_modal">View Resume</a>
@@ -234,13 +192,7 @@
                                                     </div>
                                                 @endif
 
-                                                @if ($OfBasic != null && $OfBasic->OfferLtrGen == 1)
-                                                    <div class="title">
-                                                        <a href="{{ route('offer_ltr_print') }}?jaid={{ $Rec->JAId }}"
-                                                            class="text-danger">Offer
-                                                            Letter</a>
-                                                    </div>
-                                                @endif
+                                               
                                             </li>
                                         </ul>
                                     </div>
@@ -282,16 +234,7 @@
 
                         <li class="nav-item"><a href="#cand_history" data-bs-toggle="tab" class="nav-link">History</a></li>
 
-                        <li class="nav-item"><a href="#job_offer" data-bs-toggle="tab" class="nav-link">Job
-                                Offer</a></li>
-
-
-                        @if (Auth::user()->role == 'A')
-                            <li class="nav-item">
-                                <a href="#admin_change" data-bs-toggle="tab" class="nav-link">Changes <small
-                                        class="text-danger">(Admin Only)</small></a>
-                            </li>
-                        @endif
+                        
 
                     </ul>
                 </div>
@@ -1425,79 +1368,15 @@
                                     <tbody>
                                         <tr>
                                             <td>Job Applied</td>
-                                            <td> {{ date('d-M-Y', strtotime($Rec->ApplyDate)) }}</td>
+                                            <td> {{ date('d-M-Y', strtotime($Rec->CreatedTime)) }}</td>
                                         </tr>
-                                        @if ($Rec->Status != null)
+                                        {{-- @if ($Rec->Status != null)
                                             <tr>
                                                 <td>HR Screening Status</td>
                                                 <td>{{ $Rec->Status }}</td>
                                             </tr>
-                                        @endif
-                                        @if ($Rec->Status == 'Selected')
-                                            <tr>
-                                                <td>Forwarded for Technical Screening</td>
-                                                <td>{{ $Rec->FwdTechScr }}</td>
-                                            </tr>
-                                            @if ($Rec->FwdTechScr == 'Yes')
-                                                <tr>
-                                                    <td>Technical Screening Sent Date</td>
-                                                    <td> {{ date('d-M-Y', strtotime($Rec->ReSentForScreen)) }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Technical Screening Status</td>
-                                                    <td>{{ $Rec->ScreenStatus }}</td>
-                                                </tr>
-                                            @endif
-                                        @endif
-
-                                        @if ($Rec->ScreenStatus == 'Shortlist')
-                                            <tr>
-                                                <td>Inderview Date</td>
-                                                <td>{{ date('d-M-Y', strtotime($Rec->IntervDt)) }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Interview Status</td>
-                                                <td>{{ $Rec->IntervStatus }}</td>
-                                            </tr>
-                                        @endif
-                                        @if ($Rec->IntervStatus == '2nd Round Interview')
-                                            <tr>
-                                                <td>2nd Round Interview Date</td>
-                                                <td>{{ date('d-M-Y', strtotime($Rec->IntervDt2)) }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>2nd Round Interview Status</td>
-                                                <td>{{ $Rec->IntervStatus2 }}</td>
-                                            </tr>
-                                        @endif
-                                        @if ($Rec->SelectedForD != null)
-                                            <tr>
-                                                <td>Offer Letter Sent</td>
-                                                <td>{{ $OfBasic->OfferLetterSent ?? '' }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Offer Letter Status</td>
-                                                <td>{{ $OfBasic->Answer ?? '' }}</td>
-                                            </tr>
-                                        @endif
-
-                                        @if ($OfBasic != null && $OfBasic->Answer == 'Rejected')
-                                            <tr>
-                                                <td>Offer Letter Rejected Reason</td>
-                                                <td>{{ $OfBasic->RejReason }}</td>
-                                            </tr>
-                                        @endif
-                                        @if ($OfBasic != null && $OfBasic->Answer == 'Accepted')
-                                            <tr>
-                                                <td>Joining Form Sent</td>
-                                                <td>{{ $OfBasic->JoiningFormSent }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Joining Form Status</td>
-                                                <td>{{ $Rec->FinalSubmit == 1 ? 'Submitted' : 'Not Submitted' }}
-                                                </td>
-                                            </tr>
-                                        @endif
+                                        @endif --}}
+                                       
                                     </tbody>
                                 </table>
 
@@ -1534,707 +1413,9 @@
                 </div>
             </div>
 
-            <div class="tab-pane fade" id="job_offer">
-                <div class="row">
-                    <div class="col-md-5 d-flex">
-                        <div class="card profile-box flex-fill">
-                            <div class="card-body">
-                                <h6 class="card-title">Offer Letter Basic Details
-                                    {{-- @if ($OfBasic != null && ($OfBasic->Answer == '' || $OfBasic->Answer == 'Rejected')) --}}
-                                    <a href="#" class="edit-icon" data-bs-toggle="modal"
-                                        data-bs-target="#OfferLtrModal" id="offerltredit"
-                                        data-id="{{ $Rec->JAId }}">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
-                                    {{-- @endif --}}
-                                </h6>
-                                <ul class="personal-info">
-                                    <li>
-                                        <div class="title" style="width: 150px;">Department<span
-                                                style="float: right">:</span></div>
-                                        <div class="text">
-                                            @if ($OfBasic != null)
-                                                {{ getDepartment($OfBasic->Department) ?? '-' }}
-                                            @else
-                                                -
-                                            @endif
-                                        </div>
-                                    </li>
-                                    
-                                    <li>
-                                        <div class="title" style="width: 150px;">Designation<span
-                                                style="float: right">:</span></div>
-                                        <div class="text">
-                                            @if ($OfBasic != null)
-                                                @if ($OfBasic->Designation == 0)
-                                                    -
-                                                @else
-                                                    {{ getDesignation($OfBasic->Designation) ?? '-' }}
-                                                @endif
-                                            @else
-                                                -
-                                            @endif
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="title" style="width: 150px;">Grade<span
-                                                style="float: right">:</span></div>
-                                        <div class="text">
-                                            @if ($OfBasic != null)
-                                                @if ($OfBasic->Grade == 0)
-                                                    -
-                                                @else
-                                                    {{ getGradeValue($OfBasic->Grade) ?? '-' }}
-                                                @endif
-                                            @else
-                                                -
-                                            @endif
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="title" style="width: 150px;">Reporting Mgr.<span
-                                                style="float: right">:</span></div>
-                                        <div class="text">
-                                            @if ($OfBasic != null)
-                                                @if ($OfBasic->A_ReportingManager == '' || $OfBasic->A_ReportingManager == null)
-                                                    -
-                                                @else
-                                                    {{ getFullName($OfBasic->A_ReportingManager) ?? '-' }}
-                                                @endif
-                                            @else
-                                                -
-                                            @endif
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="title" style="width: 150px;">CTC<span style="float: right">:</span>
-                                        </div>
-                                        <div class="text">
-                                            @if ($OfBasic != null)
-                                                @if ($OfBasic->CTC == '' || $OfBasic->CTC == null)
-                                                    -
-                                                @else
-                                                    {{ $OfBasic->CTC ?? '-' }}
-                                                @endif
-                                            @else
-                                                -
-                                            @endif
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="title" style="width: 150px;">Service Condition<span
-                                                style="float: right">:</span></div>
-                                        <div class="text">
-                                            @if ($OfBasic != null)
-                                                @if ($OfBasic->ServiceCondition == 'Training')
-                                                    Training
-                                                @elseif($OfBasic->ServiceCondition == 'Probation')
-                                                    Probation
-                                                @elseif($OfBasic->ServiceCondition == 'nopnot')
-                                                    No Probation No Training
-                                                @else
-                                                    -
-                                                @endif
-                                            @endif
-                                        </div>
-                                    </li>
+           
 
-                                    <li>
-                                        <div class="title" style="width: 150px;">Service Bond<span
-                                                style="float: right">:</span></div>
-                                        <div class="text">
-                                            @if ($OfBasic != null)
-                                                @if ($OfBasic->ServiceBond == 'Yes')
-                                                    Yes
-                                                @elseif($OfBasic->ServiceBond == 'No')
-                                                    No
-                                                @else
-                                                    -
-                                                @endif
-                                            @endif
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-7 d-flex">
-                        <div class="card profile-box flex-fill">
-                            <div class="card-body">
-                                <h6 class="card-title">Offer Letter Generation & Review
-                                    {{-- @if ($OfBasic != null && ($OfBasic->Answer == '' || $OfBasic->Answer == 'Rejected')) --}}
-                                    <a href="javascript:void(0);" class="edit-icon" id="offerltrgen"
-                                        data-id="{{ $Rec->JAId }}">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
-                                    {{-- @endif --}}
-                                </h6>
-
-                                <ul class="personal-info">
-                                    <li>
-                                        <div class="title" style="width: 300px;">Offer Letter Generated<span
-                                                style="float: right">:</span></div>
-                                        <div class="text">
-                                            @if ($OfBasic != null && $OfBasic->OfferLtrGen == 1)
-                                                <span class="text-dark">Yes</span>
-                                            @else
-                                                <span class="text-danger">No</span>
-                                            @endif
-                                            @if ($count > 1)
-                                                ( <a href="javascript:vaoid(0);" class="offer-history-btn"
-                                                    data-bs-toggle="modal" data-bs-target="#HistoryModal"
-                                                    onclick="getOfHistory({{ $Rec->JAId }});"> View History</a>)
-                                            @endif
-
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="title" style="width: 300px;">Send for Review<span
-                                                style="float: right">:</span></div>
-                                        <div class="text">
-
-                                            @if ($OfBasic != null && $OfBasic->SendReview == 1)
-                                                <span class="text-dark">Yes</span> ( <a href="javascript:void(0);"
-                                                    onclick="viewReview({{ $Rec->JAId }});" data-bs-toggle="modal"
-                                                    data-bs-target="#view_review">View</a>)
-                                            @else
-                                                <span class="text-danger">No</span>
-                                            @endif
-                                            @if ($OfBasic != null && $OfBasic->OfferLtrGen == 1)
-                                                (<a href="javascript:void(0);" data-bs-toggle="modal"
-                                                    data-bs-target="#review_modal">
-                                                    Send Now</a>)
-                                            @endif
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="title" style="width: 300px;">Send to Candidate<span
-                                                style="float: right">:</span></div>
-                                        <div class="text">
-                                            @if ($OfBasic != null && $OfBasic->OfferLetterSent == 'Yes')
-                                                <span class="text-dark">Yes</span>
-                                            @else
-                                                <span class="text-danger">No</span>
-                                                @if ($OfBasic != null && $OfBasic->OfferLtrGen == 1)
-                                                    ( <a href="javascript:void(0);" class=""
-                                                        onclick="sendOfferLtr({{ $Rec->JAId }});">
-                                                        Send Now</a>)
-                                                @endif
-                                            @endif
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="title" style="width: 300px;">Candidate Response<span
-                                                style="float: right">:</span></div>
-                                        <div class="text"> <span
-                                                class="text-danger">{{ $OfBasic->Answer ?? '-' }}</span>
-                                            @if ($OfBasic != null && $OfBasic->Answer == 'Rejected')
-                                                ( <a href="javascript:void(0);" class=""
-                                                    onclick="offerReopen({{ $Rec->JAId }});"> Offer Reopen</a>)
-                                            @endif
-                                        </div>
-                                    </li>
-
-                                    @if ($OfBasic != null && $OfBasic->Answer == 'Rejected')
-                                        <li>
-                                            <div class="title" style="width: 300px;">Rejection Reason<span
-                                                    style="float: right">:</span></div>
-                                            <div class="text text-danger">
-                                                @if ($OfBasic != null)
-                                                    {{ $OfBasic->RejReason ?? '-' }}
-                                                @endif
-                                            </div>
-                                        </li>
-
-                                    @endif
-                                    <li>
-                                        <div class="title" style="width: 300px;">Date of Joining<span
-                                                style="float: right">:</span></div>
-                                        <div class="text">
-                                            <input type="date"
-                                                class="form-control frminp form-control-sm d-inline-block" id="dateofJoin"
-                                                name="" readonly="" style="width: 130px;"
-                                                value="{{ $OfBasic->JoinOnDt ?? '' }}">
-                                            <i class="fa fa-pencil text-primary" aria-hidden="true" id="joindtenable"
-                                                onclick="joinDateEnbl()"
-                                                style="font-size: 16px;cursor: pointer; display: "></i>
-                                            <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
-                                                id="JoinSave" onclick="saveJoinDate()">Save</button>
-                                            <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
-                                                id="JoinCanc" onclick="window.location.reload();">Cancel</button>
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <div class="title" style="width: 300px;">Onboarding process (mail to
-                                            candidate)<span style="float: right">:</span></div>
-                                        <div class="text">
-                                            @if ($OfBasic != null && $OfBasic->JoiningFormSent == 'Yes')
-                                                <span class="text-dark">Yes</span>
-                                            @else
-                                                <span class="text-danger">No</span>
-                                                @if ($OfBasic != null && $OfBasic->OfferLtrGen == 1)
-                                                    ( <a href="javascript:void(0);" class=""
-                                                        onclick="sendJoiningForm({{ $Rec->JAId }});"> Send Now</a>)
-                                                @endif
-                                            @endif
-                                    </li>
-
-                                    <li>
-                                        <div class="title" style="width: 300px;">Ref. Check <span
-                                                style="float: right">:</span>
-                                        </div>
-                                        <div class="text">
-                                            @if ($OfBasic != null && $OfBasic->SendForRefChk == 1)
-                                                <span class="text-dark">Yes</span>
-                                                (<a href="{{ route('view_reference_check') }}?jaid={{ base64_encode($Rec->JAId) }}"
-                                                    target="_blank">View</a>)
-                                            @else
-                                                <span class="text-danger">No</span>( <a href="javascript:void(0);"
-                                                    class="" data-bs-toggle="modal" data-bs-target="#ref_modal">
-                                                    Send Now</a>)
-                                            @endif
-                                        </div>
-                                    </li>
-
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    @if ($OfBasic != null && $OfBasic->Answer == 'Accepted')
-                        <div class="col-md-6 d-flex">
-                            <div class="card profile-box flex-fill">
-                                <div class="card-body">
-                                    <h6 class="card-title">Joining Details </h6>
-                                    <ul class="personal-info">
-
-                                        <li>
-                                            <div class="title" style="width: 150px;"> Appointment Letter <span
-                                                    style="float: right">:</span> </div>
-
-                                            <div class="text  text-dark">
-                                                @if ($Rec->AppLtrGen == 'No' || $Rec->AppLtrGen == null)
-                                                    <i class="fa fa-pencil text-primary" aria-hidden="true"
-                                                        onclick="appointmentGen({{ $Rec->JAId }})"
-                                                        style="font-size: 16px;cursor: pointer; display: ">Generate </i>
-                                                @else
-                                                    <a href="{{ route('appointment_ltr_print') }}?jaid={{ $Rec->JAId }}"
-                                                        target="_blank">View</a>
-                                                @endif
-
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="title" style="width: 150px;"> Service Agreement <span
-                                                    style="float: right">:</span> </div>
-                                            <div class="text  text-dark">
-                                                @if ($Rec->AgrLtrGen == 'No' || $Rec->AgrLtrGen == null)
-                                                    <i class="fa fa-pencil text-primary" aria-hidden="true"
-                                                        onclick="ServiceAgrGen({{ $Rec->JAId }})"
-                                                        style="font-size: 16px;cursor: pointer; display: ">Generate </i>
-                                                @else
-                                                    <a href="{{ route('service_agreement') }}?jaid={{ base64_encode($JAId) }}"
-                                                        target="_blank"> View</a> | ( <a
-                                                        href="{{ route('service_agreement_print_e_first') }}?jaid={{ base64_encode($Rec->JAId) }}"
-                                                        target="_blank">First Page</a> |
-                                                    <a href="{{ route('service_agreement_print') }}?jaid={{ base64_encode($Rec->JAId) }}"
-                                                        target="_blank">Rest All</a> ) | <a
-                                                        href="{{ route('service_agreement_print_old_stamp') }}?jaid={{ base64_encode($Rec->JAId) }}"
-                                                        target="_blank">
-                                                        Old Stamp</a>
-                                                @endif
-
-                                            </div>
-                                        </li>
-                                        @if ($OfBasic != null && $OfBasic->ServiceBond == 'Yes')
-                                            <li>
-                                                <div class="title" style="width: 150px;"> Service Bond <span
-                                                        style="float: right">:</span> </div>
-                                                <div class="text  text-dark">
-                                                    @if ($Rec->BLtrGen == 'No' || $Rec->BLtrGen == null)
-                                                        <i class="fa fa-pencil text-primary" aria-hidden="true"
-                                                            onclick="ServiceBondGen({{ $Rec->JAId }})"
-                                                            style="font-size: 16px;cursor: pointer; display: ">Generate
-                                                        </i>
-                                                    @else
-                                                        <a href="{{ route('service_bond') }}?jaid={{ base64_encode($JAId) }}"
-                                                            target="_blank"> View</a> | (<a
-                                                            href="{{ route('service_bond_print_e_first') }}?jaid={{ base64_encode($Rec->JAId) }}"
-                                                            target="_blank">First Page</a> |
-                                                        <a href="{{ route('service_bond_print') }}?jaid={{ base64_encode($Rec->JAId) }}"
-                                                            target="_blank">Rest All</a>) | <a
-                                                            href="{{ route('service_bond_print_old_stamp') }}?jaid={{ base64_encode($Rec->JAId) }}"
-                                                            target="_blank">
-                                                            Old Stamp</a>
-                                                    @endif
-                                                </div>
-                                            </li>
-                                        @endif
-                                        @if (
-                                            $OfBasic->Department == 2 ||
-                                                $OfBasic->Department == 3 ||
-                                                $OfBasic->Department == 17 ||
-                                                $OfBasic->Department == 13 ||
-                                                $OfBasic->Department == 11 ||
-                                                $OfBasic->Department == 12 ||
-                                                $OfBasic->Department == 14)
-                                            <li>
-                                                <div class="title" style="width: 150px;"> Conf. Agreement <span
-                                                        style="float: right">:</span> </div>
-                                                <div class="text  text-dark">
-                                                    @if ($Rec->ConfLtrGen == 'No' || $Rec->ConfLtrGen == null)
-                                                        <i class="fa fa-pencil text-primary" aria-hidden="true"
-                                                            onclick="ConfidentialityAgrGen({{ $Rec->JAId }})"
-                                                            style="font-size: 16px;cursor: pointer; display: ">Generate
-                                                        </i>
-                                                    @else
-                                                        <a href="{{ route('conf_agreement') }}?jaid={{ base64_encode($JAId) }}"
-                                                            target="_blank"> View</a> | ( <a
-                                                            href="{{ route('conf_agreement_print_e_first') }}?jaid={{ base64_encode($Rec->JAId) }}"
-                                                            target="_blank">
-                                                            First Page</a> |
-                                                        <a href="{{ route('conf_agreement_print') }}?jaid={{ base64_encode($Rec->JAId) }}"
-                                                            target="_blank">
-                                                            Rest All</a> ) | <a
-                                                            href="{{ route('conf_agreement_print_old_stamp') }}?jaid={{ base64_encode($Rec->JAId) }}"
-                                                            target="_blank">
-                                                            Old Stamp</a>
-                                                    @endif
-
-                                                </div>
-                                            </li>
-
-                                        @endif
-
-                                        <li>
-                                            <div class="title" style="width: 150px;"> Verify Joining Form <span
-                                                    style="float: right">:</span> </div>
-                                            <div class="text  text-dark">
-                                                <select name="Verification" id="Verification"
-                                                    class="form-select form-select-sm frminp d-inline" disabled
-                                                    style="width: 100px;">
-                                                    <option value="Not Verified">Not Verified</option>
-                                                    <option value="Verified"
-                                                        {{ $OfBasic->Verification == 'Verified' ? 'selected' : '' }}>
-                                                        Verified
-                                                    </option>
-                                                </select>
-                                                <i class="fa fa-pencil text-primary" aria-hidden="true"
-                                                    id="VerificationEnable" onclick="VerificationEnable()"
-                                                    style="font-size: 16px;cursor: pointer; display: "></i>
-                                                <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
-                                                    id="SaveVerification">Save</button>
-                                                <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
-                                                    id="verificationCancle"
-                                                    onclick="window.location.reload();">Cancel</button>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="title" style="width: 150px;"> Candidate Joined <span
-                                                    style="float: right">:</span> </div>
-                                            <div class="text  text-dark">
-                                                <select name="Joined" id="Joined"
-                                                    class="form-select form-select-sm frminp d-inline" disabled
-                                                    style="width: 100px;">
-                                                    <option value=""></option>
-                                                    <option value="No"
-                                                        {{ $OfBasic->Joined == 'No' ? 'selected' : '' }}>
-                                                        No</option>
-                                                    <option value="Yes"
-                                                        {{ $OfBasic->Joined == 'Yes' ? 'selected' : '' }}>Yes
-                                                    </option>
-                                                </select>
-                                                <i class="fa fa-pencil text-primary" aria-hidden="true" id="JoinedEnbl"
-                                                    onclick="JoinedEnbl()"
-                                                    style="font-size: 16px;cursor: pointer; display: "></i>
-                                                <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
-                                                    id="SaveJoined">Save</button>
-                                                <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
-                                                    id="JoinedCancle" onclick="window.location.reload();">Cancel</button>
-                                            </div>
-                                        </li>
-                                        @if ($OfBasic != null && $OfBasic->NoJoiningRemark != null)
-                                            <li>
-                                                <div class="title" style="width: 150px;">Reason for Not Joining
-                                                    <span style="float: right">:</span>
-                                                </div>
-                                                <div class="text  text-danger">
-                                                    {{ $OfBasic->NoJoiningRemark }}
-                                                </div>
-                                            </li>
-                                        @endif
-
-                                        @if ($OfBasic->Joined == 'Yes')
-                                            <li>
-                                                <div class="title" style="width: 150px;">Emp Code<span
-                                                        style="float: right">:</span></div>
-                                                <div class="text">
-                                                    <input type="number"
-                                                        class="form-control frminp form-control-sm d-inline-block"
-                                                        id="empCode" name="" readonly=""
-                                                        style="width: 100px;" value="{{ $OfBasic->EmpCode ?? '' }}">
-                                                    <i class="fa fa-pencil text-primary" aria-hidden="true"
-                                                        id="empCodeEnable" onclick="empCodeEnable()"
-                                                        style="font-size: 16px;cursor: pointer; display: "></i>
-                                                    <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
-                                                        id="EmpCodeSave" onclick="saveEmpCode()">Save</button>
-                                                    <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
-                                                        id="empCancle" onclick="window.location.reload();">Cancel</button>
-                                                </div>
-                                            </li>
-                                            {{-- <li>
-                                                <div class="title" style="width: 150px;">Position Code<span
-                                                        style="float: right">:</span></div>
-                                                <div class="text">
-
-
-                                                    <select name="PositionCode" id="PositionCode"
-                                                        class="form-select form-select-sm d-inline-block"
-                                                        style="width: 170px;" disabled>
-                                                        <option value="">Select</option>
-                                                        @foreach ($position_code_list as $key => $value)
-                                                            <option value="{{ $value }}">{{ $value }}
-                                                            </option>
-                                                        @endforeach
-                                                        @if ($OfBasic->PositionCode != '')
-                                                            <option value="{{ $OfBasic->PositionCode }}" selected>
-                                                                {{ $OfBasic->PositionCode }}</option>
-                                                        @endif
-                                                    </select>
-
-                                                    <i class="fa fa-pencil text-primary" aria-hidden="true" id="PosEnbl"
-                                                        onclick="PosEnbl()"
-                                                        style="font-size: 16px;cursor: pointer; display: "></i>
-                                                    <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
-                                                        id="PositionCodeSave" onclick="PositionCodeSave()">Save</button>
-                                                    <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
-                                                        id="posCancle" onclick="window.location.reload();">Cancel</button>
-                                                </div>
-                                            </li> --}}
-                                        @endif
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-                    <div class="col-md-6 d-flex">
-                        <div class="card profile-box flex-fill">
-                            <div class="card-body">
-                                <h6 class="card-title">Links
-
-                                </h6>
-                                <ul class="personal-info">
-                                    @if ($OfBasic != null && $OfBasic->OfferLtrGen == '1')
-                                        <li>
-                                            <div class="title" style="width: 150px;">Offer Letter<span
-                                                    style="float: right">:</span></div>
-                                            <div class="text"><input type="text" name="" id="oflink"
-                                                    class="frminp d-inline"
-                                                    value="{{ route('candidate-offer-letter') }}?jaid={{ $sendingId }}">
-                                                <button class="frmbtn btn btn-sm btn-secondary"
-                                                    onclick="copyOfLink();">Copy
-                                                    Link</button>
-                                            </div>
-                                        </li>
-                                    @endif
-
-                                    <li>
-                                        <div class="title" style="width: 150px;">Interview Form<span
-                                                style="float: right">:</span></div>
-                                        <div class="text"><input type="text" name="" id="interviewlink"
-                                                class="frminp d-inline"
-                                                value="{{ route('candidate-interview-form') }}?jaid={{ $sendingId }}">
-                                            <button class="frmbtn btn btn-sm btn-secondary"
-                                                onclick="copyJIntFrmLink();">Copy
-                                                Link</button>
-                                        </div>
-                                    </li>
-                                    @if ($Rec->InterviewSubmit == 1 || ($OfBasic != null && $OfBasic->JoiningFormSent == 'Yes'))
-                                        <li>
-                                            <div class="title" style="width: 150px;">Joining Form<span
-                                                    style="float: right">:</span></div>
-                                            <div class="text"><input type="text" name="" id="jflink"
-                                                    class="frminp d-inline"
-                                                    value="{{ route('candidate-joining-form') }}?jaid={{ $sendingId }}">
-                                                <button class="frmbtn btn btn-sm btn-secondary"
-                                                    onclick="copyJFrmLink();">Copy
-                                                    Link</button>
-                                                @if ($Rec->FinalSubmit == 1)
-                                                    <button class="frmbtn btn btn-primary btn-sm"
-                                                        id="open_joining_form">Open Joining Form
-                                                    </button>
-                                                @endif
-                                            </div>
-                                        </li>
-                                    @endif
-                                    <li>
-                                        <div class="title" style="width: 150px;">FIRO B Test<span
-                                                style="float: right">:</span></div>
-                                        <div class="text">
-
-                                            <input type="text" name="" id="firoblink" class="frminp d-inline"
-                                                value="{{ route('firo_b') }}?jcid={{ $firobid }}">
-                                            <button class="frmbtn btn btn-sm btn-secondary"
-                                                onclick="copyFiroBlink();">Copy
-                                                Link</button>
-
-
-
-                                            @if ($Rec->FIROB_Test == 1)
-                                                <span style="margin-left: 20px;"><a href="javascript:void(0);"
-                                                        onclick='window.open("{{ route('firob_result') }}?jcid={{ $JCId }}", "", "width=750,height=900");'>Result
-                                                        1</a> </span> | <span style="margin-left: 20px;"><a
-                                                        href="javascript:void(0);"
-                                                        onclick='window.open("{{ route('firob_result_summery') }}?jcid={{ $JCId }}", "", "width=750,height=900");'>Result
-                                                        2</a> </span>
-                                            @endif
-                                        </div>
-                                    </li>
-                                </ul>
-                                <br>
-                                <br>
-                                @if ($OfBasic != null)
-                                    @if ($OfBasic->ForwardToESS == 'No' && $OfBasic->Joined == 'Yes' && $OfBasic->EmpCode != '')
-                                        <center><button class="btn btn-sm btn-primary" id="ProcessToEss">Process Data to
-                                                Ess
-                                            </button>
-                                        </center>
-                                    @endif
-                                @endif
-                                @if ($OfBasic != null && $OfBasic->ForwardToESS == 'Yes')
-                                    <center>
-                                        <h3 class="text-success">Data Forwarded to ESS</h3>
-                                    </center>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="tab-pane fade" id="admin_change">
-                <div class="row">
-                    <div class="col-6">
-                        <div class="card profile-box flex-fill">
-                            <div class="card-body">
-
-                                <ul class="personal-info">
-                                    <li>
-                                        <div class="title">Offer Letter Date<span style="float: right">:</span>
-                                        </div>
-                                        <div class="text">
-
-                                            <input type="date"
-                                                class="form-control frminp form-control-sm d-inline-block" id="off_date"
-                                                name="" readonly="" style="width: 130px;"
-                                                value="{{ $OfBasic->LtrDate ?? '' }}">
-                                            <i class="fa fa-pencil text-primary" aria-hidden="true" id="off_date_enable"
-                                                onclick="off_date_enable()"
-                                                style="font-size: 16px;cursor: pointer; display: "></i>
-                                            <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
-                                                id="save_off_date" onclick="save_off_date()">Save</button>
-                                            <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
-                                                id="off_date_can" onclick="window.location.reload();">Cancel</button>
-
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <div class="title">App. Ltr. Date<span style="float: right">:</span></div>
-                                        <div class="text">
-                                            <input type="date"
-                                                class="form-control frminp form-control-sm d-inline-block"
-                                                id="a_date" name="" readonly="" style="width: 130px;"
-                                                value="{{ $OfBasic->A_Date ?? '' }}">
-                                            <i class="fa fa-pencil text-primary" aria-hidden="true" id="a_date_enable"
-                                                onclick="a_date_enable()"
-                                                style="font-size: 16px;cursor: pointer; display: "></i>
-                                            <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
-                                                id="save_a_date" onclick="save_a_date()">Save</button>
-                                            <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
-                                                id="a_date_can" onclick="window.location.reload();">Cancel</button>
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <div class="title">Service Agr. Date<span style="float: right">:</span>
-                                        </div>
-                                        <div class="text">
-                                            <input type="date"
-                                                class="form-control frminp form-control-sm d-inline-block"
-                                                id="agr_date" name="" readonly="" style="width: 130px;"
-                                                value="{{ $OfBasic->Agr_Date ?? '' }}">
-                                            <i class="fa fa-pencil text-primary" aria-hidden="true"
-                                                id="agr_date_enable" onclick="agr_date_enable()"
-                                                style="font-size: 16px;cursor: pointer; display: "></i>
-                                            <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
-                                                id="save_agr_date" onclick="save_agr_date()">Save</button>
-                                            <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
-                                                id="agr_date_can" onclick="window.location.reload();">Cancel</button>
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <div class="title">Service Bond Date<span style="float: right">:</span>
-                                        </div>
-                                        <div class="text">
-                                            <input type="date"
-                                                class="form-control frminp form-control-sm d-inline-block"
-                                                id="b_date" name="" readonly="" style="width: 130px;"
-                                                value="{{ $OfBasic->B_Date ?? '' }}">
-                                            <i class="fa fa-pencil text-primary" aria-hidden="true" id="b_date_enable"
-                                                onclick="b_date_enable()"
-                                                style="font-size: 16px;cursor: pointer; display: "></i>
-                                            <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
-                                                id="save_b_date" onclick="save_b_date()">Save</button>
-                                            <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
-                                                id="b_date_can" onclick="window.location.reload();">Cancel</button>
-                                        </div>
-                                    </li>
-                                    @if ($OfBasic != null)
-                                        @if (
-                                            $OfBasic->Department == 2 ||
-                                                $OfBasic->Department == 3 ||
-                                                $OfBasic->Department == 17 ||
-                                                $OfBasic->Department == 13 ||
-                                                $OfBasic->Department == 11 ||
-                                                $OfBasic->Department == 12 ||
-                                                $OfBasic->Department == 14)
-                                            <li>
-                                                <div class="title">Conf. Agr. Date<span style="float: right">:</span>
-                                                </div>
-                                                <div class="text">
-                                                    <input type="date"
-                                                        class="form-control frminp form-control-sm d-inline-block"
-                                                        id="conf_date" name="" readonly=""
-                                                        style="width: 130px;"
-                                                        value="{{ $OfBasic->ConfLtrDate ?? '' }}">
-                                                    <i class="fa fa-pencil text-primary" aria-hidden="true"
-                                                        id="conf_date_enable" onclick="conf_date_enable()"
-                                                        style="font-size: 16px;cursor: pointer; display: "></i>
-                                                    <button class="btn btn-sm frmbtn btn-primary" style="display: none;"
-                                                        id="save_conf_date" onclick="save_conf_date()">Save</button>
-                                                    <button class="btn btn-sm frmbtn btn-danger" style="display: none;"
-                                                        id="conf_date_can"
-                                                        onclick="window.location.reload();">Cancel</button>
-                                                </div>
-                                            </li>
-                                        @endif
-                                    @endif
-
-
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+           
         </div>
     </div>
 
@@ -4429,7 +3610,7 @@
                     <form action="{{ route('send_for_review') }}" method="POST" id="reviewForm">
                         @csrf
                         <div class="form-group mb-2">
-                            <input type="hidden" name="ReviewJaid" value="{{ $JAId }}">
+                            <input type="hidden" name="ReviewJaid" value="{{ $JCId }}">
                             <label for="ReviewCompany">Company</label>
                             <select name="ReviewCompany" id="ReviewCompany" class="form-select form-select-sm"
                                 onchange="getEmployee(this.value)">
@@ -4993,7 +4174,7 @@ if($AboutAns != null){
                     <form action="{{ route('send_for_ref_chk') }}" method="POST" id="ref_chk_form">
                         @csrf
                         <div class="form-group mb-2">
-                            <input type="hidden" name="ReferenceChkJAId" value="{{ $JAId }}">
+                            <input type="hidden" name="ReferenceChkJAId" value="{{ $JCId }}">
                             <label for="RefChkMail">Ref. Person Mail ID <i class="text-danger">*</i></label>
                             <input type="text" name="RefChkMail" id="RefChkMail"
                                 class="form-control form-control-sm">
@@ -6618,6 +5799,7 @@ if($AboutAns != null){
                 success: function(res) {
                     if (res.status == 200) {
                         $('#Of_JAId').val(JAId);
+                        
                         var department_id = res.candidate_detail.SelectedForD;
                         var grade_id = res.candidate_detail.Grade;
                         var vertical_id = res.candidate_detail.VerticalId;
@@ -7025,12 +6207,10 @@ if($AboutAns != null){
                         $.each(data.error, function(prefix, val) {
                             $(form).find('span.' + prefix + '_error').text(val[0]);
                         });
-                        
                     } else {
                         $(form)[0].reset();
                         $('#loader').modal('hide');
                         $('#OfferLtrModal').modal('hide');
-                        window.location.reload();
                     }
                 }
             });
