@@ -576,6 +576,7 @@ class ProcessToEss extends Controller
                 'NoticeDay_Prob' => $empGeneral->ProbationNoticePeriod ?? '',
                 //'asset_per_mobile' => 'N',
                // 'asset_per_laptop' => 'N',
+               'EmailId_Vnr'=>$empGeneral->Email ?? '',
                 'CreatedBy' => $UserId,
                 'CreatedDate' => now(),
                 'SysDate' => now(),
