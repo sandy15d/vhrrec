@@ -57,5 +57,4 @@ $ReferenceNo = $query[0]->ReferenceNo;
     <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
 
 </body>
-
 </html>

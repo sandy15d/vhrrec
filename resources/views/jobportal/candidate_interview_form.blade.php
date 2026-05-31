@@ -49,6 +49,7 @@ $AboutAns = DB::table('about_answer')
 $Docs = DB::table('jf_docs')
     ->where('JCId', $JCId)
     ->first();
+    
 $country_list = DB::table('master_country')->pluck('CountryName', 'CountryId');
 $institute_list = DB::table("master_institute")->join('states','states.StateId','=','master_institute.StateId')->where('states.CountryId',$Rec->Nationality)->orderBy('InstituteName', 'asc')->pluck("InstituteName", "InstituteId");
 @endphp

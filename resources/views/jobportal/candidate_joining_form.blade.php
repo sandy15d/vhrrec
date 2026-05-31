@@ -8,17 +8,15 @@ $query = DB::table('jobapply')
 @endphp
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-    <title>VNR -On Boarding</title>
+    <title>VNR - On Boarding</title>
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/mystyle.css">
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/sweetalert2.min.css" />
     <link rel="stylesheet" href="{{ URL::to('/') }}/assets/css/toastr.min.css" />
 </head>
-
 <body class="account-page">
     <div class="main-wrapper">
         <div class="account-content">
@@ -27,7 +25,7 @@ $query = DB::table('jobapply')
                     <div class="account-wrapper">
                         <div class="lock-user">
                             <h4>Welcome To VNR</h4>
-                       {{--      <h5>{{ $query->FName }} {{ $query->MName }} {{ $query->LName }}</h5> --}}
+                       {{-- <h5>{{ $query->FName }} {{ $query->MName }} {{ $query->LName }}</h5> --}}
                         </div>
                         <form id="refchkform">
                             @csrf
@@ -71,5 +69,4 @@ $query = DB::table('jobapply')
         });
     </script>
 </body>
-
 </html>
