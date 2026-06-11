@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
 use App\Models\Admin\master_institute;
 use Illuminate\Http\Request;
@@ -12,20 +13,13 @@ class InstituteController extends Controller
 {
     public function institute()
     {
-        $state_list = DB::table("states")->where('CountryId',session('Set_Country'))->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
+        $state_list = DB::table("states")->where('CountryId', 1)->orderBy('StateName', 'asc')->pluck("StateName", "StateId");
         $district_list = DB::table("master_district")->orderBy('DistrictName', 'asc')->pluck("DistrictName", "DistrictId");
-        return view('admin.institute', compact('state_list','district_list'));
+        $university_list = master_institute::where('Institute_Type', 'Board/University')->get();
+        return view('admin.institute', compact('state_list', 'district_list', 'university_list'));
     }
 
-   /*  public function getDistrict(Request $request)
-    {
-        $district = DB::table("master_district")->orderBy('DistrictName','asc')
-            ->where("StateId", $request->StateId)
-            ->pluck( "DistrictId","DistrictName");
-       return response()->json($district);
-          
-    }
- */
+
     // ?===============Insert Institute records in Database===================
     public function addInstitute(Request $request)
     {
@@ -36,6 +30,7 @@ class InstituteController extends Controller
             'District' => 'required',
             'Category' => 'required',
             'Type' => 'required',
+            'Institute_Type' => 'required',
 
         ]);
         if ($validator->fails()) {
@@ -48,6 +43,8 @@ class InstituteController extends Controller
             $Institute->DistrictId = $request->District;
             $Institute->Category = $request->Category;
             $Institute->Type = $request->Type;
+            $Institute->Institute_Type = $request->Institute_Type;
+            $Institute->ParentId = $request->ParentId;
             $Institute->Status = $request->Status;
             $query = $Institute->save();
 
@@ -61,13 +58,14 @@ class InstituteController extends Controller
 
     // ?====================Get All Education Data From Datatabse=====================
 
-     public function getAllInstitute()
+    public function getAllInstitute()
     {
         $Institute = DB::table('master_institute')->join('states', 'states.StateId', '=', 'master_institute.StateId')
             ->join('master_district', 'master_district.DistrictId', '=', 'master_institute.DistrictId')
             ->join('core_country', 'core_country.id', '=', 'states.CountryId')
             ->where('core_country.id', '=', 1)
             ->select(['master_institute.*', 'states.StateCode', 'master_district.DistrictName']);
+
         return datatables()->of($Institute)
             ->addIndexColumn()
             ->addColumn('chk', function () {
@@ -113,6 +111,8 @@ class InstituteController extends Controller
             $Institute->Category = $request->editCategory;
             $Institute->Type = $request->editType;
             $Institute->Status = $request->editStatus;
+            $Institute->Institute_Type = $request->editInstitute_Type;
+            $Institute->ParentId = $request->editParentId;
             $query = $Institute->save();
             if (!$query) {
                 return response()->json(['status' => 400, 'msg' => 'Something went wrong..!!']);
