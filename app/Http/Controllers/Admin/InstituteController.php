@@ -61,25 +61,23 @@ class InstituteController extends Controller
 
     // ?====================Get All Education Data From Datatabse=====================
 
-    public function getAllInstitute()
+     public function getAllInstitute()
     {
         $Institute = DB::table('master_institute')->join('states', 'states.StateId', '=', 'master_institute.StateId')
             ->join('master_district', 'master_district.DistrictId', '=', 'master_institute.DistrictId')
-        
-            ->join('master_country', 'master_country.CountryId', '=', 'states.CountryId')
-            ->where('master_country.CountryId', '=', session('Set_Country'))
+            ->join('core_country', 'core_country.id', '=', 'states.CountryId')
+            ->where('core_country.id', '=', 1)
             ->select(['master_institute.*', 'states.StateCode', 'master_district.DistrictName']);
-
         return datatables()->of($Institute)
             ->addIndexColumn()
-            ->addColumn('chk',function(){
+            ->addColumn('chk', function () {
                 return '<input type="checkbox" class="select_all">';
             })
             ->addColumn('actions', function ($Institute) {
-                return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $Institute->InstituteId . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>  
+                return '<button class="btn btn-sm  btn-outline-primary font-13 edit" data-id="' . $Institute->InstituteId . '" id="editBtn"><i class="fadeIn animated bx bx-pencil"></i></button>
                 <button class="btn btn-sm btn btn-outline-danger font-13 delete" data-id="' . $Institute->InstituteId . '" id="deleteBtn"><i class="fadeIn animated bx bx-trash"></i></button>';
             })
-            ->rawColumns(['chk','actions'])
+            ->rawColumns(['chk', 'actions'])
             ->make(true);
     }
 
