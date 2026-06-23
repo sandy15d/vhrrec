@@ -667,6 +667,13 @@ Route::group(['prefix' => 'hod', 'middleware' => ['isHod', 'auth', 'PreventBackH
 
 
 //=============================REPORTS=====================================================//
+Route::get('employee-firob-reports',[Reports::class,'EmpFirobReports'])->name('emp.firob.reports');
+
+
+Route::get('employee-firob-sub-departments',[Reports::class,'getEmpFirobSubDepartments'])->name('get.emp.firob.sub.departments');
+Route::post('get-employee-firob-reports',[Reports::class,'getEmpFirobReports'])->name('get.emp.firob.reports');
+Route::get('export-employee-firob-reports',[Reports::class,'exportEmpFirobReports'])->name('export.emp.firob.reports');
+
 Route::get('Firob_Reports', [Reports::class, 'Firob_Reports'])->name('Firob_Reports');
 Route::get('candidate_vs_job', [CandidateVsJobController::class, 'index'])->name('candidate_vs_job');
 Route::get('reports_download', [Reports::class, 'reports_download'])->name('reports_download');

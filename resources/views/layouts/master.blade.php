@@ -2,8 +2,11 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use app\Helpers\Helpers;
+$authUser = Auth::user();
+$authId = $authUser->id ?? null;
+$authRole = $authUser->role ?? null;
 $Notification = DB::table('notification')
-    ->where('userid', Auth::user()->id)
+    ->where('userid', $authId)
     ->where('status', 0)
     ->where('notification_read', 0)
     ->orderBy('id', 'DESC')
@@ -18,18 +21,20 @@ $CountryQry = DB::table('master_country')
     ->first();
 $permission = DB::table('permission')
     ->leftJoin('user_permission', 'permission.PId', '=', 'user_permission.PId')
-    ->where('user_permission.UserId', Auth::user()->id)
+    ->where('user_permission.UserId', $authId)
     ->select('permission.PageName')
     ->get();
 $resultArray = json_decode(json_encode($permission), true);
-function has_permission($resultArray, $pageName)
-{
-    foreach ($resultArray as $key => $value) {
-        if ($value['PageName'] == $pageName) {
-            return true;
+if (!function_exists('has_permission')) {
+    function has_permission($resultArray, $pageName)
+    {
+        foreach ($resultArray as $key => $value) {
+            if ($value['PageName'] == $pageName) {
+                return true;
+            }
         }
+        return false;
     }
-    return false;
 }
 
 
@@ -74,7 +79,7 @@ function has_permission($resultArray, $pageName)
     <script>
         $(document).ready(function() {
             $('a[data-bs-toggle="tab"]').on('show.bs.tab', function(e) {
-           
+
                 localStorage.setItem('activeTab', $(e.target).attr('href'));
             });
             var activeTab = localStorage.getItem('activeTab');
@@ -191,7 +196,7 @@ function has_permission($resultArray, $pageName)
 
             <ul class="metismenu" id="menu">
 
-                @if (Auth::user()->role == 'A')
+                @if ($authRole == 'A')
                     <li class="{{ request()->is('admin/dashboard') ? 'mm-active' : '' }}">
                         <a href="/admin/dashboard">
                             <div class="parent-icon"><i class="fas fa-laptop-house text-primary"></i>
@@ -283,7 +288,7 @@ function has_permission($resultArray, $pageName)
                 @endif
 
 
-                @if (Auth::user()->role == 'H')
+                @if ($authRole == 'H')
                     <li class="{{ request()->is('hod/dashboard') ? 'mm-active' : '' }}">
                         <a href="/hod/dashboard">
                             <div class="parent-icon"><i class="fas fa-laptop-house text-primary"></i>
@@ -316,7 +321,7 @@ function has_permission($resultArray, $pageName)
 
 
 
-                @if (Auth::user()->role == 'R')
+                @if ($authRole == 'R')
                     <li class="{{ request()->is('recruiter/dashboard') ? 'mm-active' : '' }}">
                         <a href="/recruiter/dashboard">
                             <div class="parent-icon"><i class="fas fa-laptop-house text-primary"></i>
@@ -345,8 +350,8 @@ function has_permission($resultArray, $pageName)
                     @endif
                 @endif
 
-                @if (Auth::user()->role == 'A' || Auth::user()->role == 'R')
-                    @if (has_permission($resultArray, 'Job & Response') || has_permission($resultArray, 'Job Applications' || Auth::user()->role == 'A'))
+                @if ($authRole == 'A' || $authRole == 'R')
+                    @if (has_permission($resultArray, 'Job & Response') || has_permission($resultArray, 'Job Applications' || $authRole == 'A'))
                         <li>
                             <a href="javascript:;" class="has-arrow">
                                 <div class="parent-icon"><i class="lni lni-write text-warning"></i>
@@ -354,24 +359,24 @@ function has_permission($resultArray, $pageName)
                                 <div class="menu-title">Job Application Management</div>
                             </a>
                             <ul>
-                                @if (has_permission($resultArray, 'Job & Response' || Auth::user()->role == 'A'))
+                                @if (has_permission($resultArray, 'Job & Response' || $authRole == 'A'))
                                     <li> <a href="/job_response"><i class="bx bx-right-arrow-alt"></i>Job & Response</a>
                                     </li>
                                 @endif
-                                @if (has_permission($resultArray, 'Job Applications' || Auth::user()->role == 'A'))
+                                @if (has_permission($resultArray, 'Job Applications' || $authRole == 'A'))
                                     <li> <a href="/job_applications"><i class="bx bx-right-arrow-alt"></i>Job
                                             Application
                                             (Resume Databank)</a>
                                     </li>
                                 @endif
-                                 @if (has_permission($resultArray, 'Job Applications' || Auth::user()->role == 'A'))
+                                 @if (has_permission($resultArray, 'Job Applications' || $authRole == 'A'))
                                     <li> <a href="{{ route('requisition.candidate.application') }}"><i class="bx bx-right-arrow-alt"></i>Candidate Requisition</a>
                                     </li>
                                 @endif
                             </ul>
                         </li>
                     @endif
-                    @if (has_permission($resultArray, 'Screening Tracker') || has_permission($resultArray, 'Interview Tracker' || Auth::user()->role == 'A'))
+                    @if (has_permission($resultArray, 'Screening Tracker') || has_permission($resultArray, 'Interview Tracker' || $authRole == 'A'))
                         <li>
                             <a href="javascript:;" class="has-arrow">
                                 <div class="parent-icon"><i class="lni lni-timer  text-info"></i>
@@ -379,11 +384,11 @@ function has_permission($resultArray, $pageName)
                                 <div class="menu-title">Recruitment Tracker</div>
                             </a>
                             <ul>
-                                @if (has_permission($resultArray, 'Screening Tracker' || Auth::user()->role == 'A'))
+                                @if (has_permission($resultArray, 'Screening Tracker' || $authRole == 'A'))
                                     <li> <a href="/TechnicalScreening"><i class="bx bx-right-arrow-alt"></i>Screening
                                             Tracker</a></li>
                                 @endif
-                                @if (has_permission($resultArray, 'Interview Tracker' || Auth::user()->role == 'A'))
+                                @if (has_permission($resultArray, 'Interview Tracker' || $authRole == 'A'))
                                     <li> <a href="/interview_tracker"><i class="bx bx-right-arrow-alt"></i>Interview
                                             Tracker</a>
                                     </li>
@@ -391,7 +396,7 @@ function has_permission($resultArray, $pageName)
                             </ul>
                         </li>
                     @endif
-                    @if (has_permission($resultArray, 'Job Offers') || has_permission($resultArray, 'Candidates for Joining' || Auth::user()->role == 'A'))
+                    @if (has_permission($resultArray, 'Job Offers') || has_permission($resultArray, 'Candidates for Joining' || $authRole == 'A'))
                         <li>
                             <a href="javascript:;" class="has-arrow">
                                 <div class="parent-icon"><i class="fadeIn animated bx bx-walk  text-success"></i>
@@ -410,7 +415,7 @@ function has_permission($resultArray, $pageName)
                             </ul>
                         </li>
                     @endif
-                    @if (has_permission($resultArray, 'Campus MRF') || has_permission($resultArray, 'Campus Application') || has_permission($resultArray, 'Campus Screening Tracker') || has_permission($resultArray, 'Campus Hiring Tracker') || has_permission($resultArray, 'Campus Hiring Costing' || Auth::user()->role == 'A'))
+                    @if (has_permission($resultArray, 'Campus MRF') || has_permission($resultArray, 'Campus Application') || has_permission($resultArray, 'Campus Screening Tracker') || has_permission($resultArray, 'Campus Hiring Tracker') || has_permission($resultArray, 'Campus Hiring Costing' || $authRole == 'A'))
                         <li>
                             <a href="javascript:;" class="has-arrow">
                                 <div class="parent-icon"><i class="lni lni-ux  text-primary"></i>
@@ -418,32 +423,32 @@ function has_permission($resultArray, $pageName)
                                 <div class="menu-title">Campus Hirings</div>
                             </a>
                             <ul>
-                                @if (has_permission($resultArray, 'Campus MRF' || Auth::user()->role == 'A'))
+                                @if (has_permission($resultArray, 'Campus MRF' || $authRole == 'A'))
                                     <li> <a href="/campus_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Campus
                                             MRF</a>
                                     </li>
                                 @endif
-                                @if (has_permission($resultArray, 'Campus Application' || Auth::user()->role == 'A'))
+                                @if (has_permission($resultArray, 'Campus Application' || $authRole == 'A'))
                                     <li> <a href="/campus_applications"><i class="bx bx-right-arrow-alt"></i>Campus
                                             Application</a></li>
                                 @endif
-                                @if (has_permission($resultArray, 'Campus Screening Tracker' || Auth::user()->role == 'A'))
+                                @if (has_permission($resultArray, 'Campus Screening Tracker' || $authRole == 'A'))
                                     <li> <a href="/campus_screening_tracker"><i
                                                 class="bx bx-right-arrow-alt"></i>Screening
                                             Tracker</a></li>
                                 @endif
-                                @if (has_permission($resultArray, 'Campus Hiring Tracker' || Auth::user()->role == 'A'))
+                                @if (has_permission($resultArray, 'Campus Hiring Tracker' || $authRole == 'A'))
                                     <li> <a href="/campus_hiring_tracker"><i class="bx bx-right-arrow-alt"></i>Hiring
                                             Tracker</a></li>
                                 @endif
-                                @if (has_permission($resultArray, 'Campus Hiring Costing' || Auth::user()->role == 'A'))
+                                @if (has_permission($resultArray, 'Campus Hiring Costing' || $authRole == 'A'))
                                     <li> <a href="/campus_hiring_costing"><i class="bx bx-right-arrow-alt"></i>Hiring
                                             Costing</a></li>
                                 @endif
                             </ul>
                         </li>
                     @endif
-                  {{--   @if (has_permission($resultArray, 'Trainee MRF') || has_permission($resultArray, 'Trainee Application') || has_permission($resultArray, 'Trainee Tracker') || has_permission($resultArray, 'Active Trainee') || has_permission($resultArray, 'Old Trainee' || Auth::user()->role == 'A'))
+                  {{--   @if (has_permission($resultArray, 'Trainee MRF') || has_permission($resultArray, 'Trainee Application') || has_permission($resultArray, 'Trainee Tracker') || has_permission($resultArray, 'Active Trainee') || has_permission($resultArray, 'Old Trainee' || $authRole == 'A'))
                         <li>
                             <a href="javascript:;" class="has-arrow">
                                 <div class="parent-icon"><i class="fadeIn animated bx bx-atom  text-danger"></i>
@@ -451,32 +456,32 @@ function has_permission($resultArray, $pageName)
                                 <div class="menu-title">Trainee</div>
                             </a>
                             <ul>
-                                @if (has_permission($resultArray, 'Trainee MRF' || Auth::user()->role == 'A'))
+                                @if (has_permission($resultArray, 'Trainee MRF' || $authRole == 'A'))
                                     <li> <a href="/trainee_mrf_allocated"><i class="bx bx-right-arrow-alt"></i>Trainee
                                             MRF</a>
                                     </li>
                                 @endif
-                                @if (has_permission($resultArray, 'Trainee Application' || Auth::user()->role == 'A'))
+                                @if (has_permission($resultArray, 'Trainee Application' || $authRole == 'A'))
                                     <li> <a href="/trainee_applications"><i class="bx bx-right-arrow-alt"></i>Trainee
                                             Application</a></li>
                                 @endif
-                                @if (has_permission($resultArray, 'Trainee Tracker' || Auth::user()->role == 'A'))
+                                @if (has_permission($resultArray, 'Trainee Tracker' || $authRole == 'A'))
                                     <li> <a href="/trainee_screening_tracker"><i class="bx bx-right-arrow-alt"></i>SIP
                                             /
                                             Trainee Tracker</a></li>
                                 @endif
-                                @if (has_permission($resultArray, 'Active Trainee' || Auth::user()->role == 'A'))
+                                @if (has_permission($resultArray, 'Active Trainee' || $authRole == 'A'))
                                     <li> <a href="/active_trainee"><i class="bx bx-right-arrow-alt"></i>Active
                                             Trainee</a>
                                     </li>
                                 @endif
-                                @if (has_permission($resultArray, 'Old Trainee' || Auth::user()->role == 'A'))
+                                @if (has_permission($resultArray, 'Old Trainee' || $authRole == 'A'))
                                     <li> <a href="/old_trainee"><i class="bx bx-right-arrow-alt"></i>Old Trainee</a>
                                     </li>
                                 @endif
                             </ul>
                         </li>
-                       
+
                     @endif --}}
                     <li>
                         <a href="/admin/sentemails" target="_blank">
@@ -502,6 +507,11 @@ function has_permission($resultArray, $pageName)
                             <li> <a title="FIRO B Test" href="/Firob_Reports"><i
                                         class="bx bx-right-arrow-alt"></i>FIRO
                                     B Test</a></li>
+                            <li><a title="FIRO B Test" href="{{ route('emp.firob.reports') }}"><i
+                                    class="bx bx-right-arrow-alt"></i>Company wise
+                                FiroB Report</a>
+                            </li>
+
                             <li> <a href="/reports_download"><i class="bx bx-right-arrow-alt"></i>Report's in
                                     Excel</a>
                             </li>
@@ -516,7 +526,7 @@ function has_permission($resultArray, $pageName)
                     </li> --}}
                 @endif
 
-                @if (Auth::user()->role == 'A')
+                @if ($authRole == 'A')
                     <li> <a href="/admin/userlist">
                             <div class="parent-icon"><i class='bx bx-user text-info'></i>
                             </div>
@@ -524,10 +534,10 @@ function has_permission($resultArray, $pageName)
                         </a></li>
 
 
-                    
 
 
-                  
+
+
 
                     <li>
                         <a href="/admin/userlogs">
@@ -549,8 +559,8 @@ function has_permission($resultArray, $pageName)
                     </div>
                     <div class="search-bar flex-grow-1">
                         <div class="position-relative search-bar-box">
-                            <h4 class="logo-text">{{ $CompanyQry->CompanyName }}
-                                ({{ $CountryQry->CountryName }})</h4>
+                            <h4 class="logo-text">{{ $CompanyQry->CompanyName ?? '' }}
+                                ({{ $CountryQry->CountryName ?? '' }})</h4>
                         </div>
                     </div>
                     <div class="top-menu ms-auto">
@@ -626,7 +636,7 @@ function has_permission($resultArray, $pageName)
                             <img src="{{ URL::to('/') }}/assets/images/avatars/avatar-2.png" class="user-img"
                                 alt="user avatar">
                             <div class="user-info ps-3">
-                                <p class="user-name mb-0"> {{ Auth::user()->name }}</p>
+                                <p class="user-name mb-0"> {{ ($authUser->name ?? '') }}</p>
                             </div>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
@@ -764,6 +774,7 @@ function has_permission($resultArray, $pageName)
     <script src="{{ URL::to('/') }}/assets/js/app.js"></script>
 <script src="{{ URL::to('/') }}/assets/js/canvasjs.min.js"></script>
     @yield('scriptsection')
+    @yield('script_section')
 
     <script>
         $(document).ready(function() {

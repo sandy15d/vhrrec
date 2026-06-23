@@ -25,7 +25,7 @@ class master_employee extends Model
         'DesigId',
         'RepEmployeeID',
         'Contact',
-        'Email', 
+        'Email',
         'Gender',
         'Married',
         'DR',
@@ -34,5 +34,6 @@ class master_employee extends Model
         'DateOfSepration',
         'CTC',
         'LastUpdated',
+        'CandidateId'
     ];
 }

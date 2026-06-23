@@ -51,12 +51,12 @@ public function syncEmployee()
     ini_set('memory_limit', '-1');
     master_employee::truncate();
     $response = Http::get('https://vnrseeds.co.in/VVNR_RcdDetails.php?action=Details&val=Employee')->json();
-    
+
     $data = [];
     $employeeIds = [];
     $chunkSize = 500; // Insert 500 records at a time
     $totalInserted = 0;
-    
+
     foreach ($response['employee_list'] as $rowNo => $value) {
         if (empty($value['DateJoining']) || $value['DateJoining'] == '0000-00-00') {
             $value['DateJoining'] = null;
@@ -64,9 +64,9 @@ public function syncEmployee()
         if (empty($value['DateOfSepration']) || $value['DateOfSepration'] == '0000-00-00') {
             $value['DateOfSepration'] = null;
         }
-        
+
         $empId = $value['EmployeeID'];
-        
+
         // Log duplicates coming from API
         if (isset($employeeIds[$empId])) {
             \Log::info('Duplicate EmployeeID found in API', [
@@ -77,9 +77,9 @@ public function syncEmployee()
             ]);
             continue; // Skip duplicate
         }
-        
+
         $employeeIds[$empId] = $value;
-        
+
         $data[] = [
             'EmployeeID'      => $empId,
             'VCode'           => $value['VCode'],
@@ -103,9 +103,10 @@ public function syncEmployee()
             'Location'        => $value['HqId'],
             'CTC'             => $value['Tot_CTC'],
             'Title'           => $value['Title'],
+            'CandidateId'     => $value['CandidateId'],
             'CountryId'       => 11,
         ];
-        
+
         // Insert in chunks
         if (count($data) >= $chunkSize) {
             try {
@@ -124,7 +125,7 @@ public function syncEmployee()
             }
         }
     }
-    
+
     // Insert remaining records
     if (!empty($data)) {
         try {
@@ -141,7 +142,7 @@ public function syncEmployee()
             ]);
         }
     }
-    
+
     return response()->json([
         'status' => 200,
         'msg' => "Employee data synchronized. Total: {$totalInserted} employees."

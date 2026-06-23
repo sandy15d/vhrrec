@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 use App\Models\CandidateJoining;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Exports\CandidateAptitudeReportExport;
+use App\Exports\EmployeeFirobReportExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 use App\Models\Admin\resumesource_master;
 
@@ -199,7 +202,7 @@ class Reports extends Controller
             ->leftJoin('jobpost', 'jobpost.JPId', '=', 'jobapply.JPId')
             ->leftJoin('master_resumesource', 'master_resumesource.ResumeSouId', '=', 'jobapply.ResumeSource')
             ->leftJoin('users', 'users.id', '=', 'jobapply.SelectedBy')
-         
+
             ->whereNotNull('jobapply.Status')
             ->orderBy('JAId', 'desc');
         return datatables()->of($mrf)
@@ -576,7 +579,7 @@ class Reports extends Controller
                 }else{
                     return 'Non Campus';
                 }
-        
+
             })
 
             ->make(true);
@@ -656,4 +659,187 @@ class Reports extends Controller
 
         return $dataPoints1;
     }
+    public function EmpFirobReports()
+    {
+        $company_list = DB::table('core_company')->orderBy('company_code')->pluck('company_code', 'id');
+        $department_list = DB::table('core_department')->orderBy('department_name')->pluck('department_name', 'id');
+        $grade_list = DB::table('core_grade')->orderBy('grade_name')->pluck('grade_name', 'id');
+        $designation_list = DB::table('core_designation')->orderBy('designation_name')->pluck('designation_name', 'id');
+
+        return view('reports.emp-firob-report', compact(
+            'company_list',
+            'department_list',
+            'grade_list',
+            'designation_list'
+        ));
+    }
+
+    public function getEmpFirobSubDepartments(Request $request)
+    {
+        $request->validate([
+            'Department' => ['required', 'integer'],
+            'Company' => ['nullable', 'integer'],
+        ]);
+
+        $employeeSubDepartment = $this->employeeFirobSubDepartmentSummary();
+
+        $subDepartments = DB::table('master_employee as employee')
+            ->joinSub($employeeSubDepartment, 'employee_sub_department', function ($join) {
+                $join->on('employee_sub_department.EmpCode', '=', 'employee.EmpCode');
+            })
+            ->join('core_sub_department as sub_department', 'sub_department.id', '=', 'employee_sub_department.SubDepartmentId')
+            ->where('employee.EmpStatus', 'A')
+            ->where('employee.DepartmentId', $request->Department)
+            ->when($request->filled('Company'), function ($query) use ($request) {
+                $query->where('employee.CompanyId', $request->Company);
+            })
+            ->select('sub_department.id', 'sub_department.sub_department_name')
+            ->distinct()
+            ->orderBy('sub_department.sub_department_name')
+            ->get();
+
+        return response()->json($subDepartments);
+    }
+
+    public function getEmpFirobReports(Request $request)
+    {
+        $firobSummary = DB::table('firob_user')
+            ->select(
+                'userid',
+                DB::raw('COUNT(DISTINCT FirobId) as answer_count'),
+                DB::raw('MAX(SubDate) as firob_date')
+            )
+            ->groupBy('userid');
+
+        $employeeSubDepartment = $this->employeeFirobSubDepartmentSummary();
+
+        $employees = DB::table('master_employee as employee')
+            ->leftJoinSub($firobSummary, 'firob_summary', function ($join) {
+                $join->on('firob_summary.userid', '=', 'employee.CandidateId');
+            })
+            ->leftJoin('core_company as company', 'company.id', '=', 'employee.CompanyId')
+            ->leftJoin('core_grade as grade', 'grade.id', '=', 'employee.GradeId')
+            ->leftJoin('core_designation as designation', 'designation.id', '=', 'employee.DesigId')
+            ->leftJoin('core_department as department', 'department.id', '=', 'employee.DepartmentId')
+            ->leftJoinSub($employeeSubDepartment, 'employee_sub_department', function ($join) {
+                $join->on('employee_sub_department.EmpCode', '=', 'employee.EmpCode');
+            })
+            ->leftJoin('core_sub_department as sub_department', 'sub_department.id', '=', 'employee_sub_department.SubDepartmentId')
+            ->where('employee.EmpStatus', 'A')
+            ->select(
+                'employee.EmployeeID',
+                'employee.EmpCode',
+                'employee.Fname',
+                'employee.Sname',
+                'employee.Lname',
+                'employee.DOJ',
+                'company.company_code',
+                'grade.grade_name',
+                'designation.designation_name',
+                'department.department_name',
+                'sub_department.sub_department_name',
+                'employee.CandidateId as JCId',
+                DB::raw('COALESCE(firob_summary.answer_count, 0) as answer_count'),
+                'firob_summary.firob_date'
+            );
+
+        if ($request->filled('Company')) {
+            $employees->where('employee.CompanyId', $request->Company);
+        }
+        if ($request->filled('Department')) {
+            $employees->where('employee.DepartmentId', $request->Department);
+        }
+        if ($request->filled('SubDepartment')) {
+            $employees->where('employee_sub_department.SubDepartmentId', $request->SubDepartment);
+        }
+
+        if ($request->filled('Designation')) {
+            $employees->where('employee.DesigId', $request->Designation);
+        }
+        if ($request->FirobStatus === 'completed') {
+            $employees->where('firob_summary.answer_count', '>=', 54);
+        } elseif ($request->FirobStatus === 'incomplete') {
+            $employees->whereBetween('firob_summary.answer_count', [1, 53]);
+        } elseif ($request->FirobStatus === 'not_taken') {
+            $employees->whereNull('firob_summary.answer_count');
+        }
+
+        return datatables()->of($employees)
+            ->addIndexColumn()
+            ->addColumn('employee_name', function ($employee) {
+                return trim(implode(' ', array_filter([$employee->Fname, $employee->Sname, $employee->Lname])));
+            })
+            ->filterColumn('employee_name', function ($query, $keyword) {
+                $query->whereRaw(
+                    "CONCAT_WS(' ', employee.Fname, employee.Sname, employee.Lname) LIKE ?",
+                    ['%'.$keyword.'%']
+                );
+            })
+            ->editColumn('DOJ', function ($employee) {
+                return $employee->DOJ ? date('d-m-Y', strtotime($employee->DOJ)) : '-';
+            })
+            ->editColumn('firob_date', function ($employee) {
+                return $employee->firob_date ? date('d-m-Y', strtotime($employee->firob_date)) : '-';
+            })
+            ->addColumn('firob_result', function ($employee) {
+                if ((int) $employee->answer_count >= 54 && $employee->JCId) {
+                    $detailUrl = route('firob_result', ['jcid' => $employee->JCId]);
+
+                    return '<a href="'.$detailUrl.'" target="_blank" class="text-success">Detail</a>';
+                }
+
+                if ((int) $employee->answer_count > 0) {
+                    return '<span class="badge bg-warning text-dark">Incomplete ('.$employee->answer_count.'/54)</span>';
+                }
+
+                if ($employee->EmployeeID && $employee->EmpCode) {
+                    $yarmsUrl = 'https://www.yarms.in/reg/vspl/findtreslt.php?'.http_build_query([
+                        'tid' => 2,
+                        'ei' => $employee->EmployeeID,
+                        'ut' => 'intvi',
+                        'ec' => $employee->EmpCode,
+                    ]);
+
+                    return '<a href="'.htmlspecialchars($yarmsUrl, ENT_QUOTES, 'UTF-8').'" '
+                        .'target="_blank" rel="noopener" class="text-success">Detail</a>';
+                }
+
+                return '<span class="badge bg-secondary">Not Available</span>';
+            })
+            ->rawColumns(['firob_result'])
+            ->make(true);
+    }
+
+    private function employeeFirobSubDepartmentSummary()
+    {
+        return DB::table('candjoining as joining')
+            ->join('offerletterbasic as offer', 'offer.JAId', '=', 'joining.JAId')
+            ->whereNotNull('joining.EmpCode')
+            ->whereNotNull('offer.SubDepartment')
+            ->where('offer.SubDepartment', '<>', '')
+            ->where('offer.SubDepartment', '<>', 0)
+            ->select(
+                'joining.EmpCode',
+                DB::raw('MAX(offer.SubDepartment) as SubDepartmentId')
+            )
+            ->groupBy('joining.EmpCode');
+    }
+
+    public function exportEmpFirobReports(Request $request)
+    {
+        $filters = $request->only([
+            'Company',
+            'Department',
+            'SubDepartment',
+            'Grade',
+            'Designation',
+            'FirobStatus',
+        ]);
+
+        return Excel::download(
+            new EmployeeFirobReportExport($filters),
+            'Employee_FIRO_B_Report_'.date('Ymd_His').'.xlsx'
+        );
+    }
+
 }
